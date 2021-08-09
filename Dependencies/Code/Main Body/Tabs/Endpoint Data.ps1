@@ -8,22 +8,37 @@ $Section3HostDataTab = New-Object System.Windows.Forms.TabPage -Property @{
 $InformationTabControl.Controls.Add($Section3HostDataTab)
 
 
-$script:Section3HostDataNameTextBox = New-Object System.Windows.Forms.TextBox -Property @{
+#############
+### Row 1 ###
+#############
+
+
+$Section3EndpointDataNameLabel = New-Object System.Windows.Forms.Label -Property @{
+    Text      = 'Name:'
     Left      = 0
     Top       = $FormScale * 3
-    Width     = $FormScale * 250
-    Height    = $FormScale * 25
+    Width     = $FormScale * 50
+    Height    = $FormScale * 22
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    ForeColor = 'Black'
+}
+$Section3HostDataTab.Controls.Add($Section3EndpointDataNameLabel)
+$Section3EndpointDataNameLabel.bringtofront()
+
+
+$script:Section3HostDataNameTextBox = New-Object System.Windows.Forms.TextBox -Property @{
+    Left      = $Section3EndpointDataNameLabel.Left + $Section3EndpointDataNameLabel.Width
+    Top       = $FormScale * 3
+    Width     = $FormScale * 200
+    Height    = $FormScale * 22
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     BackColor = 'White'
     ReadOnly  = $true
     Add_MouseEnter = {
-        $script:TextMemory = $This.Text
         $This.ForeColor    = 'Blue'
-        $This.Text         = "Hostname"
     }
     Add_MouseLeave = {
         $This.ForeColor    = 'Black'
-        $This.Text         = $script:TextMemory
     }
     Add_MouseHover = {
         Show-ToolTip -Title "Hostname" -Icon "Info" -Message @"
@@ -37,48 +52,32 @@ $script:Section3HostDataNameTextBox = New-Object System.Windows.Forms.TextBox -P
 $Section3HostDataTab.Controls.Add($script:Section3HostDataNameTextBox)
 
 
-$Section3HostDataOSTextBox = New-Object System.Windows.Forms.TextBox -Property @{
-    Left      = 0
-    Top       = $script:Section3HostDataNameTextBox.Top + $script:Section3HostDataNameTextBox.Height + $($FormScale * 4)
-    Width     = $FormScale * 250
-    Height    = $FormScale * 25
+$Section3EndpointDataOULabel = New-Object System.Windows.Forms.Label -Property @{
+    Text      = 'OU/CN:'
+    Left      = $Section3EndpointDataNameLabel.Left
+    Top       = $Section3EndpointDataNameLabel.Top + $Section3EndpointDataNameLabel.Height
+    Width     = $FormScale * 50
+    Height    = $FormScale * 22
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    BackColor = 'White'
-    ReadOnly  = $true
-    Add_MouseEnter = {
-        $script:TextMemory = $This.Text
-        $This.ForeColor    = 'Blue'
-        $This.Text         = "Operating System"
-    }
-    Add_MouseLeave = {
-        $This.ForeColor    = 'Black'
-        $This.Text         = $script:TextMemory
-    }
-    Add_MouseHover = {
-        Show-ToolTip -Title "Operating System" -Icon "Info" -Message @"
-+  This field is useful to view groupings of hosts by OS.
-"@
-    }
+    ForeColor = 'Black'
 }
-$Section3HostDataTab.Controls.Add($Section3HostDataOSTextBox)
+$Section3HostDataTab.Controls.Add($Section3EndpointDataOULabel)
+$Section3EndpointDataOULabel.bringtofront()
 
 
 $Section3HostDataOUTextBox = New-Object System.Windows.Forms.TextBox -Property @{
-    Left      = 0
-    Top       = $Section3HostDataOSTextBox.Top + $Section3HostDataOSTextBox.Height + $($FormScale * 4)
-    Width     = $FormScale * 250
-    Height    = $FormScale * 25
+    Left      = $script:Section3HostDataNameTextBox.Left
+    Top       = $Section3EndpointDataOULabel.Top
+    Width     = $FormScale * 200
+    Height    = $FormScale * 22
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     BackColor = 'White'
     ReadOnly  = $true
     Add_MouseEnter = {
-        $script:TextMemory = $This.Text
         $This.ForeColor    = 'Blue'
-        $This.Text         = "Organizational Unit / Container Name"
     }
     Add_MouseLeave = {
         $This.ForeColor    = 'Black'
-        $This.Text         = $script:TextMemory
     }
     Add_MouseHover = {
         Show-ToolTip -Title "Organizational Unit / Container Name" -Icon "Info" -Message @"
@@ -89,11 +88,130 @@ $Section3HostDataOUTextBox = New-Object System.Windows.Forms.TextBox -Property @
 $Section3HostDataTab.Controls.Add($Section3HostDataOUTextBox)
 
 
-$Section3HostDataIPTextBox = New-Object System.Windows.Forms.TextBox -Property @{
+$Section3EndpointDataCreatedLabel = New-Object System.Windows.Forms.Label -Property @{
+    Text      = 'Endpoint Creation:'
     Left      = 0
-    Top       = $Section3HostDataOUTextBox.Top + $Section3HostDataOUTextBox.Height + $($FormScale * 4)
-    Width     = $FormScale * 120
-    Height    = $FormScale * 25
+    Top       = $Section3EndpointDataOULabel.Top + $Section3EndpointDataOULabel.Height
+    Width     = $FormScale * 115
+    Height    = $FormScale * 22
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    ForeColor = 'Black'
+}
+$Section3HostDataTab.Controls.Add($Section3EndpointDataCreatedLabel)
+
+
+$Section3EndpointDataCreatedTextBox = New-Object System.Windows.Forms.TextBox -Property @{
+    Left      = $Section3EndpointDataCreatedLabel.Left + $Section3EndpointDataCreatedLabel.Width
+    Top       = $Section3EndpointDataCreatedLabel.Top
+    Width     = $FormScale * 135
+    Height    = $FormScale * 22
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    BackColor = 'White'
+    ReadOnly  = $true
+    Add_MouseEnter = {
+        $This.ForeColor    = 'Blue'
+    }
+    Add_MouseLeave = {
+        $This.ForeColor    = 'Black'
+    }
+    Add_MouseHover = {
+        Show-ToolTip -Title "Created" -Icon "Info" -Message @"
++  When the account was created.
+"@
+    }
+}
+$Section3HostDataTab.Controls.Add($Section3EndpointDataCreatedTextBox)
+
+
+$Section3EndpointDataModifiedLabel = New-Object System.Windows.Forms.Label -Property @{
+    Text      = 'Last Modified:'
+    Left      = 0
+    Top       = $Section3EndpointDataCreatedLabel.Top + $Section3EndpointDataCreatedLabel.Height
+    Width     = $FormScale * 110
+    Height    = $FormScale * 22
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    ForeColor = 'Black'
+}
+$Section3HostDataTab.Controls.Add($Section3EndpointDataModifiedLabel)
+
+
+$Section3EndpointDataModifiedTextBox = New-Object System.Windows.Forms.TextBox -Property @{
+    Left      = $Section3EndpointDataCreatedTextBox.Left
+    Top       = $Section3EndpointDataModifiedLabel.Top
+    Width     = $FormScale * 135
+    Height    = $FormScale * 22
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    BackColor = 'White'
+    ReadOnly  = $true
+    Add_MouseEnter = {
+        $This.ForeColor    = 'Blue'
+    }
+    Add_MouseLeave = {
+        $This.ForeColor    = 'Black'
+    }
+    Add_MouseHover = {
+        Show-ToolTip -Title "Modified" -Icon "Info" -Message @"
++  When the endpoint was last modified.
+"@
+    }
+}
+$Section3HostDataTab.Controls.Add($Section3EndpointDataModifiedTextBox)
+
+
+$Section3EndpointDataLastLogonDateLabel = New-Object System.Windows.Forms.Label -Property @{
+    Text      = 'Last Logon Date:'
+    Left      = $Section3EndpointDataModifiedLabel.Left
+    Top       = $Section3EndpointDataModifiedLabel.Top + $Section3EndpointDataModifiedLabel.Height
+    Width     = $FormScale * 110
+    Height    = $FormScale * 22
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    ForeColor = 'Black'
+}
+$Section3HostDataTab.Controls.Add($Section3EndpointDataLastLogonDateLabel)
+$Section3EndpointDataLastLogonDateLabel.bringtofront()
+
+
+$Section3EndpointDataLastLogonDateTextBox = New-Object System.Windows.Forms.TextBox -Property @{
+    Left      = $Section3EndpointDataModifiedTextBox.Left
+    Top       = $Section3EndpointDataLastLogonDateLabel.Top
+    Width     = $FormScale * 135
+    Height    = $FormScale * 22
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    BackColor = 'White'
+    ReadOnly  = $true
+    Add_MouseEnter = {
+        $This.ForeColor    = 'Blue'
+    }
+    Add_MouseLeave = {
+        $This.ForeColor    = 'Black'
+    }
+    Add_MouseHover = {
+        Show-ToolTip -Title "Last Logon" -Icon "Info" -Message @"
++  Whent the account was last logged on to.
+"@
+    }
+}
+$Section3HostDataTab.Controls.Add($Section3EndpointDataLastLogonDateTextBox)
+
+
+$Section3HostDataIPLabel = New-Object System.Windows.Forms.Label -Property @{
+    Text      = 'IPv4 Address:'
+    Left      = 0
+    Top       = $Section3EndpointDataLastLogonDateLabel.Top + $Section3EndpointDataLastLogonDateLabel.Height
+    Width     = $FormScale * 110
+    Height    = $FormScale * 22
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    ForeColor = 'Black'
+}
+$Section3HostDataTab.Controls.Add($Section3HostDataIPLabel)
+$Section3HostDataIPLabel.bringtofront()
+
+
+$Section3HostDataIPTextBox = New-Object System.Windows.Forms.TextBox -Property @{
+    Left      = $Section3EndpointDataLastLogonDateTextBox.Left
+    Top       = $Section3HostDataIPLabel.Top
+    Width     = $FormScale * 135
+    Height    = $FormScale * 22
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     BackColor = 'White'
     ReadOnly  = $false
@@ -118,17 +236,30 @@ $Section3HostDataIPTextBox = New-Object System.Windows.Forms.TextBox -Property @
 $Section3HostDataTab.Controls.Add($Section3HostDataIPTextBox)
 
 
+$Section3HostDataMACLabel = New-Object System.Windows.Forms.Label -Property @{
+    Text      = 'MAC Address:'
+    Left      = 0
+    Top       = $Section3HostDataIPLabel.Top + $Section3HostDataIPLabel.Height
+    Width     = $FormScale * 110
+    Height    = $FormScale * 22
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    ForeColor = 'Black'
+}
+$Section3HostDataTab.Controls.Add($Section3HostDataMACLabel)
+$Section3HostDataMACLabel.bringtofront()
+
+
 $Section3HostDataMACTextBox = New-Object System.Windows.Forms.TextBox -Property @{
-    Left      = $Section3HostDataIPTextBox.Width + $($FormScale * 10)
-    Top       = $Section3HostDataOUTextBox.Top + $Section3HostDataOUTextBox.Height + $($FormScale * 4)
-    Width     = $FormScale * 120
-    Height    = $FormScale * 25
+    Left      = $Section3HostDataIPTextBox.Left
+    Top       = $Section3HostDataMACLabel.Top
+    Width     = $FormScale * 135
+    Height    = $FormScale * 22
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     BackColor = 'White'
     ReadOnly  = $false
     Add_MouseHover = {
         Show-ToolTip -Title "MAC Address" -Icon "Info" -Message @"
-+  Informational field not used to query hosts.
++  MAC Address as recorded by Active Directory or manually entered.
 "@
     }
     Add_MouseEnter = {
@@ -147,15 +278,342 @@ $Section3HostDataMACTextBox = New-Object System.Windows.Forms.TextBox -Property 
 $Section3HostDataTab.Controls.Add($Section3HostDataMACTextBox)
 
 
+#############
+### Row 2 ###
+#############
+
+
+$Section3EndpointDataEnabledLabel = New-Object System.Windows.Forms.Label -Property @{
+    Text      = 'Endpoint is Enabled:'
+    Left      = $script:Section3HostDataNameTextBox.Left + $script:Section3HostDataNameTextBox.Width + $($FormScale * 10)
+    Top       = $FormScale * 3
+    Width     = $FormScale * 170
+    Height    = $FormScale * 22
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    ForeColor = 'Black'
+}
+$Section3HostDataTab.Controls.Add($Section3EndpointDataEnabledLabel)
+$Section3EndpointDataEnabledLabel.bringtofront()
+
+
+$Section3EndpointDataEnabledTextBox = New-Object System.Windows.Forms.TextBox -Property @{
+    Left      = $Section3EndpointDataEnabledLabel.Left + $Section3EndpointDataEnabledLabel.Width
+    Top       = $Section3EndpointDataEnabledLabel.Top
+    Width     = $FormScale * 80
+    Height    = $FormScale * 22
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    BackColor = 'White'
+    ReadOnly  = $true
+    Add_MouseEnter = {
+        $This.ForeColor    = 'Blue'
+    }
+    Add_MouseLeave = {
+        $This.ForeColor    = 'Black'
+    }
+    Add_MouseHover = {
+        Show-ToolTip -Title "Enabled" -Icon "Info" -Message @"
++  Enabled status of the account.
+"@
+    }
+}
+$Section3HostDataTab.Controls.Add($Section3EndpointDataEnabledTextBox)
+
+
+$Section3EndpointDataisCriticalSystemObjectLabel = New-Object System.Windows.Forms.Label -Property @{
+    Text      = 'Critical System Object:'
+    Left      = $Section3EndpointDataEnabledLabel.Left
+    Top       = $Section3EndpointDataEnabledLabel.Top + $Section3EndpointDataEnabledLabel.Height
+    Width     = $FormScale * 170
+    Height    = $FormScale * 22
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    ForeColor = 'Black'
+}
+$Section3HostDataTab.Controls.Add($Section3EndpointDataisCriticalSystemObjectLabel)
+$Section3EndpointDataisCriticalSystemObjectLabel.bringtofront()
+
+
+$Section3EndpointDataisCriticalSystemObjectTextBox = New-Object System.Windows.Forms.TextBox -Property @{
+    Left      = $Section3EndpointDataEnabledTextBox.Left
+    Top       = $Section3EndpointDataisCriticalSystemObjectLabel.Top
+    Width     = $FormScale * 80
+    Height    = $FormScale * 22
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    BackColor = 'White'
+    ReadOnly  = $true
+    Add_MouseEnter = {
+        $This.ForeColor    = 'Blue'
+    }
+    Add_MouseLeave = {
+        $This.ForeColor    = 'Black'
+    }
+    Add_MouseHover = {
+        Show-ToolTip -Title "Smart Card Logon Required" -Icon "Info" -Message @"
++  Configuration state if a smart card logon is required for the account.
+"@
+    }
+}
+$Section3HostDataTab.Controls.Add($Section3EndpointDataisCriticalSystemObjectTextBox)
+
+
+$Section3EndpointDataSIDLabel = New-Object System.Windows.Forms.Label -Property @{
+    Text      = 'SID:'
+    Left      = $Section3EndpointDataisCriticalSystemObjectLabel.Left
+    Top       = $Section3EndpointDataisCriticalSystemObjectLabel.Top + $Section3EndpointDataisCriticalSystemObjectLabel.Height
+    Width     = $FormScale * 45
+    Height    = $FormScale * 22
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    ForeColor = 'Black'
+}
+$Section3HostDataTab.Controls.Add($Section3EndpointDataSIDLabel)
+$Section3EndpointDataSIDLabel.bringtofront()
+
+
+$Section3EndpointDataSIDTextBox = New-Object System.Windows.Forms.TextBox -Property @{
+    Left      = $Section3EndpointDataSIDLabel.Left + $Section3EndpointDataSIDLabel.Width
+    Top       = $Section3EndpointDataSIDLabel.Top
+    Width     = $FormScale * 205
+    Height    = $FormScale * 22
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    BackColor = 'White'
+    ReadOnly  = $true
+    Add_MouseEnter = {
+        $This.ForeColor    = 'Blue'
+    }
+    Add_MouseLeave = {
+        $This.ForeColor    = 'Black'
+    }
+    Add_MouseHover = {
+        Show-ToolTip -Title "SID" -Icon "Info" -Message @"
++  This is the endpoint Security Identifier (SID).
++  A SID is a unique value of variable length that is used to identify a security principal (such as a security group) in Windows operating systems. SIDs that identify generic users or generic groups is well known. Their values remain constant across all operating systems.
+"@
+    }
+}
+$Section3HostDataTab.Controls.Add($Section3EndpointDataSIDTextBox)
+
+
+$Section3EndpointDataOperatingSystemLabel = New-Object System.Windows.Forms.Label -Property @{
+    Text      = 'OS:'
+    Left      = $Section3EndpointDataSIDLabel.Left
+    Top       = $Section3EndpointDataSIDLabel.Top + $Section3EndpointDataSIDLabel.Height
+    Width     = $FormScale * 45
+    Height    = $FormScale * 22
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    ForeColor = 'Black'
+}
+$Section3HostDataTab.Controls.Add($Section3EndpointDataOperatingSystemLabel)
+$Section3EndpointDataOperatingSystemLabel.bringtofront()
+
+
+$Section3EndpointDataOperatingSystemTextBox = New-Object System.Windows.Forms.TextBox -Property @{
+    Left      = $Section3EndpointDataOperatingSystemLabel.Left + $Section3EndpointDataOperatingSystemLabel.Width
+    Top       = $Section3EndpointDataOperatingSystemLabel.Top
+    Width     = $FormScale * 205
+    Height    = $FormScale * 22
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    BackColor = 'White'
+    ReadOnly  = $true
+    Add_MouseEnter = {
+        $This.ForeColor    = 'Blue'
+    }
+    Add_MouseLeave = {
+        $This.ForeColor    = 'Black'
+    }
+    Add_MouseHover = {
+        Show-ToolTip -Title "Script Path" -Icon "Info" -Message @"
++  Configured script path for the account.
+"@
+    }
+}
+$Section3HostDataTab.Controls.Add($Section3EndpointDataOperatingSystemTextBox)
+
+
+$Section3EndpointDataOperatingSystemHotfixComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
+    Left      = $Section3EndpointDataOperatingSystemLabel.Left
+    Top       = $Section3EndpointDataLastLogonDateTextBox.Top
+    Width     = $FormScale * 250
+    Height    = $FormScale * 22
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    BackColor = 'White'
+    Add_MouseEnter = {
+        $This.ForeColor    = 'Blue'
+    }
+    Add_MouseLeave = {
+        $This.ForeColor    = 'Black'
+    }
+    Add_MouseHover = {
+        Show-ToolTip -Title "Operating System Hotfix" -Icon "Info" -Message @"
++  Operating System Hotfixes on the endpoint.
+"@
+    }
+}
+$Section3HostDataTab.Controls.Add($Section3EndpointDataOperatingSystemHotfixComboBox)
+
+
+$Section3EndpointDataOperatingSystemServicePackComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
+    Left      = $Section3EndpointDataOperatingSystemHotfixComboBox.Left
+    Top       = $Section3HostDataIPTextBox.Top
+    Width     = $FormScale * 250
+    Height    = $FormScale * 22
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    BackColor = 'White'
+    Add_MouseEnter = {
+        $This.ForeColor = 'Blue'
+    }
+    Add_MouseLeave = {
+        $This.ForeColor = 'Black'
+    }
+    Add_MouseHover = {
+        Show-ToolTip -Title "Operating System Service Pack" -Icon "Info" -Message @"
++  Operating System Service Packs on the endpoint.
+"@
+    }
+}
+$Section3HostDataTab.Controls.Add($Section3EndpointDataOperatingSystemServicePackComboBox)
+
+
+$Section3EndpointDataMemberOfComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
+    Left      = $Section3EndpointDataOperatingSystemServicePackComboBox.Left
+    Top       = $Section3HostDataMACTextBox.Top
+    Width     = $FormScale * 250
+    Height    = $FormScale * 22
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    BackColor = 'White'
+    Add_MouseEnter = {
+        $This.ForeColor = 'Blue'
+    }
+    Add_MouseLeave = {
+        $This.ForeColor = 'Black'
+    }
+    Add_MouseHover = {
+        Show-ToolTip -Title "Member Of" -Icon "Info" -Message @"
++  The groups the account is a member of.
+"@
+    }
+}
+$Section3HostDataTab.Controls.Add($Section3EndpointDataMemberOfComboBox)
+
+
+#############
+### Row 3 ###
+#############
+
+
+$Section3EndpointDataLockedOutLabel = New-Object System.Windows.Forms.Label -Property @{
+    Text      = 'Account is Locked Out:'
+    Left      = $Section3EndpointDataSIDTextBox.Left + $Section3EndpointDataSIDTextBox.Width + $($FormScale * 10)
+    Top       = $FormScale * 3
+    Width     = $FormScale * 145
+    Height    = $FormScale * 22
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    ForeColor = 'Black'
+}
+$Section3HostDataTab.Controls.Add($Section3EndpointDataLockedOutLabel)
+$Section3EndpointDataLockedOutLabel.bringtofront()
+
+
+$Section3EndpointDataLockedOutTextBox = New-Object System.Windows.Forms.TextBox -Property @{
+    Left      = $Section3EndpointDataLockedOutLabel.Left + $Section3EndpointDataLockedOutLabel.Width
+    Top       = $Section3EndpointDataLockedOutLabel.Top
+    Width     = $FormScale * 75
+    Height    = $FormScale * 22
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    BackColor = 'White'
+    ReadOnly  = $true
+    Add_MouseEnter = {
+        $This.ForeColor    = 'Blue'
+    }
+    Add_MouseLeave = {
+        $This.ForeColor    = 'Black'
+    }
+    Add_MouseHover = {
+        Show-ToolTip -Title "Locked Out" -Icon "Info" -Message @"
++  Locked Out status of the account.
+"@
+    }
+}
+$Section3HostDataTab.Controls.Add($Section3EndpointDataLockedOutTextBox)
+
+
+$Section3EndpointDataLogonCountLabel = New-Object System.Windows.Forms.Label -Property @{
+    Text      = 'Successful Logon Count:'
+    Left      = $Section3EndpointDataLockedOutLabel.Left
+    Top       = $Section3EndpointDataLockedOutLabel.Top + $Section3EndpointDataLockedOutLabel.Height
+    Width     = $FormScale * 145
+    Height    = $FormScale * 22
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    ForeColor = 'Black'
+}
+$Section3HostDataTab.Controls.Add($Section3EndpointDataLogonCountLabel)
+$Section3EndpointDataLogonCountLabel.bringtofront()
+
+
+$Section3EndpointDataLogonCountTextBox = New-Object System.Windows.Forms.TextBox -Property @{
+    Left      = $Section3EndpointDataLockedOutTextBox.Left
+    Top       = $Section3EndpointDataLogonCountLabel.Top
+    Width     = $FormScale * 75
+    Height    = $FormScale * 22
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    BackColor = 'White'
+    ReadOnly  = $true
+    Add_MouseEnter = {
+        $This.ForeColor    = 'Blue'
+    }
+    Add_MouseLeave = {
+        $This.ForeColor    = 'Black'
+    }
+    Add_MouseHover = {
+        Show-ToolTip -Title "Logon Count" -Icon "Info" -Message @"
++  Number of logon counts for the endpoint.
+"@
+    }
+}
+$Section3HostDataTab.Controls.Add($Section3EndpointDataLogonCountTextBox)
+                            
+
+$Section3EndpointDataLocationLabel = New-Object System.Windows.Forms.Label -Property @{
+    Text      = 'Location:'
+    Left      = $Section3EndpointDataLogonCountLabel.Left
+    Top       = $Section3EndpointDataLogonCountLabel.Top + $Section3EndpointDataLogonCountLabel.Height
+    Width     = $FormScale * 70
+    Height    = $FormScale * 22
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    ForeColor = 'Black'
+}
+$Section3HostDataTab.Controls.Add($Section3EndpointDataLocationLabel)
+$Section3EndpointDataLocationLabel.bringtofront()
+
+
+$Section3EndpointDataLocationTextBox = New-Object System.Windows.Forms.TextBox -Property @{
+    Left      = $Section3EndpointDataLocationLabel.Left + $Section3EndpointDataLocationLabel.Width
+    Top       = $Section3EndpointDataLocationLabel.Top
+    Width     = $FormScale * 150
+    Height    = $FormScale * 22
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    BackColor = 'White'
+    ReadOnly  = $true
+    Add_MouseEnter = {
+        $This.ForeColor    = 'Blue'
+    }
+    Add_MouseLeave = {
+        $This.ForeColor    = 'Black'
+    }
+    Add_MouseHover = {
+        Show-ToolTip -Title "Password Expired" -Icon "Info" -Message @"
++  Password expiration status for the account.
+"@
+    }
+}
+$Section3HostDataTab.Controls.Add($Section3EndpointDataLocationTextBox)
+
+
 $HostDataList1 = (Get-ChildItem -Path $CollectedDataDirectory -Recurse | Where-Object {$_.Extension -match 'csv'}).basename | ForEach-Object { $_.split('(')[0].trim() } | Sort-Object -Unique -Descending
-
-
 $Section3HostDataSelectionComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
     Text      = "Host Data - Selection"
-    Left      = $FormScale * 260
-    Top       = $FormScale * 3
-    Width     = $FormScale * 200
-    Height    = $FormScale * 25
+    Left      = $Section3EndpointDataLocationLabel.Left
+    Top       = $Section3EndpointDataOperatingSystemTextBox.Top
+    Width     = $FormScale * 220
+    Height    = $FormScale * 22
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     BackColor = 'White'
     ForeColor = "Black"
@@ -216,10 +674,10 @@ $Section3HostDataTab.Controls.Add($Section3HostDataSelectionComboBox)
 
 $Section3HostDataSelectionDateTimeComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
     Text      = "Host Data - Date & Time"
-    Left      = $FormScale * 260
-    Top       = $Section3HostDataSelectionComboBox.Height + $Section3HostDataSelectionComboBox.Top + $($FormScale * 3)
-    Width     = $FormScale * 200
-    Height    = $FormScale * 25
+    Left      = $Section3HostDataSelectionComboBox.Left
+    Top       = $Section3EndpointDataOperatingSystemHotfixComboBox.top
+    Width     = $FormScale * 220
+    Height    = $FormScale * 22
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     BackColor = 'White'
     ForeColor = "Black"
@@ -245,9 +703,9 @@ $Section3HostDataTab.Controls.Add($Section3HostDataSelectionDateTimeComboBox)
 
 $Section3HostDataGridViewButton = New-Object System.Windows.Forms.Button -Property @{
     Text      = "Grid View"
-    Left      = $Section3HostDataSelectionDateTimeComboBox.Left + $Section3HostDataSelectionDateTimeComboBox.Width + $($FormScale * 5)
-    Top       =  $Section3HostDataSelectionDateTimeComboBox.Top - $($FormScale * 1)
-    Width     = $FormScale * 75
+    Left      = $Section3HostDataSelectionDateTimeComboBox.Left #+ $($FormScale * 64)
+    Top       = $Section3HostDataIPTextBox.Top - $($FormScale * 4)
+    Width     = $FormScale * 110
     Height    = $FormScale * 22
     Add_Click = {
         # Chooses the most recent file if multiple exist
@@ -289,8 +747,8 @@ if ((Test-Path -Path "$Dependencies\Modules\PSWriteHTML") -and (Get-Content "$Po
     $Section3HostDataPSWriteHTMLButton = New-Object System.Windows.Forms.Button -Property @{
         Text      = "HTML"
         Left      = $Section3HostDataGridViewButton.Left + $Section3HostDataGridViewButton.Width + $($FormScale * 5)
-        Top       = $Section3HostDataGridViewButton.Top - $($FormScale * 1)
-        Width     = $FormScale * 75
+        Top       = $Section3HostDataGridViewButton.Top
+        Width     = $FormScale * 105
         Height    = $FormScale * 22
         Add_Click = {
             # Chooses the most recent file if multiple exist
@@ -314,17 +772,16 @@ if ((Test-Path -Path "$Dependencies\Modules\PSWriteHTML") -and (Get-Content "$Po
 }
 
 
-$Section3HostDataTagsComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
-    Name      = "Tags"
+$Section3EndpointDataTagsComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
     Text      = "Tags"
-    Left      = $FormScale * 260
+    Left      = $Section3HostDataSelectionDateTimeComboBox.Left
     Top       = $Section3HostDataMACTextBox.Top
-    Width     = $FormScale * 200
-    Height    = $FormScale * 25
+    Width     = $FormScale * 170
+    Height    = $FormScale * 22
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     BackColor = 'White'
     AutoCompleteSource = "ListItems"
-    AutoCompleteMode = "SuggestAppend"
+    AutoCompleteMode   = "SuggestAppend"
     Add_MouseEnter = {
         $This.ForeColor = 'DarkRed'
     }
@@ -339,16 +796,18 @@ $Section3HostDataTagsComboBox = New-Object System.Windows.Forms.ComboBox -Proper
 "@
     }
 }
-ForEach ($Item in $TagListFileContents) { $Section3HostDataTagsComboBox.Items.Add($Item) }
-$Section3HostDataTab.Controls.Add($Section3HostDataTagsComboBox)
+ForEach ($Item in $TagListFileContents) { $Section3EndpointDataTagsComboBox.Items.Add($Item) }
+$Section3HostDataTab.Controls.Add($Section3EndpointDataTagsComboBox)
 
 
-$Section3HostDataTagsAddButton = New-Object System.Windows.Forms.Button -Property @{
+$Section3EndpointDataTagsAddButton = New-Object System.Windows.Forms.Button -Property @{
     Text      = "Add"
-    Left      = $Section3HostDataTagsComboBox.Width + $Section3HostDataTagsComboBox.Left + $($FormScale * 5)
-    Top       = $Section3HostDataTagsComboBox.Top - $($FormScale * 1)
-    Width     = $FormScale * 70
+    Left      = $Section3EndpointDataTagsComboBox.Width + $Section3EndpointDataTagsComboBox.Left + $($FormScale * 5)
+    Top       = $Section3EndpointDataTagsComboBox.Top - $($FormScale * 1)
+    Width     = $FormScale * 45
     Height    = $FormScale * 22
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    BackColor = 'White'
     Add_Click = {
         if (-not ($Section3HostDataTagsComboBox.SelectedItem -eq "Tags")) {
             $Section3HostDataNotesRichTextBox.text = "$(Get-Date) -- $($Section3HostDataTagsComboBox.SelectedItem)`n" + $Section3HostDataNotesRichTextBox.text
@@ -363,14 +822,20 @@ $Section3HostDataTagsAddButton = New-Object System.Windows.Forms.Button -Propert
 "@
     }
 }
-$Section3HostDataTab.Controls.Add($Section3HostDataTagsAddButton)
-CommonButtonSettings -Button $Section3HostDataTagsAddButton
+$Section3HostDataTab.Controls.Add($Section3EndpointDataTagsAddButton)
+CommonButtonSettings -Button $Section3EndpointDataTagsAddButton
+
+
+###############
+# Botton Half #
+###############
 
 
 $Section3HostDataNotesRichTextBox = New-Object System.Windows.Forms.RichTextBox -Property @{
     Left       = 0
-    Top        = $Section3HostDataMACTextBox.Top + $Section3HostDataMACTextBox.Height + $($FormScale * 6)
+    Top        = $Section3HostDataMACLabel.Top + $Section3HostDataMACLabel.Height
     Width      = $FormScale * 740
+    Height     = $FormScale * 178
     Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     BackColor  = 'White'
     Multiline  = $True
@@ -397,27 +862,148 @@ $Section3HostDataNotesRichTextBox = New-Object System.Windows.Forms.RichTextBox 
     }
 }
 $Section3HostDataTab.Controls.Add($Section3HostDataNotesRichTextBox)
+$Section3HostDataTab.ForcedVertical()
 
 
-# DEPRECATED
-# $script:Section3HostDataNotesSaveCheck = ""
-# $Section3HostDataSaveButton = New-Object System.Windows.Forms.Button -Property @{
-#     Text      = "Data Saved"
-#     Left      = $Section3HostDataNotesRichTextBox.Left + $Section3HostDataNotesRichTextBox.Width + $($FormScale + 5)
-#     Top       = $Section3HostDataNotesRichTextBox.Top
-#     Width     = $FormScale * 100
-#     Height    = $FormScale * 22
-#     Add_Click = {
-#         Save-TreeViewData -Endpoint
-#         $StatusListBox.Items.Clear()
-#         $StatusListBox.Items.Add("Saved Host Data:  $($script:Section3HostDataNameTextBox.Text)")            
-#     }
-#     Add_MouseHover = {
-#         Show-ToolTip -Title "Warning" -Icon "Warning" -Message @"
-# +  It's Best practice is to manually save after modifying each host data.
-# +  That said, data is automatically saved when you select a endpoint in the computer treeview
-# "@
-#     }
-# }
-# $Section3HostDataTab.Controls.Add($Section3HostDataSaveButton)
-# CommonButtonSettings -Button $Section3HostDataSaveButton
+$Section3EndpointDataUpdateDataButton = New-Object System.Windows.Forms.Button -Property @{
+    Text      = "Update Data"
+    Left      = $Section3HostDataNotesRichTextBox.Left + $Section3HostDataNotesRichTextBox.Width - $($FormScale * 100 + 5)
+    Top       = $Section3HostDataNotesRichTextBox.Top + $Section3HostDataNotesRichTextBox.Height - $($FormScale * 22 + 5)
+    Width     = $FormScale * 100
+    Height    = $FormScale * 22
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    BackColor = 'White'
+    Add_Click = {
+        if ($root.text -match 'All Endpoints') {
+            $ADEndpoint = $script:Section3HostDataNameTextBox.text
+        }
+        $Verify = [System.Windows.Forms.MessageBox]::Show(
+            "Do you want to pull updated data for the Endpoint `"$($ADEndpoint)`" from Active Directory?",
+            "PoSh-EasyWin - high101bro",
+            'YesNo',
+            "Warning")
+        switch ($Verify) {
+            'Yes'{
+                if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
+                    if (!$script:Credential) { Create-NewCredentials }
+                    Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Credentials Used: $($script:Credential.UserName)"
+                    $Username = $script:Credential.UserName
+                    $Password = '"PASSWORD HIDDEN"'
+        
+                    ### TODO: put in addition checks that prompt if this file is not populated or notifies the user of the AD server used
+                    if (Get-Content $script:ActiveDirectoryEndpoint) { $ImportFromADWinRMManuallEntryTextBoxTarget = Get-Content $script:ActiveDirectoryEndpoint }
+        
+                    $script:UpdatedADEndpointInfo = Invoke-Command -ScriptBlock {
+                        param ($ADEndpoint)
+                        Get-ADComputer -Filter {Name -eq $ADEndpoint} -Properties Name, CanonicalName, OperatingSystem, OperatingSystemHotfix, OperatingSystemServicePack, Enabled, LockedOut, LogonCount, Created, Modified, LastLogonDate, IPv4Address, MACAddress, MemberOf, isCriticalSystemObject, HomedirRequired, Location, ProtectedFromAccidentalDeletion, TrustedForDelegation, SID
+                    } -ComputerName $ImportFromADWinRMManuallEntryTextBoxTarget -Credential $script:Credential -ArgumentList @($ADEndpoint,$null)
+                    
+                    foreach ($Endpoint in $script:ComputerTreeViewData) {
+                        if ($Endpoint.Name -eq $ADEndpoint){
+                            $Endpoint | Add-Member -MemberType NoteProperty -Name Name                            -Value $script:UpdatedADEndpointInfo.Name -Force
+                            $Endpoint | Add-Member -MemberType NoteProperty -Name OperatingSystem                 -Value $script:UpdatedADEndpointInfo.OperatingSystem -Force
+                            $Endpoint | Add-Member -MemberType NoteProperty -Name CanonicalName                   -Value "/$($script:UpdatedADEndpointInfo.CanonicalName | Split-Path -Parent | Split-Path -Leaf)" -Force
+                            $Endpoint | Add-Member -MemberType NoteProperty -Name OperatingSystemHotfix           -Value $script:UpdatedADEndpointInfo.OperatingSystemHotfix -Force
+                            $Endpoint | Add-Member -MemberType NoteProperty -Name OperatingSystemServicePack      -Value $script:UpdatedADEndpointInfo.OperatingSystemServicePack -Force
+                            $Endpoint | Add-Member -MemberType NoteProperty -Name Enabled                         -Value $script:UpdatedADEndpointInfo.Enabled -Force
+                            $Endpoint | Add-Member -MemberType NoteProperty -Name LockedOut                       -Value $script:UpdatedADEndpointInfo.LockedOut -Force
+                            $Endpoint | Add-Member -MemberType NoteProperty -Name LogonCount                      -Value $script:UpdatedADEndpointInfo.LogonCount -Force
+                            $Endpoint | Add-Member -MemberType NoteProperty -Name Created                         -Value $script:UpdatedADEndpointInfo.Created -Force
+                            $Endpoint | Add-Member -MemberType NoteProperty -Name Modified                        -Value $script:UpdatedADEndpointInfo.Modified -Force
+                            $Endpoint | Add-Member -MemberType NoteProperty -Name LastLogonDate                   -Value $script:UpdatedADEndpointInfo.LastLogonDate -Force
+                            $Endpoint | Add-Member -MemberType NoteProperty -Name IPv4Address                     -Value $script:UpdatedADEndpointInfo.IPv4Address -Force
+                            $Endpoint | Add-Member -MemberType NoteProperty -Name MACAddress                      -Value $script:UpdatedADEndpointInfo.MACAddress -Force
+                            $Endpoint | Add-Member -MemberType NoteProperty -Name MemberOf                        -Value $(($script:UpdatedADEndpointInfo | Select-Object -ExpandProperty MemberOf) -join "`n") -Force
+                            $Endpoint | Add-Member -MemberType NoteProperty -Name isCriticalSystemObject          -Value $script:UpdatedADEndpointInfo.isCriticalSystemObject -Force
+                            $Endpoint | Add-Member -MemberType NoteProperty -Name HomedirRequired                 -Value $script:UpdatedADEndpointInfo.HomedirRequired -Force
+                            $Endpoint | Add-Member -MemberType NoteProperty -Name Location                        -Value $script:UpdatedADEndpointInfo.Location -Force
+                            $Endpoint | Add-Member -MemberType NoteProperty -Name ProtectedFromAccidentalDeletion -Value $script:UpdatedADEndpointInfo.ProtectedFromAccidentalDeletion -Force
+                            $Endpoint | Add-Member -MemberType NoteProperty -Name TrustedForDelegation            -Value $script:UpdatedADEndpointInfo.TrustedForDelegation -Force
+                            $Endpoint | Add-Member -MemberType NoteProperty -Name SID                             -Value $script:UpdatedADEndpointInfo.SID -Force
+                            $Endpoint | Add-Member -MemberType NoteProperty -Name PortScan                        -Value $script:UpdatedADEndpointInfo.PortScan -Force
+                            $Endpoint | Add-Member -MemberType NoteProperty -Name Notes                           -Value $("$(Get-Date) -- Pulled Updated Endpoint Data`n" + $Section3HostDataNotesRichTextBox.text) -Force
+                        }
+                    }
+
+                    # Yep, needed to update treeview before saving
+                    Update-TreeViewData -Endpoint -TreeView $script:ComputerTreeView.Nodes
+
+                    Normalize-TreeViewData -Endpoint
+                    Save-TreeViewData -Endpoint -SkipTextFieldSave
+
+                    # Yep, needed to reload the data in the Endpoints tab
+                    Update-TreeViewData -Endpoint -TreeView $script:ComputerTreeView.Nodes
+                    if ($script:RollCredentialsState -and $script:ComputerListProvideCredentialsCheckBox.checked) {
+                        Start-Sleep -Seconds 3
+                        Generate-NewRollingPassword
+                    }               
+        
+                    Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock { Get-ADComputer -Filter {Name -eq $ADEndpoint} -Properties Name, CanonicalName, OperatingSystem, OperatingSystemHotfix, OperatingSystemServicePack, Enabled, LockedOut, LogonCount, Created, Modified, LastLogonDate, IPv4Address, MACAddress, MemberOf, isCriticalSystemObject, HomedirRequired, Location, ProtectedFromAccidentalDeletion, TrustedForDelegation, SID } -ComputerName $($ImportFromADWinRMManuallEntryTextBox.Text) -Credential [ $UserName | $Password ]"
+                }
+                else {
+                    ### TODO: put in addition checks that prompt if this file is not populated or notifies the user of the AD server used
+                    if (Get-Content $script:ActiveDirectoryEndpoint) { $ImportFromADWinRMManuallEntryTextBoxTarget = Get-Content $script:ActiveDirectoryEndpoint }
+        
+                    $script:UpdatedADEndpointInfo = Invoke-Command -ScriptBlock {
+                        param ($ADEndpoint)
+                        Get-ADComputer -Filter {Name -eq $ADEndpoint} -Properties Name, CanonicalName, OperatingSystem, OperatingSystemHotfix, OperatingSystemServicePack, Enabled, LockedOut, LogonCount, Created, Modified, LastLogonDate, IPv4Address, MACAddress, MemberOf, isCriticalSystemObject, HomedirRequired, Location, ProtectedFromAccidentalDeletion, TrustedForDelegation, SID
+                    } -ComputerName $ImportFromADWinRMManuallEntryTextBoxTarget -ArgumentList @($ADEndpoint,$null)
+                    
+                    foreach ($Endpoint in $script:ComputerTreeViewData) {
+                        if ($Endpoint.Name -eq $ADEndpoint){
+                            $Endpoint | Add-Member -MemberType NoteProperty -Name Name                            -Value $script:UpdatedADEndpointInfo.Name -Force
+                            $Endpoint | Add-Member -MemberType NoteProperty -Name OperatingSystem                 -Value $script:UpdatedADEndpointInfo.OperatingSystem -Force
+                            $Endpoint | Add-Member -MemberType NoteProperty -Name CanonicalName                   -Value "/$($script:UpdatedADEndpointInfo.CanonicalName | Split-Path -Parent | Split-Path -Leaf)" -Force
+                            $Endpoint | Add-Member -MemberType NoteProperty -Name OperatingSystemHotfix           -Value $script:UpdatedADEndpointInfo.OperatingSystemHotfix -Force
+                            $Endpoint | Add-Member -MemberType NoteProperty -Name OperatingSystemServicePack      -Value $script:UpdatedADEndpointInfo.OperatingSystemServicePack -Force
+                            $Endpoint | Add-Member -MemberType NoteProperty -Name Enabled                         -Value $script:UpdatedADEndpointInfo.Enabled -Force
+                            $Endpoint | Add-Member -MemberType NoteProperty -Name LockedOut                       -Value $script:UpdatedADEndpointInfo.LockedOut -Force
+                            $Endpoint | Add-Member -MemberType NoteProperty -Name LogonCount                      -Value $script:UpdatedADEndpointInfo.LogonCount -Force
+                            $Endpoint | Add-Member -MemberType NoteProperty -Name Created                         -Value $script:UpdatedADEndpointInfo.Created -Force
+                            $Endpoint | Add-Member -MemberType NoteProperty -Name Modified                        -Value $script:UpdatedADEndpointInfo.Modified -Force
+                            $Endpoint | Add-Member -MemberType NoteProperty -Name LastLogonDate                   -Value $script:UpdatedADEndpointInfo.LastLogonDate -Force
+                            $Endpoint | Add-Member -MemberType NoteProperty -Name IPv4Address                     -Value $script:UpdatedADEndpointInfo.IPv4Address -Force
+                            $Endpoint | Add-Member -MemberType NoteProperty -Name MACAddress                      -Value $script:UpdatedADEndpointInfo.MACAddress -Force
+                            $Endpoint | Add-Member -MemberType NoteProperty -Name MemberOf                        -Value $(($script:UpdatedADEndpointInfo | Select-Object -ExpandProperty MemberOf) -join "`n") -Force
+                            $Endpoint | Add-Member -MemberType NoteProperty -Name isCriticalSystemObject          -Value $script:UpdatedADEndpointInfo.isCriticalSystemObject -Force
+                            $Endpoint | Add-Member -MemberType NoteProperty -Name HomedirRequired                 -Value $script:UpdatedADEndpointInfo.HomedirRequired -Force
+                            $Endpoint | Add-Member -MemberType NoteProperty -Name Location                        -Value $script:UpdatedADEndpointInfo.Location -Force
+                            $Endpoint | Add-Member -MemberType NoteProperty -Name ProtectedFromAccidentalDeletion -Value $script:UpdatedADEndpointInfo.ProtectedFromAccidentalDeletion -Force
+                            $Endpoint | Add-Member -MemberType NoteProperty -Name TrustedForDelegation            -Value $script:UpdatedADEndpointInfo.TrustedForDelegation -Force
+                            $Endpoint | Add-Member -MemberType NoteProperty -Name SID                             -Value $script:UpdatedADEndpointInfo.SID -Force
+                            $Endpoint | Add-Member -MemberType NoteProperty -Name PortScan                        -Value $script:UpdatedADEndpointInfo.PortScan -Force
+                            $Endpoint | Add-Member -MemberType NoteProperty -Name Notes                           -Value $("$(Get-Date) -- Pulled Updated Endpoint Data`n" + $Section3HostDataNotesRichTextBox.text) -Force
+                        }
+                    }
+
+                    # Yep, needed to update treeview before saving
+                    Update-TreeViewData -Endpoint -TreeView $script:ComputerTreeView.Nodes
+
+                    Normalize-TreeViewData -Endpoint
+                    Save-TreeViewData -Endpoint -SkipTextFieldSave
+
+                    # Yep, needed to reload the data in the Endpoints tab
+                    Update-TreeViewData -Endpoint -TreeView $script:ComputerTreeView.Nodes
+                    if ($script:RollCredentialsState -and $script:ComputerListProvideCredentialsCheckBox.checked) {
+                        Start-Sleep -Seconds 3
+                        Generate-NewRollingPassword
+                    }               
+        
+                    Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock { Get-ADComputer -Filter {Name -eq $ADEndpoint} -Properties Name, CanonicalName, OperatingSystem, OperatingSystemHotfix, OperatingSystemServicePack, Enabled, LockedOut, LogonCount, Created, Modified, LastLogonDate, IPv4Address, MACAddress, MemberOf, isCriticalSystemObject, HomedirRequired, Location, ProtectedFromAccidentalDeletion, TrustedForDelegation, SID } -ComputerName $($ImportFromADWinRMManuallEntryTextBox.Text)"
+                }
+            }
+            'No' {continue}
+        }
+    }
+    Add_MouseEnter = {}
+    Add_MouseLeave = {}
+    Add_MouseHover = {
+        Show-ToolTip -Title "Update Endpoint Data From Active Directory" -Icon "Info" -Message @"
++  This will query Active Directory and pull any updated information for the Endpoint.
+"@
+    }
+}
+$Section3HostDataTab.Controls.Add($Section3EndpointDataUpdateDataButton)
+$Section3EndpointDataUpdateDataButton.bringtofront()
+CommonButtonSettings -Button $Section3EndpointDataUpdateDataButton
+

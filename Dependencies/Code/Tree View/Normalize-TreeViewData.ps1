@@ -151,13 +151,15 @@ function Normalize-TreeViewData {
 
             if ($Computer.OperatingSystemHotfix) {
                 $ComputerTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name OperatingSystemHotfix -Value $Computer.OperatingSystemHotfix -Force }
-            else {
-                $ComputerTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name OperatingSystemHotfix -Value "No Operating System Hotfixes" -Force }
+            # Note: removed, it produced a false group count of 1... it counted "No OS Hotfixes" as a group...
+            # else {
+            #     $ComputerTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name OperatingSystemHotfix -Value "No OS Hotfixes" -Force }
 
             if ($Computer.OperatingSystemServicePack) {
                 $ComputerTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name OperatingSystemServicePack -Value $Computer.OperatingSystemServicePack -Force }
-            else {
-                $ComputerTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name OperatingSystemServicePack -Value "No Operating System Service Packs" -Force }
+            # Note: removed, it produced a false group count of 1... it counted "No OS Service Packs" as a group...
+            # else {
+            #     $ComputerTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name OperatingSystemServicePack -Value "No OS Service Packs" -Force }
 
             if ($Computer.Enabled) {
                 $ComputerTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name Enabled -Value $Computer.Enabled -Force }
@@ -195,8 +197,9 @@ function Normalize-TreeViewData {
 
             if ($Computer.MemberOf) {
                 $ComputerTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name MemberOf -Value $Computer.MemberOf -Force }
-            else {
-                $ComputerTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name MemberOf -Value "No Groups" -Force }
+            # Note: removed, it produced a false group count of 1... it counted "No Group" as a group...
+            # else {
+            #     $ComputerTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name MemberOf -Value "No Groups" -Force }
 
             if ($Computer.isCriticalSystemObject) {
                 $ComputerTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name isCriticalSystemObject -Value $Computer.isCriticalSystemObject -Force }

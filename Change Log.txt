@@ -25,6 +25,24 @@ Accounts Treeview
 ==================================================
 v5.4.1 -
 ==================================================
+Finished updating search feature 
+4	- created Account search code for all relavant data fields
+	- updated Endpoint search code for the new additional fields
+
+Accounts Data tab and Endpoint Data Tab
+	Updated layout
+		- contains additional fields
+		- new labels for textboxes
+		- mouseenter/leave to blue/black
+	Notes section
+		- data now saves automatcially
+		- added auto timestamp for new entries, tags, and updated data
+	Added Update Account button
+		- pulls most recent data from AD
+		- auto saves
+		- text that turn red when editing and not saved
+		- TODO: password rolling
+
 Changed the way date category nodes are displayed in the treeview to properly display in order
 	- FROM dd-MM-yyyy TO yyyy-MM-dd
 

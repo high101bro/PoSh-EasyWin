@@ -1131,7 +1131,7 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel
                             $script:AccountsTreeView.bringtofront()
                         }
                         Add_MouseLeave    = $AccountsTreeViewAdd_MouseLeave
-                        #ShortcutsEnabled  = $false                                #Used for ContextMenuStrip
+                        #ShortcutsEnabled  = $false                            #Used for ContextMenuStrip
                         ContextMenuStrip  = $AccountsListContextMenuStrip      #Ref Add_click
                         ShowPlusMinus     = $true
                         HideSelection     = $false
