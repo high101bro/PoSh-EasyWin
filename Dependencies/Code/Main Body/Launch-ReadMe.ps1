@@ -129,6 +129,8 @@ $Acknowledgement = "About PoSh-EasyWin
                         Directory Save Name
                             *Populates custom group commands nodes of comamnds executed
                         *Able to delete selected nodes if desired
+                    4) User Added Commands
+                        [WinRM] <Custom Command> 
                 Commands - Groups nodes by their Command Names
                     1) Endpoint Commands
                         Processes
@@ -143,11 +145,11 @@ $Acknowledgement = "About PoSh-EasyWin
                         *Able to delete selected nodes if desired
             Easily update the Command TreeView
                 Endpoints Agnostics
-                    $PoShHome\Dependencies\Cmds & Scripts\Commands - Endpoint.csv
-                    $PoShHome\Dependencies\Cmds & Scripts\Scripts-Host\<lots of scripts>
+                    $PoShHome\Dependencies\Commands & Scripts\Commands - Endpoint.csv
+                    $PoShHome\Dependencies\Commands & Scripts\Scripts-Host\<lots of scripts>
                 Active Directory Specific
-                    $PoShHome\Dependencies\Cmds & Scripts\Commands - Active Directory.csv
-                    $PoShHome\Dependencies\Cmds & Scripts\Scripts-AD\<lots of scripts>
+                    $PoShHome\Dependencies\Commands & Scripts\Commands - Active Directory.csv
+                    $PoShHome\Dependencies\Commands & Scripts\Scripts-AD\<lots of scripts>
             WinRM Query Builder
                 Uses Show-Command to vet command syntax
                 Restricted to just Get commands by default

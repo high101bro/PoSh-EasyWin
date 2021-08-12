@@ -19,6 +19,7 @@ function Compile-SelectedCommandTreeNode {
     # Compiles all the commands treenodes into one object
     $script:AllCommands  = $script:AllEndpointCommands
     $script:AllCommands += $script:AllActiveDirectoryCommands
+    $script:AllCommands += $script:UserAddedCommands
 
     foreach ($root in $AllTreeViewNodes) {
         foreach ($Category in $root.Nodes) {
@@ -63,11 +64,6 @@ function Compile-SelectedCommandTreeNode {
                     #        Type           = "(WinRM) CMD"
                     #    }
                     #}
-
-
-
-
-
                     #elseif ($Entry.Checked -and $Entry -match '(RPC)' -and $Entry -match 'PoSh') {
                     #    $Command = $script:AllCommands | Where-Object Name -eq $(($Entry.Text -split ' -- ')[1])
                     #    $script:CommandsCheckedBoxesSelected += New-Object psobject @{
@@ -97,11 +93,6 @@ function Compile-SelectedCommandTreeNode {
                     #        Type           = "(RPC) CMD"
                     #    }
                     #}
-
-
-
-
-
                     elseif ($Entry.Checked -and $Entry -match '(SMB)' -and $Entry -match 'PoSh') {
                         $Command = $script:AllCommands | Where-Object Name -eq $(($Entry.Text -split ' -- ')[1])
                         $script:CommandsCheckedBoxesSelected += New-Object psobject @{
@@ -182,10 +173,6 @@ function Compile-SelectedCommandTreeNode {
                     #        Type           = "(WinRM) CMD"
                     #    }
                     #}
-
-
-
-
                     #if ($Entry -match '(RPC)' -and $Entry -match 'PoSh' -and $Entry.Checked) {
                     #    $Command = $script:AllCommands | Where-Object Name -eq $(($Entry.Text -split ' -- ')[1])
                     #    $script:CommandsCheckedBoxesSelected += New-Object psobject @{
@@ -215,10 +202,6 @@ function Compile-SelectedCommandTreeNode {
                     #        Type           = "(RPC) CMD"
                     #    }
                     #}
-
-
-
-
                     elseif ($Entry -match '(SMB)' -and $Entry -match 'PoSh' -and $Entry.Checked) {
                         $Command = $script:AllCommands | Where-Object Name -eq $(($Entry.Text -split ' -- ')[1])
                         $script:CommandsCheckedBoxesSelected += New-Object psobject @{

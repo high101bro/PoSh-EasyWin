@@ -1,16 +1,5 @@
 "Name","OperatingSystem","CanonicalName","OperatingSystemHotfix","OperatingSystemServicePack","Enabled","LockedOut","LogonCount","Created","Modified","LastLogonDate","MemberOf","isCriticalSystemObject","HomedirRequired","Location","ProtectedFromAccidentalDeletion","TrustedForDelegation","SID","IPv4Address","MACAddress","PortScan","Notes"
-"DC01","Windows Server 2012 R2 Standard","/Domain Controllers","11111
-22222
-33333
-44444
-55555","aaaa
-Bbbb
-Cccc
-Dddd
-Hhhhh
-Jjjjjj","True","False","688","6/28/2020 10:57:02 PM","7/20/2021 8:55:01 AM","12/26/2022 4:48:51 AM","asdf
-Qwer
-Zxcv","True","No Home Dir Required","No Location","False","True","S-1-5-21-3036625279-3127291219-2495432101-1396","192.168.1.1","aa:bb:cc:dd:ee:gg:hh","1,2,3,4","some notes"
+"","Unknown OS",,,,"Unknown Status","Unknown Status","0","No Creation Time","No Modification Time","No Last Logon Date",,"Unknown Status","No Home Dir Required","No Location","Unknown Status","Unknown Status","No SID","","",,""
 "WSUS","Windows Server 2012 R2 Datacenter","/Servers/Administrative","6666
 7777
 8888
@@ -25,7 +14,7 @@ H
 Xxxx
 Yyyy","Flase","True","123","1/28/2020 8:21:00 PM","6/28/2020 11:12:39 PM","3/7/2020 10:41:32 AM","000
 222","False","Something","Somewhere","True","False","S-1-5-21-3036625279-3127291219-2495432101-1108","10.10.10.1","No MAC Available","88,77,66,55,44,33","as;ldkfjal;skdfja;lskdjf;laksjdf;als"
-"PC","Windows 10","/Servers/Client",,,"Unknown Status","Unknown Status","0","No Creation Time","No Modification Time","No Last Logon Date",,"Unknown Status","No Home Dir Required","No Location","Unknown Status","Unknown Status","No SID","No IP Available","No MAC Available",,""
+"PC","Windows 10","/Servers/Client",,,"Unknown Status","Unknown Status","0","No Creation Time","No Modification Time","No Last Logon Date",,"Unknown Status","No Home Dir Required","No Location","Unknown Status","Unknown Status","No SID","No IP Available","No MAC Available",,
 "APP","Windows Server 2012 R2 Datacenter","/Servers/Administrative",,,"True","False","0","1/28/2020 8:31:34 PM","6/28/2020 11:12:39 PM","6/16/2020 1:31:34 AM",,"False","No Home Dir Required","No Location","False","False","S-1-5-21-3036625279-3127291219-2495432101-1109","10.10.10.22","No MAC Available",,
 "WIN81-01","Windows 8.1 Pro","/US Branch/Management",,,"True","False","79","1/29/2020 1:49:18 AM","5/7/2021 10:30:43 AM","5/7/2021 10:15:48 AM",,"False","No Home Dir Required","No Location","False","False","S-1-5-21-3036625279-3127291219-2495432101-1111","10.10.10.81","No MAC Available",,
 "WIN81-03","Windows 8.1 Pro","/US Branch/Guest",,,"True","False","0","1/29/2020 1:51:41 AM","6/28/2020 11:12:39 PM","3/14/2020 2:26:49 AM",,"False","No Home Dir Required","No Location","False","False","S-1-5-21-3036625279-3127291219-2495432101-1112","10.10.10.102","No MAC Available",,
@@ -42,13 +31,17 @@ Yyyy","Flase","True","123","1/28/2020 8:21:00 PM","6/28/2020 11:12:39 PM","3/7/2
 "WIN10-03","Windows 10 Pro","/US Branch/Employee",,,"True","False","139","2/23/2020 1:19:17 AM","5/7/2021 10:14:03 AM","5/7/2021 10:14:03 AM",,"False","No Home Dir Required","No Location","False","False","S-1-5-21-3036625279-3127291219-2495432101-1127","10.10.10.103","No MAC Available",,
 "WIN10-04","Windows 10 Pro","/US Branch/Employee",,,"True","False","103","2/23/2020 1:19:54 AM","5/7/2021 10:14:08 AM","5/7/2021 10:14:08 AM",,"False","No Home Dir Required","No Location","False","False","S-1-5-21-3036625279-3127291219-2495432101-1128","10.10.10.104","No MAC Available",,
 "WIN10-02","Windows 10 Pro","/US Branch/Employee",,,"True","False","364","2/23/2020 1:21:59 AM","5/24/2021 11:53:05 PM","12/26/2022 4:48:55 AM",,"False","No Home Dir Required","No Location","False","False","S-1-5-21-3036625279-3127291219-2495432101-1130","10.10.10.102","No MAC Available",,
-"WIN2019-01","Windows Server 2019 Standard Evaluation","/Computers",,,"True","False","0","2/23/2020 5:27:43 AM","6/28/2020 11:12:39 PM","2/23/2020 5:27:45 AM",,"False","No Home Dir Required","No Location","False","False","S-1-5-21-3036625279-3127291219-2495432101-1131","10.10.10.115","No MAC Available",,""
+"WIN2019-01","Windows Server 2019 Standard Evaluation","/Computers",,,"True","False","0","2/23/2020 5:27:43 AM","6/28/2020 11:12:39 PM","2/23/2020 5:27:45 AM",,"False","No Home Dir Required","No Location","False","False","S-1-5-21-3036625279-3127291219-2495432101-1131","10.10.10.115","No MAC Available",,
 "WIN81-09","Windows 8.1 Pro","/Computers",,,"True","False","0","5/25/2020 12:50:15 AM","6/28/2020 11:12:39 PM","6/25/2020 10:18:07 PM",,"False","No Home Dir Required","No Location","False","False","S-1-5-21-3036625279-3127291219-2495432101-1136","10.10.10.111","No MAC Available",,
-"WIN81-06","Windows 8.1 Pro","/Computers",,,"False","False","0","5/25/2020 12:50:22 AM","6/28/2020 11:12:39 PM","6/15/2020 9:29:44 PM",,"False","No Home Dir Required","No Location","False","False","S-1-5-21-3036625279-3127291219-2495432101-1137","No IP Available","No MAC Available",,""
+"WIN81-06","Windows 8.1 Pro","/Computers",,,"False","False","0","5/25/2020 12:50:22 AM","6/28/2020 11:12:39 PM","6/15/2020 9:29:44 PM",,"False","No Home Dir Required","No Location","False","False","S-1-5-21-3036625279-3127291219-2495432101-1137","No IP Available","No MAC Available",,
 "WIN81-05","Windows 8.1 Pro","/Computers",,,"True","False","0","5/25/2020 12:50:31 AM","6/28/2020 11:12:39 PM","6/25/2020 11:43:38 PM",,"False","No Home Dir Required","No Location","False","False","S-1-5-21-3036625279-3127291219-2495432101-1138","10.10.10.113","No MAC Available",,
 "WINXP-01","Windows XP Professional","/Europe Branch/Remote Support",,"Service Pack 3","False","False","0","1/29/2020 2:22:01 AM","6/28/2020 11:12:39 PM","1/29/2020 2:22:05 AM",,"False","No Home Dir Required","No Location","False","False","S-1-5-21-3036625279-3127291219-2495432101-1115","10.10.10.105","No MAC Available",,
 "WIN10-06","Windows 10 Pro","/Computers",,,"True","False","74","2/21/2021 9:00:25 PM","5/7/2021 12:29:05 AM","5/5/2021 12:40:23 AM",,"False","No Home Dir Required","No Location","False","False","S-1-5-21-3036625279-3127291219-2495432101-2606","10.100.100.106","No MAC Available",,
 "WIN10-07","Windows 10 Pro","/Computers",,,"True","False","57","2/21/2021 9:02:41 PM","5/5/2021 12:40:24 AM","5/5/2021 12:40:23 AM",,"False","No Home Dir Required","No Location","False","False","S-1-5-21-3036625279-3127291219-2495432101-2607","10.10.10.107","No MAC Available",,
-"WIN10-08","Windows 10 Pro","/Computers",,,"True","False","60","2/21/2021 9:05:14 PM","5/5/2021 12:40:25 AM","5/5/2021 12:40:25 AM",,"False","No Home Dir Required","No Location","False","False","S-1-5-21-3036625279-3127291219-2495432101-2608","10.10.10.108","No MAC Available",,""
-"WIN10-10","Windows 10 Pro","/Computers",,,"True","False","60","2/21/2021 9:07:35 PM","5/5/2021 12:40:29 AM","5/5/2021 12:40:29 AM",,"False","No Home Dir Required","No Location","False","False","S-1-5-21-3036625279-3127291219-2495432101-2609","10.10.10.110","No MAC Available",,""
+"WIN10-08","Windows 10 Pro","/Computers",,,"True","False","60","2/21/2021 9:05:14 PM","5/5/2021 12:40:25 AM","5/5/2021 12:40:25 AM",,"False","No Home Dir Required","No Location","False","False","S-1-5-21-3036625279-3127291219-2495432101-2608","10.10.10.108","No MAC Available",,
+"WIN10-10","Windows 10 Pro","/Computers",,,"True","False","60","2/21/2021 9:07:35 PM","5/5/2021 12:40:29 AM","5/5/2021 12:40:29 AM",,"False","No Home Dir Required","No Location","False","False","S-1-5-21-3036625279-3127291219-2495432101-2609","10.10.10.110","No MAC Available",,
 "WIN10-09","Windows 10 Pro","/Computers",,,"True","False","60","2/21/2021 9:09:59 PM","5/7/2021 10:14:45 AM","5/5/2021 12:40:28 AM",,"False","No Home Dir Required","No Location","False","False","S-1-5-21-3036625279-3127291219-2495432101-2610","10.10.10.109","No MAC Available",,
+"DC01","Windows Server 2012 R2 Standard","/Domain Controllers",,,"True","False","699","6/28/2020 10:57:02 PM","7/20/2021 8:55:01 AM","12/26/2022 4:48:51 AM",,"True","No Home Dir Required","No Location","False","True","S-1-5-21-3036625279-3127291219-2495432101-1396","10.100.100.10 asdf","No MAC Available",,"08/09/2021 13:46:10 -- aaaaaaaaaaaaaa
+08/09/2021 10:15:45 -- something new
+08/09/2021 10:13:23 -- Pulled Updated Endpoint Data
+"

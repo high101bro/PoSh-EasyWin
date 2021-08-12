@@ -259,12 +259,12 @@ $PoShHome                            = $PSScriptRoot #Deprecated# Split-Path -pa
 
     # Dependencies
     $Dependencies                             = "$PoShHome\Dependencies"
-        # Location of Cmds & Scripts
-        $QueryCommandsAndScripts              = "$Dependencies\Cmds & Scripts"
-
-        # Location of Active Directory & Endpoint Commands
+        # Location of Commands & Scripts
+        $QueryCommandsAndScripts              = "$Dependencies\Commands & Scripts"
             $CommandsEndpoint                 = "$QueryCommandsAndScripts\Commands - Endpoint.csv"
             $CommandsActiveDirectory          = "$QueryCommandsAndScripts\Commands - Active Directory.csv"
+            $CommandsUserAdded                = "$QueryCommandsAndScripts\Commands - User Added.csv"
+            $CommandsCustomGrouped            = "$QueryCommandsAndScripts\Commands - Custom Group Commands.xml"
 
         # The stored Active Directory hostname if previously entered
         $script:ActiveDirectoryEndpoint       = "$PoShHome\Settings\Active Directory Hostname.txt"

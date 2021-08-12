@@ -23,11 +23,12 @@ function AddTreeNodeTo-TreeViewData {
         }
         
         if (-not $DoNotPopulateMetadata) {
-            $MetadataCreated = New-Object System.Windows.Forms.TreeNode -Property @{
-                Name = "Created"
-                Text = "Created: $($Metadata.Created)"
-            }
-            $newNode.Nodes.Add($MetadataCreated)
+            # TAG: sub nodes, sub-nodes, child nodes, dropdown nodes
+            # $MetadataCreated = New-Object System.Windows.Forms.TreeNode -Property @{
+            #     Name = "Created"
+            #     Text = "Created: $($Metadata.Created)"
+            # }
+            # $newNode.Nodes.Add($MetadataCreated)
     
             # $MetadataModified = New-Object System.Windows.Forms.TreeNode -Property @{
             #     Name = "Modified"
@@ -35,29 +36,29 @@ function AddTreeNodeTo-TreeViewData {
             # }
             # $newNode.Nodes.Add($MetadataModified)
 
-            $MetadataLockedOut = New-Object System.Windows.Forms.TreeNode -Property @{
-                Name = "Locked Out"
-                Text = "Locked Out: $($Metadata.LockedOut)"
-            }
-            $newNode.Nodes.Add($MetadataLockedOut)
+            # $MetadataLockedOut = New-Object System.Windows.Forms.TreeNode -Property @{
+            #     Name = "Locked Out"
+            #     Text = "Locked Out: $($Metadata.LockedOut)"
+            # }
+            # $newNode.Nodes.Add($MetadataLockedOut)
 
-            $MetadataGroups = New-Object System.Windows.Forms.TreeNode -Property @{
-                Name = 'Group Membership'
-                Text = 'Group Membership'
-            }
-            $newNode.Nodes.Add($MetadataGroups)
+            # $MetadataGroups = New-Object System.Windows.Forms.TreeNode -Property @{
+            #     Name = 'Group Membership'
+            #     Text = 'Group Membership'
+            # }
+            # $newNode.Nodes.Add($MetadataGroups)
             
-            $AccountGroups = $Metadata.MemberOf.split("`n")
-            $MetadataGroups.Nodes.Add("[ Count: $(if ($AccountGroups -ne $null) {$AccountGroups.Count} else {0}) ]")
-            foreach ($Group in $AccountGroups) {
-                if ($AccountGroups -ne $null) {
-                    $MetadataEachGroup = New-Object System.Windows.Forms.TreeNode -Property @{
-                        Name = $Group
-                        Text = $Group
-                    }
-                    $MetadataGroups.Nodes.Add($MetadataEachGroup)
-                }
-            }
+            # $AccountGroups = $Metadata.MemberOf.split("`n")
+            # $MetadataGroups.Nodes.Add("[ Count: $(if ($AccountGroups -ne $null) {$AccountGroups.Count} else {0}) ]")
+            # foreach ($Group in $AccountGroups) {
+            #     if ($AccountGroups -ne $null) {
+            #         $MetadataEachGroup = New-Object System.Windows.Forms.TreeNode -Property @{
+            #             Name = $Group
+            #             Text = $Group
+            #         }
+            #         $MetadataGroups.Nodes.Add($MetadataEachGroup)
+            #     }
+            # }
         }
 
         if ($ToolTip) {
@@ -104,30 +105,31 @@ function AddTreeNodeTo-TreeViewData {
         # $newNode.Nodes.Add($MetadataOperatingSystem)
     
         if (-not $DoNotPopulateMetadata) {
-            $MetadataIPv4Address = New-Object System.Windows.Forms.TreeNode -Property @{
-                Name = "IPv4Address"
-                Text = $Metadata.IPv4Address
-            }
-            $MetadataIPv4Address.Bounds.Height = 0
-            $MetadataIPv4Address.Bounds.Width = 0
-            $newNode.Nodes.Add($MetadataIPv4Address)
+            # TAG: sub nodes, sub-nodes, child nodes, dropdown nodes
+            # $MetadataIPv4Address = New-Object System.Windows.Forms.TreeNode -Property @{
+            #     Name = "IPv4Address"
+            #     Text = $Metadata.IPv4Address
+            # }
+            # $MetadataIPv4Address.Bounds.Height = 0
+            # $MetadataIPv4Address.Bounds.Width = 0
+            # $newNode.Nodes.Add($MetadataIPv4Address)
     
-            $MetadataIPv4Ports = New-Object System.Windows.Forms.TreeNode -Property @{
-                Name = 'Port Scan'
-                Text = 'Port Scan'
-            }
-            $newNode.Nodes.Add($MetadataIPv4Ports)
+            # $MetadataIPv4Ports = New-Object System.Windows.Forms.TreeNode -Property @{
+            #     Name = 'Port Scan'
+            #     Text = 'Port Scan'
+            # }
+            # $newNode.Nodes.Add($MetadataIPv4Ports)
     
-            $MetadataIPv4Ports.Nodes.Add("[ Count: $(if ($Metadata.PortScan -ne $null) {$Metadata.PortScan.split(',').Count} else{0}) ]")
-            foreach ($PortScan in ($Metadata.PortScan.split(','))) {
-                if ($Metadata.PortScan -ne $null){
-                    $MetadataIPv4EachPort = New-Object System.Windows.Forms.TreeNode -Property @{
-                        Name = $PortScan
-                        Text = $PortScan
-                    }
-                    $MetadataIPv4Ports.Nodes.Add($MetadataIPv4EachPort)
-                }
-            }
+            # $MetadataIPv4Ports.Nodes.Add("[ Count: $(if ($Metadata.PortScan -ne $null) {$Metadata.PortScan.split(',').Count} else{0}) ]")
+            # foreach ($PortScan in ($Metadata.PortScan.split(','))) {
+            #     if ($Metadata.PortScan -ne $null){
+            #         $MetadataIPv4EachPort = New-Object System.Windows.Forms.TreeNode -Property @{
+            #             Name = $PortScan
+            #             Text = $PortScan
+            #         }
+            #         $MetadataIPv4Ports.Nodes.Add($MetadataIPv4EachPort)
+            #     }
+            # }
         }
     
         if ($ToolTip) {

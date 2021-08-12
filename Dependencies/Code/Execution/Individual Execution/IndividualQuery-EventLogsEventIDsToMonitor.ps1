@@ -63,7 +63,6 @@ function Query-EventLogLogsEventIDsIndividualSelectionSessionBased {
 }
 
 
-
 function MonitorJobScriptBlock {
     param(
         $script:ComputerList,

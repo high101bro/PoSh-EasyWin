@@ -195,7 +195,7 @@ $Section3HostDataTab.Controls.Add($Section3EndpointDataLastLogonDateTextBox)
 
 
 $Section3HostDataIPLabel = New-Object System.Windows.Forms.Label -Property @{
-    Text      = 'IPv4 Address:'
+    Text      = 'IPv4:   [Editable]'
     Left      = 0
     Top       = $Section3EndpointDataLastLogonDateLabel.Top + $Section3EndpointDataLastLogonDateLabel.Height
     Width     = $FormScale * 110
@@ -237,7 +237,7 @@ $Section3HostDataTab.Controls.Add($Section3HostDataIPTextBox)
 
 
 $Section3HostDataMACLabel = New-Object System.Windows.Forms.Label -Property @{
-    Text      = 'MAC Address:'
+    Text      = 'MAC:  [Editable]'
     Left      = 0
     Top       = $Section3HostDataIPLabel.Top + $Section3HostDataIPLabel.Height
     Width     = $FormScale * 110
@@ -571,27 +571,29 @@ $Section3EndpointDataLogonCountTextBox = New-Object System.Windows.Forms.TextBox
 $Section3HostDataTab.Controls.Add($Section3EndpointDataLogonCountTextBox)
                             
 
-$Section3EndpointDataLocationLabel = New-Object System.Windows.Forms.Label -Property @{
-    Text      = 'Location:'
+$Section3EndpointDataPortScanLabel = New-Object System.Windows.Forms.Label -Property @{
+    Text      = 'Enumeration (Port Scan):'
     Left      = $Section3EndpointDataLogonCountLabel.Left
     Top       = $Section3EndpointDataLogonCountLabel.Top + $Section3EndpointDataLogonCountLabel.Height
-    Width     = $FormScale * 70
+    Width     = $FormScale * 145
     Height    = $FormScale * 22
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     ForeColor = 'Black'
 }
-$Section3HostDataTab.Controls.Add($Section3EndpointDataLocationLabel)
-$Section3EndpointDataLocationLabel.bringtofront()
+$Section3HostDataTab.Controls.Add($Section3EndpointDataPortScanLabel)
+$Section3EndpointDataPortScanLabel.bringtofront()
 
 
-$Section3EndpointDataLocationTextBox = New-Object System.Windows.Forms.TextBox -Property @{
-    Left      = $Section3EndpointDataLocationLabel.Left + $Section3EndpointDataLocationLabel.Width
-    Top       = $Section3EndpointDataLocationLabel.Top
-    Width     = $FormScale * 150
+$Section3EndpointDataPortScanComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
+    Left      = $Section3EndpointDataPortScanLabel.Left + $Section3EndpointDataPortScanLabel.Width
+    Top       = $Section3EndpointDataPortScanLabel.Top
+    Width     = $FormScale * 75
     Height    = $FormScale * 22
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     BackColor = 'White'
-    ReadOnly  = $true
+    ForeColor = "Black"
+    AutoCompleteSource = "ListItems"
+    AutoCompleteMode   = "SuggestAppend"
     Add_MouseEnter = {
         $This.ForeColor    = 'Blue'
     }
@@ -599,18 +601,19 @@ $Section3EndpointDataLocationTextBox = New-Object System.Windows.Forms.TextBox -
         $This.ForeColor    = 'Black'
     }
     Add_MouseHover = {
-        Show-ToolTip -Title "Password Expired" -Icon "Info" -Message @"
-+  Password expiration status for the account.
+        Show-ToolTip -Title "Port Scans (Listening)" -Icon "Info" -Message @"
++  Contains a list of the results from the most recent port scan.
 "@
     }
 }
-$Section3HostDataTab.Controls.Add($Section3EndpointDataLocationTextBox)
+$Section3HostDataTab.Controls.Add($Section3EndpointDataPortScanComboBox)
 
 
+$script:ArrowUpAndDownMessageBoxStatus = $true
 $HostDataList1 = (Get-ChildItem -Path $CollectedDataDirectory -Recurse | Where-Object {$_.Extension -match 'csv'}).basename | ForEach-Object { $_.split('(')[0].trim() } | Sort-Object -Unique -Descending
 $Section3HostDataSelectionComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
     Text      = "Host Data - Selection"
-    Left      = $Section3EndpointDataLocationLabel.Left
+    Left      = $Section3EndpointDataPortScanLabel.Left
     Top       = $Section3EndpointDataOperatingSystemTextBox.Top
     Width     = $FormScale * 220
     Height    = $FormScale * 22
@@ -620,6 +623,9 @@ $Section3HostDataSelectionComboBox = New-Object System.Windows.Forms.ComboBox -P
     AutoCompleteSource = "ListItems"
     AutoCompleteMode   = "SuggestAppend"
     DataSource         = $HostDataList1
+    Add_Click = {
+        $This.DataSource = (Get-ChildItem -Path $CollectedDataDirectory -Recurse | Where-Object {$_.Extension -match 'csv'}).basename | ForEach-Object { $_.split('(')[0].trim() } | Sort-Object -Unique -Descending
+    }
     Add_MouseEnter = {
         $This.ForeColor = 'Blue'
     }
@@ -640,14 +646,15 @@ display, these results will need to be navigated to manually.
                 $ComboxInput
             )
             # Searches though the all Collection Data Directories to find files that match
-            $ListOfCollectedDataDirectories = $(Get-ChildItem -Path $CollectedDataDirectory  | Sort-Object -Descending).FullName
+            $ListOfCollectedDataDirectories = $null
+            $ListOfCollectedDataDirectories = $(Get-ChildItem -Path $CollectedDataDirectory | Sort-Object -Descending).FullName
             $script:CSVFileMatch = @()
             foreach ($CollectionDir in $ListOfCollectedDataDirectories) {
-                $CSVFiles = Get-ChildItem -Path $CollectionDir -Recurse | Where {$_.Extension -match 'csv'}
+                $CSVFiles = Get-ChildItem -Path $CollectionDir -Recurse | Where-Object {$_.Extension -match 'csv'}
                 foreach ($CSVFile in $CSVFiles) {
                     # Searches for the CSV file that matches the data selected
                     if ($CSVFile.BaseName -match $ComboxInput) {
-                        $CsvComputerNameList = Import-Csv $CSVFile.FullName | Select -Property ComputerName -Unique
+                        $CsvComputerNameList = Import-Csv $CSVFile.FullName | Select-Object -Property ComputerName -Unique
                         foreach ($computer in $CsvComputerNameList){
                             if ("$computer" -match "$($script:Section3HostDataNameTextBox.Text)"){
                                 $script:CSVFileMatch += $CSVFile.Name
@@ -660,12 +667,20 @@ display, these results will need to be navigated to manually.
     
         Get-HostDataCsvResults -ComboxInput $Section3HostDataSelectionComboBox.SelectedItem
     
+        $Section3HostDataSelectionDateTimeComboBox.DataSource = $null
         if (($script:CSVFileMatch).count -eq 0) {
             $Section3HostDataSelectionDateTimeComboBox.DataSource = @('No Data Available')
         }
         else {
-            $Section3HostDataSelectionDateTimeComboBox.DataSource = $script:CSVFileMatch
-            #    Get-HostDataCsvDateTime -ComboBoxInput $script:CSVFileMatch
+            $Section3HostDataSelectionDateTimeComboBox.DataSource = $script:CSVFileMatch | Sort-Object -Descending
+        }
+    }
+    Add_KeyDown = {
+        if ($script:ArrowUpAndDownMessageBoxStatus) {
+            if ($_.KeyCode -eq 'Down' -or $_.KeyCode -eq 'Up') {
+                $script:ArrowUpAndDownMessageBoxStatus = $false
+                [System.Windows.Forms.MessageBox]::Show('Avoid using the arrow keys, as it automatically searches for matching csv files. This can cause the tools to hang if arrowing too fast. Instead, use the mouse to select the desired field.',"PoSh-EasyWin",'Ok',"Warning")
+            }
         }
     }
 }
@@ -842,18 +857,27 @@ $Section3HostDataNotesRichTextBox = New-Object System.Windows.Forms.RichTextBox 
     ScrollBars = 'Vertical'
     WordWrap   = $True
     ReadOnly   = $false
+
     Add_MouseHover = {
-        Show-ToolTip -Title "Host Notes" -Icon "Info" -Message @"
-+  These notes are specific to the host.
+        Show-ToolTip -Title "Account Notes" -Icon "Info" -Message @"
++  These notes are specific to the Account.
 +  Also can contains Tags if used.
 "@
     }
     Add_MouseEnter = {
         $This.ForeColor = 'DarkRed'
+        $script:Section3AccountDataNotesRichTextBoxPreSave = $This.text
+        $This.text = "$(Get-Date) -- `n" + $This.text
+        $script:Section3AccountDataNotesRichTextBoxSaveCheck = $This.text
     }
     Add_MouseLeave = {
         $This.ForeColor = 'Black'
-        Save-TreeViewData -Endpoint
+        if ($script:Section3AccountDataNotesRichTextBoxSaveCheck -ne $This.text) {
+            Save-TreeViewData -Accounts
+        }
+        else {
+            $This.text = $script:Section3AccountDataNotesRichTextBoxPreSave
+        }
     }
     Add_KeyDown    = {
         if ($_.KeyCode) {
@@ -874,9 +898,8 @@ $Section3EndpointDataUpdateDataButton = New-Object System.Windows.Forms.Button -
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     BackColor = 'White'
     Add_Click = {
-        if ($root.text -match 'All Endpoints') {
-            $ADEndpoint = $script:Section3HostDataNameTextBox.text
-        }
+        $ADEndpoint = $script:Section3HostDataNameTextBox.text
+
         $Verify = [System.Windows.Forms.MessageBox]::Show(
             "Do you want to pull updated data for the Endpoint `"$($ADEndpoint)`" from Active Directory?",
             "PoSh-EasyWin - high101bro",
@@ -897,7 +920,8 @@ $Section3EndpointDataUpdateDataButton = New-Object System.Windows.Forms.Button -
                         param ($ADEndpoint)
                         Get-ADComputer -Filter {Name -eq $ADEndpoint} -Properties Name, CanonicalName, OperatingSystem, OperatingSystemHotfix, OperatingSystemServicePack, Enabled, LockedOut, LogonCount, Created, Modified, LastLogonDate, IPv4Address, MACAddress, MemberOf, isCriticalSystemObject, HomedirRequired, Location, ProtectedFromAccidentalDeletion, TrustedForDelegation, SID
                     } -ComputerName $ImportFromADWinRMManuallEntryTextBoxTarget -Credential $script:Credential -ArgumentList @($ADEndpoint,$null)
-                    
+
+
                     foreach ($Endpoint in $script:ComputerTreeViewData) {
                         if ($Endpoint.Name -eq $ADEndpoint){
                             $Endpoint | Add-Member -MemberType NoteProperty -Name Name                            -Value $script:UpdatedADEndpointInfo.Name -Force

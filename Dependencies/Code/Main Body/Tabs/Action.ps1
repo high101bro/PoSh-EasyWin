@@ -7,8 +7,8 @@ Update-FormProgress "$Dependencies\Code\Tree View\Computer\ComputerNodeSelectedL
 Update-FormProgress "$Dependencies\Code\Tree View\Computer\ComputerNodeSelectedMoreThanOne.ps1"
 . "$Dependencies\Code\Tree View\Computer\ComputerNodeSelectedMoreThanOne.ps1"
 
-Update-FormProgress "$Dependencies\Code\Tree View\Computer\Verify-Action.ps1"
-. "$Dependencies\Code\Tree View\Computer\Verify-Action.ps1"
+Update-FormProgress "$Dependencies\Code\Main Body\Execution\Verify-Action.ps1"
+. "$Dependencies\Code\Main Body\Execution\Verify-Action.ps1"
 
 $Section3ActionTab = New-Object System.Windows.Forms.TabPage -Property @{
     Text   = "Action"

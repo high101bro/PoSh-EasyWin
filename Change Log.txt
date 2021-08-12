@@ -12,21 +12,34 @@ Commands Select All Button isn't working...
 
 Accounts Treeview
 	- update Set-GuiLayout.ps1
-	- search
-	- greedy
-	- checkbox parent to check all
-	- move all
-	- tag all
-	- sometimes it opens the wrong context memu
-	- the other context menu doesn't appear
 
-!!!!!!!!!!!Move feature in updated context menu not working.
+Check if Move feature is working properly
 
 ==================================================
 v5.4.1 -
 ==================================================
+Added 'User Added Commands' node group to command treeview
+	- able to use the bottom [WinRM] Query section to add user added commands
+	- added build command button, that allows you to browse and create any type of command
+	- removed 'parameter' button, it was stupid and not needed
+	- added mouse_enter and mouse_leave color changing to textbox
+	- Added capabiltiy to remove user added commands
+	- added ability to group user added commands
+	- added code to disable duplicate entries
+	- user added commands are stored as csv files in the same directory as endpoint and active directory commands
+
+Group commands button
+	- Added form to name the new custom group
+	- added code to disable duplicate groups
+	- added abilitiy to group user added commands
+	- custom group commands are stored as csv files in the same directory as endpoint and active directory commands
+
+Updated Endpoint Data Tab code that searches through csv for results that contained the endpoint name (hostname/pscomputername)
+	- added code that notifies you that you should avoid using the up and down arrows excessively
+		- Doing so causes the tool to search for results for every item you arrow over, if done quickly this could result in the the tool hanging (breifly or for a while)
+
 Finished updating search feature 
-4	- created Account search code for all relavant data fields
+	- created Account search code for all relavant data fields
 	- updated Endpoint search code for the new additional fields
 
 Accounts Data tab and Endpoint Data Tab

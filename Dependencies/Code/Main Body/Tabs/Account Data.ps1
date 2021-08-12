@@ -698,8 +698,8 @@ $script:Section3AccountDataNotesRichTextBox = New-Object System.Windows.Forms.Ri
     WordWrap   = $True
     ReadOnly   = $false
     Add_MouseHover = {
-        Show-ToolTip -Title "Host Notes" -Icon "Info" -Message @"
-+  These notes are specific to the host.
+        Show-ToolTip -Title "Account Notes" -Icon "Info" -Message @"
++  These notes are specific to the Account.
 +  Also can contains Tags if used.
 "@
     }
@@ -737,9 +737,8 @@ $Section3AccountDataUpdateDataButton = New-Object System.Windows.Forms.Button -P
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     BackColor = 'White'
     Add_Click = {
-        if ($root.text -match 'All Accounts') {
-            $ADAccount = $script:Section3AccountDataNameTextBox.text
-        }
+        $ADAccount = $script:Section3AccountDataNameTextBox.text
+
         $Verify = [System.Windows.Forms.MessageBox]::Show(
             "Do you want to pull updated data for the account `"$($ADAccount)`" from Active Directory?",
             "PoSh-EasyWin - high101bro",
@@ -761,6 +760,19 @@ $Section3AccountDataUpdateDataButton = New-Object System.Windows.Forms.Button -P
                         Get-ADUser -Filter {Name -eq $ADAccount} -Properties Name, SID, Enabled, LockedOut, Created, Modified, LastLogonDate, LastBadPasswordAttempt, BadLogonCount, PasswordLastSet, PasswordExpired, PasswordNeverExpires, PasswordNotRequired, CanonicalName, MemberOf, SmartCardLogonRequired, ScriptPath, HomeDrive
                     } -ComputerName $ImportFromADWinRMManuallEntryTextBoxTarget -Credential $script:Credential -ArgumentList @($ADAccount,$null)
                     
+                    # function Update-ADAccountInfo {
+                    #     param(
+                    #         $ADAccount,
+                    #         $ImportFromADWinRMManuallEntryTextBoxTarget,
+                    #         $script:Credential
+                    #     )
+                    #     Invoke-Command -ScriptBlock {
+                    #         param ($ADAccount)
+                    #         Get-ADUser -Filter {Name -eq $ADAccount} -Properties Name, SID, Enabled, LockedOut, Created, Modified, LastLogonDate, LastBadPasswordAttempt, BadLogonCount, PasswordLastSet, PasswordExpired, PasswordNeverExpires, PasswordNotRequired, CanonicalName, MemberOf, SmartCardLogonRequired, ScriptPath, HomeDrive
+                    #     } -ComputerName $ImportFromADWinRMManuallEntryTextBoxTarget -Credential $script:Credential -ArgumentList @($ADAccount,$null)
+                    # }
+                    # Monitor-Jobs -CollectionName "Update Account Data - $ADAccount" -MonitorMode -SMITH -SmithScript ${function:Update-ADAccountInfo} -ArgumentList @($ADAccount,$ImportFromADWinRMManuallEntryTextBoxTarget,$script:Credential) -InputValues $InputValues -DisableReRun -JobsExportFiles 'false' -ReturnResults
+
                     foreach ($Account in $script:AccountsTreeViewData) {
                         if ($Account.Name -eq $ADAccount){
                             $Account | Add-Member -MemberType NoteProperty -Name SID                    -Value $script:UpdatedADAccountInfo.SID -Force

@@ -76,5 +76,5 @@ function Deselect-AllCommands {
     $ExeScriptUserSpecifiedExecutableAndScriptCheckbox.ForeColor = 'Blue'
 
 #Update-TreeViewData -Commands -TreeView $script:CommandsTreeView.Nodes
-
+}
 

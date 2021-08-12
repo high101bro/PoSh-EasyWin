@@ -10,6 +10,11 @@ function Update-TreeViewData {
     if ($Commands) {
         $script:TreeeViewCommandsCount = 0 
         $InformationTabControl.SelectedTab = $Section3QueryExplorationTabPage
+
+        # Resets the SMB and RPC command count each time
+        $script:RpcCommandCount   = 0
+        $script:SmbCommandCount   = 0
+        $script:WinRMCommandCount = 0
     }
     elseif ($Accounts) { 
         $script:TreeeViewAccountsCount = 0 
@@ -25,21 +30,14 @@ function Update-TreeViewData {
 
     $EntryQueryHistoryChecked = 0
 
-    # Resets the SMB and RPC command count each time
-    if ($Commands) {
-        $script:RpcCommandCount   = 0
-        $script:SmbCommandCount   = 0
-        $script:WinRMCommandCount = 0
-    }
-
     # This will return data on hosts selected/highlight, but not necessarily checked
     [System.Windows.Forms.TreeNodeCollection]$AllNodes = $TreeView
     foreach ($root in $AllNodes) {
-        $EntryNodeCheckedCountforRoot = 0
+    #     $EntryNodeCheckedCountforRoot = 0
 
-        #if ($Commands) { if ($root.Text -match 'Search Results') { $EnsureViisible = $root } }
-        #if ($Accounts) { if ($root.Text -match 'All Accounts')  { $EnsureViisible = $root } }
-        #if ($Endpoint) { if ($root.Text -match 'All Endpoints')  { $EnsureViisible = $root } }
+    #     # if ($Commands) { if ($root.Text -match 'Search Results') { $EnsureViisible = $root } }
+    #     # if ($Accounts) { if ($root.Text -match 'All Accounts')  { $EnsureViisible = $root } }
+    #     # if ($Endpoint) { if ($root.Text -match 'All Endpoints')  { $EnsureViisible = $root } }
 
         if ($root.Checked) {
             $Root.NodeFont  = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,1,1)
@@ -83,7 +81,7 @@ function Update-TreeViewData {
 
                     #    $Category.Expand()
                     if ($Category.Text -match '[\[(]WinRM[)\]]' ) {
-                        $script:WinRMCommandCount += 10
+                        $script:WinRMCommandCount += 1
                     }
                     if ($Category.Text -match '[\[(]rpc[)\]]' ) {
                         $script:RpcCommandCount += 1
@@ -160,10 +158,10 @@ function Update-TreeViewData {
                         $Entry.NodeFont  = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,1,1)
                         $Entry.ForeColor = [System.Drawing.Color]::FromArgb(0,0,0,224)
                     }
-                    if ($root.text -match 'Custom Group Commands') {
+                    if ($root.text -match 'Custom Group Commands' -or $root.text -match 'User Added Commands') {
                         $EntryQueryHistoryChecked++
-                        $Section1CommandsTab.Controls.Add($CommandsTreeViewCustomGroupCommandsRemovalButton)
-                        $CommandsTreeViewCustomGroupCommandsRemovalButton.bringtofront()
+                        $Section1CommandsTab.Controls.Add($CommandsTreeViewRemoveCommandButton)
+                        $CommandsTreeViewRemoveCommandButton.bringtofront()
                     }
                 }
                 elseif (!($Category.checked)) {
@@ -202,7 +200,6 @@ function Update-TreeViewData {
                                 }
                             }
 
-
                             if ($Commands) { $script:TreeeViewCommandsCount += 1 }
                             if ($Accounts) { $script:TreeeViewAccountsCount += 1 }
                             if ($Endpoint) { $script:TreeeViewEndpointCount += 1 }
@@ -215,10 +212,10 @@ function Update-TreeViewData {
                             if ($CategoryCheck -eq $False) {$Category.Checked = $False}
                             $Entry.NodeFont  = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,1,1)
                             $Entry.ForeColor = [System.Drawing.Color]::FromArgb(0,0,0,0)
-                        }
+                        }    
                     }
                     if ($EntryQueryHistoryChecked -eq 0) {
-                        $Section1CommandsTab.Controls.Remove($CommandsTreeViewCustomGroupCommandsRemovalButton)
+                        $Section1CommandsTab.Controls.Remove($CommandsTreeViewRemoveCommandButton)
                     }
                 }
                 if ($Category.isselected) {
@@ -350,6 +347,13 @@ function Update-TreeViewData {
                             $Section3QueryExplorationTabPage.Controls.Remove($Section3QueryExplorationViewScriptButton)
                         }                      
                     }
+
+                    if ($Entry.checked -and $root.text -match 'User Added Commands') {
+                        $EntryQueryHistoryChecked++
+                        $Section1CommandsTab.Controls.Add($CommandsTreeViewRemoveCommandButton)
+                        $CommandsTreeViewRemoveCommandButton.bringtofront()
+                    }
+                    else { $EntryQueryHistoryChecked-- }
                 }
 
                 if ($Endpoint) {
@@ -377,36 +381,46 @@ function Update-TreeViewData {
 
                             $Section3EndpointDataOperatingSystemHotfixComboBox.ForeColor = "Black"
                                 $Section3EndpointDataOperatingSystemHotfixComboBox.Items.Clear()
-                                $script:OSHotfixList = $null
-                                $script:OSHotfixList = $(($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).OperatingSystemHotfix).split("`n") | Sort-Object
-                                ForEach ($Hotfix in $script:OSHotfixList) { 
+                                $OSHotfixList = $null
+                                $OSHotfixList = $(($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).OperatingSystemHotfix).split("`n") | Sort-Object
+                                ForEach ($Hotfix in $OSHotfixList) { 
                                     $Section3EndpointDataOperatingSystemHotfixComboBox.Items.Add($Hotfix) 
                                 }
-                            $Section3EndpointDataOperatingSystemHotfixComboBox.Text = "- Select Dropdown [$(if ($script:OSHotfixList -ne $null) {$script:OSHotfixList.count} else {0})] OS Hotfixes"
+                            $Section3EndpointDataOperatingSystemHotfixComboBox.Text = "- Select Dropdown [$(if ($OSHotfixList -ne $null) {$OSHotfixList.count} else {0})] OS Hotfixes"
 
                             $Section3EndpointDataOperatingSystemServicePackComboBox.ForeColor = "Black"
                                 $Section3EndpointDataOperatingSystemServicePackComboBox.Items.Clear()
-                                $script:OSServicePackList = $null
-                                $script:OSServicePackList = $(($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).OperatingSystemServicePack).split("`n") | Sort-Object
-                                ForEach ($ServicePack in $script:OSServicePackList) { 
+                                $OSServicePackList = $null
+                                $OSServicePackList = $(($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).OperatingSystemServicePack).split("`n") | Sort-Object
+                                ForEach ($ServicePack in $OSServicePackList) { 
                                     $Section3EndpointDataOperatingSystemServicePackComboBox.Items.Add($ServicePack) 
                                 }
-                            $Section3EndpointDataOperatingSystemServicePackComboBox.Text = "- Select Dropdown [$(if ($script:OSServicePackList -ne $null) {$script:OSServicePackList.count} else {0})] OS Service Packs"
+                            $Section3EndpointDataOperatingSystemServicePackComboBox.Text = "- Select Dropdown [$(if ($OSServicePackList -ne $null) {$OSServicePackList.count} else {0})] OS Service Packs"
 
                             $Section3EndpointDataMemberOfComboBox.ForeColor = "Black"
                                 $Section3EndpointDataMemberOfComboBox.Items.Clear()
-                                $script:MemberOfList = $null
-                                $script:MemberOfList = $(($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).MemberOf).split("`n") | Sort-Object
-                                ForEach ($Group in $script:MemberOfList) { 
+                                $MemberOfList = $null
+                                $MemberOfList = $(($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).MemberOf).split("`n") | Sort-Object
+                                ForEach ($Group in $MemberOfList) {
                                     $Section3EndpointDataMemberOfComboBox.Items.Add($Group) 
                                 }
-                            $Section3EndpointDataMemberOfComboBox.Text              = "- Select Dropdown [$(if ($script:MemberOfList -ne $null) {$script:MemberOfList.count} else {0})] Groups"
+                            $Section3EndpointDataMemberOfComboBox.Text              = "- Select Dropdown [$(if ($MemberOfList -ne $null) {$MemberOfList.count} else {0})] Groups"
 
                             $Section3EndpointDataLockedOutTextBox.Text              = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).LockedOut
                             $Section3EndpointDataLogonCountTextBox.Text             = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).LogonCount
-                            $Section3EndpointDataLocationTextBox.Text               = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).Location
+
+                            $Section3EndpointDataPortScanComboBox.ForeColor = "Black"
+                                $Section3EndpointDataPortScanComboBox.Items.Clear()
+                                $PortScanList = $null
+                                $PortScanList = $(($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).PortScan).split(",") | Sort-Object
+                                ForEach ($Port in $PortScanList) { 
+                                    $Section3EndpointDataPortScanComboBox.Items.Add($Port) 
+                                }
+                            $Section3EndpointDataPortScanComboBox.Text              = " $(if ($PortScanList -ne $null) {$PortScanList.count} else {0}) Ports"
+
                             $Section3HostDataSelectionComboBox.Text                 = "Host Data - Selection"
                             $Section3HostDataSelectionDateTimeComboBox.Text         = "Host Data - Date & Time"
+
                             $script:Section3HostDataNotesSaveCheck = $Section3HostDataNotesRichTextBox.Text = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).Notes
                         }
                     }
@@ -438,12 +452,12 @@ function Update-TreeViewData {
                             $Section3AccountDataPasswordNotRequiredTextBox.Text     = $($script:AccountsTreeViewData | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).PasswordNotRequired
                             $Section3AccountDataMemberOfComboBox.ForeColor          = "Black"
                                 $Section3AccountDataMemberOfComboBox.Items.Clear()
-                                $script:MemberOfList = $null
-                                $script:MemberOfList = $(($script:AccountsTreeViewData | Where-Object {$($Entry.Text) -like $_.Name}).MemberOf).split("`n") | Sort-Object
-                                ForEach ($Group in $script:MemberOfList) { 
+                                $MemberOfList = $null
+                                $MemberOfList = $(($script:AccountsTreeViewData | Where-Object {$($Entry.Text) -like $_.Name}).MemberOf).split("`n") | Sort-Object
+                                ForEach ($Group in $MemberOfList) { 
                                     $Section3AccountDataMemberOfComboBox.Items.Add($Group) 
                                 }
-                            $Section3AccountDataMemberOfComboBox.Text               = "- Select Dropdown [$(if ($script:MemberOfList -ne $null) {$script:MemberOfList.count} else {0})] Groups"
+                            $Section3AccountDataMemberOfComboBox.Text               = "- Select Dropdown [$(if ($MemberOfList -ne $null) {$MemberOfList.count} else {0})] Groups"
                             $Section3AccountDataSIDTextBox.Text                     = $($script:AccountsTreeViewData | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).SID
                             $Section3AccountDataScriptPathTextBox.Text              = $($script:AccountsTreeViewData | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).ScriptPath
                             $Section3AccountDataHomeDriveTextBox.Text               = $($script:AccountsTreeViewData | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).HomeDrive
@@ -452,24 +466,22 @@ function Update-TreeViewData {
                     }
                 }
 
-                foreach ($Entry in $Category.nodes) {
-                    if ($entry.checked) {
-                        if ($Commands) { $script:TreeeViewCommandsCount += 1 }
-                        if ($Accounts) { $script:TreeeViewAccountsCount += 1 }
-                        if ($Endpoint) { $script:TreeeViewEndpointCount += 1 }
-                        $EntryNodeCheckedCountforCategory += 1
-                        $EntryNodeCheckedCountforRoot     += 1
-                        $Entry.NodeFont     = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,1,1)
-                        $Entry.ForeColor    = [System.Drawing.Color]::FromArgb(0,0,0,224)
-                        $Category.NodeFont  = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,1,1)
-                        $Category.ForeColor = [System.Drawing.Color]::FromArgb(0,0,0,224)
-                        $Root.NodeFont      = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,1,1)
-                        $Root.ForeColor     = [System.Drawing.Color]::FromArgb(0,0,0,224)
-                    }
-                    if (!($entry.checked)) {
-                        $Entry.NodeFont     = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,1,1)
-                        $Entry.ForeColor    = [System.Drawing.Color]::FromArgb(0,0,0,0)
-                    }
+                if ($entry.checked) {
+                    if ($Commands) { $script:TreeeViewCommandsCount += 1 }
+                    if ($Accounts) { $script:TreeeViewAccountsCount += 1 }
+                    if ($Endpoint) { $script:TreeeViewEndpointCount += 1 }
+                    $EntryNodeCheckedCountforCategory += 1
+                    $EntryNodeCheckedCountforRoot     += 1
+                    $Entry.NodeFont     = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,1,1)
+                    $Entry.ForeColor    = [System.Drawing.Color]::FromArgb(0,0,0,224)
+                    $Category.NodeFont  = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,1,1)
+                    $Category.ForeColor = [System.Drawing.Color]::FromArgb(0,0,0,224)
+                    $Root.NodeFont      = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,1,1)
+                    $Root.ForeColor     = [System.Drawing.Color]::FromArgb(0,0,0,224)
+                }
+                if (!($entry.checked)) {
+                    $Entry.NodeFont     = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,1,1)
+                    $Entry.ForeColor    = [System.Drawing.Color]::FromArgb(0,0,0,0)
                 }
             }
             if ($EntryNodeCheckedCountforCategory -gt 0) {
@@ -487,7 +499,7 @@ function Update-TreeViewData {
             else {
                 $Root.NodeFont      = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,1,1)
                 $Root.ForeColor     = [System.Drawing.Color]::FromArgb(0,0,0,0)
-            }
+          }
         }
     }
     #$EnsureViisible.EnsureVisible()
@@ -520,8 +532,7 @@ function Update-TreeViewData {
     }
 
     # Updates the color of the button if there is at least one query and endpoint selected
-    Generate-ComputerList
-    if (($script:TreeeViewCommandsCount -gt 0 -or $script:TreeeViewEndpointCount -gt 0) -and $script:ComputerList.count -gt 0) {
+    if ($script:TreeeViewCommandsCount -gt 0 -and $script:TreeeViewEndpointCount -gt 0) {
         $script:ComputerListExecuteButton.Enabled   = $true
         $script:ComputerListExecuteButton.forecolor = 'Black'
         $script:ComputerListExecuteButton.backcolor = 'lightgreen'
@@ -559,7 +570,6 @@ function Update-TreeViewData {
 
     script:Minimize-MonitorJobsTab
     Check-IfScanExecutionReady
-
 }
 
 
