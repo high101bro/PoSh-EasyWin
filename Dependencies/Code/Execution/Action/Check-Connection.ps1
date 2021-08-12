@@ -77,7 +77,7 @@ function Check-Connection {
                 # The following does a ping first...
                 # Test-NetConnection -CommonTCPPort WINRM -ComputerName <Target>
 
-                #if ($ComputerListProvideCredentialsCheckBox.Checked) {
+                #if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
                 #    if (!$script:Credential) { Create-NewCredentials }
                 #    $CheckCommand = Test-WSman -ComputerName $target #-Credential $script:Credential
                 #}
@@ -141,8 +141,8 @@ function Check-Connection {
         #    "PoSh-EasyWin")
         #switch ($verify) {
         #    'Yes'{
-                [System.Windows.Forms.TreeNodeCollection]$AllHostsNode = $script:ComputerTreeView.Nodes
-                foreach ($root in $AllHostsNode) {
+                [System.Windows.Forms.TreeNodeCollection]$AllTreeViewNodes = $script:ComputerTreeView.Nodes
+                foreach ($root in $AllTreeViewNodes) {
                     $root.Checked = $False
                     foreach ($Category in $root.Nodes) {
                         $Category.Checked = $False

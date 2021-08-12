@@ -517,7 +517,7 @@ function Conduct-RekallWinPmemMemoryCapture {
         $Message = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - Starting Memory Capture"
         $RekallWinPmemStatusMessageTextbox.Text = "$Message `r`n" + "$($RekallWinPmemStatusMessageTextbox.Text)"
 
-        if ($ComputerListProvideCredentialsCheckBox.Checked) {
+        if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
             if (!$script:Credential) { Create-NewCredentials }
             $PSSession = New-PSSession -ComputerName $script:ComputerTreeViewSelected -Credential $script:Credential #| Sort-Object ComputerName
         }

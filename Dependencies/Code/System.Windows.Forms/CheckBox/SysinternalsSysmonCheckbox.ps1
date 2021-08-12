@@ -10,7 +10,7 @@ $SysinternalsSysmonCheckBoxAdd_Click = {
         $SysinternalsSysmonCheckbox.checked = $false
     }
 
-    Conduct-NodeAction -TreeView $script:CommandsTreeView.Nodes -Commands
+    Update-TreeViewData -Commands -TreeView $script:CommandsTreeView.Nodes
 }
 
 $SysinternalsSysmonCheckboxAdd_MouseHover = {

@@ -3,6 +3,7 @@ function Update-TreeNodeCommandState {
     $script:CommandsTreeView.Nodes.Add($script:TreeNodeActiveDirectoryCommands)
     $script:CommandsTreeView.Nodes.Add($script:TreeNodeCommandSearch)
     $script:CommandsTreeView.Nodes.Add($script:TreeNodeCustomGroupCommands)
+    $script:CommandsTreeView.Nodes.Add($script:TreeNodeUserAddedCommands)
     [System.Windows.Forms.TreeNodeCollection]$AllCommandsNode = $script:CommandsTreeView.Nodes
 
     if ($script:CommandsCheckedBoxesSelected.count -gt 0) {

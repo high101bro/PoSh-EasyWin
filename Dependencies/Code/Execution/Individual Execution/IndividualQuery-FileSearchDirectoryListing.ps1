@@ -22,7 +22,7 @@ function MonitorJobScriptBlock {
                                 -TargetComputer $TargetComputer
         Create-LogEntry -TargetComputer $TargetComputer  -LogFile $LogFile -Message $CollectionName
 
-        if ($ComputerListProvideCredentialsCheckBox.Checked) {
+        if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
             if (!$script:Credential) { $script:Credential = Get-Credential }
             Invoke-Command -ScriptBlock {
                 param($DirectoryPath,$MaximumDepth,$GetChildItemDepth)

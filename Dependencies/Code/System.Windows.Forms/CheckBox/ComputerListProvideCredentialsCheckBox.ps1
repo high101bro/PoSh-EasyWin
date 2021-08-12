@@ -1,12 +1,12 @@
 $ComputerListProvideCredentialsCheckBoxAdd_Click = {
-    if ($ComputerListProvideCredentialsCheckBox.Checked -and (Test-Path "$script:CredentialManagementPath\Specified Credentials.txt")) {
+    if ($script:ComputerListProvideCredentialsCheckBox.Checked -and (Test-Path "$script:CredentialManagementPath\Specified Credentials.txt")) {
         $SelectedCredentialName = Get-Content "$script:CredentialManagementPath\Specified Credentials.txt"
         $script:SelectedCredentialPath = Get-ChildItem "$script:CredentialManagementPath\$SelectedCredentialName"
         $script:Credential = Import-CliXml $script:SelectedCredentialPath
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add("Credentials:  $SelectedCredentialName.xml")
     }
-    elseif ($ComputerListProvideCredentialsCheckBox.Checked -and -not (Test-Path "$script:CredentialManagementPath\Specified Credentials.txt")) {
+    elseif ($script:ComputerListProvideCredentialsCheckBox.Checked -and -not (Test-Path "$script:CredentialManagementPath\Specified Credentials.txt")) {
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add("Credentials:  There are no credentials stored")
         Launch-CredentialManagementForm

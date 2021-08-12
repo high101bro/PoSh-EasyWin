@@ -30,7 +30,7 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
         Foreach ($TargetComputer in $script:ComputerList) {
             # Checks for the type of command selected and assembles the command to be executed
             $OutputFileFileType = ""
-            if ($ComputerListProvideCredentialsCheckBox.Checked) {
+            if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
                 if (!$script:Credential) { Create-NewCredentials }
                 Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Credentials Used: $($script:Credential.UserName)"
 
@@ -194,7 +194,7 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
                         }
 
                     } -InitializationScript $null -ArgumentList @($OutputFileFileType, $CollectionSavedDirectory, $CommandName, $script:CommandType, $TargetComputer, $CommandString, $PsExecPath, $script:Credential, $UseCredential, $script:ComputerListPivotExecutionCheckbox.checked,$script:ComputerListPivotExecutionTextBox.Text)
-                }               
+                }
                 elseif ( $OutputFileFileType -eq "txt" ) {
                     $OutputFilePath = "$CollectionSavedDirectory\$((($CommandName) -split ' -- ')[1]) - $script:CommandType - $($TargetComputer).txt"
                     Remove-Item -Path $OutputFilePath -Force -ErrorAction SilentlyContinue

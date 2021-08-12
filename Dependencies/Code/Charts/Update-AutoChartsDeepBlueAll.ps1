@@ -15,7 +15,7 @@ function Update-AutoChartsDeepBlueAll {
     Foreach ($TargetComputer in $ComputerNameList) {
         <#
         if ($AutoChartPullNewDataEnrichedCheckBox.checked) {
-            if ($ComputerListProvideCredentialsCheckBox.Checked) {
+            if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
                 if (!$script:Credential) { Create-NewCredentials }
                 if ($AutoChartProtocolWinRMRadioButton.checked) {
                     $CollectionName = 'Get-ApplicationCrashes - (WinRM) Script'
@@ -38,7 +38,7 @@ function Update-AutoChartsDeepBlueAll {
         }
         else {
         #>
-            if ($ComputerListProvideCredentialsCheckBox.Checked) {
+            if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
                 if (!$script:Credential) { Create-NewCredentials }
                 if ($AutoChartProtocolWinRMRadioButton.checked) {
                     $CollectionName = 'Threat Hunting with Deep Blue - (WinRM)'
@@ -144,7 +144,7 @@ Elasped Time:  $($Timecount -replace '-','')"
         Monitor-Jobs -CollectionName $CollectionName
     }
 
-    if ($script:RollCredentialsState -and $ComputerListProvideCredentialsCheckBox.checked) {
+    if ($script:RollCredentialsState -and $script:ComputerListProvideCredentialsCheckBox.checked) {
         Start-Sleep -Seconds 3
         Generate-NewRollingPassword
     }

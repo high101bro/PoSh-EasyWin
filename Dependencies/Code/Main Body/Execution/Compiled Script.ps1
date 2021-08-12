@@ -197,7 +197,7 @@ else {
         # This is the string that contains the command(s) to query, it is iterated over $targetcomputer
         function Buffer-CommandReviewString {
 
-            if ($ComputerListProvideCredentialsCheckBox.Checked) {
+            if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
                 if (!$script:Credential) { Create-NewCredentials }
                 Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Credentials Used: $($script:Credential.UserName)"
             $script:CommandReviewString = @"

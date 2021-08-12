@@ -4,7 +4,142 @@ v{Major}.{Minor}.{HotFix} - {Day} {Month} {Year}
 ==================================================
 To Do List:
 ==================================================
+Update Sysinternal tools
+Add sysmon event id 3 to pswritehtml charts
+check sysmon config name... update if necessary
+
+Commands Select All Button isn't working...
+
 Accounts Treeview
+	- update Set-GuiLayout.ps1
+
+Check if Move feature is working properly
+
+TODO:
+winrm get winrm/config/winrs
+
+==================================================
+v5.4.1 -
+==================================================
+Added 'User Added Commands' node group to command treeview
+	- able to use the bottom [WinRM] Query section to add user added commands
+	- added build command button, that allows you to browse and create any type of command
+	- removed 'parameter' button, it was stupid and not needed
+	- added mouse_enter and mouse_leave color changing to textbox
+	- Added capabiltiy to remove user added commands
+	- added ability to group user added commands
+	- added code to disable duplicate entries
+	- user added commands are stored as csv files in the same directory as endpoint and active directory commands
+
+Group commands button
+	- Added form to name the new custom group
+	- added code to disable duplicate groups
+	- added abilitiy to group user added commands
+	- custom group commands are stored as csv files in the same directory as endpoint and active directory commands
+
+Updated Endpoint Data Tab code that searches through csv for results that contained the endpoint name (hostname/pscomputername)
+	- added code that notifies you that you should avoid using the up and down arrows excessively
+		- Doing so causes the tool to search for results for every item you arrow over, if done quickly this could result in the the tool hanging (breifly or for a while)
+
+Finished updating search feature 
+	- created Account search code for all relavant data fields
+	- updated Endpoint search code for the new additional fields
+
+Accounts Data tab and Endpoint Data Tab
+	Updated layout
+		- contains additional fields
+		- new labels for textboxes
+		- mouseenter/leave to blue/black
+	Notes section
+		- data now saves automatcially
+		- added auto timestamp for new entries, tags, and updated data
+	Added Update Account button
+		- pulls most recent data from AD
+		- auto saves
+		- text that turn red when editing and not saved
+		- TODO: password rolling
+
+Changed the way date category nodes are displayed in the treeview to properly display in order
+	- FROM dd-MM-yyyy TO yyyy-MM-dd
+
+Updated Context Menu to use combobox's... it was getting crowded.
+	!!!!!!!!!!!!! trouble shoot selecting a node and moving it to a new ou/cn
+	!!!!!!!!!!!!! trouble shoot checkboxing multiple nodes and moving it to a new ou/cn
+	!!!!!!!!!!!!! add tooltip messages to combobox items like ping, smb, winrm check, pswritehtml...etc
+
+Removed messages about this tool previously being known as PoSh-ACME (PowerShell - Analyst Collection Made Easy)
+
+Combned Display-ContextMenuForComputerTreeNode and Display-ContextMenuForComputerTreeView into single function with parameter switches
+
+Removed Check-NodeDataIfModified, using new technique to identify changed text
+
+Updated tag feature
+	- When tagging endpoint/account nodes, the data is now also included
+	- Tags when applied are now appear on their own line
+
+Updated text field features for Endpoint and Account metadata
+	- Added Mouse Enter/Leave color changing
+	- Added Mouse Enter/Leave text change for field description
+
+==================================================
+v5.4.0 - 7 May 2021
+==================================================
+https://github.com/olafhartong/sysmon-modular/blob/master/sysmonconfig.xml
+
+Added Invoke-SRUMDump script variants
+	- Modified version from WiredPulse
+	- Made code more PoSh-EasyWin friendly
+		- No longer outputs csv data, but rather raw object data
+		- Changed default save location from user Desktop to C:\Windows\Temp
+		- Rewrote code into separate scripts
+			Invoke-SRUMDump (Network Connections)
+			Invoke-SRUMDump (Network Data)
+			Invoke-SRUMDump (Applicastion Use)
+			Invoke-SRUMDump (Application Timeline)
+			Invoke-SRUMDump (Push Notifications)
+		- Removed unndeed code
+		- Trimmed down Comment Based Help section
+			- Ensured to keep credits referencing WiredPulse
+
+Populating Accounts Treeview with data
+
+	Moved "$Dependencies/Code/Tree View/Computer/Populate-TreeNodeDefaultData -Endpoint.ps1" to "$Dependencies/Code/Tree View/Populate-TreeNodeDefaultData.ps1"
+		- Added code and parameters for Accounts and Endpoint
+	Moved "$Dependencies/Code/Tree View/Computer/Save-ComputerTreeNodeHostData -Endpoint.ps1" to "$Dependencies/Code/Tree View/Save-TreeNodeData.ps1"
+		- Added code and parameters for Accounts and Endpoint
+	Moved "$Dependencies/Code/Tree View/Computer/Initialize-ComputerTreeNodes.ps1" to "$Dependencies/Code/Tree View/Initialize-TreeViewData.ps1"
+		- Added code and parameters for Accounts and Endpoint
+	Moved "$Dependencies/Code/Tree View/Computer/Update-TreeNodeState -Endpoint.ps1" to "$Dependencies/Code/Tree View/Update-TreeNodeState.ps1"
+		- Added code and parameters for Accounts and Endpoint
+	Moved "$Dependencies\Code\Tree View\Computer\Add-NodeComputer.ps1" to "$Dependencies/Code/Tree View/Add-TreeNode.ps1"
+		- Added code and parameters for Accounts and Endpoint
+	Created "$Dependencies\Code\System.Windows.Forms\RadioButton\AccountsTreeNodeOSHostnameRadioButton.ps1"
+	Created "$Dependencies\Code\System.Windows.Forms\RadioButton\AccountsTreeNodeOUHostnameRadioButton.ps1"
+	Moved "$Dependencies\Code\Tree View\Computer\Search-ComputerTreeNode.ps1" to "$Dependencies\Code\Tree View\Search-TreeNode.ps1"
+		- Added code and parameters for Accounts and Endpoint
+	Moved "$Dependencies\Code\Tree View\Computer\Remove-EmptyCategory.ps1" to "$Dependencies\Code\Tree View\Remove-EmptyCategory.ps1"
+		- Added code and parameters for Accounts and Endpoint
+    Moved "$Dependencies\Code\Tree View\Computer\Message-HostAlreadyExists.ps1" to "$Dependencies\Code\Tree View\Message-HostAlreadyExists.ps1"
+		- Added code and parameters for Accounts and Endpoint
+	Moved "$Dependencies\Code\Tree View\Computer\Move-ComputerTreeNode.ps1" to "$Dependencies\Code\Tree View\Computer\MoveNode-TreeViewData.ps1"
+		- Added code and parameters for Accounts and Endpoint
+
+Updated TreeView function names and locations for standarization
+	AddTreeNodeTo-TreeViewData
+	Initialize-TreeViewData
+	Normalize-TreeViewData
+	Save-TreeViewData
+	Search-TreeViewData
+	Update-TreeViewData
+	UpdateState-TreeViewData
+	Update-TreeViewData
+	Acknowledgement-TreeViewData
+
+Added new options to context menu
+	endpoint treeview &	accounts treeview
+		out-gridview
+		spreadsheet
+		browser html view
 
 ==================================================
 v5.3.2 - 7 May 2021

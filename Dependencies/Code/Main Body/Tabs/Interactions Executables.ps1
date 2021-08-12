@@ -254,7 +254,7 @@ $SysinternalsAutorunsCheckbox = New-Object System.Windows.Forms.CheckBox -Proper
     AutoSize  = $true
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
     ForeColor = "Blue"
-    Add_Click = { Conduct-NodeAction -TreeView $script:CommandsTreeView.Nodes -Commands }
+    Add_Click = { Update-TreeViewData -Commands -TreeView $script:CommandsTreeView.Nodes }
     Add_MouseHover = $SysinternalsAutorunsCheckboxAdd_MouseHover
 }
 $Section1ExecutablesTab.Controls.Add($SysinternalsAutorunsCheckbox)
@@ -335,7 +335,7 @@ $SysinternalsProcessMonitorCheckbox = New-Object System.Windows.Forms.CheckBox -
     AutoSize  = $true
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
     ForeColor = "Blue"
-    Add_Click = { Conduct-NodeAction -TreeView $script:CommandsTreeView.Nodes -Commands }
+    Add_Click = { Update-TreeViewData -Commands -TreeView $script:CommandsTreeView.Nodes }
     Add_MouseHover = $SysinternalsProcessMonitorCheckboxAdd_MouseHover
 }
 $Section1ExecutablesTab.Controls.Add($SysinternalsProcessMonitorCheckbox)

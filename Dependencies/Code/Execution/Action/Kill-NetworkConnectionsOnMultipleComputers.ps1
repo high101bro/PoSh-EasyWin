@@ -29,7 +29,7 @@ function Kill-NetworkConnectionsOnMultipleComputers {
             [System.Windows.MessageBox]::Show('Ensure you checkbox one or more endpoints to collect network connections from. Alternatively, you can select a CSV file from a previous network connection collection.','Error: No Endpoints Selected')
         }
         else {
-            if ($ComputerListProvideCredentialsCheckBox.Checked) {
+            if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
                 if (!$script:Credential) { Create-NewCredentials }
                 $GetNetworkConnectionsTCPEnriched = {
                     if ([bool]((Get-Command Get-NetTCPConnection).ParameterSets | Select-Object -ExpandProperty Parameters | Where-Object Name -match OwningProcess)) {
@@ -134,7 +134,7 @@ function Kill-NetworkConnectionsOnMultipleComputers {
         $Session = $null
 
         try {
-            if ($ComputerListProvideCredentialsCheckBox.Checked) {
+            if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
                 if (!$script:Credential) { Create-NewCredentials }
                 $Session = New-PSSession -ComputerName $Computer -Credential $script:Credential
 
@@ -184,7 +184,7 @@ function Kill-NetworkConnectionsOnMultipleComputers {
     # To alert the user that it's finished
     [system.media.systemsounds]::Exclamation.play()
 
-    if ($script:RollCredentialsState -and $ComputerListProvideCredentialsCheckBox.checked) {
+    if ($script:RollCredentialsState -and $script:ComputerListProvideCredentialsCheckBox.checked) {
         Start-Sleep -Seconds 3
         Generate-NewRollingPassword
     }

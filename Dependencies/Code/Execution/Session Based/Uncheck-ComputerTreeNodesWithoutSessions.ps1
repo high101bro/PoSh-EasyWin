@@ -7,8 +7,8 @@ if ($EndpointsWithNoSessions.count -gt 0) {
     $StatusListBox.Items.Clear()
     $StatusListBox.Items.Add("Unchecked $($EndpointsWithNoSessions.Count) Endpoints Without Sessions")
     $PoShEasyWin.Refresh()
-    [System.Windows.Forms.TreeNodeCollection]$AllHostsNode = $script:ComputerTreeView.Nodes
-    foreach ($root in $AllHostsNode) {
+    [System.Windows.Forms.TreeNodeCollection]$AllTreeViewNodes = $script:ComputerTreeView.Nodes
+    foreach ($root in $AllTreeViewNodes) {
         foreach ($Category in $root.Nodes) {
             $Category.Checked = $False
             $EntryNodeCheckedCount = 0

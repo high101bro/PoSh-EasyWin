@@ -9,24 +9,20 @@ function AddHost-ComputerTreeNode {
 - Cannot be the default value ','Error')
     }
     elseif ($script:ComputerTreeViewData.Name -contains $ComputerTreeNodePopupAddTextBox.Text) {
-        Message-HostAlreadyExists -Message "Add Hostname/IP:  Error" -Computer $ComputerTreeNodePopupAddTextBox.Text
+        Message-NodeAlreadyExists -Endpoint -Message "Add Hostname/IP:  Error" -Computer $ComputerTreeNodePopupAddTextBox.Text
     }
     else {
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add("Added Selection:  $($ComputerTreeNodePopupAddTextBox.Text)")
 
-        if ($ComputerTreeNodeOSHostnameRadioButton.Checked) {
-            Add-NodeComputer -RootNode $script:TreeNodeComputerList -Category $ComputerTreeNodePopupOSComboBox.Text -Entry $ComputerTreeNodePopupAddTextBox.Text #-ToolTip "No Data Available"
-            #Removed For Testing#
-            $ResultsListBox.Items.Clear()
-            $ResultsListBox.Items.Add("$($ComputerTreeNodePopupAddTextBox.Text) has been added to $($ComputerTreeNodePopupOSComboBox.Text)")
-        }
-        elseif ($ComputerTreeNodeOUHostnameRadioButton.Checked) {
-            Add-NodeComputer -RootNode $script:TreeNodeComputerList -Category $ComputerTreeNodePopupOUComboBox.SelectedItem -Entry $ComputerTreeNodePopupAddTextBox.Text #-ToolTip "No Data Available"
-            #Removed For Testing#
-            $ResultsListBox.Items.Clear()
-            $ResultsListBox.Items.Add("$($ComputerTreeNodePopupAddTextBox.Text) has been added to $($ComputerTreeNodePopupOUComboBox.Text)")
-        }
+        $ComputerAndAccountTreeViewTabControl.SelectedTab = $ComputerTreeviewTab
+        $script:ComputerTreeNodeComboBox.SelectedItem = 'CanonicalName'
+
+        AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:TreeNodeComputerList -Category $ComputerTreeNodePopupOUComboBox.SelectedItem -Entry $ComputerTreeNodePopupAddTextBox.Text #-ToolTip "No Data Available"
+
+        $ResultsListBox.Items.Clear()
+        $ResultsListBox.Items.Add("$($ComputerTreeNodePopupAddTextBox.Text) has been added to $($ComputerTreeNodePopupOUComboBox.Text)")
+
         $ComputerTreeNodeAddHostnameIP = New-Object PSObject -Property @{
             Name            = $ComputerTreeNodePopupAddTextBox.Text
             OperatingSystem = $ComputerTreeNodePopupOSComboBox.Text
@@ -34,10 +30,10 @@ function AddHost-ComputerTreeNode {
             IPv4Address     = "No IP Available"
         }
         $script:ComputerTreeViewData += $ComputerTreeNodeAddHostnameIP
-        $script:ComputerTreeView.ExpandAll()
+        #$script:ComputerTreeView.ExpandAll()
         $ComputerTreeNodePopup.close()
-        Save-ComputerTreeNodeHostData
-        Update-TreeNodeComputerState -NoMessage
+        Save-TreeViewData -Endpoint
+        #UpdateState-TreeViewData -Endpoint -NoMessage
     }
 }
 

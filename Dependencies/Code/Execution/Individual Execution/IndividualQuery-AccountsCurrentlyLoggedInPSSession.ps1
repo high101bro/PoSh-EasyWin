@@ -14,7 +14,7 @@ function MonitorJobScriptBlock {
         $CollectionName
     )
     foreach ($TargetComputer in $script:ComputerList) {
-        if ($ComputerListProvideCredentialsCheckBox.Checked) {
+        if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
             if (!$script:Credential) { Create-NewCredentials }
 
             Start-Job -ScriptBlock {

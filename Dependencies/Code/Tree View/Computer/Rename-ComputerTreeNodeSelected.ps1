@@ -1,6 +1,6 @@
 function Rename-ComputerTreeNodeSelected {
     if ($script:ComputerTreeViewData.Name -contains $script:ComputerTreeNodeRenamePopupTextBox.Text) {
-        Message-HostAlreadyExists -Message "Rename Hostname/IP:  Error" -computer $script:ComputerTreeNodeRenamePopupTextBox.Text
+        Message-NodeAlreadyExists -Endpoint -Message "Rename Hostname/IP:  Error" -computer $script:ComputerTreeNodeRenamePopupTextBox.Text
 
     }
     else {
@@ -8,20 +8,19 @@ function Rename-ComputerTreeNodeSelected {
         $ComputerTreeNodeToRename = New-Object System.Collections.ArrayList
 
         # Adds (copies) the node to the new Category
-        [System.Windows.Forms.TreeNodeCollection]$AllHostsNode = $script:ComputerTreeView.Nodes
-        foreach ($root in $AllHostsNode) {
+        [System.Windows.Forms.TreeNodeCollection]$AllTreeViewNodes = $script:ComputerTreeView.Nodes
+        foreach ($root in $AllTreeViewNodes) {
             if ($root.Checked) { $root.Checked = $false }
             foreach ($Category in $root.Nodes) {
                 if ($Category.Checked) { $Category.Checked = $false }
                 foreach ($Entry in $Category.nodes) {
                     if ($Entry.IsSelected) {
-                        Add-NodeComputer -RootNode $script:TreeNodeComputerList -Category $Category.Text -Entry $script:ComputerTreeNodeRenamePopupTextBox.text #-ToolTip "No Data Available"
+                        AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:TreeNodeComputerList -Category $Category.Text -Entry $script:ComputerTreeNodeRenamePopupTextBox.text #-ToolTip "No Data Available"
                         $ComputerTreeNodeToRename.Add($Entry.text)
 
                         $script:PreviousEndpointName = $script:EntrySelected.Text
                         $Section3HostDataNotesRichTextBox.Text = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).Notes + "`r`nPrevious Endpoint Name: $script:PreviousEndpointName"
-                        Save-ComputerTreeNodeHostData
-                        Check-HostDataIfModified
+                        Save-TreeViewData -Endpoint
                         break
                     }
                 }
@@ -29,7 +28,7 @@ function Rename-ComputerTreeNodeSelected {
         }
         # Removes the original hostname/IP that was copied above
         foreach ($i in $ComputerTreeNodeToRename) {
-            foreach ($root in $AllHostsNode) {
+            foreach ($root in $AllTreeViewNodes) {
                 foreach ($Category in $root.Nodes) {
                     foreach ($Entry in $Category.nodes) {
                         if (($i -contains $Entry.text) -and ($Entry.IsSelected)) {
@@ -41,7 +40,7 @@ function Rename-ComputerTreeNodeSelected {
                 }
             }
         }
-        Save-ComputerTreeNodeHostDataHostData
+        Save-TreeViewData -Endpoint
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add("Rename Selection:  $($ComputerTreeNodeToRename.Count) Hosts")
         #Removed For Testing#$ResultsListBox.Items.Clear()

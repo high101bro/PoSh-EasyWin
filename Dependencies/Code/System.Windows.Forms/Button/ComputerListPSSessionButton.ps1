@@ -1,9 +1,9 @@
 $ComputerListPSSessionButtonAdd_Click = {
     $InformationTabControl.SelectedTab = $Section3ResultsTab
-    Create-ComputerNodeCheckBoxArray
+    Create-TreeViewCheckBoxArray -Endpoint
     Generate-ComputerList
 
-    if ($ComputerListProvideCredentialsCheckBox.Checked) { $Username = $script:Credential.UserName}
+    if ($script:ComputerListProvideCredentialsCheckBox.Checked) { $Username = $script:Credential.UserName}
     else {$Username = $PoShEasyWinAccountLaunch }
 
     if ($script:ComputerListEndpointNameToolStripLabel.text) {
@@ -12,8 +12,8 @@ $ComputerListPSSessionButtonAdd_Click = {
             $script:ComputerTreeViewSelected = $script:ComputerListEndpointNameToolStripLabel.text 
         }
         else {
-            [System.Windows.Forms.TreeNodeCollection]$AllHostsNode = $script:ComputerTreeView.Nodes
-            foreach ($root in $AllHostsNode) {
+            [System.Windows.Forms.TreeNodeCollection]$AllTreeViewNodes = $script:ComputerTreeView.Nodes
+            foreach ($root in $AllTreeViewNodes) {
                 foreach ($Category in $root.Nodes) {
                     foreach ($Entry in $Category.nodes) {
                         if ($Entry.Text -eq $script:ComputerListEndpointNameToolStripLabel.text) {
@@ -39,7 +39,7 @@ $ComputerListPSSessionButtonAdd_Click = {
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add("Enter-PSSession:  $($script:ComputerTreeViewSelected)")
         #Removed For Testing#$ResultsListBox.Items.Clear()
-        if ($ComputerListProvideCredentialsCheckBox.Checked) {
+        if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
             if (-not $script:Credential) { Create-NewCredentials }
             Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Credentials Used: $($script:Credential.UserName)"
             $Username = $script:Credential.UserName
@@ -65,7 +65,7 @@ $ComputerListPSSessionButtonAdd_Click = {
         }
         Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Enter-PSSession -ComputerName $($script:ComputerTreeViewSelected)"
 
-        if ($script:RollCredentialsState -and $ComputerListProvideCredentialsCheckBox.checked) {
+        if ($script:RollCredentialsState -and $script:ComputerListProvideCredentialsCheckBox.checked) {
             Start-Sleep -Seconds 3
             Generate-NewRollingPassword
         }
@@ -76,18 +76,3 @@ $ComputerListPSSessionButtonAdd_Click = {
         $StatusListBox.Items.Add("PowerShell Session:  Cancelled")
     }
 }
-
-# $ComputerListPSSessionButtonAdd_MouseHover = {
-#     Show-ToolTip -Title "Enter-PSSession" -Icon "Info" -Message @"
-# +  Starts an interactive session with a remote computer.
-# +  Requires the WinRM service.
-# +  To use with an IP address, the Credential parameter must be used.
-# Also, the computer must be configured for HTTPS transport or
-# the remote computer's IP must be in the local TrustedHosts.
-# +  Command:
-#         Enter-PSSession -ComputerName <target>
-# +  Compatiable with 'Specify Credentials'
-# "@
-# }
-
-

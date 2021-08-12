@@ -109,7 +109,7 @@ function Get-RemoteAlternateDataStream {
                 }
 
 
-                if ($ComputerListProvideCredentialsCheckBox.Checked) {
+                if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
                     if (!$script:Credential) { Create-NewCredentials }
                     $session = New-PSSession -ComputerName $ExtractStreamDataCurrentComputer -Name "PoSh-EasyWin Extract Stream Data $ExtractStreamDataCurrentComputer" -Credential $script:Credential
                     Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "- New-PSSession -ComputerName $ExtractStreamDataCurrentComputer -Credential $script:Credential"
@@ -166,7 +166,7 @@ function Get-RemoteAlternateDataStream {
         Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Retrieved Files Saved To: $RetrieveFilesSaveDirectory"
         Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Retrieved Files From Endpoints Were Zipped To 'c:\Windows\Temp\' Then Removed"
 
-        if ($script:RollCredentialsState -and $ComputerListProvideCredentialsCheckBox.checked) {
+        if ($script:RollCredentialsState -and $script:ComputerListProvideCredentialsCheckBox.checked) {
             Start-Sleep -Seconds 3
             Generate-NewRollingPassword
         }

@@ -120,6 +120,9 @@ $EnumerationPortScanGroupBox = New-Object System.Windows.Forms.GroupBox -Propert
                 Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
                 ForeColor     = "Black"
                 Add_Click = {
+                    $ComputerAndAccountTreeViewTabControl.SelectedTab = $ComputerTreeviewTab
+                    $script:ComputerTreeNodeComboBox.SelectedItem = 'CanonicalName'
+    
                     if ($this.checked){
                         $EnumerationPortScanSpecificIPTextbox.enabled     = $false
                         $EnumerationPortScanIPRangeNetworkTextbox.enabled = $false
@@ -599,19 +602,16 @@ $EnumerationComputerListBoxAddToListButton = New-Object System.Windows.Forms.But
         $ResultsListBox.Items.Clear()
         foreach ($Selected in $EnumerationComputerListBox.SelectedItems) {
             if ($script:ComputerTreeViewData.Name -contains $Selected) {
-                Message-HostAlreadyExists -Message "Port Scan Import:  Warning" -Computer $Selected
+                Message-NodeAlreadyExists -Endpoint -Message "Port Scan Import:  Warning" -Computer $Selected
             }
             else {
-                if ($ComputerTreeNodeOSHostnameRadioButton.Checked) {
-                    Add-NodeComputer -RootNode $script:TreeNodeComputerList -Category 'Unknown' -Entry $Selected -ToolTip 'No ToolTip Data' -IPv4Address $Computer.IPv4Address
-                    $InformationTabControl.SelectedTab = $Section3ResultsTab
-                    $ResultsListBox.Items.Add("$($Selected) has been added to the Unknown category")
-                }
-                elseif ($ComputerTreeNodeOUHostnameRadioButton.Checked) {
-                    $CanonicalName = $($($Computer.CanonicalName) -replace $Computer.Name,"" -replace $Computer.CanonicalName.split('/')[0],"").TrimEnd("/")
-                    Add-NodeComputer -RootNode $script:TreeNodeComputerList -Category '/Unknown' -Entry $Selected -ToolTip 'No ToolTip Data' -IPv4Address $Computer.IPv4Address
-                    $ResultsListBox.Items.Add("$($Selected) has been added to /Unknown category")
-                }
+                $ComputerAndAccountTreeViewTabControl.SelectedTab = $ComputerTreeviewTab
+                $script:ComputerTreeNodeComboBox.SelectedItem = 'CanonicalName'
+
+                $CanonicalName = $($($Computer.CanonicalName) -replace $Computer.Name,"" -replace $Computer.CanonicalName.split('/')[0],"").TrimEnd("/")
+                AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:TreeNodeComputerList -Category '/Unknown' -Entry $Selected -ToolTip 'Enumeration Scan' -IPv4Address $Computer.IPv4Address
+                $ResultsListBox.Items.Add("$($Selected) has been added to /Unknown category")
+
                 $ComputerTreeNodeAddHostnameIP = New-Object PSObject -Property @{
                     Name            = $Selected
                     OperatingSystem = 'Unknown'
@@ -622,8 +622,8 @@ $EnumerationComputerListBoxAddToListButton = New-Object System.Windows.Forms.But
             }
         }
         $script:ComputerTreeView.ExpandAll()
-        Populate-ComputerTreeNodeDefaultData
-        Save-ComputerTreeNodeHostData
+        Normalize-TreeViewData -Endpoint
+        Save-TreeViewData -Endpoint
     }
 }
 $Section1EnumerationTab.Controls.Add($EnumerationComputerListBoxAddToListButton)

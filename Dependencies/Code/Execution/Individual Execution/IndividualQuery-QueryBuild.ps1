@@ -13,7 +13,7 @@ foreach ($TargetComputer in $script:ComputerList) {
     Create-LogEntry -TargetComputer $TargetComputer  -LogFile $LogFile -Message $CollectionName
 
 
-    if ($ComputerListProvideCredentialsCheckBox.Checked) {
+    if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
         if (!$script:Credential) { Create-NewCredentials }
 
         Invoke-Command -ScriptBlock {

@@ -96,7 +96,7 @@ $InputValue
 
 
 if ($EventLogWinRMRadioButton.Checked) {
-    if ( $ComputerListProvideCredentialsCheckBox.Checked ) {
+    if ( $script:ComputerListProvideCredentialsCheckBox.Checked ) {
         if (!$script:Credential) { Create-NewCredentials }
 
         foreach ($Query in $script:EventLogQueries) {
@@ -193,7 +193,7 @@ if ($EventLogWinRMRadioButton.Checked) {
     }
 }
 else {
-    if ( $ComputerListProvideCredentialsCheckBox.Checked ) {
+    if ( $script:ComputerListProvideCredentialsCheckBox.Checked ) {
         if (!$script:Credential) { Create-NewCredentials }
 
         foreach ($Query in $script:EventLogQueries) {

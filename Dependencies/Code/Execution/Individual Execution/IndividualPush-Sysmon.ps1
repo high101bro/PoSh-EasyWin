@@ -122,7 +122,7 @@ if ($ExternalProgramsRPCRadioButton.checked) {
 elseif ($ExternalProgramsWinRMRadioButton.checked) {
     New-Item -Type Directory -Path $script:CollectionSavedDirectoryTextBox.Text -ErrorAction SilentlyContinue
 
-    if ($ComputerListProvideCredentialsCheckBox.Checked) {
+    if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
         if (!$script:Credential) { Create-NewCredentials }
             $PSSession = New-PSSession -ComputerName $script:ComputerList -Credential $script:Credential
     }

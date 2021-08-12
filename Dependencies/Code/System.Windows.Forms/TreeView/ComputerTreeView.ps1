@@ -1,9 +1,9 @@
 $ComputerTreeViewAdd_Click = {
-    Conduct-NodeAction -TreeView $this.Nodes -ComputerList
+    Update-TreeViewData -Endpoint -TreeView $this.Nodes
 
     # When the node is checked, it updates various items
-    [System.Windows.Forms.TreeNodeCollection]$AllHostsNode = $this.Nodes
-    foreach ($root in $AllHostsNode) {
+    [System.Windows.Forms.TreeNodeCollection]$AllTreeViewNodes = $this.Nodes
+    foreach ($root in $AllTreeViewNodes) {
         if ($root.checked) {
             $root.Expand()
             foreach ($Category in $root.Nodes) {
@@ -68,11 +68,11 @@ $ComputerTreeViewAdd_Click = {
 }
 
 $ComputerTreeViewAdd_AfterSelect = {
-    Conduct-NodeAction -TreeView $this.Nodes -ComputerList
+    Update-TreeViewData -Endpoint -TreeView $this.Nodes
 
     # This will return data on hosts selected/highlight, but not necessarily checked
-    [System.Windows.Forms.TreeNodeCollection]$AllHostsNode = $this.Nodes
-    foreach ($root in $AllHostsNode) {
+    [System.Windows.Forms.TreeNodeCollection]$AllTreeViewNodes = $this.Nodes
+    foreach ($root in $AllTreeViewNodes) {
         if ($root.isselected) {
             $script:ComputerTreeViewSelected = ""
             $StatusListBox.Items.clear()
@@ -80,12 +80,26 @@ $ComputerTreeViewAdd_AfterSelect = {
             #Removed For Testing#$ResultsListBox.Items.Clear()
             #$ResultsListBox.Items.Add("- Checkbox this Category to query all its hosts")
 
-            $script:Section3HostDataNameTextBox.Text = "N/A"
-            $Section3HostDataOSTextBox.Text = "N/A"
-            $Section3HostDataOUTextBox.Text = "N/A"
-            $Section3HostDataIPTextBox.Text = "N/A"
-            $Section3HostDataTags.Text = "N/A"
-            $Section3HostDataNotesRichTextBox.Text = "N/A"
+            $script:Section3HostDataNameTextBox.Text                     = 'N/A'
+            $Section3HostDataOUTextBox.Text                              = 'N/A'
+            $Section3EndpointDataCreatedTextBox.Text                     = 'N/A'
+            $Section3EndpointDataModifiedTextBox.Text                    = 'N/A'
+            $Section3EndpointDataLastLogonDateTextBox.Text               = 'N/A'
+            $Section3HostDataIPTextBox.Text                              = 'N/A'
+            $Section3HostDataMACTextBox.Text                             = 'N/A'
+            $Section3EndpointDataEnabledTextBox.Text                     = 'N/A'
+            $Section3EndpointDataisCriticalSystemObjectTextBox.Text      = 'N/A'
+            $Section3EndpointDataSIDTextBox.Text                         = 'N/A'
+            $Section3EndpointDataOperatingSystemTextBox.Text             = 'N/A'
+            $Section3EndpointDataOperatingSystemHotfixComboBox.Text      = 'N/A'
+            $Section3EndpointDataOperatingSystemServicePackComboBox.Text = 'N/A'
+            $Section3EndpointDataMemberOfComboBox.Text                   = 'N/A'
+            $Section3EndpointDataLockedOutTextBox.Text                   = 'N/A'
+            $Section3EndpointDataLogonCountTextBox.Text                  = 'N/A'
+            $Section3EndpointDataPortScanComboBox.Text                   = 'N/A'
+            $Section3HostDataSelectionComboBox.Text                      = 'N/A'
+            $Section3HostDataSelectionDateTimeComboBox.Text              = 'N/A'
+            $Section3HostDataNotesRichTextBox.Text                       = 'N/A'
 
             # Brings the Host Data Tab to the forefront/front view
             $InformationTabControl.SelectedTab   = $Section3HostDataTab
@@ -99,13 +113,26 @@ $ComputerTreeViewAdd_AfterSelect = {
                 #$ResultsListBox.Items.Add("- Checkbox this Category to query all its hosts")
 
                 # The follwing fields are filled out with N/A when host nodes are not selected
-                $script:Section3HostDataNameTextBox.Text = "N/A"
-                $Section3HostDataOSTextBox.Text = "N/A"
-                $Section3HostDataOUTextBox.Text = "N/A"
-                $Section3HostDataIPTextBox.Text = "N/A"
-                $Section3HostDataMACTextBox.Text = "N/A"
-                $Section3HostDataTags.Text = "N/A"
-                $Section3HostDataNotesRichTextBox.Text = "N/A"
+                $script:Section3HostDataNameTextBox.Text                     = 'N/A'
+                $Section3HostDataOUTextBox.Text                              = 'N/A'
+                $Section3EndpointDataCreatedTextBox.Text                     = 'N/A'
+                $Section3EndpointDataModifiedTextBox.Text                    = 'N/A'
+                $Section3EndpointDataLastLogonDateTextBox.Text               = 'N/A'
+                $Section3HostDataIPTextBox.Text                              = 'N/A'
+                $Section3HostDataMACTextBox.Text                             = 'N/A'
+                $Section3EndpointDataEnabledTextBox.Text                     = 'N/A'
+                $Section3EndpointDataisCriticalSystemObjectTextBox.Text      = 'N/A'
+                $Section3EndpointDataSIDTextBox.Text                         = 'N/A'
+                $Section3EndpointDataOperatingSystemTextBox.Text             = 'N/A'
+                $Section3EndpointDataOperatingSystemHotfixComboBox.Text      = 'N/A'
+                $Section3EndpointDataOperatingSystemServicePackComboBox.Text = 'N/A'
+                $Section3EndpointDataMemberOfComboBox.Text                   = 'N/A'
+                $Section3EndpointDataLockedOutTextBox.Text                   = 'N/A'
+                $Section3EndpointDataLogonCountTextBox.Text                  = 'N/A'
+                $Section3EndpointDataPortScanComboBox.Text                   = 'N/A'
+                $Section3HostDataSelectionComboBox.Text                      = 'N/A'
+                $Section3HostDataSelectionDateTimeComboBox.Text              = 'N/A'
+                $Section3HostDataNotesRichTextBox.Text                       = 'N/A'
 
                 # Brings the Host Data Tab to the forefront/front view
                 $InformationTabControl.SelectedTab = $Section3HostDataTab
@@ -114,50 +141,12 @@ $ComputerTreeViewAdd_AfterSelect = {
                 if ($Entry.isselected) {
                     $InformationTabControl.SelectedTab = $Section3HostDataTab
                     $script:ComputerTreeViewSelected = $Entry.Text
-                    Function Update-HostDataNotes {
-                        # Populates the Host Data Tab with data from the selected TreeNode
-                        $script:Section3HostDataNameTextBox.Text = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).Name
-                        $Section3HostDataOSTextBox.Text   = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).OperatingSystem
-                        $Section3HostDataOUTextBox.Text   = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).CanonicalName
-                        $Section3HostDataIPTextBox.Text   = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).IPv4Address
-                        $Section3HostDataMACTextBox.Text  = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).MACAddress
-                        $script:Section3HostDataNotesSaveCheck = $Section3HostDataNotesRichTextBox.Text = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).Notes
-
-                        $Section3HostDataSelectionComboBox.Text         = "Host Data - Selection"
-                        $Section3HostDataSelectionDateTimeComboBox.Text = "Host Data - Date & Time"
-                        Check-HostDataIfModified
-                    }
-                    <# This provides a prompt to save or not if a different node was selected and data wasn't saved... decided to save automatically instead
-                                if ($script:Section3HostDataNotesSaveCheck -ne $Section3HostDataNotesRichTextBox.Text) {
-                                    [System.Reflection.Assembly]::LoadWithPartialName("Microsoft.VisualBasic")
-                                    $verify = [Microsoft.VisualBasic.Interaction]::MsgBox(`
-                                        "Host Data Notes have not been saved!`n`nIf you continue without saving, any`nmodifications will be lost!`n`nDo you want to continue?",`
-                                        'YesNo,Question',` #'YesNoCancel,Question',`
-                                        "PoSh-EasyWin")
-                                    switch ($verify) {
-                                    'Yes'{ Update-HostDataNotes }
-                                    'No' { $Entry.isselected -eq $true  #... this line isn't working as expected, but isn't causing errors
-                                        $StatusListBox.Items.Clear()
-                                        $StatusListBox.Items.Add($script:Section3HostDataNameTextBox.Text)
-                                        $script:EntrySelected.isselected = $true
-                                    }
-                                    'Cancel' { continue } #cancel option not needed
-                                    }
-                                }
-                                else { Update-HostDataNotes }
-                    #>
-
-                    # Automatically saves the hostdata notes if modified
-                    Save-ComputerTreeNodeHostData
-                    Update-HostDataNotes
-
-                    #                    $StatusListBox.Items.Clear()
-#                    $StatusListBox.Items.Add($script:Section3HostDataNameTextBox.Text)
-#                    $script:EntrySelected.isselected = $true
                 }
             }
         }
     }
+    $InformationTabControl.SelectedTab = $Section3HostDataTab
+    Display-ContextMenuForComputerTreeNode -ClickedOnArea
 }
 
 

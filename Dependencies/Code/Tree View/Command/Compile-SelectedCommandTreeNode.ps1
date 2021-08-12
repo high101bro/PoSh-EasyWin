@@ -13,14 +13,15 @@ function Compile-SelectedCommandTreeNode {
     # Commands in the treenode that are selected
     $script:CommandsCheckedBoxesSelected = @()
 
-    [System.Windows.Forms.TreeNodeCollection]$AllHostsNode = $script:CommandsTreeView.Nodes
+    [System.Windows.Forms.TreeNodeCollection]$AllTreeViewNodes = $script:CommandsTreeView.Nodes
     #Removed For Testing#$ResultsListBox.Items.Clear()
 
     # Compiles all the commands treenodes into one object
     $script:AllCommands  = $script:AllEndpointCommands
     $script:AllCommands += $script:AllActiveDirectoryCommands
+    $script:AllCommands += $script:UserAddedCommands
 
-    foreach ($root in $AllHostsNode) {
+    foreach ($root in $AllTreeViewNodes) {
         foreach ($Category in $root.Nodes) {
             if ($CommandsViewProtocolsUsedRadioButton.Checked) {
                 foreach ($Entry in $Category.nodes) {
@@ -63,11 +64,6 @@ function Compile-SelectedCommandTreeNode {
                     #        Type           = "(WinRM) CMD"
                     #    }
                     #}
-
-
-
-
-
                     #elseif ($Entry.Checked -and $Entry -match '(RPC)' -and $Entry -match 'PoSh') {
                     #    $Command = $script:AllCommands | Where-Object Name -eq $(($Entry.Text -split ' -- ')[1])
                     #    $script:CommandsCheckedBoxesSelected += New-Object psobject @{
@@ -97,11 +93,6 @@ function Compile-SelectedCommandTreeNode {
                     #        Type           = "(RPC) CMD"
                     #    }
                     #}
-
-
-
-
-
                     elseif ($Entry.Checked -and $Entry -match '(SMB)' -and $Entry -match 'PoSh') {
                         $Command = $script:AllCommands | Where-Object Name -eq $(($Entry.Text -split ' -- ')[1])
                         $script:CommandsCheckedBoxesSelected += New-Object psobject @{
@@ -182,10 +173,6 @@ function Compile-SelectedCommandTreeNode {
                     #        Type           = "(WinRM) CMD"
                     #    }
                     #}
-
-
-
-
                     #if ($Entry -match '(RPC)' -and $Entry -match 'PoSh' -and $Entry.Checked) {
                     #    $Command = $script:AllCommands | Where-Object Name -eq $(($Entry.Text -split ' -- ')[1])
                     #    $script:CommandsCheckedBoxesSelected += New-Object psobject @{
@@ -215,10 +202,6 @@ function Compile-SelectedCommandTreeNode {
                     #        Type           = "(RPC) CMD"
                     #    }
                     #}
-
-
-
-
                     elseif ($Entry -match '(SMB)' -and $Entry -match 'PoSh' -and $Entry.Checked) {
                         $Command = $script:AllCommands | Where-Object Name -eq $(($Entry.Text -split ' -- ')[1])
                         $script:CommandsCheckedBoxesSelected += New-Object psobject @{

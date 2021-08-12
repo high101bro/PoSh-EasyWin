@@ -7,10 +7,10 @@ function Generate-ComputerList {
     $script:ComputerListAll = @()
 
     # If the root computerlist checkbox is checked, All Endpoints will be queried
-    [System.Windows.Forms.TreeNodeCollection]$AllHostsNode = $script:ComputerTreeView.Nodes
+    [System.Windows.Forms.TreeNodeCollection]$AllTreeViewNodes = $script:ComputerTreeView.Nodes
     if ($script:ComputerListUseDNSCheckbox.checked) {
         if ($script:ComputerListSearch.Checked) {
-            foreach ($root in $AllHostsNode) {
+            foreach ($root in $AllTreeViewNodes) {
                 if ($root.text -imatch "Search Results") {
                     foreach ($Category in $root.Nodes) {
                         foreach ($Entry in $Category.nodes) {
@@ -21,7 +21,7 @@ function Generate-ComputerList {
             }
         }
         if ($script:TreeNodeComputerList.Checked) {
-            foreach ($root in $AllHostsNode) {
+            foreach ($root in $AllTreeViewNodes) {
                 if ($root.text -imatch "All Endpoints") {
                     foreach ($Category in $root.Nodes) {
                         foreach ($Entry in $Category.nodes) {
@@ -31,7 +31,7 @@ function Generate-ComputerList {
                 }
             }
         }
-        foreach ($root in $AllHostsNode) {
+        foreach ($root in $AllTreeViewNodes) {
             # This loop will select All Endpoints in a Category
             foreach ($Category in $root.Nodes) {
                 if ($Category.Checked) {
@@ -54,7 +54,7 @@ function Generate-ComputerList {
     }
     else {
         if ($script:ComputerListSearch.Checked) {
-            foreach ($root in $AllHostsNode) {
+            foreach ($root in $AllTreeViewNodes) {
                 if ($root.text -imatch "Search Results") {
                     foreach ($Category in $root.Nodes) {
                         foreach ($Entry in $Category.nodes) {
@@ -69,7 +69,7 @@ function Generate-ComputerList {
             }
         }
         if ($script:TreeNodeComputerList.Checked) {
-            foreach ($root in $AllHostsNode) {
+            foreach ($root in $AllTreeViewNodes) {
                 if ($root.text -imatch "All Endpoints") {
                     foreach ($Category in $root.Nodes) {
                         foreach ($Entry in $Category.nodes) {
@@ -83,7 +83,7 @@ function Generate-ComputerList {
                 }
             }
         }
-        foreach ($root in $AllHostsNode) {
+        foreach ($root in $AllTreeViewNodes) {
             # This loop will select All Endpoints in a Category
             foreach ($Category in $root.Nodes) {
                 if ($Category.Checked) {

@@ -1,19 +1,19 @@
 $ComputerListPsExecButtonAdd_Click = {
     $InformationTabControl.SelectedTab = $Section3ResultsTab
-    Create-ComputerNodeCheckBoxArray
+    Create-TreeViewCheckBoxArray -Endpoint
     Generate-ComputerList
 
-    if ($ComputerListProvideCredentialsCheckBox.Checked) { $Username = $script:Credential.UserName}
+    if ($script:ComputerListProvideCredentialsCheckBox.Checked) { $Username = $script:Credential.UserName}
     else {$Username = $PoShEasyWinAccountLaunch }
 
     if ($script:ComputerListEndpointNameToolStripLabel.text) {
         $VerifyAction = Verify-Action -Title "Verification: PSExec" -Question "Connecting Account:  $Username`n`nEnter a PSEexec session to the following?" -Computer $($script:ComputerListEndpointNameToolStripLabel.text)
         if ($script:ComputerListUseDNSCheckbox.checked) { 
-            $script:ComputerTreeViewSelected = $script:ComputerListEndpointNameToolStripLabel.text 
+            $script:ComputerTreeViewSelected = $script:ComputerListEndpointNameToolStripLabel.text
         }
         else {
-            [System.Windows.Forms.TreeNodeCollection]$AllHostsNode = $script:ComputerTreeView.Nodes
-            foreach ($root in $AllHostsNode) {
+            [System.Windows.Forms.TreeNodeCollection]$AllTreeViewNodes = $script:ComputerTreeView.Nodes
+            foreach ($root in $AllTreeViewNodes) {
                 foreach ($Category in $root.Nodes) {
                     foreach ($Entry in $Category.nodes) {
                         if ($Entry.Text -eq $script:ComputerListEndpointNameToolStripLabel.text) {
@@ -39,7 +39,7 @@ $ComputerListPsExecButtonAdd_Click = {
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add("PsExec:  $($script:ComputerTreeViewSelected)")
         #Removed For Testing#$ResultsListBox.Items.Clear()
-        if ($ComputerListProvideCredentialsCheckBox.Checked) {
+        if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
             if (!$script:Credential) { Create-NewCredentials }
             Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Credentials Used: $($script:Credential.UserName)"
             $Username = $script:Credential.UserName
@@ -64,7 +64,7 @@ $ComputerListPsExecButtonAdd_Click = {
         }
         Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "PsExec: $($script:ComputerTreeViewSelected)"
 
-        if ($script:RollCredentialsState -and $ComputerListProvideCredentialsCheckBox.checked) {
+        if ($script:RollCredentialsState -and $script:ComputerListProvideCredentialsCheckBox.checked) {
             Start-Sleep -Seconds 3
             Generate-NewRollingPassword
         }
@@ -75,17 +75,3 @@ $ComputerListPsExecButtonAdd_Click = {
         $StatusListBox.Items.Add("PSExec Session:  Cancelled")
     }
 }
-
-# $ComputerListPsExecButtonAdd_MouseHover = {
-#     Show-ToolTip -Title "PsExec" -Icon "Info" -Message @"
-# +  Will attempt to obtain a cmd prompt via PsExec.
-# +  PsExec is a Windows Sysinternals tool.
-# +  Some anti-virus scanners will alert on this.
-# +  Command:
-#         PsExec.exe -AcceptEULA -NoBanner \\<target> cmd
-#         PsExec.exe -AcceptEULA -NoBanner \\<target> -u <domain\username> -p <password> cmd
-# +  Compatiable with 'Specify Credentials'
-# "@
-# }
-
-

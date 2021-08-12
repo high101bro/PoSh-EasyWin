@@ -1,4 +1,3 @@
-
 $Section1CommandsTab = New-Object System.Windows.Forms.TabPage -Property @{
     Text   = "Queries"
     Left   = $FormScale * $Column1RightPosition
@@ -15,23 +14,21 @@ $MainLeftCollectionsTabControl.Controls.Add($Section1CommandsTab)
 $script:AllEndpointCommands = Import-Csv $CommandsEndpoint
 
 # Imports scripts from the Endpoint script folder and loads them into the treeview
-# New scripts can be added to 'Dependencies\Cmds & Scripts\Scirpts - Endpoint' to be imported
+# New scripts can be added to 'Dependencies\Commands & Scripts\Scirpts - Endpoint' to be imported
 # Verify that the scripts function properly and return results with the Invoke-Command cmdlet
 Update-FormProgress "$Dependencies\Code\Main Body\Import-EndpointScripts.ps1"
 . "$Dependencies\Code\Main Body\Import-EndpointScripts.ps1"
 Import-EndpointScripts
 
-
 # Imports all the Active Directoyr Commands fromthe csv file
 $script:AllActiveDirectoryCommands = Import-Csv $CommandsActiveDirectory
 
 # Imports scripts from the Active Directory script folder and loads them into the treeview
-# New scripts can be added to 'Dependencies\Cmds & Scripts\Scirpts - Active Directory' to be imported
+# New scripts can be added to 'Dependencies\Commands & Scripts\Scirpts - Active Directory' to be imported
 # Verify that the scripts function properly and return results with the Invoke-Command cmdlet
 Update-FormProgress "$Dependencies\Code\Main Body\Import-ActiveDirectoryScripts.ps1"
 . "$Dependencies\Code\Main Body\Import-ActiveDirectoryScripts.ps1"
 Import-ActiveDirectoryScripts
-
 
 # Initializes/empties the Custom Group Commands array
 # Queries executed will be stored within this array and added later to as treenodes
@@ -47,14 +44,14 @@ $script:CustomGroupCommandsListListListList = @()
 #
 #======================================================================
 
-$script:TreeeViewComputerListCount = 0
+$script:TreeeViewEndpointCount = 0
 $script:TreeeViewCommandsCount     = 0
 
 # Handles the behavior of nodes when clicked, such as checking all sub-checkboxes, changing text colors, and Tabs selected.
 # Also counts the total number of checkboxes checked (both command and computer treenodes, and other query checkboxes) and
 # changes the color of the start collection button to-and-from Green.
-Update-FormProgress "$Dependencies\Code\Tree View\Conduct-NodeAction.ps1"
-. "$Dependencies\Code\Tree View\Conduct-NodeAction.ps1"
+Update-FormProgress "$Dependencies\Code\Tree View\Update-TreeViewData.ps1"
+. "$Dependencies\Code\Tree View\Update-TreeViewData.ps1"
 
 # Initializes the Commands TreeView section that various command nodes are added to
 # TreeView initialization initially happens upon load and whenever the it is regenerated, like when switching between views
@@ -89,9 +86,12 @@ Update-FormProgress "$Dependencies\Code\Main Body\DeselectAllCommands.ps1"
 Update-FormProgress "$Dependencies\Code\Main Body\DeselectAllComputers.ps1"
 . "$Dependencies\Code\Main Body\DeselectAllComputers.ps1"
 
+Update-FormProgress "$Dependencies\Code\Main Body\DeselectAllAccounts.ps1"
+. "$Dependencies\Code\Main Body\DeselectAllAccounts.ps1"
+
 
 # Initially imports the Custom Group Commands and populates the command treenode
-$script:CustomGroupCommands = Import-CliXml "$Dependencies\Custom Group Commands.xml"
+$script:CustomGroupCommands = Import-CliXml $CommandsCustomGrouped
 foreach ($Command in $script:CustomGroupCommands) {
     $Command | Add-Member -MemberType NoteProperty -Name CategoryName -Value "$($Command.CategoryName)" -Force
     Add-NodeCommand -RootNode $script:TreeNodeCustomGroupCommands -Category "$($Command.CategoryName)" -Entry "$($Command.Name)" -ToolTip $Command.Command
@@ -100,6 +100,76 @@ $script:CustomGroupCommandsList = $script:CustomGroupCommands
 
 function Update-CustomCommandGroup {
     Compile-SelectedCommandTreeNode
+
+    $GroupCommandsForm = New-Object system.Windows.Forms.Form -Property @{
+        Text          = "PoSh-EasyWin - Group Commands"
+        Width  = $FormScale * 335
+        Height = $FormScale * 120
+        StartPosition = "CenterScreen"
+        Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+        Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
+        Add_Closing = { $This.dispose() }
+    }
+                $GroupCommandsGroupNameLabel = New-Object System.Windows.Forms.Label -Property @{
+                    Text   = "Enter a new or existing group name:"
+                    Left   = $FormScale * 10
+                    Top    = $FormScale * 10
+                    Width  = $FormScale * 300
+                    Height = $FormScale * 22
+                    Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+                    ForeColor = 'Blue'
+                }
+                $GroupCommandsForm.Controls.Add($GroupCommandsGroupNameLabel)
+  
+                $GroupCommandUniqueNameCheck = {
+                    $CustomGroupCommandUnique = $true
+                    [System.Windows.Forms.TreeNodeCollection]$AllTreeViewNodes = $script:CommandsTreeView.Nodes
+                    foreach ($root in $AllTreeViewNodes) {
+                        if ($root.text -match 'Custom Group Commands') {
+                            foreach ($category in $root.nodes) {
+                                if ($category.text -eq $GroupCommandsGroupNameTextBox.text) {
+                                    $CustomGroupCommandUnique = $false
+                                }
+                            }
+                        }
+                    }
+                    if ($CustomGroupCommandUnique) {
+                        $script:GroupCommandsGroupName = $GroupCommandsGroupNameTextBox.Text
+                        $GroupCommandsForm.close()    
+                    }
+                    else {
+                        [system.media.systemsounds]::Exclamation.play()
+                        [System.Windows.Forms.MessageBox]::Show("The custom command group name already exists. Enter a new name or delete the other one.","PoSh-EasyWin",'Ok',"Info")
+                    }
+                }
+                $GroupCommandsGroupNameTextBox = New-Object System.Windows.Forms.TextBox -Property @{
+                    Text   = "$((Get-Date).ToString('yyyy-MM-dd @ HH:mm:ss'))"
+                    Left   = $FormScale * 10
+                    Top    = $GroupCommandsGroupNameLabel.Top + $GroupCommandsGroupNameLabel.Height
+                    Width  = $FormScale * 300
+                    Height = $FormScale * 22
+                    Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+                    Add_KeyDown = {
+                        if ($_.KeyCode -eq "Enter") { Invoke-Command $GroupCommandUniqueNameCheck }
+                    }
+                }
+                $GroupCommandsForm.Controls.Add($GroupCommandsGroupNameTextBox)
+
+
+                $GroupCommandsGroupNameCreateButton = New-Object System.Windows.Forms.Button -Property @{
+                    Text   = "Create Group"
+                    Left   = $GroupCommandsGroupNameTextBox.Left + $GroupCommandsGroupNameTextBox.Width - $($FormScale * 100)
+                    Top    = $GroupCommandsGroupNameTextBox.Top + $GroupCommandsGroupNameTextBox.Height + ($FormScale * 5)
+                    Width  = $FormScale * 100
+                    Height = $FormScale * 22
+                    Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+                    Add_Click = { Invoke-Command $GroupCommandUniqueNameCheck }
+                }
+                CommonButtonSettings -Button $GroupCommandsGroupNameCreateButton
+                $GroupCommandsForm.Controls.Add($GroupCommandsGroupNameCreateButton)
+
+    $GroupCommandsForm.ShowDialog()
+
 
     # Verifies that the command is only present once. Prevents running the multiple copies of the same comand, line from using the Custom Group Commands
     $CommandsCheckedBoxesSelectedTemp  = @()
@@ -112,19 +182,18 @@ function Update-CustomCommandGroup {
     }
 
     $CustomCommandGroupKeepSelected = @()
-    $CommandGroupCategoryName = $script:CollectionSavedDirectoryTextBox.Text | Split-Path -Leaf
     foreach ($Command in $CommandsCheckedBoxesSelectedDedup) { 
-        Add-NodeCommand -RootNode $script:TreeNodeCustomGroupCommands -Category $CommandGroupCategoryName -Entry "$($Command.Name)" -ToolTip "$($Command.Command)"
+        Add-NodeCommand -RootNode $script:TreeNodeCustomGroupCommands -Category $script:GroupCommandsGroupName -Entry "$($Command.Name)" -ToolTip "$($Command.Command)"
         $CustomCommandGroupKeepSelected += [pscustomobject]@{
-            CategoryName = $CommandGroupCategoryName
+            CategoryName = $script:GroupCommandsGroupName
             Name         = $Command.Name
             Command      = $Command.Command
         }
     }
 
-    $script:CustomGroupCommandsList + $CustomCommandGroupKeepSelected | Export-CliXml "$Dependencies\Custom Group Commands.xml"
+    $script:CustomGroupCommandsList + $CustomCommandGroupKeepSelected | Export-CliXml $CommandsCustomGrouped
 
-    $script:CustomGroupCommands = Import-CliXml "$Dependencies\Custom Group Commands.xml"
+    $script:CustomGroupCommands = Import-CliXml $CommandsCustomGrouped
     foreach ($Command in $script:CustomGroupCommands) {
         $Command | Add-Member -MemberType NoteProperty -Name CategoryName -Value "$($Command.CategoryName)" -Force
         Add-NodeCommand -RootNode $script:TreeNodeCustomGroupCommands -Category "$($Command.CategoryName)" -Entry "$($Command.Name)" -ToolTip $Command.Command
@@ -223,20 +292,6 @@ $CommandsTreeViewFilterGroupBox = New-Object System.Windows.Forms.GroupBox -Prop
 
 $Section1CommandsTab.Controls.Add($CommandsTreeViewFilterGroupBox)
 
-# $PoShEasyWinLogoPictureBox = New-Object System.Windows.Forms.PictureBox -Property @{
-#     #text     = "PoSh-EasyWin Image"
-#     Left     = $CommandsTreeViewViewByGroupBox.Left + $CommandsTreeViewViewByGroupBox.Width + ($FormScale * + 15)
-#     Top      = $FormScale * $CommandsTreeViewViewByGroupBox.Top
-#     Width    = $FormScale * 175
-#     Height   = $FormScale * 35
-#     AutoSize = $true
-#     SizeMode = 'Stretch'
-#     Image    = [System.Drawing.Image]::FromFile("$Dependencies\PoSh-EasyWin Image.png" )
-#     #InitialImage = $null
-#     #ErrorImage   = $null
-# }
-# $Section1CommandsTab.Controls.Add($PoShEasyWinLogoPictureBox)
-
 
 # Searches for command nodes that match a given search entry
 # A new category node named by the search entry will be created and all results will be nested within
@@ -287,8 +342,21 @@ $CommandsTreeviewGroupCommandsButton = New-Object System.Windows.Forms.Button -P
     Width  = $FormScale * 110
     Height = $FormScale * 22
     Add_Click      = {
-        [System.Windows.Forms.MessageBox]::Show("Currently, the group node name will use the 'Results Folder' name of:`n`n`t$($script:CollectionSavedDirectoryTextBox.Text | Split-Path -Leaf)`n`nYou can delete the groups by checkboxing the node and selecting Remove Command Group Button when it appears.",'PoSh-EasyWin Group Commands')
-        Update-CustomCommandGroup
+        [System.Windows.Forms.TreeNodeCollection]$AllTreeViewNodes = $script:CommandsTreeView.Nodes
+        $CommandCount = 0
+        foreach ($root in $AllTreeViewNodes) {
+            foreach ($category in $root.nodes) {
+                foreach ($entry in $category.nodes) {
+                    if ($entry.checked) { $CommandCount++ }
+                }
+            }
+        }
+        if ($CommandCount -ge 2) {
+            Update-CustomCommandGroup
+        }
+        else {
+            [System.Windows.Forms.MessageBox]::Show("Checkbox two or more commands to group together.","PoSh-EasyWin",'Ok',"Info")
+        }
     }
 }
 $Section1CommandsTab.Controls.Add($CommandsTreeviewGroupCommandsButton)
@@ -315,15 +383,15 @@ CommonButtonSettings -Button $CommandsTreeviewDeselectAllButton
 
 Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\CommandsTreeViewQueryHistoryRemovalButton.ps1"
 . "$Dependencies\Code\System.Windows.Forms\Button\CommandsTreeViewQueryHistoryRemovalButton.ps1"
-$CommandsTreeViewCustomGroupCommandsRemovalButton = New-Object System.Windows.Forms.Button -Property @{
-    Text   = "Remove Command Group"
+$CommandsTreeViewRemoveCommandButton = New-Object System.Windows.Forms.Button -Property @{
+    Text   = "Remove Command"
     Left   = $FormScale * 278
     Top    = $FormScale * 430
     Width  = $FormScale * 150
     Height = $FormScale * 22
-    Add_Click = $CommandsTreeViewCustomGroupCommandsRemovalButtonAdd_Click
+    Add_Click = $CommandsTreeViewRemoveCommandButtonAdd_Click
 }
-CommonButtonSettings -Button $CommandsTreeViewCustomGroupCommandsRemovalButton
+CommonButtonSettings -Button $CommandsTreeViewRemoveCommandButton
 # Note: This button is added/removed dynamicallly when custom group commands category treenodes are selected
 
 
@@ -337,8 +405,12 @@ $script:CommandsTreeView = New-Object System.Windows.Forms.TreeView -Property @{
     #LabelEdit       = $True
     ShowLines        = $True
     ShowNodeToolTips = $True
-    Add_Click        = { Conduct-NodeAction -TreeView $script:CommandsTreeView.Nodes -Commands }
-    Add_AfterSelect  = { Conduct-NodeAction -TreeView $script:CommandsTreeView.Nodes -Commands }
+    Add_Click        = { 
+        Update-TreeViewData -Commands -TreeView $script:CommandsTreeView.Nodes
+    }
+    Add_AfterSelect  = { 
+        Update-TreeViewData -Commands -TreeView $script:CommandsTreeView.Nodes
+    }
 }
 $script:CommandsTreeView.Sort()
 $Section1CommandsTab.Controls.Add($script:CommandsTreeView)
@@ -358,7 +430,7 @@ $CustomQueryScriptBlockCheckBox = New-Object System.Windows.Forms.CheckBox -Prop
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),1,2,1)
     ForeColor = 'Blue'
     Add_Click = {
-        Conduct-NodeAction -TreeView $script:CommandsTreeView.Nodes -Commands
+        Update-TreeViewData -Commands -TreeView $script:CommandsTreeView.Nodes
         if ($script:CustomQueryScriptBlockTextbox.text -ne $script:CustomQueryScriptBlockSaved) {
             $CustomQueryScriptBlockCheckBox.checked = $false
             $CustomQueryScriptBlockCheckBox.enabled = $false
@@ -383,8 +455,12 @@ $CustomQueryScriptBlockGroupBox = New-Object System.Windows.Forms.GroupBox -Prop
                 ShortcutsEnabled   = $true
                 AutoCompleteSource = "CustomSource"
                 AutoCompleteMode   = "SuggestAppend"
-                Add_KeyDown    = { if ($_.KeyCode -eq "Enter") {  Invoke-Command $CustomQueryScriptBlock } }
+                Add_KeyDown    = { 
+                    if ($_.KeyCode -eq "Enter") {  CustomQueryScriptBlock } 
+                }
                 Add_MouseEnter = {
+                    $script:CustomQueryScriptBlockGroupBoxTextMemory = $This.Text 
+                    $this.ForeColor = 'DarkRed'
                     if ($this.text -ne $script:CustomQueryScriptBlockSaved) {
                         $CustomQueryScriptBlockCheckBox.checked = $false
                         $CustomQueryScriptBlockCheckBox.enabled = $false
@@ -401,6 +477,13 @@ $CustomQueryScriptBlockGroupBox = New-Object System.Windows.Forms.GroupBox -Prop
                     }
                 }
                 Add_MouseLeave = {
+                    if ($script:CustomQueryScriptBlockGroupBoxTextMemory -eq 'Enter A Get Cmdlet (ex: Get-Process)' -or 
+                        $script:CustomQueryScriptBlockGroupBoxTextMemory -eq 'Get-' -or
+                        $script:CustomQueryScriptBlockGroupBoxTextMemory -eq 'Entery Any Cmdlet' -or
+                        $script:CustomQueryScriptBlockGroupBoxTextMemory -eq ''){
+                        $this.ForeColor = 'Black'
+                    }
+
                     if ($this.text -ne $script:CustomQueryScriptBlockSaved) {
                         $CustomQueryScriptBlockCheckBox.enabled = $false
                     }
@@ -425,27 +508,18 @@ $CustomQueryScriptBlockGroupBox = New-Object System.Windows.Forms.GroupBox -Prop
             $CustomQueryScriptBlockGroupBox.controls.add($script:CustomQueryScriptBlockTextbox)
 
 
-            $CustomQueryScriptBlockButton = New-Object System.Windows.Forms.Button -Property @{
-                Text   = 'Modify Parameters'
+            $CustomQueryScriptBlockOverrideCheckBox = New-Object System.Windows.Forms.CheckBox -Property @{
+                Text   = 'Allow All Commands'
                 Left   = $script:CustomQueryScriptBlockTextbox.Left
                 Top    = $script:CustomQueryScriptBlockTextbox.top + $script:CustomQueryScriptBlockTextbox.height + ($FormScale * 5)
-                Width  = $FormScale * 135
-                Height = $FormScale * 22
-                Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 10),0,0,0)
-                Add_Click = { Invoke-Command $CustomQueryScriptBlock }
-            }
-            CommonButtonSettings -Button $CustomQueryScriptBlockButton
-            $CustomQueryScriptBlockGroupBox.controls.add($CustomQueryScriptBlockButton)
-
-
-            $CustomQueryScriptBlockOverrideCheckBox = New-Object System.Windows.Forms.CheckBox -Property @{
-                Text   = 'Allow All Verbs'
-                Left   = $CustomQueryScriptBlockButton.Left + $CustomQueryScriptBlockButton.width + ($FormScale * 10)
-                Top    = $script:CustomQueryScriptBlockTextbox.Top + $script:CustomQueryScriptBlockTextbox.Height + ($FormScale * 5)
                 AutoSize  = $true
                 Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
                 Add_click = {
                     if ($this.checked) {
+                        [System.Windows.Forms.MessageBox]::Show("This allows you to add commands that use other verbs to take actions on endpoints, such as:     Stop-Process -Name WinRM`n     Remove-Item Path `$HOME\Downloads -Recurse -Force`n`nThis greatly reduces syntax errors.`nYou can also add commands by updating the csv files that are used to generate the command treeview, or upload custom scripts.","PoSh-EasyWin",'Ok',"Info")
+                        $CustomQueryScriptBlockBuildButton.Enabled = $True
+                        $CustomQueryScriptBlockBuildButton.BackColor = 'LightBlue'
+                        
                         $script:CustomQueryScriptBlockTextbox.AutoCompleteCustomSource.Clear()
                         $script:CmdletList = (Get-Command -CommandType 'Alias', 'Cmdlet', 'Function', 'Workflow').Name
                         $script:CustomQueryScriptBlockTextbox.AutoCompleteCustomSource.AddRange($script:CmdletList)
@@ -453,6 +527,9 @@ $CustomQueryScriptBlockGroupBox = New-Object System.Windows.Forms.GroupBox -Prop
                         $CustomQueryScriptBlockCheckBox.enabled = $false
                     }
                     else {
+                        $CustomQueryScriptBlockBuildButton.Enabled = $False
+                        $CustomQueryScriptBlockBuildButton.BackColor = 'LightGray'
+                        
                         $script:CustomQueryScriptBlockTextbox.AutoCompleteCustomSource.Clear()
                         $script:CmdletList = (Get-Command -CommandType 'Alias', 'Cmdlet', 'Function', 'Workflow').Name | Where-Object {$_ -like "Get-*"}
                         $script:CustomQueryScriptBlockTextbox.AutoCompleteCustomSource.AddRange($script:CmdletList)
@@ -462,6 +539,89 @@ $CustomQueryScriptBlockGroupBox = New-Object System.Windows.Forms.GroupBox -Prop
                 }
             }
             $CustomQueryScriptBlockGroupBox.controls.add($CustomQueryScriptBlockOverrideCheckBox)
+
+
+            $CustomQueryScriptBlockBuildButton = New-Object System.Windows.Forms.Button -Property @{
+                Text   = 'Build Command'
+                Left   = $CustomQueryScriptBlockOverrideCheckBox.Left + $CustomQueryScriptBlockOverrideCheckBox.Width
+                Top    = $CustomQueryScriptBlockOverrideCheckBox.top
+                Width  = $FormScale * 100
+                Height = $FormScale * 22
+                Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 10),0,0,0)
+                Enabled   = $false
+                Add_Click = {
+                    CustomQueryScriptBlock -Build
+                }
+            }
+            CommonButtonSettings -Button $CustomQueryScriptBlockBuildButton
+            $CustomQueryScriptBlockGroupBox.controls.add($CustomQueryScriptBlockBuildButton)
+
+
+            $CustomQueryScriptBlockAddCommandButton = New-Object System.Windows.Forms.Button -Property @{
+                Text   = 'Add Command'
+                Left   = $script:CustomQueryScriptBlockTextbox.Left + $script:CustomQueryScriptBlockTextbox.Width - $($FormScale * 100)
+                Top    = $CustomQueryScriptBlockOverrideCheckBox.top
+                Width  = $FormScale * 100
+                Height = $FormScale * 22
+                Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 10),0,0,0)
+                Enabled   = $false
+                Add_Click = {
+                    $script:CustomQueryScriptBlockTextbox.ForeColor = 'Black'
+
+                    # Creates the command object for use to add to the treeview 
+                    $Command = [PSCustomObject]@{
+                        ExportFileName     = "$(($script:ShowCommandQueryBuild -split ' ')[0]) (User Added Command)"
+                        Properties_PoSh    = '*'
+                        Command_WinRM_PoSh = "Invoke-Command -ScriptBlock { $script:ShowCommandQueryBuild }"
+                        Name               = $script:ShowCommandQueryBuild
+                        Type               = '(WinRM) PoSh'
+                    }
+
+                    # Check if command already exists
+                    $VerifyUserAddedCommandAddition = $true
+                    [System.Windows.Forms.TreeNodeCollection]$AllTreeViewNodes = $script:CommandsTreeView.Nodes
+                    foreach ($root in $AllTreeViewNodes) {
+                        if ($root.text -match 'User Added Commands') {
+                            foreach ($category in $root.nodes) {
+                                foreach ($entry in $category.nodes) {
+                                    if ($command.Command_WinRM_PoSh -eq $entry.ToolTipText) {
+                                        $VerifyUserAddedCommandAddition = $false
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    # Adds command if it doesn't exist
+                    if ($VerifyUserAddedCommandAddition) {
+                        Add-NodeCommand -RootNode $script:TreeNodeUserAddedCommands -Category $("{0,-10}{1}" -f "[WinRM]", "PowerShell Cmdlets") -Entry "(WinRM) PoSh -- $($Command.Name)" -ToolTip $($command.Command_WinRM_PoSh)
+                        $script:UserAddedCommands += $Command
+                        $script:UserAddedCommands | Export-Csv $CommandsUserAdded -NoTypeInformation
+                    }
+                    else {
+                        [system.media.systemsounds]::Exclamation.play()
+                        [System.Windows.Forms.MessageBox]::Show("The following User Added Command already exists:`n   $($script:ShowCommandQueryBuild)","PoSh-EasyWin",'Ok',"Info")
+                    }
+
+                    # Shows all the commands
+                    $entry.ExpandAll()
+                    $entry.EnsureVisible()
+
+                    # Changes textbox back to default text
+                    if ($CustomQueryScriptBlockOverrideCheckBox.checked) {
+                        $script:CustomQueryScriptBlockTextbox.text = 'Enter Any Cmdlet'
+                    }
+                    else {
+                        $script:CustomQueryScriptBlockTextbox.text = 'Enter A Get Cmdlet (ex: Get-Process)'
+                    }
+
+                    $This.BackColor = 'LightGray'
+                    $This.enabled = $false
+                }
+            }
+            CommonButtonSettings -Button $CustomQueryScriptBlockAddCommandButton
+            $CustomQueryScriptBlockGroupBox.controls.add($CustomQueryScriptBlockAddCommandButton)
+
 
 $Section1CommandsTab.controls.add($CustomQueryScriptBlockGroupBox)
 
@@ -475,4 +635,5 @@ $script:CommandsTreeView.Nodes.Add($script:TreeNodeEndpointCommands)
 $script:CommandsTreeView.Nodes.Add($script:TreeNodeActiveDirectoryCommands)
 $script:CommandsTreeView.Nodes.Add($script:TreeNodeCommandSearch)
 $script:CommandsTreeView.Nodes.Add($script:TreeNodeCustomGroupCommands)
+$script:CommandsTreeView.Nodes.Add($script:TreeNodeUserAddedCommands)
 #$script:CommandsTreeView.ExpandAll()

@@ -22,7 +22,7 @@ function MonitorJobScriptBlock {
     )
 
     foreach ($TargetComputer in $script:ComputerList) {
-        if ($ComputerListProvideCredentialsCheckBox.Checked) {
+        if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
             if (!$script:Credential) { Create-NewCredentials }
 
             Invoke-Command -ScriptBlock ${function:Get-AccountLogonActivity} `

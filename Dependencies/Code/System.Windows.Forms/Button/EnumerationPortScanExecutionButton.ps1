@@ -182,7 +182,7 @@ $($EnumerationPortScanTimeoutTextbox.Text)
             $InformationTabControl.SelectedTab = $Section3MonitorJobsTab
 
             if ($script:EnumerationPortScanSpecificComputerNodeCheckbox.checked -eq $true) {
-                if ($ComputerListProvideCredentialsCheckBox.Checked) {
+                if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
                     if (!$script:Credential) { Create-NewCredentials }
                     $CollectionName = "Enumeration Scanning $($script:ComputerList.count) [Pivot: $($script:ComputerListPivotExecutionTextBox.text)]"
 
@@ -236,7 +236,7 @@ $($EnumerationPortScanTimeoutTextbox.Text)
                 }
             }
             elseif ($script:EnumerationPortScanSpecificComputerNodeCheckbox.checked -eq $false) {
-                if ($ComputerListProvideCredentialsCheckBox.Checked) {
+                if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
                     if (!$script:Credential) { Create-NewCredentials }
                     $CollectionName = "Enumeration Scanning $(
                         $(
@@ -307,14 +307,17 @@ $($EnumerationPortScanTimeoutTextbox.Text)
     }
 
     $script:ComputerTreeView.Nodes.Clear()
-    Initialize-ComputerTreeNodes
-    Populate-ComputerTreeNodeDefaultData
-    Save-ComputerTreeNodeHostData
+    Initialize-TreeViewData -Endpoint
+    Normalize-TreeViewData -Endpoint
+    Save-TreeViewData -Endpoint
 
+    $ComputerAndAccountTreeViewTabControl.SelectedTab = $ComputerTreeviewTab
+    $script:ComputerTreeNodeComboBox.SelectedItem = 'CanonicalName'
+    
     Foreach($Computer in $script:ComputerTreeViewData) {
-        Add-NodeComputer -RootNode $script:TreeNodeComputerList -Category $Computer.OperatingSystem -Entry $Computer.Name -ToolTip 'No ToolTip Data' -IPv4Address $Computer.IPv4Address -Metadata $Computer
+        AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:TreeNodeComputerList -Category $Computer.OperatingSystem -Entry $Computer.Name -ToolTip $ComputerData.IPv4Address -IPv4Address $Computer.IPv4Address -Metadata $Computer
     }
-    Update-TreeNodeComputerState
+    UpdateState-TreeViewData -Endpoint
 }
 
 

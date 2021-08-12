@@ -1,8 +1,8 @@
 $CurrentProcessId = [System.Diagnostics.Process]::GetCurrentProcess().Id
 $CollectionDirectory = $script:SystemTrayOpenFolder
-$ScriptLocationPath = "$Dependencies\Cmds & Scripts"
-$EndpointCommandPath = "$Dependencies\Cmds & Scripts\Commands - Endpoint.csv"
-$ActiveDirectoryCommandPath = "$Dependencies\Cmds & Scripts\Commands - Active Directory.csv"
+$ScriptLocationPath = "$Dependencies\Commands & Scripts"
+$EndpointCommandPath = "$Dependencies\Commands & Scripts\Commands - Endpoint.csv"
+$ActiveDirectoryCommandPath = "$Dependencies\Commands & Scripts\Commands - Active Directory.csv"
 
 $SystemTrayNotifyIcon = {
     param($CollectionDirectory,$ScriptLocationPath,$EndpointCommandPath,$ActiveDirectoryCommandPath,$CurrentProcessId,$FormAdminCheck,$EasyWinIcon,$Font,$ThisScript,$InitialScriptLoadTime)

@@ -1,5 +1,5 @@
-Update-FormProgress "$Dependencies\Code\Tree View\Computer\Create-ComputerNodeCheckBoxArray.ps1"
-. "$Dependencies\Code\Tree View\Computer\Create-ComputerNodeCheckBoxArray.ps1"
+Update-FormProgress "$Dependencies\Code\Tree View\Create-TreeViewCheckBoxArray.ps1"
+. "$Dependencies\Code\Tree View\Create-TreeViewCheckBoxArray.ps1"
 
 Update-FormProgress "$Dependencies\Code\Tree View\Computer\ComputerNodeSelectedLessThanOne.ps1"
 . "$Dependencies\Code\Tree View\Computer\ComputerNodeSelectedLessThanOne.ps1"
@@ -7,8 +7,8 @@ Update-FormProgress "$Dependencies\Code\Tree View\Computer\ComputerNodeSelectedL
 Update-FormProgress "$Dependencies\Code\Tree View\Computer\ComputerNodeSelectedMoreThanOne.ps1"
 . "$Dependencies\Code\Tree View\Computer\ComputerNodeSelectedMoreThanOne.ps1"
 
-Update-FormProgress "$Dependencies\Code\Tree View\Computer\Verify-Action.ps1"
-. "$Dependencies\Code\Tree View\Computer\Verify-Action.ps1"
+Update-FormProgress "$Dependencies\Code\Main Body\Execution\Verify-Action.ps1"
+. "$Dependencies\Code\Main Body\Execution\Verify-Action.ps1"
 
 $Section3ActionTab = New-Object System.Windows.Forms.TabPage -Property @{
     Text   = "Action"
@@ -111,7 +111,7 @@ $ManageCredentialsGroupBox = New-Object System.Windows.Forms.GroupBox -Property 
 
             Update-FormProgress "$Dependencies\Code\System.Windows.Forms\CheckBox\ComputerListProvideCredentialsCheckBox.ps1"
             . "$Dependencies\Code\System.Windows.Forms\CheckBox\ComputerListProvideCredentialsCheckBox.ps1"
-            $ComputerListProvideCredentialsCheckBox = New-Object System.Windows.Forms.CheckBox -Property @{
+            $script:ComputerListProvideCredentialsCheckBox = New-Object System.Windows.Forms.CheckBox -Property @{
                 Text    = "Use Selected Creds"
                 Left    = $FormScale * 3 + 1
                 Top     = $ProvideCredentialsButton.Top + $ProvideCredentialsButton.Height + ($FormScale * 3)
@@ -122,8 +122,8 @@ $ManageCredentialsGroupBox = New-Object System.Windows.Forms.GroupBox -Property 
                 Add_Click      = $ComputerListProvideCredentialsCheckBoxAdd_Click
                 Add_MouseHover = $ComputerListProvideCredentialsCheckBoxAdd_MouseHover
             }
-            $ManageCredentialsGroupBox.Controls.Add($ComputerListProvideCredentialsCheckBox)
-
+            $ManageCredentialsGroupBox.Controls.Add($script:ComputerListProvideCredentialsCheckBox)
+  
 $Section3ActionTab.Controls.Add($ManageCredentialsGroupBox)
 
 

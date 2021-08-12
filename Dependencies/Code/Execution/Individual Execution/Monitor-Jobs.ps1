@@ -1525,8 +1525,8 @@ if ($MonitorMode) {
                                                 Font      = New-Object System.Drawing.Font("`$Font",`$(`$FormScale * 10),0,0,0)
                                                 ForeColor = "Black"
                                                 Add_Click = {
-                                                    [System.Windows.Forms.TreeNodeCollection]`$AllHostsNode = `$script:ComputerTreeView.Nodes
-                                                    foreach (`$root in `$AllHostsNode) { 
+                                                    [System.Windows.Forms.TreeNodeCollection]`$AllTreeViewNodes = `$script:ComputerTreeView.Nodes
+                                                    foreach (`$root in `$AllTreeViewNodes) { 
                                                         `$root.Checked = `$false 
                                                         foreach (`$Category in `$root.Nodes) { 
                                                             `$Category.Checked = `$false 
@@ -1537,7 +1537,7 @@ if ($MonitorMode) {
                                                     }
                                                     
                                                     foreach (`$Selected in `$script:MonitorJobsDetailsRunningListBox$JobId.SelectedItems) {
-                                                        foreach (`$root in `$AllHostsNode) { 
+                                                        foreach (`$root in `$AllTreeViewNodes) { 
                                                             foreach (`$Category in `$root.Nodes) { 
                                                                 foreach (`$Entry in `$Category.nodes) { 
                                                                     if (`$Entry.Text -eq `$Selected){ 
@@ -1547,7 +1547,7 @@ if ($MonitorMode) {
                                                             } 
                                                         }
                                                     }
-                                                    Conduct-NodeAction -TreeView `$script:ComputerTreeView.Nodes -ComputerList
+                                                    Update-TreeViewData -Endpoint -TreeView `$script:ComputerTreeView.Nodes
                                                 }
                                             }
                                             `$script:MonitorJobsDetailsRunningGroupBox$JobId.Controls.Add(`$script:MonitorJobsDetailsRunningSelectedForTreeNodeButton$JobId)
@@ -1606,8 +1606,8 @@ if ($MonitorMode) {
                                                     Font      = New-Object System.Drawing.Font("`$Font",`$(`$FormScale * 10),0,0,0)
                                                     ForeColor = "Black"
                                                     Add_Click = {
-                                                        [System.Windows.Forms.TreeNodeCollection]`$AllHostsNode = `$script:ComputerTreeView.Nodes
-                                                        foreach (`$root in `$AllHostsNode) { 
+                                                        [System.Windows.Forms.TreeNodeCollection]`$AllTreeViewNodes = `$script:ComputerTreeView.Nodes
+                                                        foreach (`$root in `$AllTreeViewNodes) { 
                                                             `$root.Checked = `$false 
                                                             foreach (`$Category in `$root.Nodes) { 
                                                                 `$Category.Checked = `$false 
@@ -1618,7 +1618,7 @@ if ($MonitorMode) {
                                                         }
         
                                                         foreach (`$Selected in `$script:MonitorJobsDetailsCompletedListBox$JobId.SelectedItems) {
-                                                            foreach (`$root in `$AllHostsNode) { 
+                                                            foreach (`$root in `$AllTreeViewNodes) { 
                                                                 foreach (`$Category in `$root.Nodes) { 
                                                                     foreach (`$Entry in `$Category.nodes) { 
                                                                         if (`$Entry.Text -eq `$Selected){ 
@@ -1628,7 +1628,7 @@ if ($MonitorMode) {
                                                                 } 
                                                             }
                                                         }
-                                                        Conduct-NodeAction -TreeView `$script:ComputerTreeView.Nodes -ComputerList
+                                                        Update-TreeViewData -Endpoint -TreeView `$script:ComputerTreeView.Nodes
                                                     }
                                                 }
                                                 `$script:MonitorJobsDetailsCompletedGroupBox$JobId.Controls.Add(`$script:MonitorJobsDetailsCompletedSelectedForTreeNodeLButton$JobId)
@@ -1688,8 +1688,8 @@ if ($MonitorMode) {
                                                 Font      = New-Object System.Drawing.Font("`$Font",`$(`$FormScale * 10),0,0,0)
                                                 ForeColor = "Black"
                                                 Add_Click = {
-                                                    [System.Windows.Forms.TreeNodeCollection]`$AllHostsNode = `$script:ComputerTreeView.Nodes
-                                                    foreach (`$root in `$AllHostsNode) { 
+                                                    [System.Windows.Forms.TreeNodeCollection]`$AllTreeViewNodes = `$script:ComputerTreeView.Nodes
+                                                    foreach (`$root in `$AllTreeViewNodes) { 
                                                         `$root.Checked = `$false 
                                                         foreach (`$Category in `$root.Nodes) { 
                                                             `$Category.Checked = `$false 
@@ -1700,7 +1700,7 @@ if ($MonitorMode) {
                                                     }
                                                     
                                                     foreach (`$Selected in `$script:MonitorJobsDetailsStoppedListBox$JobId.SelectedItems) {
-                                                        foreach (`$root in `$AllHostsNode) { 
+                                                        foreach (`$root in `$AllTreeViewNodes) { 
                                                             foreach (`$Category in `$root.Nodes) { 
                                                                 foreach (`$Entry in `$Category.nodes) { 
                                                                     if (`$Entry.Text -eq `$Selected){ 
@@ -1710,7 +1710,7 @@ if ($MonitorMode) {
                                                             } 
                                                         }
                                                     }
-                                                    Conduct-NodeAction -TreeView `$script:ComputerTreeView.Nodes -ComputerList
+                                                    Update-TreeViewData -Endpoint -TreeView `$script:ComputerTreeView.Nodes
                                                 }
                                             }
                                             `$script:MonitorJobsDetailsStoppedGroupBox$JobId.Controls.Add(`$script:MonitorJobsDetailsStoppedSelectedForTreeNodeButton$JobId)
@@ -1770,8 +1770,8 @@ if ($MonitorMode) {
                                                     Font      = New-Object System.Drawing.Font("`$Font",`$(`$FormScale * 10),0,0,0)
                                                     ForeColor = "Black"
                                                     Add_Click = {
-                                                        [System.Windows.Forms.TreeNodeCollection]`$AllHostsNode = `$script:ComputerTreeView.Nodes
-                                                        foreach (`$root in `$AllHostsNode) { 
+                                                        [System.Windows.Forms.TreeNodeCollection]`$AllTreeViewNodes = `$script:ComputerTreeView.Nodes
+                                                        foreach (`$root in `$AllTreeViewNodes) { 
                                                             `$root.Checked = `$false 
                                                             foreach (`$Category in `$root.Nodes) { 
                                                                 `$Category.Checked = `$false 
@@ -1782,7 +1782,7 @@ if ($MonitorMode) {
                                                         }
                                                         
                                                         foreach (`$Selected in `$script:MonitorJobsDetailsFailedListBox$JobId.SelectedItems) {
-                                                            foreach (`$root in `$AllHostsNode) { 
+                                                            foreach (`$root in `$AllTreeViewNodes) { 
                                                                 foreach (`$Category in `$root.Nodes) { 
                                                                     foreach (`$Entry in `$Category.nodes) { 
                                                                         if (`$Entry.Text -eq `$Selected){ 

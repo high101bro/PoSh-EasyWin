@@ -53,7 +53,7 @@ $RegistrySearchCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
             $RegistryValueDataCheckbox.ForeColor = 'Blue'                
         }
     
-        Conduct-NodeAction -TreeView $script:CommandsTreeView.Nodes -Commands
+        Update-TreeViewData -Commands -TreeView $script:CommandsTreeView.Nodes
         if ($this.checked){$this.ForeColor = 'Red'} else {$this.ForeColor = 'Blue'}        
     }
 }
@@ -138,7 +138,7 @@ $RegistryKeyNameCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
         $RegistryValueDataCheckbox.ForeColor = 'Blue'                
 
         $script:RegistrySelected = 'RegistryKeyNameCheckBox'
-        Conduct-NodeAction -TreeView $script:CommandsTreeView.Nodes -Commands    
+        Update-TreeViewData -Commands -TreeView $script:CommandsTreeView.Nodes    
     }
 }
 $Section1RegistryTab.Controls.Add($RegistryKeyNameCheckbox)
@@ -193,7 +193,7 @@ $RegistryValueNameCheckbox = New-Object System.Windows.Forms.CheckBox -Property 
         $RegistryValueDataCheckbox.ForeColor = 'Blue'
 
         $script:RegistrySelected = 'RegistryValueNameCheckbox'
-        Conduct-NodeAction -TreeView $script:CommandsTreeView.Nodes -Commands
+        Update-TreeViewData -Commands -TreeView $script:CommandsTreeView.Nodes
         if ($this.checked){$this.ForeColor = 'Red'} else {$this.ForeColor = 'Blue'}    
     }
 }
@@ -249,7 +249,7 @@ $RegistryValueDataCheckbox = New-Object System.Windows.Forms.CheckBox -Property 
         $RegistryValueDataCheckbox.ForeColor = 'Red'
 
         $script:RegistrySelected = 'RegistryValueDataCheckBox'
-        Conduct-NodeAction -TreeView $script:CommandsTreeView.Nodes -Commands
+        Update-TreeViewData -Commands -TreeView $script:CommandsTreeView.Nodes
         if ($this.checked){$this.ForeColor = 'Red'} else {$this.ForeColor = 'Blue'}    
     }
 }

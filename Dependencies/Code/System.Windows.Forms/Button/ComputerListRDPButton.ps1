@@ -1,19 +1,19 @@
 $ComputerListRDPButtonAdd_Click = {
     $InformationTabControl.SelectedTab = $Section3ResultsTab
-    Create-ComputerNodeCheckBoxArray
+    Create-TreeViewCheckBoxArray -Endpoint
     Generate-ComputerList
 
-    if ($ComputerListProvideCredentialsCheckBox.Checked) { $Username = $script:Credential.UserName}
+    if ($script:ComputerListProvideCredentialsCheckBox.Checked) { $Username = $script:Credential.UserName}
     else {$Username = $PoShEasyWinAccountLaunch }
 
     if ($script:ComputerListEndpointNameToolStripLabel.text) {
         $VerifyAction = Verify-Action -Title "Verification: Remote Desktop" -Question "Connecting Account:  $Username`n`nOpen a Remote Desktop session to the following?" -Computer $($script:ComputerListEndpointNameToolStripLabel.text)
         if ($script:ComputerListUseDNSCheckbox.checked) { 
-            $script:ComputerTreeViewSelected = $script:ComputerListEndpointNameToolStripLabel.text 
+            $script:ComputerTreeViewSelected = $script:ComputerListEndpointNameToolStripLabel.text
         }
         else {
-            [System.Windows.Forms.TreeNodeCollection]$AllHostsNode = $script:ComputerTreeView.Nodes
-            foreach ($root in $AllHostsNode) {
+            [System.Windows.Forms.TreeNodeCollection]$AllTreeViewNodes = $script:ComputerTreeView.Nodes
+            foreach ($root in $AllTreeViewNodes) {
                 foreach ($Category in $root.Nodes) {
                     foreach ($Entry in $Category.nodes) {
                         if ($Entry.Text -eq $script:ComputerListEndpointNameToolStripLabel.text) {
@@ -35,7 +35,7 @@ $ComputerListRDPButtonAdd_Click = {
     if ($VerifyAction) {
         # This brings specific tabs to the forefront/front view
         $InformationTabControl.SelectedTab = $Section3ResultsTab
-        if ($ComputerListProvideCredentialsCheckBox.Checked) {
+        if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
             if (!$script:Credential) { Create-NewCredentials }
 
             Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Credentials Used: $($script:Credential.UserName)"
@@ -66,7 +66,7 @@ $ComputerListRDPButtonAdd_Click = {
             cmdkey /delete /ras
             cmdkey /delete:"$script:ComputerTreeViewSelected"
 
-            if ($script:RollCredentialsState -and $ComputerListProvideCredentialsCheckBox.checked) {
+            if ($script:RollCredentialsState -and $script:ComputerListProvideCredentialsCheckBox.checked) {
                 Start-Sleep -Seconds 3
                 Generate-NewRollingPassword
             }
@@ -91,15 +91,3 @@ $ComputerListRDPButtonAdd_Click = {
         $StatusListBox.Items.Add("Remote Desktop:  Cancelled")
     }
 }
-
-# $ComputerListRDPButtonAdd_MouseHover = {
-# Show-ToolTip -Title "Remote Desktop Connection" -Icon "Info" -Message @"
-# +  Will attempt to RDP into a single host.
-# +  Command:
-#         mstsc /v:<target>:3389 /NoConsentPrompt
-#         mstsc /v:<target>:3389 /user:USERNAME /pass:PASSWORD /NoConsentPrompt
-# +  Compatiable with 'Specify Credentials' if permitted by network policy
-# "@
-# }
-
-

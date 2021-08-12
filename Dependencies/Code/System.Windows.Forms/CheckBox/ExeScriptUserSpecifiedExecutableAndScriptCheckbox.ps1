@@ -24,7 +24,7 @@ $ExeScriptUserSpecifiedExecutableAndScriptCheckboxAdd_Click = {
         [System.Windows.Forms.MessageBox]::Show("You need to first select an script.","Prerequisite Check",'OK','Info')
     }
 
-    Conduct-NodeAction -TreeView $script:CommandsTreeView.Nodes -Commands
+    Update-TreeViewData -Commands -TreeView $script:CommandsTreeView.Nodes
 }
 
 $ExeScriptUserSpecifiedExecutableAndScriptCheckboxAdd_MouseHover = {

@@ -5,7 +5,7 @@
 # The $DomainController variable should be replace with the domain controllers hostname
 # The CSV file is saved to the same directory that the command is executed within
 # The contents of the file can be imported into PoSh-EasyWin using the "Import from .CSV" button, any duplicate hostnames will not be addded
-# You can also just rename the csv file to "Computer List TreeView (Saved).csv" if it is your initial import
+# You can also just rename the csv file to "Endpoint List TreeView (Saved).csv" if it is your initial import
 
 
 # The command:

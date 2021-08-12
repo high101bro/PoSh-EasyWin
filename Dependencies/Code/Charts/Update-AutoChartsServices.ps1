@@ -12,7 +12,7 @@ function Update-AutoChartsServices {
 
     Foreach ($TargetComputer in $ComputerNameList) {
         if ($AutoChartPullNewDataEnrichedCheckBox.checked) {
-            if ($ComputerListProvideCredentialsCheckBox.Checked) {
+            if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
                 if (!$script:Credential) { Create-NewCredentials }
                 if ($AutoChartProtocolWinRMRadioButton.checked) {
                     $CollectionName = 'Get-ServicesEnriched - (WinRM) Script'
@@ -34,7 +34,7 @@ function Update-AutoChartsServices {
             }
         }
         else {
-            if ($ComputerListProvideCredentialsCheckBox.Checked) {
+            if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
                 if (!$script:Credential) { Create-NewCredentials }
                 if ($AutoChartProtocolWinRMRadioButton.checked) {
                     $CollectionName = 'Services - (WinRM)'
@@ -135,7 +135,7 @@ Elasped Time:  $($Timecount -replace '-','')"
         Monitor-Jobs -CollectionName $CollectionName
     }
 
-    if ($script:RollCredentialsState -and $ComputerListProvideCredentialsCheckBox.checked) {
+    if ($script:RollCredentialsState -and $script:ComputerListProvideCredentialsCheckBox.checked) {
         Start-Sleep -Seconds 3
         Generate-NewRollingPassword
     }

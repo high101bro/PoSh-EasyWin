@@ -55,13 +55,12 @@ function Query-EventLogLogsEventIDsIndividualSelectionSessionBased {
     if ($RPC){
         Invoke-Expression -Command "$EventLogQueryCommand -ComputerName $TargetComputer -Credential `$Script:Credential $EventLogQueryFilter $EventLogQueryPipe"
 
-    "$EventLogQueryCommand -ComputerName $TargetComputer -Credential `$Script:Credential $EventLogQueryFilter $EventLogQueryPipe"|ogv
+    "$EventLogQueryCommand -ComputerName $TargetComputer -Credential `$Script:Credential $EventLogQueryFilter $EventLogQueryPipe"
     }
     else {
         Invoke-Expression "$EventLogQueryCommand $EventLogQueryFilter $EventLogQueryPipe"
     }
 }
-
 
 
 function MonitorJobScriptBlock {
@@ -84,7 +83,7 @@ function MonitorJobScriptBlock {
         Create-LogEntry -TargetComputer $TargetComputer  -LogFile $LogFile -Message $CollectionName
 
         if ($EventLogWinRMRadioButton.Checked) {
-            if ( $ComputerListProvideCredentialsCheckBox.Checked ) {
+            if ( $script:ComputerListProvideCredentialsCheckBox.Checked ) {
                 if (!$script:Credential) { Create-NewCredentials }
 
                 Invoke-Command -ScriptBlock ${function:Query-EventLogLogsEventIDsIndividualSelectionSessionBased} `
@@ -101,7 +100,7 @@ function MonitorJobScriptBlock {
             }
         }
         else {
-            if ( $ComputerListProvideCredentialsCheckBox.Checked ) {
+            if ( $script:ComputerListProvideCredentialsCheckBox.Checked ) {
                 if (!$script:Credential) { Create-NewCredentials }
 
                 Start-Job -ScriptBlock {

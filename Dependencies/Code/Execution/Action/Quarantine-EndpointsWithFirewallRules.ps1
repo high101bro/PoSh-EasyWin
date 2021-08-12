@@ -12,10 +12,10 @@ function Quarantine-EndpointsWithFirewallRules {
 
     function Tag-QuarantineMessage {
         param($Message,$Computer)
-        [System.Windows.Forms.TreeNodeCollection]$AllHostsNode = $script:ComputerTreeView.Nodes
+        [System.Windows.Forms.TreeNodeCollection]$AllTreeViewNodes = $script:ComputerTreeView.Nodes
         $ComputerListMassTagArray = @()
         foreach ($node in $script:ComputerTreeViewSelected) {
-            foreach ($root in $AllHostsNode) {
+            foreach ($root in $AllTreeViewNodes) {
                 foreach ($Category in $root.Nodes) {
                     foreach ($Entry in $Category.Nodes) {
                         if ($Entry.Checked -and $Entry.Text -eq "$Computer" -and $Entry.Text -notin $ComputerListMassTagArray) {
@@ -31,7 +31,7 @@ function Quarantine-EndpointsWithFirewallRules {
                 }
             }
         }
-        Save-ComputerTreeNodeHostData -SaveAllChecked
+        Save-TreeViewData -Endpoint -SaveAllChecked
     }
 
     Generate-ComputerList
@@ -73,7 +73,7 @@ CAUTION! If you make a bad entry, you may cause the endpoints to become inaccess
 
             foreach ($computer in $script:ComputerList) {
                 try {
-                    if ($ComputerListProvideCredentialsCheckBox.Checked) {
+                    if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
                         if (!$script:Credential) { Create-NewCredentials }
                         $session = New-PSSession -ComputerName $Computer -Credential $script:Credential
                         Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message 'New-PSSession -ComputerName $Computer -Credential $script:Credential'
@@ -275,7 +275,7 @@ CAUTION! If you make a bad entry, you may cause the endpoints to become inaccess
     # To alert the user that it's finished
     [system.media.systemsounds]::Exclamation.play()
 
-    if ($script:RollCredentialsState -and $ComputerListProvideCredentialsCheckBox.checked) {
+    if ($script:RollCredentialsState -and $script:ComputerListProvideCredentialsCheckBox.checked) {
         Start-Sleep -Seconds 3
         Generate-NewRollingPassword
     }
