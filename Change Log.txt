@@ -15,6 +15,9 @@ Accounts Treeview
 
 Check if Move feature is working properly
 
+TODO:
+winrm get winrm/config/winrs
+
 ==================================================
 v5.4.1 -
 ==================================================

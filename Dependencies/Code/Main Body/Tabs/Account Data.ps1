@@ -760,19 +760,6 @@ $Section3AccountDataUpdateDataButton = New-Object System.Windows.Forms.Button -P
                         Get-ADUser -Filter {Name -eq $ADAccount} -Properties Name, SID, Enabled, LockedOut, Created, Modified, LastLogonDate, LastBadPasswordAttempt, BadLogonCount, PasswordLastSet, PasswordExpired, PasswordNeverExpires, PasswordNotRequired, CanonicalName, MemberOf, SmartCardLogonRequired, ScriptPath, HomeDrive
                     } -ComputerName $ImportFromADWinRMManuallEntryTextBoxTarget -Credential $script:Credential -ArgumentList @($ADAccount,$null)
                     
-                    # function Update-ADAccountInfo {
-                    #     param(
-                    #         $ADAccount,
-                    #         $ImportFromADWinRMManuallEntryTextBoxTarget,
-                    #         $script:Credential
-                    #     )
-                    #     Invoke-Command -ScriptBlock {
-                    #         param ($ADAccount)
-                    #         Get-ADUser -Filter {Name -eq $ADAccount} -Properties Name, SID, Enabled, LockedOut, Created, Modified, LastLogonDate, LastBadPasswordAttempt, BadLogonCount, PasswordLastSet, PasswordExpired, PasswordNeverExpires, PasswordNotRequired, CanonicalName, MemberOf, SmartCardLogonRequired, ScriptPath, HomeDrive
-                    #     } -ComputerName $ImportFromADWinRMManuallEntryTextBoxTarget -Credential $script:Credential -ArgumentList @($ADAccount,$null)
-                    # }
-                    # Monitor-Jobs -CollectionName "Update Account Data - $ADAccount" -MonitorMode -SMITH -SmithScript ${function:Update-ADAccountInfo} -ArgumentList @($ADAccount,$ImportFromADWinRMManuallEntryTextBoxTarget,$script:Credential) -InputValues $InputValues -DisableReRun -JobsExportFiles 'false' -ReturnResults
-
                     foreach ($Account in $script:AccountsTreeViewData) {
                         if ($Account.Name -eq $ADAccount){
                             $Account | Add-Member -MemberType NoteProperty -Name SID                    -Value $script:UpdatedADAccountInfo.SID -Force

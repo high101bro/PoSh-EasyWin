@@ -60,9 +60,6 @@
     Learned a lot and referenced code from sources like Microsoft Technet, PowerShell Gallery, StackOverflow, and a numerous other websites.
     That said, I didn't track all sites and individuals that deserve credit. In the unlikely event you believe you do, please notify me.
 
-    TODO:
-    winrm get winrm/config/winrs
-
     .EXAMPLE
     This will run PoSh-EasyWin.ps1 and provide prompts that will tailor your collection.
 

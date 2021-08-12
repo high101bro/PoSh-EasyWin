@@ -194,7 +194,7 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
                         }
 
                     } -InitializationScript $null -ArgumentList @($OutputFileFileType, $CollectionSavedDirectory, $CommandName, $script:CommandType, $TargetComputer, $CommandString, $PsExecPath, $script:Credential, $UseCredential, $script:ComputerListPivotExecutionCheckbox.checked,$script:ComputerListPivotExecutionTextBox.Text)
-                }               
+                }
                 elseif ( $OutputFileFileType -eq "txt" ) {
                     $OutputFilePath = "$CollectionSavedDirectory\$((($CommandName) -split ' -- ')[1]) - $script:CommandType - $($TargetComputer).txt"
                     Remove-Item -Path $OutputFilePath -Force -ErrorAction SilentlyContinue
