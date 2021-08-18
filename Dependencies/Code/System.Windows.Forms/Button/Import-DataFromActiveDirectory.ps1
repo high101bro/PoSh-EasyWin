@@ -40,12 +40,12 @@ Function Import-DataFromActiveDirectory {
                 AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:TreeNodeComputerList -Category $Computer.CanonicalName -Entry $Computer.Name -ToolTip $ComputerData.IPv4Address -IPv4Address $Computer.IPv4Address
             }
         
-        #    $script:ComputerTreeView.Nodes.Clear()
-        #    Initialize-TreeViewData -Endpoint
+            #Updates TreeView
+            $script:ComputerTreeView.Nodes.Clear()
+            Initialize-TreeViewData -Endpoint
             Normalize-TreeViewData -Endpoint
             Foreach($Computer in $script:ComputerTreeViewData) { AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:TreeNodeComputerList -Category $Computer.CanonicalName -Entry $Computer.Name -ToolTip $ComputerData.IPv4Address -IPv4Address $Computer.IPv4Address }
             $script:ComputerTreeView.ExpandAll()
-        
             UpdateState-TreeViewData -Endpoint
             Save-TreeViewData -Endpoint
         }
@@ -206,7 +206,6 @@ Function Import-DataFromActiveDirectory {
                         elseif ($script:ComputerTreeViewSelected.count -gt 1) { ComputerNodeSelectedMoreThanOne -Message 'Importing Hosts' }
         
                         Import-EndpointsFromDomain -ADComputer $ImportedActiveDirectoryHosts
-                        UpdateState-TreeViewData -Endpoint
         
                         $ImportFromADFrom.Close()
                     }

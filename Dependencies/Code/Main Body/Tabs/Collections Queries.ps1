@@ -516,7 +516,7 @@ $CustomQueryScriptBlockGroupBox = New-Object System.Windows.Forms.GroupBox -Prop
                 Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
                 Add_click = {
                     if ($this.checked) {
-                        [System.Windows.Forms.MessageBox]::Show("This allows you to add commands that use other verbs to take actions on endpoints, such as:     Stop-Process -Name WinRM`n     Remove-Item Path `$HOME\Downloads -Recurse -Force`n`nThis greatly reduces syntax errors.`nYou can also add commands by updating the csv files that are used to generate the command treeview, or upload custom scripts.","PoSh-EasyWin",'Ok',"Info")
+                        [System.Windows.Forms.MessageBox]::Show("This allows you to add commands that use other verbs to take actions on endpoints, such as:`n     Stop-Process -Name WinRM`n     Remove-Item Path `$HOME\Downloads -Recurse -Force`n`nThis greatly reduces syntax errors.`nYou can also add commands by updating the csv files that are used to generate the command treeview, or upload custom scripts.","PoSh-EasyWin",'Ok',"Info")
                         $CustomQueryScriptBlockBuildButton.Enabled = $True
                         $CustomQueryScriptBlockBuildButton.BackColor = 'LightBlue'
                         
