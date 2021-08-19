@@ -17,8 +17,6 @@ Check if Move feature is working properly
 
 TODO:
 winrm get winrm/config/winrs
-!!!!!!!!!!!!!user add command override show-command field check
-!!!!!!!!!add enter button to user add command
 !!!!!!!! checking custom group box makes user add commands turn blue... wierd?
 !!!!!!!! add refresh to treeviews
 !!!!!!!! some users show up with 1 group when they have none
@@ -28,6 +26,10 @@ v5.4.1 -
 ==================================================
 Fixed bug with computer treeview data import from AD where the treenodes weren't populating correctly
 
+Updated Custom User Added Query/commands
+	- removed restrictions with Get-*
+	- added button to 'verify syntax'
+	- added button to 'disable syntax verification'
 
 ==================================================
 v5.4.1 - 13 Aug 2021

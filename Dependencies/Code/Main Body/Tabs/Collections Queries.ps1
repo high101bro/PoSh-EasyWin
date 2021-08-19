@@ -447,7 +447,7 @@ $CustomQueryScriptBlockGroupBox = New-Object System.Windows.Forms.GroupBox -Prop
     Height = $FormScale * 68
 }
             $script:CustomQueryScriptBlockTextbox = New-Object System.Windows.Forms.Textbox -Property @{
-                Text   = 'Enter A Get Cmdlet (ex: Get-Process)'
+                Text   = 'Enter a cmdlet'
                 Left   = $FormScale * 7
                 Top    = $FormScale * 18
                 Width  = $script:CommandsTreeView.width - ($FormScale * 14)
@@ -456,111 +456,103 @@ $CustomQueryScriptBlockGroupBox = New-Object System.Windows.Forms.GroupBox -Prop
                 AutoCompleteSource = "CustomSource"
                 AutoCompleteMode   = "SuggestAppend"
                 Add_KeyDown    = { 
-                    if ($_.KeyCode -eq "Enter") {  CustomQueryScriptBlock } 
+                    if ($_.KeyCode -eq "Enter") { 
+                        CustomQueryScriptBlock
+                        $script:CustomQueryScriptBlockGroupBoxTextMemory = $script:CustomQueryScriptBlockTextbox.Text
+                        $script:CustomQueryScriptBlockTextbox.forecolor = 'black'                        
+                    } 
                 }
                 Add_MouseEnter = {
-                    $script:CustomQueryScriptBlockGroupBoxTextMemory = $This.Text 
                     $this.ForeColor = 'DarkRed'
+                    $script:CustomQueryScriptBlockSaved = $This.text
                     if ($this.text -ne $script:CustomQueryScriptBlockSaved) {
                         $CustomQueryScriptBlockCheckBox.checked = $false
                         $CustomQueryScriptBlockCheckBox.enabled = $false
                     }
-                    if ($this.text -eq 'Enter A Get Cmdlet (ex: Get-Process)'){
-                        $this.text = 'Get-'
-                        $CustomQueryScriptBlockCheckBox.checked = $false
-                        $CustomQueryScriptBlockCheckBox.enabled = $false
-                    }
-                    if ($this.text -eq 'Enter Any Cmdlet'){
+                    if ($this.text -eq 'Enter a cmdlet'){
                         $this.text = ''
                         $CustomQueryScriptBlockCheckBox.checked = $false
                         $CustomQueryScriptBlockCheckBox.enabled = $false
                     }
                 }
                 Add_MouseLeave = {
-                    if ($script:CustomQueryScriptBlockGroupBoxTextMemory -eq 'Enter A Get Cmdlet (ex: Get-Process)' -or 
-                        $script:CustomQueryScriptBlockGroupBoxTextMemory -eq 'Get-' -or
-                        $script:CustomQueryScriptBlockGroupBoxTextMemory -eq 'Entery Any Cmdlet' -or
-                        $script:CustomQueryScriptBlockGroupBoxTextMemory -eq ''){
-                        $this.ForeColor = 'Black'
-                    }
-
                     if ($this.text -ne $script:CustomQueryScriptBlockSaved) {
                         $CustomQueryScriptBlockCheckBox.enabled = $false
                     }
-                    if ($CustomQueryScriptBlockOverrideCheckBox.checked) {
-                        if ($this.text -eq ''){
-                            $this.text = 'Enter Any Cmdlet'
-                            $CustomQueryScriptBlockCheckBox.checked = $false
-                            $CustomQueryScriptBlockCheckBox.enabled = $false
-                        }
-                    }
-                    elseif (-not $CustomQueryScriptBlockOverrideCheckBox.checked) {
-                        if ($this.text -eq '' -or $this.text -eq 'Get-' -or $this.text -eq 'Get'){
-                            $this.text = 'Enter A Get Cmdlet (ex: Get-Process)'
-                            $CustomQueryScriptBlockCheckBox.checked = $false
-                            $CustomQueryScriptBlockCheckBox.enabled = $false
-                        }
+                    if ($this.text -eq '' -or $this.text -eq $null) {
+                        $this.text = 'Enter a cmdlet'
+                        $this.ForeColor = 'Black'
                     }
                 }
             }
-            $script:CmdletList = (Get-Command -CommandType 'Alias', 'Cmdlet', 'Function', 'Workflow').Name | Where-Object {$_ -like "Get-*"}
+            $script:CmdletList = (Get-Command -CommandType 'Alias', 'Cmdlet', 'Function', 'Workflow').Name
             $script:CustomQueryScriptBlockTextbox.AutoCompleteCustomSource.AddRange($script:CmdletList)
             $CustomQueryScriptBlockGroupBox.controls.add($script:CustomQueryScriptBlockTextbox)
 
-
-            $CustomQueryScriptBlockOverrideCheckBox = New-Object System.Windows.Forms.CheckBox -Property @{
-                Text   = 'Allow All Commands'
+            
+            $script:CustomQueryScriptBlockDisableSyntaxCheckbox = New-Object System.Windows.Forms.Checkbox -Property @{
+                Text   = "Disable Syntax`nVerification"
                 Left   = $script:CustomQueryScriptBlockTextbox.Left
                 Top    = $script:CustomQueryScriptBlockTextbox.top + $script:CustomQueryScriptBlockTextbox.height + ($FormScale * 5)
-                AutoSize  = $true
-                Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-                Add_click = {
+                Width  = $FormScale * 105
+                Height = $FormScale * 22
+                Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 10),0,0,0)
+                add_click = {
                     if ($this.checked) {
-                        [System.Windows.Forms.MessageBox]::Show("This allows you to add commands that use other verbs to take actions on endpoints, such as:`n     Stop-Process -Name WinRM`n     Remove-Item Path `$HOME\Downloads -Recurse -Force`n`nThis greatly reduces syntax errors.`nYou can also add commands by updating the csv files that are used to generate the command treeview, or upload custom scripts.","PoSh-EasyWin",'Ok',"Info")
-                        $CustomQueryScriptBlockBuildButton.Enabled = $True
-                        $CustomQueryScriptBlockBuildButton.BackColor = 'LightBlue'
-                        
-                        $script:CustomQueryScriptBlockTextbox.AutoCompleteCustomSource.Clear()
-                        $script:CmdletList = (Get-Command -CommandType 'Alias', 'Cmdlet', 'Function', 'Workflow').Name
-                        $script:CustomQueryScriptBlockTextbox.AutoCompleteCustomSource.AddRange($script:CmdletList)
-                        $script:CustomQueryScriptBlockTextbox.text = 'Enter Any Cmdlet'
-                        $CustomQueryScriptBlockCheckBox.enabled = $false
+                        $CustomQueryScriptBlockVerifyButton.Enabled = $false
+                        $CustomQueryScriptBlockSearchAndBuildButton.Enabled = $false
+                        $CustomQueryScriptBlockAddCommandButton.Enabled = $True
+                        $CustomQueryScriptBlockAddCommandButton.Backcolor = 'LightBlue'
                     }
                     else {
-                        $CustomQueryScriptBlockBuildButton.Enabled = $False
-                        $CustomQueryScriptBlockBuildButton.BackColor = 'LightGray'
-                        
-                        $script:CustomQueryScriptBlockTextbox.AutoCompleteCustomSource.Clear()
-                        $script:CmdletList = (Get-Command -CommandType 'Alias', 'Cmdlet', 'Function', 'Workflow').Name | Where-Object {$_ -like "Get-*"}
-                        $script:CustomQueryScriptBlockTextbox.AutoCompleteCustomSource.AddRange($script:CmdletList)
-                        $script:CustomQueryScriptBlockTextbox.text = 'Enter A Get Cmdlet (ex: Get-Process)'
-                        $CustomQueryScriptBlockCheckBox.enabled = $false
+                        $CustomQueryScriptBlockVerifyButton.Enabled = $true
+                        $CustomQueryScriptBlockSearchAndBuildButton.Enabled = $true
+                        $CustomQueryScriptBlockAddCommandButton.Enabled = $false
+                        $CustomQueryScriptBlockAddCommandButton.Backcolor = 'LightGray'
                     }
                 }
             }
-            $CustomQueryScriptBlockGroupBox.controls.add($CustomQueryScriptBlockOverrideCheckBox)
+            $CustomQueryScriptBlockGroupBox.controls.add($script:CustomQueryScriptBlockDisableSyntaxCheckbox)
 
 
-            $CustomQueryScriptBlockBuildButton = New-Object System.Windows.Forms.Button -Property @{
-                Text   = 'Build Command'
-                Left   = $CustomQueryScriptBlockOverrideCheckBox.Left + $CustomQueryScriptBlockOverrideCheckBox.Width
-                Top    = $CustomQueryScriptBlockOverrideCheckBox.top
+            $CustomQueryScriptBlockVerifyButton = New-Object System.Windows.Forms.Button -Property @{
+                Text   = 'Verify Syntax'
+                Left   = $script:CustomQueryScriptBlockDisableSyntaxCheckbox.Left + $script:CustomQueryScriptBlockDisableSyntaxCheckbox.Width + $($FormScale * 5)
+                Top    = $script:CustomQueryScriptBlockDisableSyntaxCheckbox.Top
                 Width  = $FormScale * 100
                 Height = $FormScale * 22
                 Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 10),0,0,0)
-                Enabled   = $false
                 Add_Click = {
-                    CustomQueryScriptBlock -Build
+                    CustomQueryScriptBlock
+                    $script:CustomQueryScriptBlockGroupBoxTextMemory = $script:CustomQueryScriptBlockTextbox.Text
+                    $script:CustomQueryScriptBlockTextbox.forecolor = 'black'
                 }
             }
-            CommonButtonSettings -Button $CustomQueryScriptBlockBuildButton
-            $CustomQueryScriptBlockGroupBox.controls.add($CustomQueryScriptBlockBuildButton)
+            CommonButtonSettings -Button $CustomQueryScriptBlockVerifyButton
+            $CustomQueryScriptBlockGroupBox.controls.add($CustomQueryScriptBlockVerifyButton)
+
+
+            $CustomQueryScriptBlockSearchAndBuildButton = New-Object System.Windows.Forms.Button -Property @{
+                Text   = "Search + Build"
+                Left   = $CustomQueryScriptBlockVerifyButton.Left + $CustomQueryScriptBlockVerifyButton.Width + $($FormScale * 5)
+                Top    = $CustomQueryScriptBlockVerifyButton.Top
+                Width  = $FormScale * 100
+                Height = $FormScale * 22
+                Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+                Add_click = {
+                    CustomQueryScriptBlock -Build
+                    $script:CustomQueryScriptBlockGroupBoxTextMemory = $script:CustomQueryScriptBlockTextbox.Text
+                    $script:CustomQueryScriptBlockTextbox.forecolor = 'black'
+                }
+            }
+            CommonButtonSettings -Button $CustomQueryScriptBlockSearchAndBuildButton
+            $CustomQueryScriptBlockGroupBox.controls.add($CustomQueryScriptBlockSearchAndBuildButton)
 
 
             $CustomQueryScriptBlockAddCommandButton = New-Object System.Windows.Forms.Button -Property @{
-                Text   = 'Add Command'
-                Left   = $script:CustomQueryScriptBlockTextbox.Left + $script:CustomQueryScriptBlockTextbox.Width - $($FormScale * 100)
-                Top    = $CustomQueryScriptBlockOverrideCheckBox.top
+                Text   = 'Add To TreeView'
+                Left   = $CustomQueryScriptBlockSearchAndBuildButton.Left + $CustomQueryScriptBlockSearchAndBuildButton.Width + $($FormScale * 5)
+                Top    = $CustomQueryScriptBlockVerifyButton.Top
                 Width  = $FormScale * 100
                 Height = $FormScale * 22
                 Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 10),0,0,0)
@@ -568,13 +560,25 @@ $CustomQueryScriptBlockGroupBox = New-Object System.Windows.Forms.GroupBox -Prop
                 Add_Click = {
                     $script:CustomQueryScriptBlockTextbox.ForeColor = 'Black'
 
-                    # Creates the command object for use to add to the treeview 
-                    $Command = [PSCustomObject]@{
-                        ExportFileName     = "$(($script:ShowCommandQueryBuild -split ' ')[0]) (User Added Command)"
-                        Properties_PoSh    = '*'
-                        Command_WinRM_PoSh = "Invoke-Command -ScriptBlock { $script:ShowCommandQueryBuild }"
-                        Name               = $script:ShowCommandQueryBuild
-                        Type               = '(WinRM) PoSh'
+                    $command = $null
+                    if (-not $script:CustomQueryScriptBlockDisableSyntaxCheckbox.checked) {
+                        # Creates the command object for use to add to the treeview 
+                        $Command = [PSCustomObject]@{
+                            ExportFileName     = "$(($script:ShowCommandQueryBuild -split ' ')[0]) (User Added Command)"
+                            Properties_PoSh    = '*'
+                            Command_WinRM_PoSh = "Invoke-Command -ScriptBlock { $script:ShowCommandQueryBuild }"
+                            Name               = $script:ShowCommandQueryBuild
+                            Type               = '(WinRM) PoSh'
+                        }
+                    }
+                    else {
+                        $Command = [PSCustomObject]@{
+                            ExportFileName     = "$(($($script:CustomQueryScriptBlockTextbox.text) -split ' ')[0]) (User Added Command)"
+                            Properties_PoSh    = '*'
+                            Command_WinRM_PoSh = "Invoke-Command -ScriptBlock { $($script:CustomQueryScriptBlockTextbox.text) }"
+                            Name               = $($script:CustomQueryScriptBlockTextbox.text)
+                            Type               = '(WinRM) PoSh'
+                        }
                     }
 
                     # Check if command already exists
@@ -600,28 +604,33 @@ $CustomQueryScriptBlockGroupBox = New-Object System.Windows.Forms.GroupBox -Prop
                     }
                     else {
                         [system.media.systemsounds]::Exclamation.play()
-                        [System.Windows.Forms.MessageBox]::Show("The following User Added Command already exists:`n   $($script:ShowCommandQueryBuild)","PoSh-EasyWin",'Ok',"Info")
+                        if (-not $script:CustomQueryScriptBlockDisableSyntaxCheckbox.checked) {
+                            [System.Windows.Forms.MessageBox]::Show("The following User Added Command already exists:`n   $($script:ShowCommandQueryBuild)","PoSh-EasyWin",'Ok',"Info")
+                        }
+                        else {
+                            [System.Windows.Forms.MessageBox]::Show("The following User Added Command already exists:`n   $($script:CustomQueryScriptBlockTextbox.text)","PoSh-EasyWin",'Ok',"Info")
+                        }
                     }
 
                     # Shows all the commands
                     $entry.ExpandAll()
                     $entry.EnsureVisible()
 
-                    # Changes textbox back to default text
-                    if ($CustomQueryScriptBlockOverrideCheckBox.checked) {
-                        $script:CustomQueryScriptBlockTextbox.text = 'Enter Any Cmdlet'
+                    $This.BackColor = 'LightGray'
+                    if (-not $script:CustomQueryScriptBlockDisableSyntaxCheckbox.checked) {
+                        $This.enabled = $false
                     }
                     else {
-                        $script:CustomQueryScriptBlockTextbox.text = 'Enter A Get Cmdlet (ex: Get-Process)'
+                        $CustomQueryScriptBlockSearchAndBuildButton.enabled = $true
                     }
 
-                    $This.BackColor = 'LightGray'
-                    $This.enabled = $false
+                    $script:CustomQueryScriptBlockTextbox.text = 'Enter a cmdlet'
+                    $CustomQueryScriptBlockCheckBox.checked = $false
+                    $script:CustomQueryScriptBlockDisableSyntaxCheckbox.checked = $false
                 }
             }
             CommonButtonSettings -Button $CustomQueryScriptBlockAddCommandButton
             $CustomQueryScriptBlockGroupBox.controls.add($CustomQueryScriptBlockAddCommandButton)
-
 
 $Section1CommandsTab.controls.add($CustomQueryScriptBlockGroupBox)
 

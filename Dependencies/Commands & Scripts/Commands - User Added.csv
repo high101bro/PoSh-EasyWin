@@ -1,4 +1,3 @@
 "ExportFileName","Properties_PoSh","Command_WinRM_PoSh","Name","Type"
-"Get-Process (User Added Command)","*","Invoke-Command -ScriptBlock { Get-Process }","Get-Process","(WinRM) PoSh"
-"Get-Service (User Added Command)","*","Invoke-Command -ScriptBlock { Get-Service }","Get-Service","(WinRM) PoSh"
-"Get-Service (User Added Command)","*","Invoke-Command -ScriptBlock { Get-Service -Name winrm }","Get-Service -Name winrm","(WinRM) PoSh"
+"Get-Service (User Added Command)","*","Invoke-Command -ScriptBlock { Get-Service -Name WinRM }","Get-Service -Name WinRM","(WinRM) PoSh"
+"Get-Process (User Added Command)","*","Invoke-Command -ScriptBlock { Get-Process -Name lsass }","Get-Process -Name lsass","(WinRM) PoSh"
