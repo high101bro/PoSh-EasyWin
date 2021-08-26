@@ -6,10 +6,10 @@
 #>
 function Get-LogicalMappedDrives{
     Get-WmiObject -Class Win32_LogicalDisk |
-        Select-Object -Property @{Name='PSComputerName';Expression={$($env:computername)}},
+        Select-Object -Property @{Name='ComputerName';Expression={$($env:computername)}},
         @{Name='Name';Expression={$_.DeviceID}},
             DeviceID, DriveType,
-            @{Name     = 'DriveTypeName'
+        @{Name = 'DriveTypeName'
             Expression = {
                 if     ($_.DriveType -eq 0) {'Unknown'}
                 elseif ($_.DriveType -eq 1) {'No Root Directory'}
@@ -21,8 +21,10 @@ function Get-LogicalMappedDrives{
                 else                        {'Error: Unknown'}
             }}, VolumeName,
         @{L='FreeSpaceGB';E={"{0:N2}" -f ($_.FreeSpace /1GB)}},
-        @{L="CapacityGB";E={"{0:N2}" -f ($_.Size/1GB)}
-    }
+        @{L="CapacityGB";E={"{0:N2}" -f ($_.Size/1GB)}},
+        FileSystem, VolumeSerialNumber, 
+        Compressed, SupportsFileBasedCompression,
+        SupportsDiskQuotas, QuotasDisabled, QuotasIncomplete, QuotasRebuilding
 }
 Get-LogicalMappedDrives
 
