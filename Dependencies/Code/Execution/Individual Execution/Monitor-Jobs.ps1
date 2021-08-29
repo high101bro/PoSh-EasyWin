@@ -3,6 +3,7 @@ function Monitor-Jobs {
     param(
         $CollectionName,
         [switch]$txt,
+        [switch]$xml,
         [String]$SaveProperties,
         [switch]$NotExportFiles,
         [string]$JobsExportFiles = 'true',
@@ -26,6 +27,12 @@ function Monitor-Jobs {
         $SaveResultsCmd = 'Out-File'
         $ImportDataCmd  = 'Get-Content'
         $FileExtension  = 'txt'
+        $NoTypeInfo     = $null
+    }
+    elseif ($xml) {
+        $SaveResultsCmd = 'Select-Object * | Export-CliXml'
+        $ImportDataCmd  = 'Import-CliXml'
+        $FileExtension  = 'xml'
         $NoTypeInfo     = $null
     }
     else {
@@ -692,7 +699,8 @@ if ($MonitorMode) {
             Remove-Item "`$(`$script:CollectionSavedDirectoryTextBox.Text)\`$script:JobName$JobId (`$(`$JobStartTimeFileFriendly$JobId)).xml" -Force     
         }
 
-        `$script:CurrentJobs$JobId | Remove-Job -Force
+        `$script:CurrentJobs$JobId | Stop-Job -ErrorAction SilentlyContinue
+        `$script:CurrentJobs$JobId | Remove-Job -Force -ErrorAction SilentlyContinue
 
         # Moves all form items higher up that are not created before this one
         Get-Variable | Where-Object {`$_.Name -match 'Section3MonitorJobPanel'} | Foreach-Object {
@@ -765,7 +773,6 @@ if ($MonitorMode) {
     `$script:InputValues$JobId         = `$InputValues
     `$script:ArgumentList$JobId        = `$ArgumentList 
     `$script:PSWriteHTMLFilePath$JobId = `$PSWriteHTMLFilePath
-
 "@
 #    if ($SMITH) {
 #        Invoke-Expression @"
@@ -775,6 +782,41 @@ if ($MonitorMode) {
 #        `$script:ArgumentList$JobId = `$ArgumentList 
 #"@
 #    }
+
+    if ($PSWriteHTMLSwitch) {
+        Invoke-Expression @"
+        if ("$PSWriteHTML" -eq 'PSWriteHTMLProcesses') {
+            `$script:JobName$JobId = 'Process Data (Browser)'
+        }
+        elseif ("$PSWriteHTML" -eq 'EndpointDataNetworkConnections') {
+            `$script:JobName$JobId = 'Network Connections (Browser)'
+        }
+        elseif ("$PSWriteHTML" -eq 'EndpointDataConsoleLogons') {
+            `$script:JobName$JobId = 'Console Logons (Browser)'
+        }
+        elseif ("$PSWriteHTML" -eq 'PowerShellSessionsData') {
+            `$script:JobName$JobId = 'PowerShell Sessions (Browser)'
+        }
+        elseif ("$PSWriteHTML" -eq 'EndpointApplicationCrashes') {
+            `$script:JobName$JobId = 'Application Crashes (Browser)'
+        }
+        elseif ("$PSWriteHTML" -eq 'EndpointLogonActivity') {
+            `$script:JobName$JobId = 'Logon Activity (Browser)'
+        }
+        elseif ("$PSWriteHTML" -eq 'PSWriteHTMLADUsers') {
+            `$script:JobName$JobId = 'Active Directory Users (Browser)'
+        }
+        elseif ("$PSWriteHTML" -eq 'PSWriteHTMLADComputers') {
+            `$script:JobName$JobId = 'Active Directory Computers (Browser)'
+        }
+"@
+    }
+    else {
+        Invoke-Expression @"
+        `$script:JobName$JobId = `$CollectionName
+"@
+    }
+
 
     Invoke-Expression @"
             
@@ -794,36 +836,6 @@ if ($MonitorMode) {
             }
         }
 
-
-        if (`$PSWriteHTMLSwitch) {
-            if ("$PSWriteHTML" -eq 'PSWriteHTMLProcesses') {
-                `$script:JobName$JobId = 'Process Data (Browser)'
-            }
-            elseif ("$PSWriteHTML" -eq 'EndpointDataNetworkConnections') {
-                `$script:JobName$JobId = 'Network Connections (Browser)'
-            }
-            elseif ("$PSWriteHTML" -eq 'EndpointDataConsoleLogons') {
-                `$script:JobName$JobId = 'Console Logons (Browser)'
-            }
-            elseif ("$PSWriteHTML" -eq 'PowerShellSessionsData') {
-                `$script:JobName$JobId = 'PowerShell Sessions (Browser)'
-            }
-            elseif ("$PSWriteHTML" -eq 'EndpointApplicationCrashes') {
-                `$script:JobName$JobId = 'Application Crashes (Browser)'
-            }
-            elseif ("$PSWriteHTML" -eq 'EndpointLogonActivity') {
-                `$script:JobName$JobId = 'Logon Activity (Browser)'
-            }
-            elseif ("$PSWriteHTML" -eq 'PSWriteHTMLADUsers') {
-                `$script:JobName$JobId = 'Active Directory Users (Browser)'
-            }
-            elseif ("$PSWriteHTML" -eq 'PSWriteHTMLADComputers') {
-                `$script:JobName$JobId = 'Active Directory Computers (Browser)'
-            }
-        }
-        else {
-            `$script:JobName$JobId = `$CollectionName
-        }
 
         # Sets the job timeout value, so they don't run forever
         `$script:JobsTimer$JobId  = [int]`$(`$script:OptionJobTimeoutSelectionComboBox.Text)
@@ -1114,6 +1126,10 @@ if ($MonitorMode) {
                             [System.Windows.Forms.MessageBox]::Show("It is recommended to use the Text button to view flat text results. The following results have been parsed from flat text into a csv format.`n`nText with two or more spaces between them normally indicate separate fields. That said, linux systems are not very consistent with their CLI output. Results returned sometimes don't have headers or some fields are separated by as little as a single space which result in frequent formatting issues.`n`nThis section should only be used for reference and is useful for column searching/filtering, but should be verified against accompanied flat text results.","PoSh-EasyWin - `$(`$script:JobName$JobId)")
                             Import-Csv "`$(`$script:CollectionSavedDirectoryTextBox.Text)\`$script:JobName$JobId (`$(`$JobStartTimeFileFriendly$JobId)).csv" | Out-GridView -Title "PoSh-EasyWin: `$(`$script:JobName$JobId) (`$(`$JobStartTimeFileFriendly$JobId))"
                         }
+                        elseif ("$FileExtension" -like 'xml') {
+                            `$script:PSWriteHTMLResults$JobId = `$script:CurrentJobs$JobId | Receive-Job -Keep
+                            (`$script:PSWriteHTMLResults$JobId | Out-GridView -Title "`$script:JobName$JobId (`$(`$JobStartTimeFileFriendly$JobId))" -PassThru).Value | Out-GridView -Title "`$script:JobName$JobId (`$(`$JobStartTimeFileFriendly$JobId))"
+                        }
                         else {
                             if (`$script:JobCSVResults$JobId) {
                                 `$script:JobCSVResults$JobId  | Out-GridView -Title "PoSh-EasyWin: `$(`$script:JobName$JobId) (`$(`$JobStartTimeFileFriendly$JobId))"
@@ -1157,8 +1173,21 @@ if ($MonitorMode) {
                     if (`$This.BackColor -ne 'LightGray') {
                         `$This.BackColor = 'LightGray'
                     }
-                    if ((Test-Path "`$script:PSWriteHTMLFilePath$JobId")) {
+                    `$script:PSWriteHTMLResults$JobId = `$script:CurrentJobs$JobId | Receive-Job -Keep
+                    if (`$script:PSWriteHTMLResults$JobId) {
+                        if ("$PSWriteHTML" -eq 'EndpointDataSystemSnapshot') {                            
+                            script:Individual-PSWriteHTML -Title 'Endpoint Snapshot' -Data { script:Invoke-PSWriteHTMLEndpointSnapshot -InputData `$script:PSWriteHTMLResults$JobId -MenuPrompt }
+                        }
+                        elseif ("$PSWriteHTML" -eq 'EndpointDataNetworkConnections') {
+                            `$script:PSWriteHTMLResults$JobId = `$script:CurrentJobs$JobId | Receive-Job -Keep
+                            script:Individual-PSWriteHTML -Title 'Network Connections' -Data {                         
+                                script:Invoke-PSWriteHTMLNetworkConnections -InputData `$script:PSWriteHTMLResults$JobId -MenuPrompt
+                            }
+                        }        
                         Invoke-Item `$script:PSWriteHTMLFilePath$JobId
+                    }
+                    elseif ((Test-Path "`$script:PSWriteHTMLFilePath$JobId")) {
+                        Invoke-Item `$script:PSWriteHTMLFilePath$JobId                    
                     }
                     else {
                         [System.Windows.Forms.MessageBox]::Show("There is currently on data available.",'PoSh-EasyWin - Console')
@@ -2278,36 +2307,38 @@ if ($DisableReRun) {
                     `$script:CurrentJobs$JobId | Receive-Job -Keep | Export-CliXml "`$(`$script:CollectionSavedDirectoryTextBox.Text)\`$script:JobName$JobId (`$(`$JobStartTimeFileFriendly$JobId)).xml"
                 }
 
-                if ("$PSWriteHTML" -eq 'PSWriteHTMLProcesses') {
-                    `$script:$PSWriteHTML = `$script:CurrentJobs$JobId | Receive-Job
-                    script:Individual-PSWriteHTML -Title 'Process Data' -Data { script:Start-PSWriteHTMLProcessData }
+                if ("$PSWriteHTML" -eq 'EndpointDataSystemSnapshot') {
+                    `$script:PSWriteHTMLResults$JobId = `$script:CurrentJobs$JobId | Receive-Job -Keep
+                    script:Individual-PSWriteHTML -Title 'Endpoint Snapshot' -Data { script:Invoke-PSWriteHTMLEndpointSnapshot -InputData `$script:PSWriteHTMLResults$JobId }
+                }
+                elseif ("$PSWriteHTML" -eq 'PSWriteHTMLProcesses') {
+                    `$script:PSWriteHTMLResults$JobId = `$script:CurrentJobs$JobId | Receive-Job -Keep
+                    script:Individual-PSWriteHTML -Title 'Process Data' -Data { script:Invoke-PSWriteHTMLProcess -InputData `$script:PSWriteHTMLResults$JobId }
                 }
                 elseif ("$PSWriteHTML" -eq 'EndpointDataNetworkConnections') {
-                    `$script:$PSWriteHTML = `$script:CurrentJobs$JobId | Receive-Job
-                    script:Individual-PSWriteHTML -Title 'Network Connections' -Data { script:Start-PSWriteHTMLNetworkConnections }
+                    `$script:PSWriteHTMLResults$JobId = `$script:CurrentJobs$JobId | Receive-Job -Keep
+                    script:Individual-PSWriteHTML -Title 'Network Connections' -Data {                         
+                        script:Invoke-PSWriteHTMLNetworkConnections -InputData `$script:PSWriteHTMLResults$JobId 
+                    }
                 }
                 elseif ("$PSWriteHTML" -eq 'EndpointDataConsoleLogons') {
-                    `$script:$PSWriteHTML = `$script:CurrentJobs$JobId | Receive-Job
-                    script:Individual-PSWriteHTML -Title 'Console Logons' -Data { script:Start-PSWriteHTMLConsoleLogons }
+                    `$script:PSWriteHTMLResults$JobId = `$script:CurrentJobs$JobId | Receive-Job -Keep
+                    script:Individual-PSWriteHTML -Title 'Console Logons' -Data { script:Invoke-PSWriteHTMLConsoleLogons -InputData `$script:PSWriteHTMLResults$JobId }
                 }
                 elseif ("$PSWriteHTML" -eq 'PowerShellSessionsData') {
-                    `$script:$PSWriteHTML = `$script:CurrentJobs$JobId | Receive-Job
-                    script:Individual-PSWriteHTML -Title 'PowerShell Sessions' -Data { script:Start-PSWriteHTMLPowerShellSessions }
-                }
-                elseif ("$PSWriteHTML" -eq 'EndpointApplicationCrashes') {
-                    `$script:$PSWriteHTML = `$script:CurrentJobs$JobId | Receive-Job
-                    script:Individual-PSWriteHTML -Title 'Application Crashes' -Data { script:Start-PSWriteHTMLApplicationCrashes }
+                    `$script:PSWriteHTMLResults$JobId = `$script:CurrentJobs$JobId | Receive-Job -Keep
+                    script:Individual-PSWriteHTML -Title 'PowerShell Sessions' -Data { script:Invoke-PSWriteHTMLPowerShellSessions -InputData `$script:PSWriteHTMLResults$JobId }
                 }
                 elseif ("$PSWriteHTML" -eq 'EndpointLogonActivity') {
-                    `$script:$PSWriteHTML = `$script:CurrentJobs$JobId | Receive-Job
-                    script:Individual-PSWriteHTML -Title 'Logon Activity' -Data { script:Start-PSWriteHTMLLogonActivity }
+                    `$script:PSWriteHTMLResults$JobId = `$script:CurrentJobs$JobId | Receive-Job -Keep
+                    script:Individual-PSWriteHTML -Title 'Logon Activity' -Data { script:Invoke-PSWriteHTMLLogonActivity -InputData `$script:PSWriteHTMLResults$JobId }
                 }
                 elseif ("$PSWriteHTML" -eq 'PSWriteHTMLADUsers') {
-                    `$script:$PSWriteHTML = `$script:CurrentJobs$JobId | Receive-Job
+                    `$script:PSWriteHTMLResults$JobId = `$script:CurrentJobs$JobId | Receive-Job -Keep
                     script:Individual-PSWriteHTML -Title 'AD Users' -Data { script:Start-PSWriteHTMLActiveDirectoryUsers }
                 }
                 elseif ("$PSWriteHTML" -eq 'PSWriteHTMLADComputers') {
-                    `$script:$PSWriteHTML = `$script:CurrentJobs$JobId | Receive-Job
+                    `$script:PSWriteHTMLResults$JobId = `$script:CurrentJobs$JobId | Receive-Job -Keep
                     script:Individual-PSWriteHTML -Title 'AD Computers' -Data { script:Start-PSWriteHTMLActiveDirectoryComputers }
                 }
 

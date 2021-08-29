@@ -263,6 +263,8 @@ $PoShHome                            = $PSScriptRoot #Deprecated# Split-Path -pa
             $CommandsUserAdded                = "$QueryCommandsAndScripts\Commands - User Added.csv"
             $CommandsCustomGrouped            = "$QueryCommandsAndScripts\Commands - Custom Group Commands.xml"
 
+        $PSWriteHTMLDirectory                  = "$Dependencies\Code\PSWriteHTML"
+
         # The stored Active Directory hostname if previously entered
         $script:ActiveDirectoryEndpoint       = "$PoShHome\Settings\Active Directory Hostname.txt"
 

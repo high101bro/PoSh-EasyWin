@@ -457,7 +457,6 @@ function Update-TreeViewData {
                                     $Section3AccountDataMemberOfComboBox.Items.Add($Group) 
                                 }
                             $Section3AccountDataMemberOfComboBox.Text               = "- Select Dropdown [$(if ($MemberOfList -ne $null) {$MemberOfList.count} else {0})] Groups"
-                            $MemberOfList.count | ogv
                             $Section3AccountDataSIDTextBox.Text                     = $($script:AccountsTreeViewData | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).SID
                             $Section3AccountDataScriptPathTextBox.Text              = $($script:AccountsTreeViewData | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).ScriptPath
                             $Section3AccountDataHomeDriveTextBox.Text               = $($script:AccountsTreeViewData | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).HomeDrive
