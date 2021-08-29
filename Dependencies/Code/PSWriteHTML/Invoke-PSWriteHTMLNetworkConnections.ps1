@@ -13,7 +13,7 @@ function script:Invoke-PSWriteHTMLNetworkConnections {
     $NetworkConnectionsRemotePublicIPsUnique  = $InputData | Select-Object RemoteAddress, PSComputerName -Unique  | Where-Object {$_.RemoteAddress -notmatch '(^10\.)|(^172\.1[6-9]\.)|(^172\.2[0-9]\.)|(^172\.3[0-1]\.)|(^192\.168\.)|(^127\.)|(^::)|0.0.0.0'} | Group-Object RemoteAddress | Sort-Object Count, Name
     $NetworkConnectionsRemotePublicIPsSum     = $InputData | Select-Object RemoteAddress, PSComputerName          | Where-Object {$_.RemoteAddress -notmatch '(^10\.)|(^172\.1[6-9]\.)|(^172\.2[0-9]\.)|(^172\.3[0-1]\.)|(^192\.168\.)|(^127\.)|(^::)|0.0.0.0'} | Group-Object RemoteAddress | Sort-Object Count, Name  
 
-    New-HTMLTab -Name 'Network Connections' -IconBrands acquisitions-incorporated {
+    New-HTMLTab -Name 'TCP Connections' -IconBrands acquisitions-incorporated {
         ###########
         New-HTMLTab -Name 'Table Search' -IconRegular window-maximize {
             New-HTMLSection -HeaderText 'Table Search' -Height 725 -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {

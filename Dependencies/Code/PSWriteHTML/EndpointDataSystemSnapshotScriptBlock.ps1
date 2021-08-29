@@ -5,17 +5,27 @@ $EndpointDataSystemSnapshotScriptBlock = {
     #########################
     ### Overview
     #########################
-
         #####################
         #####################
-        $CompiledResults.add('GetComputerInfo',$(
-            Get-ComputerInfo
+        $CompiledResults.add('Set Variables',$(
+            Get-ChildItem Variable: | Select-Object -Property Name, Key, Value, * -ExcludeProperty _*, Cim* -ErrorAction SilentlyContinue
         ))
-            #$Win32_OperatingSystem = Get-WmiObject -Class Win32_OperatingSystem #<-- Similar to above
 
         #####################
         #####################
-        $CompiledResults.add('GetSystemDateTimes',$(
+        $CompiledResults.add('Computer Info',$(
+            if ([bool](Get-ComputerInfo)) {
+                Get-ComputerInfo | Select-Object -Property * -ExcludeProperty _*, Cim*
+            }
+            else {
+                Get-WmiObject -Class Win32_OperatingSystem | Select-Object -Property * -ExcludeProperty _*, Cim*
+                #systeminfo /FO csv | ConvertFrom-Csv
+            }
+        ))
+
+        #####################
+        #####################
+        $CompiledResults.add('System DateTimes',$(
             $os = $null
             $GetTimeZone = $null
             $os = Get-WmiObject win32_operatingsystem
@@ -38,57 +48,63 @@ $EndpointDataSystemSnapshotScriptBlock = {
                     LocalDateTime   = $os.ConvertToDateTime($os.LocalDateTime)
                     CurrentTimeZone = $os.CurrentTimeZone
                 }
-                $DateTimes | Select-Object @{n='ComputerName';E={$env:COMPUTERNAME}}, LocalDateTime, LastBootUpTime, InstallDate, CurrentTimeZone
+                $DateTimes | Select-Object @{n='ComputerName';E={$env:COMPUTERNAME}}, LocalDateTime, LastBootUpTime, InstallDate, CurrentTimeZone -ExcludeProperty _*, Cim*
             }    
         ))
 
         #####################
         #####################
-        $CompiledResults.add('GetComputerRestorePoint',$(
-            Get-ComputerRestorePoint | Select-Object -Property *
+        $CompiledResults.add('Computer Restore Point',$(
+            Get-ComputerRestorePoint | Select-Object -Property * -ExcludeProperty _*, Cim*
         ))
 
         #####################
         #####################
-        $CompiledResults.add('GetChildItemEnv',$(
-            Get-ChildItem Env:
+        $CompiledResults.add('PowerShell Version',$(
+            $PSVersionTable
+        ))
+
+        #####################
+        #####################
+        $CompiledResults.add('Environmental Variables',$(
+            Get-ChildItem Env: | Select-Object -Property Name, Key, Value, * -ExcludeProperty _*, Cim* -ErrorAction SilentlyContinue
         ))
             # Get-WmiObject -Class Win32_Environment # <-- similar as above
 
         #####################
         #####################
-        $CompiledResults.add('GetChildItemVariable',$(
-            Get-ChildItem Variable:
+        $CompiledResults.add('Functions',$(
+            Get-ChildItem Function: | Select-Object -Property Name, Version, Module, Source, Options, Visibility, RemotingCapability, CommandType, Verb, Noun, HelpFile, OutputType, Parameters, ParameterSets, ScriptBlock, * -ExcludeProperty _*, Cim* -ErrorAction SilentlyContinue
         ))
 
         #####################
         #####################
-        $CompiledResults.add('GetChildItemFunction',$(
-            Get-ChildItem Function:
-        ))
-
-        #####################
-        #####################
-        $CompiledResults.add('GetPSDrive',$(
-            Get-PSDrive
+        $CompiledResults.add('PSDrives',$(
+            Get-PSDrive | Select-Object -Property Name, Root, Provider, Used, Free, Description, * -ExcludeProperty _*, Cim* -ErrorAction SilentlyContinue
         ))
         
         #####################
         #####################
-        $CompiledResults.add('GetScheduledTask',$(
-            Get-ScheduledTask | Select-Object -Property *
+        $CompiledResults.add('Scheduled Jobs',$(
+            Get-ScheduledJob | Select-Object -Property * -ExcludeProperty _*, Cim*
+        ))
+
+        #####################
+        #####################
+        $CompiledResults.add('Scheduled Tasks',$(
+            Get-ScheduledTask | Select-Object -Property * -ExcludeProperty _*, Cim*
         ))
         
         #####################
         #####################
         $CompiledResults.add('schtasks',$(
-            schtasks /query /V /FO CSV | ConvertFrom-Csv
+            schtasks /query /V /FO CSV | ConvertFrom-Csv | ConvertTo-Csv -NoTypeInformation | ConvertFrom-Csv
         ))
 
         #####################
         #####################
-        $CompiledResults.add('GetWindowsOptionalFeature',$(
-            Get-WindowsOptionalFeature -Online | Select-Object -Property *
+        $CompiledResults.add('Windows Optional Features',$(
+            Get-WindowsOptionalFeature -Online | Select-Object -Property * -ExcludeProperty _*, Cim*
         ))
 
     #########################
@@ -97,10 +113,10 @@ $EndpointDataSystemSnapshotScriptBlock = {
 
         #####################
         #####################
-        $CompiledResults.add('GetNetworkConnectionsTCPEnriched',$(
+        $CompiledResults.add('Network TCP Connections',$(
             if ([bool]((Get-Command Get-NetTCPConnection).ParameterSets | Select-Object -ExpandProperty Parameters | Where-Object Name -match OwningProcess)) {
-                $Processes   = Get-WmiObject -Class Win32_Process
-                $Connections = Get-NetTCPConnection
+                $Processes   = Get-WmiObject -Class Win32_Process | Select-Object -ExcludeProperty _*, Cim*
+                $Connections = Get-NetTCPConnection | Select-Object -ExcludeProperty _*, Cim*
         
                 foreach ($Conn in $Connections) {
                     foreach ($Proc in $Processes) {
@@ -178,27 +194,13 @@ $EndpointDataSystemSnapshotScriptBlock = {
         
         #####################
         #####################
-        $CompiledResults.add('GetNetTcpConnection',$(
-            Get-NetTcpConnection
+        $CompiledResults.add('Network UDP Endpoints',$(
+            Get-NetUDPEndpoint | Select-Object -Property * -ExcludeProperty _*, Cim*
         ))
 
         #####################
         #####################
-        $CompiledResults.add('GetNetUDPEndpoint',$(
-            Get-NetUDPEndpoint
-        ))
-
-        # Duplicate features...
-            # Network Connections TCP
-            #$GetNetStatTCP = "$Path\Get-NetStatTCP.ps1"
-            #$GetNetStatTCPv6 = "$Path\Get-NetStatTCPv6.ps1"
-            # Network Connections UDP
-            #$GetNetStatUDP = "$Path\Get-NetStatUDP.ps1"
-            #$GetNetStatUDPv6 = "$Path\Get-NetStatUDPv6.ps1"
-
-        #####################
-        #####################
-        $CompiledResults.add('GetRegistryWirelessNetworks',$(
+        $CompiledResults.add('Wireless Networks',$(
             function Get-WirelessNetworks {
                 $RegistryPath     = "Registry::HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\NetworkList\Profiles\"
                 $RegistryKeyNames = Get-ChildItem -Name $RegistryPath
@@ -237,13 +239,13 @@ $EndpointDataSystemSnapshotScriptBlock = {
                 }
                 $Data
             }
-            Get-WirelessNetworks | Select-Object -Property PSComputerName, SSID, ProfileName, DateCreated, DateLastConnected
+            Get-WirelessNetworks | Select-Object -Property PSComputerName, SSID, ProfileName, DateCreated, DateLastConnected -ExcludeProperty _*, Cim*
         ))
 
         #####################
         #####################
-        $CompiledResults.add('GetIPConfigEnhanced',$(
-            $GetNetAdapter = Get-NetAdapter | Select-Object -Property *
+        $CompiledResults.add('IP Configuration',$(
+            $GetNetAdapter = Get-NetAdapter | Select-Object -Property * -ExcludeProperty _*, Cim*
 
             $GetNetIPAddress = Get-NetIPAddress
 
@@ -267,13 +269,13 @@ $EndpointDataSystemSnapshotScriptBlock = {
         
         #####################
         #####################
-        $CompiledResults.add('HostsFile',$(
+        $CompiledResults.add('Hosts File',$(
             Get-Content C:\Windows\System32\drivers\etc\hosts
         ))
 
         #####################
         #####################
-        $CompiledResults.add('GetPortProxy',$(
+        $CompiledResults.add('Port Proxy',$(
             $PortProxy = @()
             $netsh = & netsh interface portproxy show all
             $netsh | Select-Object -Skip 5 | Where-Object {$_ -ne ''} | ForEach-Object {
@@ -292,18 +294,18 @@ $EndpointDataSystemSnapshotScriptBlock = {
 
         #####################
         #####################
-        $CompiledResults.add('GetDnsClientCache',$(
-            Get-DnsClientCache
+        $CompiledResults.add('DNS Cache',$(
+            Get-DnsClientCache | Select-Object -ExcludeProperty _*, Cim*
         ))
             # ipconfig /displaydns
 
         #####################
         #####################
-        $CompiledResults.add('GetVMNetworkAdapter',$(
-            Get-VMNetworkAdapter -VMName *
+        $CompiledResults.add('Hyper-V VM Network Adapter',$(
+            Get-VMNetworkAdapter -VMName * | Select-Object -ExcludeProperty _*, Cim*
         ))
             
-        # Packet Capture    
+        # Packet Capture ???
 
     #########################
     ### Process
@@ -311,11 +313,11 @@ $EndpointDataSystemSnapshotScriptBlock = {
 
         #####################
         #####################
-        $CompiledResults.add('GetProcessesEnriched',$(
+        $CompiledResults.add('Processes',$(
             $ErrorActionPreference = 'SilentlyContinue'
-            $CollectionTime = Get-Date
-            $Processes      = Get-WmiObject Win32_Process
-            $Services       = Get-WmiObject Win32_Service
+            $CollectionTime = Get-Date | Select-Object -ExcludeProperty _*, Cim*
+            $Processes      = Get-WmiObject Win32_Process | Select-Object -ExcludeProperty _*, Cim*
+            $Services       = Get-WmiObject Win32_Service | Select-Object -ExcludeProperty _*, Cim*
         
             # Get's Endpoint Network Connections associated with Process IDs
             $ParameterSets = (Get-Command Get-NetTCPConnection).ParameterSets | Select-Object -ExpandProperty Parameters
@@ -337,7 +339,7 @@ $EndpointDataSystemSnapshotScriptBlock = {
                         ProcessId     = $line[4]
                     }
                     $Connection = New-Object -TypeName PSObject -Property $properties
-                    $proc       = Get-WmiObject -query ('select * from win32_process where ProcessId="{0}"' -f $line[4])
+                    $proc       = Get-WmiObject -query ('select * from win32_process where ProcessId="{0}"' -f $line[4]) | Select-Object -ExcludeProperty _*, Cim*
                     $Connection | Add-Member -MemberType NoteProperty 'OwningProcess'   $proc.ProcessId
                     $Connection | Add-Member -MemberType NoteProperty 'ParentProcessId' $proc.ParentProcessId
                     $Connection | Add-Member -MemberType NoteProperty 'Name'            $proc.Caption
@@ -473,7 +475,6 @@ $EndpointDataSystemSnapshotScriptBlock = {
                                                                         elseif ($_.WorkingSet -gt 1MB) {"$([Math]::Round($_.WorkingSet/1MB, 2)) MB"}
                                                                         elseif ($_.WorkingSet -gt 1KB) {"$([Math]::Round($_.WorkingSet/1KB, 2)) KB"}
                                                                         else                           {"$([Math]::Round($_.WorkingSet,     2)) Bytes"} ) -PassThru -Force
-        
                     $ProcessByParent.Item($ProcessID) `
                     | Where-Object   { $_ } `
                     | ForEach-Object { Write-ProcessTree $_ ($level + 1) }
@@ -482,92 +483,188 @@ $EndpointDataSystemSnapshotScriptBlock = {
                 | Where-Object   { $_.ProcessId -ne 0 -and ($_.ProcessId -eq $_.ParentProcessId -or $DeadParents -contains $_.ParentProcessId) } `
                 | ForEach-Object { Write-ProcessTree $_ }
             }
-            Get-ProcessTree -Processes $Processes | Select-Object `
-            ProcessID, ProcessName, Level, ParentProcessName, ParentProcessID, ServiceInfo,
-            @{n='PSComputerName';e={$env:Computername}},
-            StartTime, Duration, CPU, TotalProcessorTime,
-            NetworkConnections, NetworkConnectionCount, CommandLine, Path,
-            WorkingSet, MemoryUsage,
-            MD5Hash, SignerCertificate, StatusMessage, SignerCompany, Company, Product, ProductVersion, Description,
-            Modules, ModuleCount, Threads, ThreadCount, Handle, Handles, HandleCount,
-            Owner, OwnerSID,
-            @{n='CollectionType';e={'ProcessData'}}
+            Get-ProcessTree -Processes $Processes | Select-Object -Property `
+                ProcessName, ProcessID, ParentProcessName, ParentProcessID, Level, ServiceInfo,
+                StartTime, Duration, Owner, OwnerSID, CPU, TotalProcessorTime,
+                NetworkConnectionCount, ModuleCount, ThreadCount, HandleCount, CommandLine, Path,
+                WorkingSet,
+                NetworkConnections, Modules, Threads, Handle, Handles,
+                MD5Hash, SignerCertificate, StatusMessage, SignerCompany, Company, Product, ProductVersion, Description,
+                MemoryUsage -ExcludeProperty _*, Cim*
         ))
 
-#     #########################
-#     ### Service
-#     #########################
+    #########################
+    ### Service
+    #########################
 
-#         #####################
-#         #####################
-#         $CompiledResults.add('GetServicesEnriched',$(
-#             $service = Get-WmiObject -Class Win32_Service
+        #####################
+        #####################
+        $CompiledResults.add('Services',$(
+            $service = Get-WmiObject -Class Win32_Service | Select-Object -ExcludeProperty _*, Cim*
 
-#             foreach ($svc in $service) {
-#                 $ProcessName = Get-Process -Id $svc.processid | Select-Object -ExpandProperty Name
-#                 $svc | Add-member -NotePropertyName 'ProcessName' -NotePropertyValue $ProcessName
-#             }
-#             $service | Select-Object PSComputerName, Name, State, Status, Started, StartMode, StartName, ProcessID, ProcessName,  PathName, Caption, Description, DelayedAutoStart, AcceptPause, AcceptStop
-#         ))
+            foreach ($svc in $service) {
+                $ProcessName = Get-Process -Id $svc.processid | Select-Object -ExpandProperty Name
+                $svc | Add-member -NotePropertyName 'ProcessName' -NotePropertyValue $ProcessName
+            }
+            $service | Select-Object -Property PSComputerName, Name, State, Status, Started, StartMode, StartName, ProcessID, ProcessName,  PathName, Caption, Description, DelayedAutoStart, AcceptPause, AcceptStop -ExcludeProperty _*, Cim*
+        ))
 
-#     #########################
-#     ### Login Activity
-#     #########################
+    #########################
+    ### Login Activity
+    #########################
 
-#         #####################
-#         #####################
-#         $CompiledResults.add('GetAccountsCurrentlyLoggedOnInteractively',$(
-#             ## Find all sessions matching the specified username
-#             $quser = quser | Where-Object {$_ -notmatch 'SESSIONNAME'}
+        #####################
+        #####################
+        $CompiledResults.add('Active User Sessions',$(
+            ## Find all sessions matching the specified username
+            $quser = quser | Where-Object {$_ -notmatch 'SESSIONNAME'}
 
-#             $sessions = ($quser -split "`r`n").trim()
+            $sessions = ($quser -split "`r`n").trim()
 
-#             foreach ($session in $sessions) {
-#                 try {
-#                     # This checks if the value is an integer, if it is then it'll TRY, if it errors then it'll CATCH
-#                     [int]($session -split '  +')[2] | Out-Null
+            foreach ($session in $sessions) {
+                try {
+                    # This checks if the value is an integer, if it is then it'll TRY, if it errors then it'll CATCH
+                    [int]($session -split '  +')[2] | Out-Null
 
-#                     [PSCustomObject]@{
-#                         PSComputerName = $env:COMPUTERNAME
-#                         UserName       = ($session -split '  +')[0].TrimStart('>')
-#                         SessionName    = ($session -split '  +')[1]
-#                         SessionID      = ($session -split '  +')[2]
-#                         State          = ($session -split '  +')[3]
-#                         IdleTime       = ($session -split '  +')[4]
-#                         LogonTime      = ($session -split '  +')[5]
-#                     }
-#                 }
-#                 catch {
-#                     [PSCustomObject]@{
-#                         PSComputerName = $env:COMPUTERNAME
-#                         UserName       = ($session -split '  +')[0].TrimStart('>')
-#                         SessionName    = ''
-#                         SessionID      = ($session -split '  +')[1]
-#                         State          = ($session -split '  +')[2]
-#                         IdleTime       = ($session -split '  +')[3]
-#                         LogonTime      = ($session -split '  +')[4]
-#                     }
-#                 }
-#             }
-#         ))
-#             #Get-WmiObject -Class Win32_UserAccount -Filter "LocalAccount='True'"
+                    [PSCustomObject]@{
+                        PSComputerName = $env:COMPUTERNAME
+                        UserName       = ($session -split '  +')[0].TrimStart('>')
+                        SessionName    = ($session -split '  +')[1]
+                        SessionID      = ($session -split '  +')[2]
+                        State          = ($session -split '  +')[3]
+                        IdleTime       = ($session -split '  +')[4]
+                        LogonTime      = ($session -split '  +')[5]
+                    }
+                }
+                catch {
+                    [PSCustomObject]@{
+                        PSComputerName = $env:COMPUTERNAME
+                        UserName       = ($session -split '  +')[0].TrimStart('>')
+                        SessionName    = ''
+                        SessionID      = ($session -split '  +')[1]
+                        State          = ($session -split '  +')[2]
+                        IdleTime       = ($session -split '  +')[3]
+                        LogonTime      = ($session -split '  +')[4]
+                    }
+                }
+            }
+        ))
+            #Get-WmiObject -Class Win32_UserAccount -Filter "LocalAccount='True'"
 
-#         #####################
-#         #####################
-#         $CompiledResults.add('Win32_NetworkLoginProfile',$(
-#             Get-WmiObject -Class Win32_NetworkLoginProfile | Select-Object -Property *
-#         ))
+        #####################
+        #####################
+        $CompiledResults.add('Network Login Information',$(
+            Get-WmiObject -Class Win32_NetworkLoginProfile | Select-Object -Property * -ExcludeProperty _*, Cim*
+        ))
 
-#         #####################
-#         #####################
-#         $CompiledResults.add('',$())
-#         $GetLoginsFailed = "$Path\Get-LoginsFailed.ps1"
+        #####################
+        #####################
+        $CompiledResults.add('Successful Logins (Past 30 Days)',$(
+            Get-Eventlog -LogName Security -InstanceId 4624 -After (Get-Date).AddDays(-30) `
+            | Select-Object -Property TimeGenerated, ReplacementStrings -ExcludeProperty _*, Cim* `
+            | ForEach-Object {
+                New-Object PSObject -Property @{
+                    SourceComputer = $_.ReplacementStrings[13]
+                    UserName       = $_.ReplacementStrings[5]
+                    IPAddress      = $_.ReplacementStrings[19]
+                    Date           = $_.TimeGenerated
+                }
+            }
+        ))
 
-#         #####################
-#         #####################
-#         $CompiledResults.add('',$())
-#         $GetCurrentLoginActivity = Get-WSManInstance -ResourceURI Shell -Enumerate
+        #####################
+        #####################
+        $CompiledResults.add('Failed Logins (Past 30 Days)',$(
+            Get-Eventlog -LogName Security -InstanceId 4625 -After (Get-Date).AddDays(-30) `
+            | Select-Object -Property TimeGenerated, ReplacementStrings -ExcludeProperty _*, Cim* `
+            | ForEach-Object {
+                New-Object PSObject -Property @{
+                    SourceComputer = $_.ReplacementStrings[13]
+                    UserName       = $_.ReplacementStrings[5]
+                    IPAddress      = $_.ReplacementStrings[19]
+                    Date           = $_.TimeGenerated
+                }
+            }
+        ))
 
+        #####################
+        #####################
+        $CompiledResults.add('Event Logs - Login Event Details (Past 30 Days)',$(
+            Function Get-LoginEvents {
+                Param (
+                    [Parameter(
+                        ValueFromPipeline = $true,
+                        ValueFromPipelineByPropertyName = $true
+                    )]
+                    [Alias('Name')]
+                    [string]$ComputerName = $env:ComputerName
+                    ,
+                    [datetime]$StartTime
+                    ,
+                    [datetime]$EndTime
+                )
+                Begin {
+                    enum LogonTypes {
+                        LocalSystem       = 0
+                        Interactive       = 2
+                        Network           = 3
+                        Batch             = 4
+                        Service           = 5
+                        Unlock            = 7
+                        NetworkClearText  = 8
+                        NewCredentials    = 9
+                        RemoteInteractive = 10
+                        CachedInteractive = 11
+                    }
+                    enum LogonDescription {
+                        LocalSystem                    = 0
+                        LocalLogon                     = 2
+                        RemoteLogon                    = 3
+                        ScheduledTask                  = 4
+                        ServiceAccountLogon            = 5
+                        ScreenSaver                    = 7
+                        CLeartextNetworkLogon          = 8
+                        RusAsUsingAlternateCredentials = 9
+                        RDP_TS_RemoteAssistance        = 10
+                        LocalWithCachedCredentials     = 11
+                    }
+
+                    $FilterHashTable = @{
+                        LogName   = 'Security'
+                        ID        = 4624,4625
+                    }
+                    if ($PSBoundParameters.ContainsKey('StartTime')){
+                        $FilterHashTable['StartTime'] = $StartTime
+                    }
+                    if ($PSBoundParameters.ContainsKey('EndTime')){
+                        $FilterHashTable['EndTime'] = $EndTime
+                    }
+                }
+                Process {
+                    Get-WinEvent -ComputerName $ComputerName -FilterHashtable $FilterHashTable | ForEach-Object {
+                        [pscustomobject]@{
+                            ComputerName         = $ComputerName
+                            UserAccount          = $_.Properties.Value[5]
+                            UserDomain           = $_.Properties.Value[6]
+                            LogonType            = [LogonTypes]$_.Properties.Value[8]
+                            LogonDescription     = [LogonDescription]$_.Properties.Value[8]
+                            WorkstationName      = $_.Properties.Value[11]
+                            SourceNetworkAddress = $_.Properties.Value[19]
+                            TimeStamp            = $_.TimeCreated
+                        }
+                    }
+                }
+                End{}
+            }
+            Get-LoginEvents -StartTime $([datetime]::Today.AddDays(-30)) -EndTime $([datetime]::Today) | Select-Object -ExcludeProperty _*, Cim*
+        ))
+
+        #####################
+        #####################
+        $CompiledResults.add('PowerShell Sessions',$(
+            Get-WSManInstance -ResourceURI Shell -Enumerate | Select-Object -Property Name, Owner, ClientIP, State, @{n='ShellRunDateTime';e={[System.Xml.XmlConvert]::ToTimeSpan($_.ShellRunTime).ToString()}}, @{n='ShellInactivityDateTime';e={[System.Xml.XmlConvert]::ToTimeSpan($_.ShellInactivity).ToString()}}, ProcessId, ChildProcesses, Profileloaded, @{n='MaxIdleTimeOutDateTime';e={[System.Xml.XmlConvert]::ToTimeSpan($_.MaxIdleTimeOut).ToString()}}, InputStreams, OutputStreams, Locale, MemoryUsed, CompressionMode, BufferMode, Encoding, ShellId, ResourceUri, rsp -ExcludeProperty _*, Cim*
+        ))
+        
 #         # Event Logs
 
 #         # Current PSSessions
@@ -576,267 +673,206 @@ $EndpointDataSystemSnapshotScriptBlock = {
 
 #         # Share Access
 
-#     #########################
-#     ### Event Logs
-#     #########################
+    #########################
+    ### Event Logs
+    #########################
 
-#         #####################
-#         #####################
-#         $CompiledResults.add('GetEventLogList',$(
-#             Get-EventLog -List
-#         ))
+        #####################
+        #####################
+        $CompiledResults.add('EventLog List',$(
+            Get-EventLog -List | Select-Object -Property Log, @{n='Entries';e={$_.Entries.count}}, OverflowAction, MaximumKilobytes, MinimumRetentionDays, EnableRaisingEvents -ExcludeProperty _*, Cim*
+        ))
 
-#         #####################
-#         #####################
-#         $CompiledResults.add('GetWinEventListLog',$(
-#             Get-WinEvent -ListLog *
-#         ))
+        #####################
+        #####################
+        $CompiledResults.add('WinEvent LogList',$(
+            Get-WinEvent -ListLog * | Select-Object -Property LogName, LogType, LogIsolation, IsEnabled, LogMode, LastAccessTime, FileSize, MaximumSizeInBytes, IsLogFull, RecordCount, OldestRecordNumber, IsClassicLog, LogFilePath, OwningProviderName, ProviderBufferSize, ProviderMinimumNumberOfBuffers, ProviderMaximumNumberOfBuffers, ProviderLatency, SecurityDescriptor, ProviderNames -ExcludeProperty _*, Cim*
+        ))
 
-#         #####################
-#         #####################
-#         $CompiledResults.add('GetLoginEventsLast24hrs',$(
-#             Function Get-LoginEvents {
-#                 Param (
-#                     [Parameter(
-#                         ValueFromPipeline = $true,
-#                         ValueFromPipelineByPropertyName = $true
-#                     )]
-#                     [Alias('Name')]
-#                     [string]$ComputerName = $env:ComputerName
-#                     ,
-#                     [datetime]$StartTime
-#                     ,
-#                     [datetime]$EndTime
-#                 )
-#                 Begin {
-#                     enum LogonTypes {
-#                         LocalSystem       = 0
-#                         Interactive       = 2
-#                         Network           = 3
-#                         Batch             = 4
-#                         Service           = 5
-#                         Unlock            = 7
-#                         NetworkClearText  = 8
-#                         NewCredentials    = 9
-#                         RemoteInteractive = 10
-#                         CachedInteractive = 11
-#                     }
-#                     enum LogonDescription {
-#                         LocalSystem                    = 0
-#                         LocalLogon                     = 2
-#                         RemoteLogon                    = 3
-#                         ScheduledTask                  = 4
-#                         ServiceAccountLogon            = 5
-#                         ScreenSaver                    = 7
-#                         CLeartextNetworkLogon          = 8
-#                         RusAsUsingAlternateCredentials = 9
-#                         RDP_TS_RemoteAssistance        = 10
-#                         LocalWithCachedCredentials     = 11
-#                     }
+        #####################
+        #####################
+        $CompiledResults.add('Event Logs - Application (Last 1000)',$(
+            Get-WinEvent -LogName Application -MaxEvents 1000 | Select-Object -Property LogName, TimeCreated, TaskDisplayName, KeyWordsDisplayNames, ProcessId, ThreadId, Id, Version, LevelDisplayName, Level, Task, ContainerLog, OpCode, OpCodeDisplayName, KeyWords, RecordId, ProviderName, ProviderId, ActivityId, Qualifiers, MachineName, UserId, @{n='Properties';e={$_.Properties.Value}}, Message -ExcludeProperty _*, Cim*
+        ))
 
-#                     $FilterHashTable = @{
-#                         LogName   = 'Security'
-#                         ID        = 4624
-#                     }
-#                     if ($PSBoundParameters.ContainsKey('StartTime')){
-#                         $FilterHashTable['StartTime'] = $StartTime
-#                     }
-#                     if ($PSBoundParameters.ContainsKey('EndTime')){
-#                         $FilterHashTable['EndTime'] = $EndTime
-#                     }
-#                 }
-#                 Process {
-#                     Get-WinEvent -ComputerName $ComputerName -FilterHashtable $FilterHashTable | ForEach-Object {
-#                         [pscustomobject]@{
-#                             ComputerName         = $ComputerName
-#                             UserAccount          = $_.Properties.Value[5]
-#                             UserDomain           = $_.Properties.Value[6]
-#                             LogonType            = [LogonTypes]$_.Properties.Value[8]
-#                             LogonDescription     = [LogonDescription]$_.Properties.Value[8]
-#                             WorkstationName      = $_.Properties.Value[11]
-#                             SourceNetworkAddress = $_.Properties.Value[19]
-#                             TimeStamp            = $_.TimeCreated
-#                         }
-#                     }
-#                 }
-#                 End{}
-#             }
-#             Get-LoginEvents -StartTime $([datetime]::Today.AddHours(-24)) -EndTime $([datetime]::Today)    
-#         ))
-
-#         # Last 1000 Security
-
-#         # Last 1000 System
-
-#         # Last 1000 ...
+        #####################
+        #####################
+        $CompiledResults.add('Event Logs - System (Last 1000)',$(
+            Get-WinEvent -LogName System -MaxEvents 1000 | Select-Object -Property LogName, TimeCreated, TaskDisplayName, KeyWordsDisplayNames, ProcessId, ThreadId, Id, Version, LevelDisplayName, Level, Task, ContainerLog, OpCode, OpCodeDisplayName, KeyWords, RecordId, ProviderName, ProviderId, ActivityId, Qualifiers, MachineName, UserId, @{n='Properties';e={$_.Properties.Value}}, Message -ExcludeProperty _*, Cim*
+        ))
+        
+        #####################
+        #####################
+        $CompiledResults.add('Event Logs - Security (Last 1000)',$(
+            Get-WinEvent -LogName Security -MaxEvents 1000 | Select-Object -Property LogName, TimeCreated, TaskDisplayName, KeyWordsDisplayNames, ProcessId, ThreadId, Id, Version, LevelDisplayName, Level, Task, ContainerLog, OpCode, OpCodeDisplayName, KeyWords, RecordId, ProviderName, ProviderId, ActivityId, Qualifiers, MachineName, UserId, @{n='Properties';e={$_.Properties.Value}}, Message -ExcludeProperty _*, Cim*
+        ))
 
 
-#     #########################
+     #########################
 #     ### Registry
 #     #########################
 
 #         #... something something darkside
 
-#     #########################
-#     ### Hardware
-#     #########################
+    #########################
+    ### Hardware
+    #########################
 
-#         #####################
-#         #####################
-#         $CompiledResults.add('GetDriverDetails',$(
-#             # Gets Driver Details, MD5 Hash, and File Signature Status
-#             # This script can be quite time consuming
-#             $Drivers = Get-WindowsDriver -Online -All
-#             $MD5     = [System.Security.Cryptography.HashAlgorithm]::Create("MD5")
-#             $SHA256  = [System.Security.Cryptography.HashAlgorithm]::Create("SHA256")
+        #####################
+        #####################
+        $CompiledResults.add('Driver Details',$(
+            # Gets Driver Details, MD5 Hash, and File Signature Status
+            # This script can be quite time consuming
+            $Drivers = Get-WindowsDriver -Online -All | Select-Object -ExcludeProperty _*, Cim*
+            $MD5     = [System.Security.Cryptography.HashAlgorithm]::Create("MD5")
+            $SHA256  = [System.Security.Cryptography.HashAlgorithm]::Create("SHA256")
 
-#             foreach ($Driver in $Drivers) {
-#                 $filebytes = [system.io.file]::ReadAllBytes($($Driver).OriginalFilename)
+            foreach ($Driver in $Drivers) {
+                $filebytes = [system.io.file]::ReadAllBytes($($Driver).OriginalFilename)
 
-#                 $HashMD5 = [System.BitConverter]::ToString($MD5.ComputeHash($filebytes)) -replace "-", ""
-#                 $Driver | Add-Member -NotePropertyName HashMD5 -NotePropertyValue $HashMD5
+                $HashMD5 = [System.BitConverter]::ToString($MD5.ComputeHash($filebytes)) -replace "-", ""
+                $Driver | Add-Member -NotePropertyName HashMD5 -NotePropertyValue $HashMD5
 
-#                 # If enbaled, add HashSHA256 to Select-Object
-#                 #$HashSHA256 = [System.BitConverter]::ToString($SHA256.ComputeHash($filebytes)) -replace "-", ""
-#                 #$Driver | Add-Member -NotePropertyName HashSHA256 -NotePropertyValue $HashSHA256
+                # If enbaled, add HashSHA256 to Select-Object
+                #$HashSHA256 = [System.BitConverter]::ToString($SHA256.ComputeHash($filebytes)) -replace "-", ""
+                #$Driver | Add-Member -NotePropertyName HashSHA256 -NotePropertyValue $HashSHA256
 
-#                 $FileSignature = Get-AuthenticodeSignature -FilePath $Driver.OriginalFileName
-#                 $Signercertificate = $FileSignature.SignerCertificate.Thumbprint
-#                 $Driver | Add-Member -NotePropertyName SignerCertificate -NotePropertyValue $Signercertificate
-#                 $Status = $FileSignature.Status
-#                 $Driver | Add-Member -NotePropertyName Status -NotePropertyValue $Status
-#                 $Driver | Select-Object -Property @{name="PSComputerName";expression={$env:COMPUTERNAME}}, Online, ClassName, Driver, OriginalFileName, ClassDescription, BootCritical, HashMD5, DriverSignature, SignerCertificate, Status, ProviderName, Date, Version, InBox, LogPath, LogLevel
-#             }
-#         ))
-#             #Get-WindowsDriver -Online -All #<-- included in the above script
+                $FileSignature = Get-AuthenticodeSignature -FilePath $Driver.OriginalFileName
+                $Signercertificate = $FileSignature.SignerCertificate.Thumbprint
+                $Driver | Add-Member -NotePropertyName SignerCertificate -NotePropertyValue $Signercertificate
+                $Status = $FileSignature.Status
+                $Driver | Add-Member -NotePropertyName Status -NotePropertyValue $Status
+                $Driver | Select-Object -Property @{name="PSComputerName";expression={$env:COMPUTERNAME}}, Online, ClassName, Driver, OriginalFileName, ClassDescription, BootCritical, HashMD5, DriverSignature, SignerCertificate, Status, ProviderName, Date, Version, InBox, LogPath, LogLevel
+            }
+        ))
+            #Get-WindowsDriver -Online -All #<-- included in the above script
 
-#         #####################
-#         #####################
-#         $CompiledResults.add('Win32_Systemdriver',$(
-#             Get-WmiObject -Class Win32_Systemdriver
-#         ))
-#             # driverquery /si /FO csv
+        #####################
+        #####################
+        $CompiledResults.add('System Drivers',$(
+            Get-WmiObject -Class Win32_Systemdriver | Select-Object -ExcludeProperty _*, Cim*
+        ))
+            # driverquery /si /FO csv
 
-#         #####################
-#         #####################
-#         $CompiledResults.add('Win32_BaseBoard',$(
-#             Get-WmiObject -Class Win32_BaseBoard
-#         ))
+        #####################
+        #####################
+        $CompiledResults.add('Motherboard',$(
+            Get-WmiObject -Class Win32_BaseBoard |  Select-Object -ExcludeProperty _*, Cim*
+        ))
 
-#         #####################
-#         #####################
-#         $CompiledResults.add('GetLogicalDisksEnriched',$(
-#             function Get-LogicalMappedDrives{
-#                 Get-WmiObject -Class Win32_LogicalDisk |
-#                     Select-Object -Property @{Name='ComputerName';Expression={$($env:computername)}},
-#                     @{Name='Name';Expression={$_.DeviceID}},
-#                         DeviceID, DriveType,
-#                     @{Name = 'DriveTypeName'
-#                         Expression = {
-#                             if     ($_.DriveType -eq 0) {'Unknown'}
-#                             elseif ($_.DriveType -eq 1) {'No Root Directory'}
-#                             elseif ($_.DriveType -eq 2) {'Removeable Disk'}
-#                             elseif ($_.DriveType -eq 3) {'Local Drive'}
-#                             elseif ($_.DriveType -eq 4) {'Network Drive'}
-#                             elseif ($_.DriveType -eq 5) {'Compact Disc'}
-#                             elseif ($_.DriveType -eq 6) {'RAM Disk'}
-#                             else                        {'Error: Unknown'}
-#                         }}, VolumeName,
-#                     @{L='FreeSpaceGB';E={"{0:N2}" -f ($_.FreeSpace /1GB)}},
-#                     @{L="CapacityGB";E={"{0:N2}" -f ($_.Size/1GB)}},
-#                     FileSystem, VolumeSerialNumber, 
-#                     Compressed, SupportsFileBasedCompression,
-#                     SupportsDiskQuotas, QuotasDisabled, QuotasIncomplete, QuotasRebuilding
-#             }
-#             Get-LogicalMappedDrives    
-#         ))
-#             # Get-WmiObject -Class Win32_LogicalDisk #<-- Used within script above
+        #####################
+        #####################
+        $CompiledResults.add('Logical Disks',$(
+            function Get-LogicalMappedDrives {
+                Get-WmiObject -Class Win32_LogicalDisk |
+                    Select-Object -Property @{Name='ComputerName';Expression={$($env:computername)}},
+                    @{Name='Name';Expression={$_.DeviceID}},
+                        DeviceID, DriveType,
+                    @{Name = 'DriveTypeName'
+                        Expression = {
+                            if     ($_.DriveType -eq 0) {'Unknown'}
+                            elseif ($_.DriveType -eq 1) {'No Root Directory'}
+                            elseif ($_.DriveType -eq 2) {'Removeable Disk'}
+                            elseif ($_.DriveType -eq 3) {'Local Drive'}
+                            elseif ($_.DriveType -eq 4) {'Network Drive'}
+                            elseif ($_.DriveType -eq 5) {'Compact Disc'}
+                            elseif ($_.DriveType -eq 6) {'RAM Disk'}
+                            else                        {'Error: Unknown'}
+                        }}, VolumeName,
+                    @{L='FreeSpaceGB';E={"{0:N2}" -f ($_.FreeSpace /1GB)}},
+                    @{L="CapacityGB";E={"{0:N2}" -f ($_.Size/1GB)}},
+                    FileSystem, VolumeSerialNumber, 
+                    Compressed, SupportsFileBasedCompression,
+                    SupportsDiskQuotas, QuotasDisabled, QuotasIncomplete, QuotasRebuilding -ExcludeProperty _*, Cim*
+            }
+            Get-LogicalMappedDrives    
+        ))
+            # Get-WmiObject -Class Win32_LogicalDisk #<-- Used within script above
 
-#         #####################
-#         #####################
-#         $CompiledResults.add('GetDisk',$(
-#             Get-Disk | Select-Object -Property Number, FriendlyName, OperationalStatus, BusType, SerialNumber, HealthStatus, @{n='TotalSize';e={"$([Math]::Round($_.Size/1GB,2)) GB"}}, OperationalStatus, PartitionStyle, BootFromDisk, IsBoot, IsClustered, IsHighlyAvailable, Location, IsOffline, IsReadonly, IsScaleout, IsSystem, * -ErrorAction SilentlyContinue
-#         ))
-#             # Get-WmiObject -Class Win32_DiskDrive #<-- similar to above command
+        #####################
+        #####################
+        $CompiledResults.add('Disks',$(
+            Get-Disk | Select-Object -Property Number, FriendlyName, OperationalStatus, BusType, SerialNumber, HealthStatus, @{n='TotalSize';e={"$([Math]::Round($_.Size/1GB,2)) GB"}}, OperationalStatus, PartitionStyle, BootFromDisk, IsBoot, IsClustered, IsHighlyAvailable, Location, IsOffline, IsReadonly, IsScaleout, IsSystem, * -ExcludeProperty _*, Cim* -ErrorAction SilentlyContinue 
+        ))
+            # Get-WmiObject -Class Win32_DiskDrive #<-- similar to above command
 
-#         #####################
-#         #####################
-#         $CompiledResults.add('Win32_Processor',$(
-#             Get-WmiObject -Class Win32_Processor | Select-Object -Property *
-#         ))
+        #####################
+        #####################
+        $CompiledResults.add('Processor (CPU)',$(
+            Get-WmiObject -Class Win32_Processor | Select-Object -Property * -ExcludeProperty _*, Cim*
+        ))
 
-#         #####################
-#         #####################
-#         $CompiledResults.add('Win32_PhysicalMemory',$(
-#             Get-WmiObject -Class Win32_PhysicalMemory | Select-Object -Property *
-#         ))
+        #####################
+        #####################
+        $CompiledResults.add('Physical Memory',$(
+            Get-WmiObject -Class Win32_PhysicalMemory | Select-Object -Property * -ExcludeProperty _*, Cim*
+        ))
 
-#         #####################
-#         #####################
-#         $CompiledResults.add('Win32_PerfRawData_PerfOS_Memory',$(
-#             Get-WmiObject -Class Win32_PerfRawData_PerfOS_Memory
-#         ))
+        #####################
+        #####################
+        $CompiledResults.add('Memory Performance',$(
+            Get-WmiObject -Class Win32_PerfRawData_PerfOS_Memory | Select-Object -ExcludeProperty _*, Cim*
+        ))
 
-#         #####################
-#         #####################
-#         $CompiledResults.add('Win32_BIOS',$(
-#             Get-WmiObject -Class Win32_BIOS
-#         ))
+        #####################
+        #####################
+        $CompiledResults.add('BIOS',$(
+            Get-WmiObject -Class Win32_BIOS | Select-Object -ExcludeProperty _*, Cim*
+        ))
 
-#         #####################
-#         #####################
-#         $CompiledResults.add('',$(
-#             Get-WmiObject -Class Win32_USBControllerDevice | Foreach-Object {
-#                 $Dependent  = [wmi]($_.Dependent)
-#                 $Antecedent = [wmi]($_.Antecedent)
+        #####################
+        #####################
+        $CompiledResults.add('USB Controllers & Devices',$(
+            Get-WmiObject -Class Win32_USBControllerDevice | Foreach-Object {
+                $Dependent  = [wmi]($_.Dependent)
+                $Antecedent = [wmi]($_.Antecedent)
 
-#                 [PSCustomObject]@{
-#                     USBDeviceName             = $Dependent.Name
-#                     USBDeviceManufacturer     = $Dependent.Manufacturer
-#                     USBDeviceService          = $Dependent.Service
-#                     USBDeviceStatus           = $Dependent.Status
-#                     USBDevicePNPDeviceID      = $Dependent.PNPDeviceID
-#                     USBDeviceHardwareID       = $Dependent.HardwareID
-#                     USBDeviceInstallDate      = $Dependent.InstallDate
-#                     USBControllerName         = $Antecedent.Name
-#                     USBControllerManufacturer = $Antecedent.Manufacturer
-#                     USBControllerStatus       = $Antecedent.Status
-#                     USBControllerPNPDeviceID  = $Antecedent.PNPDeviceID
-#                     USBControllerInstallDate  = $Antecedent.InstallDate
-#                 }
-#             } `
-#             | Select-Object -Property PSComputerName, * -ErrorAction SilentlyContinue `
-#             | Sort-Object Description,DeviceID
-#         ))
-#         $GetUSBControllerAndDevices = "$Path\Get-USBControllerAndDevices.ps1"
-#             # Get-WmiObject -Class Win32_USBControllerDevice #<-- Included in the above script
+                [PSCustomObject]@{
+                    USBDeviceName             = $Dependent.Name
+                    USBDeviceManufacturer     = $Dependent.Manufacturer
+                    USBDeviceService          = $Dependent.Service
+                    USBDeviceStatus           = $Dependent.Status
+                    USBDevicePNPDeviceID      = $Dependent.PNPDeviceID
+                    USBDeviceHardwareID       = $Dependent.HardwareID
+                    USBDeviceInstallDate      = $Dependent.InstallDate
+                    USBControllerName         = $Antecedent.Name
+                    USBControllerManufacturer = $Antecedent.Manufacturer
+                    USBControllerStatus       = $Antecedent.Status
+                    USBControllerPNPDeviceID  = $Antecedent.PNPDeviceID
+                    USBControllerInstallDate  = $Antecedent.InstallDate
+                }
+            } `
+            | Select-Object -Property PSComputerName, * -ExcludeProperty _*, Cim* -ErrorAction SilentlyContinue `
+            | Sort-Object Description, DeviceID
+        ))
+            # Get-WmiObject -Class Win32_USBControllerDevice #<-- Included in the above script
         
-#         #####################
-#         #####################
-#         $CompiledResults.add('GetPnpDevice',$(
-#             Get-PnpDevice | Select-Object -Property Status, Class, Name, Description, Manufacturer, PNPClass, Present, Service,  InstanceId, DeviceID, HardwareID, * -ErrorAction SilentlyContinue
-#         ))
-#             # Get-WmiObject -Class Win32_PnPEntity #<-- Similar to above
+        #####################
+        #####################
+        $CompiledResults.add('PNP Devices',$(
+            Get-PnpDevice | Select-Object -Property Status, Class, Name, Description, Manufacturer, PNPClass, Present, Service,  InstanceId, DeviceID, HardwareID, * -ExcludeProperty _*, Cim* -ErrorAction SilentlyContinue
+        ))
+            # Get-WmiObject -Class Win32_PnPEntity #<-- Similar to above
 
-#         #####################
-#         #####################
-#         $CompiledResults.add('USBHistory',$(
-#             Get-ItemProperty -Path HKLM:\system\CurrentControlSet\Enum\USBSTOR\*\*
-#         ))
+        #####################
+        #####################
+        $CompiledResults.add('USB History',$(
+            Get-ItemProperty -Path HKLM:\system\CurrentControlSet\Enum\USBSTOR\*\*
+        ))
 
-#         #####################
-#         #####################
-#         $CompiledResults.add('Win32_Printer',$(
-#             Get-WmiObject -Class Win32_Printer
-#         ))
+        #####################
+        #####################
+        $CompiledResults.add('Printers',$(
+            Get-WmiObject -Class Win32_Printer | Select-Object -ExcludeProperty _*, Cim*
+        ))
 
 #     #########################
 #     ### Software
 #     #########################
-
+# ------------------------------------------------------- -ExcludeProperty _*, Cim*
 #         #####################
 #         #####################
-#         $CompiledResults.add('',$(
+#         $CompiledResults.add('Software (Registry)',$(
 #             $Software = @()
 #             $Paths    = @("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall","SOFTWARE\\Wow6432node\\Microsoft\\Windows\\CurrentVersion\\Uninstall")
 #             ForEach($Path in $Paths) {
@@ -907,7 +943,8 @@ $EndpointDataSystemSnapshotScriptBlock = {
 
 #         #####################
 #         #####################
-#         $CompiledResults.add('Win32_Product',$(
+# ------------------------------------------------------- -ExcludeProperty _*, Cim*
+#         $CompiledResults.add('Product Info',$(
 #             Get-WmiObject -Class Win32_Product | Select-Object Name, Caption, Vendor, Version, InstallDate, @{n='InstallDateTime';e={[datetime]::parseexact($_.InstallDate, 'yyyyMMdd', $null)}}, IdentifyingNumber, InstallSource, InstallLocation, LocalPackage, PackageName, HelpLink, URLInfoAbout, URLUpdateInfo, HelpTelephone, Language, ProductID, RegCompany, RegOwner, SKUNumber, Transforms
 #         ))
     
@@ -917,7 +954,8 @@ $EndpointDataSystemSnapshotScriptBlock = {
 
 #         #####################
 #         #####################
-#         $CompiledResults.add('GetCrashedApplications',$(
+# ------------------------------------------------------- -ExcludeProperty _*, Cim*
+#         $CompiledResults.add('Crashed Applications',$(
 #             $Faults = Get-EventLog -LogName Application -InstanceId 1000 | Select-Object -ExpandProperty Message
 #             $UniqueFault = @()
 #             ForEach ($f in $Faults) {
@@ -933,7 +971,8 @@ $EndpointDataSystemSnapshotScriptBlock = {
 
 #         #####################
 #         #####################
-#         $CompiledResults.add('',$(
+# ------------------------------------------------------- -ExcludeProperty _*, Cim*
+#         $CompiledResults.add('Audit Options',$(
 #             $regConfig = @"
 #             RegistryKey,Name
 #             "HKLM:\SYSTEM\CurrentControlSet\Control\Lsa","scenoapplylegacyauditpolicy"
@@ -983,6 +1022,7 @@ $EndpointDataSystemSnapshotScriptBlock = {
 
 #         #####################
 #         #####################
+# ------------------------------------------------------- -ExcludeProperty _*, Cim*
 #         $CompiledResults.add('auditpol',$(
 #             auditpol /get /category:* /r | Convertfrom-Csv
 #         ))
@@ -992,49 +1032,57 @@ $EndpointDataSystemSnapshotScriptBlock = {
 
 #         #####################
 #         #####################
-#         $CompiledResults.add('GetHotFix',$(
+# ------------------------------------------------------- -ExcludeProperty _*, Cim*
+#         $CompiledResults.add('Security HotFixes',$(
 #             Get-HotFix
 #         ))
 #             #Get-WmiObject -Class Win32_QuickFixEngineering #<-- similar to above
 
 #         #####################
 #         #####################
-#         $CompiledResults.add('GetSecureBootPolicy',$(
+# ------------------------------------------------------- -ExcludeProperty _*, Cim*
+#         $CompiledResults.add('Secure Boot Policy',$(
 #             Get-SecureBootPolicy
 #         ))
 
 #         #####################
 #         #####################
-#         $CompiledResults.add('ConfirmSecureBootUEFI',$(
+# ------------------------------------------------------- -ExcludeProperty _*, Cim*
+#         $CompiledResults.add('Confirm Secure Boot UEFI',$(
 #             Confirm-SecureBootUEFI
 #         ))
 
 #         #####################
 #         #####################
-#         $CompiledResults.add('GetMpThreat',$(
+# ------------------------------------------------------- -ExcludeProperty _*, Cim*
+#         $CompiledResults.add('Mp Threat',$(
 #             Get-MpThreat
 #         ))
 
 #         #####################
 #         #####################
-#         $CompiledResults.add('GetMpThreatDetection',$(
+# ------------------------------------------------------- -ExcludeProperty _*, Cim*
+#         $CompiledResults.add('MpThreatDetection',$(
 #             Get-MpThreatDetection
 #         ))
 
 #         #####################
 #         #####################
-#         $CompiledResults.add('GetMpPreference',$(
+# ------------------------------------------------------- -ExcludeProperty _*, Cim*
+#         $CompiledResults.add('MpPreference',$(
 #             Get-MpPreference
 #         ))
 
 #         #####################
 #         #####################
-#         $CompiledResults.add('GetMpComputerStatus',$(
+# ------------------------------------------------------- -ExcludeProperty _*, Cim*
+#         $CompiledResults.add('MpComputerStatus',$(
 #             Get-MpComputerStatus
 #         ))
 
 #         #####################
 #         #####################
+# ------------------------------------------------------- -ExcludeProperty _*, Cim*
 #         $CompiledResults.add('AntivirusProduct',$(
 #             Get-WmiObject -Namespace root\SecurityCenter2 -Class AntivirusProduct
 #         ))
@@ -1045,7 +1093,8 @@ $EndpointDataSystemSnapshotScriptBlock = {
 
 #         #####################
 #         #####################
-#         $CompiledResults.add('GetFirewallRulesEnriched',$(
+# ------------------------------------------------------- -ExcludeProperty _*, Cim*
+#         $CompiledResults.add('FirewallRulesEnriched',$(
 #             function Get-EnrichedFirewallRules {
 #                 Param(
 #                     $Name = "*",
@@ -1122,7 +1171,8 @@ $EndpointDataSystemSnapshotScriptBlock = {
 
 #         #####################
 #         #####################
-#         $CompiledResults.add('GetNetFirewallProfile',$(
+# ------------------------------------------------------- -ExcludeProperty _*, Cim*
+#         $CompiledResults.add('NetFirewallProfile',$(
 #             Get-NetFirewallProfile
 #         ))
 #             #netsh advfirewall show allprofiles state
@@ -1133,33 +1183,38 @@ $EndpointDataSystemSnapshotScriptBlock = {
 
 #         #####################
 #         #####################
-#         $CompiledResults.add('GetLocalUser',$(
+# ------------------------------------------------------- -ExcludeProperty _*, Cim*
+#         $CompiledResults.add('LocalUser',$(
 #             Get-LocalUser | Select-Object -Property *
 #         ))
 #             # net user
 
 #         #####################
 #         #####################
-#         $CompiledResults.add('GetNonLocalUser',$(
+# ------------------------------------------------------- -ExcludeProperty _*, Cim*
+#         $CompiledResults.add('NonLocalUser',$(
 #             Get-WmiObject -Class Win32_UserAccount -Filter "LocalAccount='False'"
 #         ))
 
 #         #####################
 #         #####################
-#         $CompiledResults.add('GetLocalGroup',$(
+# ------------------------------------------------------- -ExcludeProperty _*, Cim*
+#         $CompiledResults.add('LocalGroup',$(
 #             Get-LocalGroup | Select-Object -Property *
 #         ))
 #             # net localgroup
 
 #         #####################
 #         #####################
-#         $CompiledResults.add('GetNonLocalGroup',$(
+# ------------------------------------------------------- -ExcludeProperty _*, Cim*
+#         $CompiledResults.add('NonLocalGroup',$(
 #             Get-WmiObject -Class Win32_Group -Filter { LocalAccount='False' }
 #         ))
 
 #         #####################
 #         #####################
-#         $CompiledResults.add('GetLocalGroupAdministrators',$(
+# ------------------------------------------------------- -ExcludeProperty _*, Cim*
+#         $CompiledResults.add('LocalGroupAdministrators',$(
 #             Get-LocalGroupMember -Group administrators
 #         ))
 #             # net localgroup administrators
@@ -1170,38 +1225,44 @@ $EndpointDataSystemSnapshotScriptBlock = {
 
 #         #####################
 #         #####################
-#         $CompiledResults.add('GetSmbConnection',$(
+# ------------------------------------------------------- -ExcludeProperty _*, Cim*
+#         $CompiledResults.add('SmbConnection',$(
 #             Get-SmbConnection | Select-Object -Property *
 #         ))
 
 #         #####################
 #         #####################
-#         $CompiledResults.add('GetSmbShare',$(
+# ------------------------------------------------------- -ExcludeProperty _*, Cim*
+#         $CompiledResults.add('SmbShare',$(
 #             Get-SmbShare | Foreach-Object {Get-SmbShareAccess -Name $_.Name} | Select-Object -Property *
 #         ))
 #             # Get-WmiObject -Class Win32_Share #<-- Similar to above
 
 #         #####################
 #         #####################
-#         $CompiledResults.add('GetSmbMapping',$(
+# ------------------------------------------------------- -ExcludeProperty _*, Cim*
+#         $CompiledResults.add('SmbMapping',$(
 #             Get-SmbMapping | Select-Object -Property *
 #         ))
 
 #         #####################
 #         #####################
-#         $CompiledResults.add('GetSmbOpenFile',$(
+# ------------------------------------------------------- -ExcludeProperty _*, Cim*
+#         $CompiledResults.add('SmbOpenFile',$(
 #             Get-SmbOpenFile | Select-Object -Property *
 #         ))
 
 #         #####################
 #         #####################
-#         $CompiledResults.add('GetSmbSession',$(
+# ------------------------------------------------------- -ExcludeProperty _*, Cim*
+#         $CompiledResults.add('SmbSession',$(
 #             Get-SmbSession | Select-Object -Property *
 #         ))
 
 #         #####################
 #         #####################
-#         $CompiledResults.add('GetSmbShare',$(
+# ------------------------------------------------------- -ExcludeProperty _*, Cim*
+#         $CompiledResults.add('SmbShare',$(
 #             Get-SmbShare | Select-Object -Property *
 #         ))
 
@@ -1211,6 +1272,7 @@ $EndpointDataSystemSnapshotScriptBlock = {
 
 #         #####################
 #         #####################
+# ------------------------------------------------------- -ExcludeProperty _*, Cim*
 #         $CompiledResults.add('',$(
 #             $ErrorActionPreference = 'SilentlyContinue'
 
@@ -1271,6 +1333,7 @@ $EndpointDataSystemSnapshotScriptBlock = {
         
 #         #####################
 #         #####################
+# ------------------------------------------------------- -ExcludeProperty _*, Cim*
 #         $CompiledResults.add('Win32_StartupCommand',$(
 #             Get-WmiObject -Class Win32_StartupCommand
 #         ))
@@ -1281,83 +1344,98 @@ $EndpointDataSystemSnapshotScriptBlock = {
 
 #         #####################
 #         #####################
+# ------------------------------------------------------- -ExcludeProperty _*, Cim*
 #         $CompiledResults.add('TestWSMan',$(
 #             Test-WSMan | Select-Object -Property *
 #         ))
 
 #         #####################
 #         #####################
-#         $CompiledResults.add('GetServiceWinRM',$(
+# ------------------------------------------------------- -ExcludeProperty _*, Cim*
+#         $CompiledResults.add('ServiceWinRM',$(
 #             Get-Service -Name WinRM | Select-Object -Property *
 #         ))
 
 #         #####################
 #         #####################
+# ------------------------------------------------------- -ExcludeProperty _*, Cim*
 #         $CompiledResults.add('WSManTrustedHosts',$(
 #             Get-Item WSMan:\localhost\Client\TrustedHosts
 #         ))
 
 #         #####################
 #         #####################
+# ------------------------------------------------------- -ExcludeProperty _*, Cim*
 #         $CompiledResults.add('PSReadLineHistoryUserHistoryy',$(
 #             Get-Content (Get-PSReadLineOption | Select-Object -ExpandProperty HistorySavePath)
 #         ))
 
+
+# ------------------------------------------------------- -ExcludeProperty _*, Cim*
 #         $CompiledResults.add('PSReadLineHistoryConsoleHost',$(
 #             Get-Content "$env:APPDATA\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt"
 #         ))
 
 #         #####################
 #         #####################
+# ------------------------------------------------------- -ExcludeProperty _*, Cim*
 #         $CompiledResults.add('PowerShellSessions',$(
 #             Get-WSManInstance -ResourceURI Shell -Enumerate | Select-Object -Property *
 #         ))
 
 #         #####################
 #         #####################
-#         $CompiledResults.add('GetCommand',$(
+# ------------------------------------------------------- -ExcludeProperty _*, Cim*
+#         $CompiledResults.add('Command',$(
 #             Get-Command
 #         ))
 
 #         #####################
 #         #####################
-#         $CompiledResults.add('GetInstalledModule',$(
+# ------------------------------------------------------- -ExcludeProperty _*, Cim*
+#         $CompiledResults.add('InstalledModule',$(
 #             Get-InstalledModule
 #         ))
 
 #         #####################
 #         #####################
-#         $CompiledResults.add('GetModule',$(
+# ------------------------------------------------------- -ExcludeProperty _*, Cim*
+#         $CompiledResults.add('Module',$(
 #             Get-Module
 #         ))
 
 #         #####################
 #         #####################
+# ------------------------------------------------------- -ExcludeProperty _*, Cim*
 #         $CompiledResults.add('PSProfileAllUsersAllHosts',$(
 #             Get-Content $Profile.AllUsersAllHosts
 #         ))
 
 #         #####################
 #         #####################
+# ------------------------------------------------------- -ExcludeProperty _*, Cim*
 #         $CompiledResults.add('PSProfileAllUsersCurrentHost',$(
 #             Get-Content $Profile.AllUsersCurrentHost
 #         ))
 
 #         #####################
 #         #####################
+# ------------------------------------------------------- -ExcludeProperty _*, Cim*
 #         $CompiledResults.add('PSProfileCurrentUserAllHosts',$(
 #             Get-Content $Profile.CurrentUserAllHosts
 #         ))
 
 #         #####################
 #         #####################
+# ------------------------------------------------------- -ExcludeProperty _*, Cim*
 #         $CompiledResults.add('PSProfileCurrentUserCurrentHost',$(
 #             Get-Content $Profile.CurrentUserCurrentHost
 #         ))
 
 #         #####################
 #         #####################
-#         $CompiledResults.add('GetPowerShellHistory',$(
+# ------------------------------------------------------- -ExcludeProperty _*, Cim*
+#         $CompiledResults.add('PowerShellHistory',$(
 #             $Users = Get-ChildItem C:\Users | Where-Object {$_.PSIsContainer -eq $true}
 
 #             $Results = @()
@@ -1395,6 +1473,7 @@ $EndpointDataSystemSnapshotScriptBlock = {
 #     #########################
 #     ### SRUM Dump
 #     #########################
+# ------------------------------------------------------- -ExcludeProperty _*, Cim*
 
 #         function Invoke-SRUMDump {
 #             <#
@@ -2050,13 +2129,13 @@ $EndpointDataSystemSnapshotScriptBlock = {
 #         }
 #         Invoke-SRUMDump -live
 
-#     #########################
-#     ### Restore Points
-#     #########################
+    #########################
+    ### Restore Points
+    #########################
 
-#         $CompiledResults.add('GetComputerRestorePoint',$(
-#             Get-ComputerRestorePoint
-#         ))
+        $CompiledResults.add('Computer Restore Points',$(
+            Get-ComputerRestorePoint | Select-Object -Property @{n='CreationDateTime';e={$_.ConvertToDateTime(($_.CreationTime))}}, Description, SequenceNumber, EventType, RestorePointType -ExcludeProperty _*, Cim*
+        ))
 
 #     #########################
 #     ### Prefetch
@@ -2085,6 +2164,7 @@ $EndpointDataSystemSnapshotScriptBlock = {
 
 #         #####################
 #         #####################
+# ------------------------------------------------------- -ExcludeProperty _*, Cim*
 #         $CompiledResults.add('DetectVMWareHosts',$(
 #             $VMwareDetected   = $False
 #             $VMNetworkAdapter = $(Get-WmiObject Win32_NetworkAdapter -Filter 'Manufacturer LIKE "%VMware%" OR Name LIKE "%VMware%"')
@@ -2109,20 +2189,20 @@ $EndpointDataSystemSnapshotScriptBlock = {
 
 #         #####################
 #         #####################
-#         $CompiledResults.add('GetVM',$(
-#             Get-VM -VMName * | Select-Object -Property * 
+#         $CompiledResults.add('VM',$(
+#             Get-VM -VMName * | Select-Object -Property * -ExcludeProperty _*, Cim*
 #         ))
 
 #         #####################
 #         #####################
 #         $CompiledResults.add('',$(
-#             Get-VMNetworkAdapter -VMName * | Select-Object -Property *
+#             Get-VMNetworkAdapter -VMName * | Select-Object -Property * -ExcludeProperty _*, Cim*
 #         ))
 
 #         #####################
 #         #####################
-#         $CompiledResults.add('GetVMSnapshot',$(
-#             Get-VMSnapshot -VMName *
+#         $CompiledResults.add('VMSnapshot',$(
+#             Get-VMSnapshot -VMName * | Select-Object -ExcludeProperty _*, Cim*
 #         ))
 
         $CompiledResults

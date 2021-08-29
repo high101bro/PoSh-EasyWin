@@ -31,7 +31,7 @@ function script:Invoke-PSWriteHTMLProcess {
     $ProcessesModules = $ProcessesModules | Group-Object | Sort-Object count
 
 
-    New-HTMLTab -Name 'Process Data' -IconBrands acquisitions-incorporated {
+    New-HTMLTab -Name 'Processes' -IconBrands acquisitions-incorporated {
         ###########
         New-HTMLTab -Name 'Table' -IconSolid th {
             New-HTMLSection -HeaderText 'Table' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
