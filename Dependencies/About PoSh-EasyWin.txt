@@ -17,7 +17,7 @@ PoSh-EasyWin: PowerShell - Endpoint Analysis Solution Your Windows Intranet Need
                                       TCP 49152-65535 (Windows Vista, Server 2008 and above)
                                       TCP 1024 -65535 (Windows NT4, Windows 2000, Windows 2003)
      Optional       : PsExec.exe, Procmon.exe, Autoruns.exe, Sysmon.exe,
-                      etl2pcapng.exe, WinPmem.exe, kitty.exe, plink.exe
+                      etl2pcapng.exe, kitty.exe, plink.exe
 
 PoSh-EasyWin is a tool that allows you to run any number of queries against any number of hosts. Depending on what you select, the queries can consist of one liner commands or scripts (built-in or user created). PoSh-EasyWin consists of queries speicific for hosts and servers, workgroups and domains, registry and Event Logs, file searching and network connections. It provides a simple way to view data in a grid format, manipulate data in a PowerShell terminal, as well as displays the data in various chart formats. Other add-on features includes various Sysinternals tools, and basic reference info for quick use when not on the web.
 

@@ -22,35 +22,6 @@ $Section3ActionTab = New-Object System.Windows.Forms.TabPage -Property @{
 $MainRightTabControl.Controls.Add($Section3ActionTab)
 
 
-<# TODO: Needs more testing
-batman
-# Used to verify settings before capturing memory as this can be quite resource exhaustive
-# Contains various checks to ensure that adequate resources are available on the remote and local hosts
-Update-FormProgress "$Dependencies\Code\Execution\Action\Launch-RekallWinPmemForm.ps1"
-. "$Dependencies\Code\Execution\Action\Launch-RekallWinPmemForm.ps1"
-
-
-Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\RekallWinPmemMemoryCaptureButton.ps1"
-. "$Dependencies\Code\System.Windows.Forms\Button\RekallWinPmemMemoryCaptureButton.ps1"
-$RekallWinPmemMemoryCaptureButton = New-Object System.Windows.Forms.Button -Property @{
-    Text   = "Memory Capture"
-    Left   = $FormScale * 3
-    Top    = $FormScale * 5
-    Width  = $FormScale * 124
-    Height = $FormScale * 22
-    Add_MouseHover = $RekallWinPmemMemoryCaptureButtonAdd_MouseHover
-    Add_Click      = $RekallWinPmemMemoryCaptureButtonAdd_Click
-}
-CommonButtonSettings -Button $RekallWinPmemMemoryCaptureButton
-
-
-# Test if the External Programs directory is present; if it's there load the tab
-if (Test-Path "$ExternalPrograms\WinPmem\WinPmem.exe") { $Section3ActionTab.Controls.Add($RekallWinPmemMemoryCaptureButton) }
-
-#>
-
-
-
 Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\ComputerListRDPButton.ps1"
 . "$Dependencies\Code\System.Windows.Forms\Button\ComputerListRDPButton.ps1"
 

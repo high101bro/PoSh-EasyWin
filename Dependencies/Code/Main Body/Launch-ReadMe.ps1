@@ -495,7 +495,6 @@ Best practice is to use two elevated credentials when conducting remote actions 
             procmon collection
         When entering a PSSession or PSExec session
         Accessing endpoints with Remote Desktop
-        Memory Collection using WinPmem
 Credentials can be securely stored to the localhost
     The stored credentials are secured wtih Windows standard Data Protection API (DPAPI)
         DPAPI is a built-in way Windows users can use certificates to encrypt and decrypt information on the fly

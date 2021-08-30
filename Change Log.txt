@@ -24,6 +24,13 @@ winrm get winrm/config/winrs
 ==================================================
 v5.4.1 -
 ==================================================
+
+Updated PSWriteHTML
+	- Fixed Network Connection Filter, preventing the need to rerun the collection if you want to filter the results again
+	- Added new Endpoint Deep Dive Section.
+
+Removed all code and files in regards to winpmem
+
 Fixed bug with computer treeview data import from AD where the treenodes weren't populating correctly
 
 Updated Custom User Added Query/commands

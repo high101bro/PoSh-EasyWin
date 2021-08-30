@@ -3,9 +3,31 @@ $EndpointDataSystemSnapshotScriptBlock = {
     $CompiledResults = @{}
 
     #########################
+    ### Prefetch
+    #########################
+
+        # GRAB FIRST AS THIS IS VERY VOLITILE
+        # number of time an application has been executed,
+        # The original path of execution,
+        # the last time of execution
+            # Note: Up to last 8 times application executed is stored in prefetch file. If I also add the timestamp of the prefetch file creation - we will have 9 run times of the application.
+        # When a malicious file was executed?
+        # Where it was launched from?
+        # How many times it has been run?
+        # What DLLs were used by the malicious code?
+        # Name and location of the malicious file (even if deleted)?
+
+        #####################
+        #####################
+        $CompiledResults.add('Prefetch',$(
+            Get-ChildItem C:\Windows\Prefetch -Force
+        ))
+
+        #########################
     ### Overview
     #########################
 
+    
         #####################
         #####################
         $CompiledResults.add('Computer Info',$(
@@ -302,7 +324,7 @@ $EndpointDataSystemSnapshotScriptBlock = {
 
         #####################
         #####################
-        $CompiledResults.add('Hyper-V VM Network Adapter',$(
+        $CompiledResults.add('Hyper-V VM Network Adapters',$(
             Get-VMNetworkAdapter -VMName * | Select-Object -ExcludeProperty _*, Cim*
         ))
             
@@ -660,20 +682,6 @@ $EndpointDataSystemSnapshotScriptBlock = {
             Get-LoginEvents -StartTime $([datetime]::Today.AddDays(-30)) -EndTime $([datetime]::Today) | Select-Object -ExcludeProperty _*, Cim*
         ))
 
-        #####################
-        #####################
-        $CompiledResults.add('PowerShell Sessions',$(
-            Get-WSManInstance -ResourceURI Shell -Enumerate | Select-Object -Property Name, Owner, ClientIP, State, @{n='ShellRunDateTime';e={[System.Xml.XmlConvert]::ToTimeSpan($_.ShellRunTime).ToString()}}, @{n='ShellInactivityDateTime';e={[System.Xml.XmlConvert]::ToTimeSpan($_.ShellInactivity).ToString()}}, ProcessId, ChildProcesses, Profileloaded, @{n='MaxIdleTimeOutDateTime';e={[System.Xml.XmlConvert]::ToTimeSpan($_.MaxIdleTimeOut).ToString()}}, InputStreams, OutputStreams, Locale, MemoryUsed, CompressionMode, BufferMode, Encoding, ShellId, ResourceUri, rsp -ExcludeProperty _*, Cim*
-        ))
-        
-#         # Event Logs
-
-#         # Current PSSessions
-
-#         # Current RDP
-
-#         # Share Access
-
     #########################
     ### Event Logs
     #########################
@@ -750,9 +758,9 @@ $EndpointDataSystemSnapshotScriptBlock = {
 
         #####################
         #####################
-        $CompiledResults.add('System Drivers',$(
-            Get-WmiObject -Class Win32_Systemdriver | Select-Object -ExcludeProperty _*, Cim*
-        ))
+        # $CompiledResults.add('System Drivers',$(
+        #     Get-WmiObject -Class Win32_Systemdriver | Select-Object -ExcludeProperty _*, Cim*
+        # ))
             # driverquery /si /FO csv
 
         #####################
@@ -867,1268 +875,1229 @@ $EndpointDataSystemSnapshotScriptBlock = {
             Get-WmiObject -Class Win32_Printer | Select-Object -ExcludeProperty _*, Cim*
         ))
 
-#     #########################
-#     ### Software
-#     #########################
-# ------------------------------------------------------- -ExcludeProperty _*, Cim*
-#         #####################
-#         #####################
-#         $CompiledResults.add('Software (Registry)',$(
-#             $Software = @()
-#             $Paths    = @("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall","SOFTWARE\\Wow6432node\\Microsoft\\Windows\\CurrentVersion\\Uninstall")
-#             ForEach($Path in $Paths) {
-#             Write-Verbose  "Checking Path: $Path"
-#             #  Create an instance of the Registry Object and open the HKLM base key
-#             Try  {$reg=[microsoft.win32.registrykey]::OpenRemoteBaseKey('LocalMachine',$env:Computername,'Registry64')}
-#             Catch  {Write-Error $_ ; Continue}
-#             #  Drill down into the Uninstall key using the OpenSubKey Method
-#             Try  {
-#                 $regkey=$reg.OpenSubKey($Path)
-#                 # Retrieve an array of string that contain all the subkey names
-#                 $subkeys=$regkey.GetSubKeyNames()
-#                 # Open each Subkey and use GetValue Method to return the required  values for each
-#                 ForEach ($key in $subkeys){
-#                     Write-Verbose "Key: $Key"
-#                     $thisKey=$Path+"\\"+$key
-#                     Try {
-#                         $thisSubKey=$reg.OpenSubKey($thisKey)
-#                         # Prevent Objects with empty DisplayName
-#                         $DisplayName =  $thisSubKey.getValue("DisplayName")
-#                         If ($DisplayName  -AND $DisplayName  -notmatch '^Update  for|rollup|^Security Update|^Service Pack|^HotFix') {
-#                             $Date = $thisSubKey.GetValue('InstallDate')
-#                             If ($Date) {
-#                                 Try {$Date = [datetime]::ParseExact($Date, 'yyyyMMdd', $Null)}
-#                                 Catch{Write-Warning "$($env:Computername): $_ <$($Date)>" ; $Date = $Null}
-#                             }
-#                             # Create New Object with empty Properties
-#                             $Publisher =  Try {$thisSubKey.GetValue('Publisher').Trim()}
-#                                 Catch {$thisSubKey.GetValue('Publisher')}
-#                             $Version = Try {
-#                                 #Some weirdness with trailing [char]0 on some strings
-#                                 $thisSubKey.GetValue('DisplayVersion').TrimEnd(([char[]](32,0)))
-#                             }
-#                                 Catch {$thisSubKey.GetValue('DisplayVersion')}
-#                             $UninstallString =  Try {$thisSubKey.GetValue('UninstallString').Trim()}
-#                                 Catch {$thisSubKey.GetValue('UninstallString')}
-#                             $InstallLocation =  Try {$thisSubKey.GetValue('InstallLocation').Trim()}
-#                                 Catch {$thisSubKey.GetValue('InstallLocation')}
-#                             $InstallSource =  Try {$thisSubKey.GetValue('InstallSource').Trim()}
-#                                 Catch {$thisSubKey.GetValue('InstallSource')}
-#                             $HelpLink = Try {$thisSubKey.GetValue('HelpLink').Trim()}
-#                                 Catch {$thisSubKey.GetValue('HelpLink')}
-#                             $Object = [pscustomobject]@{
-#                                 Computername = $env:Computername
-#                                 DisplayName = $DisplayName
-#                                 Version  = $Version
-#                                 InstallDate = $Date
-#                                 Publisher = $Publisher
-#                                 UninstallString = $UninstallString
-#                                 InstallLocation = $InstallLocation
-#                                 InstallSource  = $InstallSource
-#                                 HelpLink = $thisSubKey.GetValue('HelpLink')
-#                                 EstimatedSizeMB = [decimal]([math]::Round(($thisSubKey.GetValue('EstimatedSize')*1024)/1MB,2))
-#                             }
-#                             $Object.pstypenames.insert(0,'System.Software.Inventory')
-#                             $Software += $Object
-#                             }
-#                         }
-#                         Catch {Write-Warning "$Key : $_"}
-#                     }
-#                 }
-#                 Catch  {}
-#                 $reg.Close()
-#             }
-#             $Software
-#         ))
-#         $GetRegistrySoftware = "$Path\Get-RegistrySoftware.ps1"
+    #########################
+    ### Software
+    #########################
 
-#         #####################
-#         #####################
-# ------------------------------------------------------- -ExcludeProperty _*, Cim*
-#         $CompiledResults.add('Product Info',$(
-#             Get-WmiObject -Class Win32_Product | Select-Object Name, Caption, Vendor, Version, InstallDate, @{n='InstallDateTime';e={[datetime]::parseexact($_.InstallDate, 'yyyyMMdd', $null)}}, IdentifyingNumber, InstallSource, InstallLocation, LocalPackage, PackageName, HelpLink, URLInfoAbout, URLUpdateInfo, HelpTelephone, Language, ProductID, RegCompany, RegOwner, SKUNumber, Transforms
-#         ))
+    #####################
+        #####################
+        $CompiledResults.add('Software (Registry)',$(
+            $Software = @()
+            $Paths    = @("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall","SOFTWARE\\Wow6432node\\Microsoft\\Windows\\CurrentVersion\\Uninstall")
+            ForEach($Path in $Paths) {
+            Write-Verbose  "Checking Path: $Path"
+            #  Create an instance of the Registry Object and open the HKLM base key
+            Try  {$reg=[microsoft.win32.registrykey]::OpenRemoteBaseKey('LocalMachine',$env:Computername,'Registry64')}
+            Catch  {Write-Error $_ ; Continue}
+            #  Drill down into the Uninstall key using the OpenSubKey Method
+            Try  {
+                $regkey=$reg.OpenSubKey($Path)
+                # Retrieve an array of string that contain all the subkey names
+                $subkeys=$regkey.GetSubKeyNames()
+                # Open each Subkey and use GetValue Method to return the required  values for each
+                ForEach ($key in $subkeys){
+                    Write-Verbose "Key: $Key"
+                    $thisKey=$Path+"\\"+$key
+                    Try {
+                        $thisSubKey=$reg.OpenSubKey($thisKey)
+                        # Prevent Objects with empty DisplayName
+                        $DisplayName =  $thisSubKey.getValue("DisplayName")
+                        If ($DisplayName  -AND $DisplayName  -notmatch '^Update  for|rollup|^Security Update|^Service Pack|^HotFix') {
+                            $Date = $thisSubKey.GetValue('InstallDate')
+                            If ($Date) {
+                                Try {$Date = [datetime]::ParseExact($Date, 'yyyyMMdd', $Null)}
+                                Catch{Write-Warning "$($env:Computername): $_ <$($Date)>" ; $Date = $Null}
+                            }
+                            # Create New Object with empty Properties
+                            $Publisher =  Try {$thisSubKey.GetValue('Publisher').Trim()}
+                                Catch {$thisSubKey.GetValue('Publisher')}
+                            $Version = Try {
+                                #Some weirdness with trailing [char]0 on some strings
+                                $thisSubKey.GetValue('DisplayVersion').TrimEnd(([char[]](32,0)))
+                            }
+                                Catch {$thisSubKey.GetValue('DisplayVersion')}
+                            $UninstallString =  Try {$thisSubKey.GetValue('UninstallString').Trim()}
+                                Catch {$thisSubKey.GetValue('UninstallString')}
+                            $InstallLocation =  Try {$thisSubKey.GetValue('InstallLocation').Trim()}
+                                Catch {$thisSubKey.GetValue('InstallLocation')}
+                            $InstallSource =  Try {$thisSubKey.GetValue('InstallSource').Trim()}
+                                Catch {$thisSubKey.GetValue('InstallSource')}
+                            $HelpLink = Try {$thisSubKey.GetValue('HelpLink').Trim()}
+                                Catch {$thisSubKey.GetValue('HelpLink')}
+                            $Object = [pscustomobject]@{
+                                Computername = $env:Computername
+                                DisplayName = $DisplayName
+                                Version  = $Version
+                                InstallDate = $Date
+                                Publisher = $Publisher
+                                UninstallString = $UninstallString
+                                InstallLocation = $InstallLocation
+                                InstallSource  = $InstallSource
+                                HelpLink = $thisSubKey.GetValue('HelpLink')
+                                EstimatedSizeMB = [decimal]([math]::Round(($thisSubKey.GetValue('EstimatedSize')*1024)/1MB,2))
+                            }
+                            $Object.pstypenames.insert(0,'System.Software.Inventory')
+                            $Software += $Object
+                            }
+                        }
+                        Catch {Write-Warning "$Key : $_"}
+                    }
+                }
+                Catch  {}
+                $reg.Close()
+            }
+            $Software
+        ))
+
+        #####################
+        #####################
+        $CompiledResults.add('Product Info',$(
+            Get-WmiObject -Class Win32_Product | Select-Object Name, Caption, Vendor, Version, InstallDate, @{n='InstallDateTime';e={[datetime]::parseexact($_.InstallDate, 'yyyyMMdd', $null)}}, IdentifyingNumber, InstallSource, InstallLocation, LocalPackage, PackageName, HelpLink, URLInfoAbout, URLUpdateInfo, HelpTelephone, Language, ProductID, RegCompany, RegOwner, SKUNumber, Transforms  -ExcludeProperty _*, Cim*
+        ))
     
-#         # Date installed
+        #####################
+        #####################
+        $CompiledResults.add('Crashed Applications',$(
+            $Faults = Get-EventLog -LogName Application -InstanceId 1000 | Select-Object -ExpandProperty Message
+            $UniqueFault = @()
+            ForEach ($f in $Faults) {
+                $fault = if ($f -match 'Faulting'){$f.split(':')[1].split(',')[0].trim()}
+                if ($fault -notin $UniqueFault) { $UniqueFault += $fault }
+            }
+            $UniqueFault
+        ))
 
-#         # Manufacturer
+    #########################
+    ### Security
+    #########################
 
-#         #####################
-#         #####################
-# ------------------------------------------------------- -ExcludeProperty _*, Cim*
-#         $CompiledResults.add('Crashed Applications',$(
-#             $Faults = Get-EventLog -LogName Application -InstanceId 1000 | Select-Object -ExpandProperty Message
-#             $UniqueFault = @()
-#             ForEach ($f in $Faults) {
-#                 $fault = if ($f -match 'Faulting'){$f.split(':')[1].split(',')[0].trim()}
-#                 if ($fault -notin $UniqueFault) { $UniqueFault += $fault }
-#             }
-#             $UniqueFault
-#         ))
+        #####################
+        #####################
+        $CompiledResults.add('Audit Options',$(
+            $regConfig = @"
+            RegistryKey,Name
+            "HKLM:\SYSTEM\CurrentControlSet\Control\Lsa","scenoapplylegacyauditpolicy"
+            "HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\System\Audit","ProcessCreationIncludeCmdLine_Enabled"
+            "HKLM:\Software\Policies\Microsoft\Windows\PowerShell\Transcription","EnableTranscripting"
+            "HKLM:\Software\Policies\Microsoft\Windows\PowerShell\Transcription","OutputDirectory"
+            "HKLM:\SOFTWARE\Policies\Microsoft\Windows\PowerShell\ScriptBlockLogging","EnableScriptBlockLogging"
+            "HKLM:\SOFTWARE\Policies\Microsoft\Windows\PowerShell\ModuleLogging","EnableModuleLogging"
+            "HKLM:\SOFTWARE\Policies\Microsoft\Windows\EventLog\EventForwarding\SubscriptionManager",1
+            "HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\WDigest","UseLogonCredential"
+            "HKLM:\SYSTEM\CurrentControlSet\Control\Lsa\Credssp\PolicyDefaults","Allow*"
+            "HKLM:\SOFTWARE\Policies\Microsoft\Windows\CredentialsDelegation","Allow*"
+"@
 
-#     #########################
-#     ### Security
-#     #########################
+            $regConfig | ConvertFrom-Csv | ForEach-Object {
+                if (-Not (Test-Path $_.RegistryKey)) {
+                    # Registry path does not exist -> document DNE
+                    New-Object PSObject -Property @{RegistryKey = $_.RegistryKey; Name = $_.Name; Value = "Does Not Exist"}
+                }
+                else {
+                    if ((Get-ItemProperty $_.RegistryKey | Select-Object -Property $_.Name).$_.Name -ne $null) {
+                        # Registry key exists. Document Value
+                        # Handle Cases where SubscriptionManager Value already exists.
+                        if ($_.RegistryKey -like "*SubscriptionManager*") {
+                            $wecNum = 1
+                            # Backup each currently configured SubscriptionManager Values.
+                            while ( (Get-ItemProperty $_.RegistryKey | Select-Object -ExpandProperty $([string]$wecNum) -ErrorAction SilentlyContinue) ) {
+                                #Write-Warning "RegistryKey with property = $wecNum exists"
+                                New-Object PSObject -Property @{RegistryKey = $_.RegistryKey; Name = $wecNum; Value = $(Get-ItemProperty $_.RegistryKey | Select-Object -ExpandProperty $([string]$wecNum))}
+                                #Write-Warning "Incrementing wecNum"
+                                $wecNum++
+                            }
+                        }
+                        # Backup all non-SubscriptionManager Values to array.
+                        else {
+                            New-Object PSObject -Property @{RegistryKey = $_.RegistryKey; Name = $_.Name; Value = $(Get-ItemProperty $_.RegistryKey | Select-Object -ExpandProperty $_.Name)}
+                        }
+                    }
+                    else {
+                        # Registry key does not exist. Document DNE
+                        New-Object PSObject -Property @{RegistryKey = $_.RegistryKey; Name = $_.Name; Value = "Does Not Exist"}
+                    }
+                }
+            }
+        ))
 
-#         #####################
-#         #####################
-# ------------------------------------------------------- -ExcludeProperty _*, Cim*
-#         $CompiledResults.add('Audit Options',$(
-#             $regConfig = @"
-#             RegistryKey,Name
-#             "HKLM:\SYSTEM\CurrentControlSet\Control\Lsa","scenoapplylegacyauditpolicy"
-#             "HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\System\Audit","ProcessCreationIncludeCmdLine_Enabled"
-#             "HKLM:\Software\Policies\Microsoft\Windows\PowerShell\Transcription","EnableTranscripting"
-#             "HKLM:\Software\Policies\Microsoft\Windows\PowerShell\Transcription","OutputDirectory"
-#             "HKLM:\SOFTWARE\Policies\Microsoft\Windows\PowerShell\ScriptBlockLogging","EnableScriptBlockLogging"
-#             "HKLM:\SOFTWARE\Policies\Microsoft\Windows\PowerShell\ModuleLogging","EnableModuleLogging"
-#             "HKLM:\SOFTWARE\Policies\Microsoft\Windows\EventLog\EventForwarding\SubscriptionManager",1
-#             "HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\WDigest","UseLogonCredential"
-#             "HKLM:\SYSTEM\CurrentControlSet\Control\Lsa\Credssp\PolicyDefaults","Allow*"
-#             "HKLM:\SOFTWARE\Policies\Microsoft\Windows\CredentialsDelegation","Allow*"
-# "@
+        #####################
+        #####################
+        $CompiledResults.add('auditpol',$(
+            auditpol /get /category:* /r | Convertfrom-Csv
+        ))
 
-#             $regConfig | ConvertFrom-Csv | ForEach-Object {
-#                 if (-Not (Test-Path $_.RegistryKey)) {
-#                     # Registry path does not exist -> document DNE
-#                     New-Object PSObject -Property @{RegistryKey = $_.RegistryKey; Name = $_.Name; Value = "Does Not Exist"}
-#                 }
-#                 else {
-#                     if ((Get-ItemProperty $_.RegistryKey | Select-Object -Property $_.Name).$_.Name -ne $null) {
-#                         # Registry key exists. Document Value
-#                         # Handle Cases where SubscriptionManager Value already exists.
-#                         if ($_.RegistryKey -like "*SubscriptionManager*") {
-#                             $wecNum = 1
-#                             # Backup each currently configured SubscriptionManager Values.
-#                             while ( (Get-ItemProperty $_.RegistryKey | Select-Object -ExpandProperty $([string]$wecNum) -ErrorAction SilentlyContinue) ) {
-#                                 #Write-Warning "RegistryKey with property = $wecNum exists"
-#                                 New-Object PSObject -Property @{RegistryKey = $_.RegistryKey; Name = $wecNum; Value = $(Get-ItemProperty $_.RegistryKey | Select-Object -ExpandProperty $([string]$wecNum))}
-#                                 #Write-Warning "Incrementing wecNum"
-#                                 $wecNum++
-#                             }
-#                         }
-#                         # Backup all non-SubscriptionManager Values to array.
-#                         else {
-#                             New-Object PSObject -Property @{RegistryKey = $_.RegistryKey; Name = $_.Name; Value = $(Get-ItemProperty $_.RegistryKey | Select-Object -ExpandProperty $_.Name)}
-#                         }
-#                     }
-#                     else {
-#                         # Registry key does not exist. Document DNE
-#                         New-Object PSObject -Property @{RegistryKey = $_.RegistryKey; Name = $_.Name; Value = "Does Not Exist"}
-#                     }
-#                 }
-#             }
-#         ))
-#         $GetAuditOptions = "$Path\Get-AuditOptions.ps1"
+        # System Info
+            #........need to parse for potential useful data
 
-#         #####################
-#         #####################
-# ------------------------------------------------------- -ExcludeProperty _*, Cim*
-#         $CompiledResults.add('auditpol',$(
-#             auditpol /get /category:* /r | Convertfrom-Csv
-#         ))
+        #####################
+        #####################
+        $CompiledResults.add('Security HotFixes',$(
+            Get-HotFix | Select-Object -ExcludeProperty _*, Cim*
+        ))
+            #Get-WmiObject -Class Win32_QuickFixEngineering #<-- similar to above
 
-#         # System Info
-#             #........need to parse for potential useful data
+        #####################
+        #####################
+        $CompiledResults.add('Secure Boot Policy',$(
+            Get-SecureBootPolicy | Select-Object -ExcludeProperty _*, Cim*
+        ))
 
-#         #####################
-#         #####################
-# ------------------------------------------------------- -ExcludeProperty _*, Cim*
-#         $CompiledResults.add('Security HotFixes',$(
-#             Get-HotFix
-#         ))
-#             #Get-WmiObject -Class Win32_QuickFixEngineering #<-- similar to above
+        #####################
+        #####################
+        $CompiledResults.add('Confirm Secure Boot UEFI',$(
+            Confirm-SecureBootUEFI | Select-Object -ExcludeProperty _*, Cim*
+        ))
 
-#         #####################
-#         #####################
-# ------------------------------------------------------- -ExcludeProperty _*, Cim*
-#         $CompiledResults.add('Secure Boot Policy',$(
-#             Get-SecureBootPolicy
-#         ))
+        #####################
+        #####################
+        $CompiledResults.add('Mp Threat',$(
+            Get-MpThreat | Select-Object -ExcludeProperty _*, Cim*
+        ))
 
-#         #####################
-#         #####################
-# ------------------------------------------------------- -ExcludeProperty _*, Cim*
-#         $CompiledResults.add('Confirm Secure Boot UEFI',$(
-#             Confirm-SecureBootUEFI
-#         ))
+        #####################
+        #####################
+        $CompiledResults.add('Mp Threat Detection',$(
+            Get-MpThreatDetection | Select-Object -ExcludeProperty _*, Cim*
+        ))
 
-#         #####################
-#         #####################
-# ------------------------------------------------------- -ExcludeProperty _*, Cim*
-#         $CompiledResults.add('Mp Threat',$(
-#             Get-MpThreat
-#         ))
+        #####################
+        #####################
+        $CompiledResults.add('Mp Preferences',$(
+            Get-MpPreference | Select-Object -ExcludeProperty _*, Cim*
+        ))
 
-#         #####################
-#         #####################
-# ------------------------------------------------------- -ExcludeProperty _*, Cim*
-#         $CompiledResults.add('MpThreatDetection',$(
-#             Get-MpThreatDetection
-#         ))
+        #####################
+        #####################
+        $CompiledResults.add('Mp Computer Status',$(
+            Get-MpComputerStatus | Select-Object -ExcludeProperty _*, Cim*
+        ))
 
-#         #####################
-#         #####################
-# ------------------------------------------------------- -ExcludeProperty _*, Cim*
-#         $CompiledResults.add('MpPreference',$(
-#             Get-MpPreference
-#         ))
+        #####################
+        #####################
+        $CompiledResults.add('Antivirus Products',$(
+            Get-WmiObject -Namespace root\SecurityCenter2 -Class AntivirusProduct | Select-Object -ExcludeProperty _*, Cim*
+        ))
 
-#         #####################
-#         #####################
-# ------------------------------------------------------- -ExcludeProperty _*, Cim*
-#         $CompiledResults.add('MpComputerStatus',$(
-#             Get-MpComputerStatus
-#         ))
+    #########################
+    ### Firewall
+    #########################
 
-#         #####################
-#         #####################
-# ------------------------------------------------------- -ExcludeProperty _*, Cim*
-#         $CompiledResults.add('AntivirusProduct',$(
-#             Get-WmiObject -Namespace root\SecurityCenter2 -Class AntivirusProduct
-#         ))
+        #####################
+        #####################
+        $CompiledResults.add('Firewall Rules',$(
+            function Get-EnrichedFirewallRules {
+                Param(
+                    $Name = "*",
+                    [switch]$Verbose
+                )
+                # convert Stringarray to comma separated liste (String)
+                function StringArrayToList($StringArray) {
+                    if ($StringArray) {
+                        $Result = ""
+                        Foreach ($Value In $StringArray) {
+                            if ($Result -ne "") { $Result += "," }
+                            $Result += $Value
+                        }
+                        return $Result
+                    }
+                    else {
+                        return ""
+                    }
+                }
+                $FirewallRules = Get-NetFirewallRule -DisplayName $Name -PolicyStore "ActiveStore"
+                $FirewallRuleSet = @()
+                ForEach ($Rule In $FirewallRules) {
+                    if ($Verbose) { Write-Output "Processing rule `"$($Rule.DisplayName)`" ($($Rule.Name))" }
 
-#     #########################
-#     ### Firewall
-#     #########################
+                    $AdressFilter        = $Rule | Get-NetFirewallAddressFilter
+                    $PortFilter          = $Rule | Get-NetFirewallPortFilter
+                    $ApplicationFilter   = $Rule | Get-NetFirewallApplicationFilter
+                    $ServiceFilter       = $Rule | Get-NetFirewallServiceFilter
+                    $InterfaceFilter     = $Rule | Get-NetFirewallInterfaceFilter
+                    $InterfaceTypeFilter = $Rule | Get-NetFirewallInterfaceTypeFilter
+                    $SecurityFilter      = $Rule | Get-NetFirewallSecurityFilter
 
-#         #####################
-#         #####################
-# ------------------------------------------------------- -ExcludeProperty _*, Cim*
-#         $CompiledResults.add('FirewallRulesEnriched',$(
-#             function Get-EnrichedFirewallRules {
-#                 Param(
-#                     $Name = "*",
-#                     [switch]$Verbose
-#                 )
-#                 # convert Stringarray to comma separated liste (String)
-#                 function StringArrayToList($StringArray) {
-#                     if ($StringArray) {
-#                         $Result = ""
-#                         Foreach ($Value In $StringArray) {
-#                             if ($Result -ne "") { $Result += "," }
-#                             $Result += $Value
-#                         }
-#                         return $Result
-#                     }
-#                     else {
-#                         return ""
-#                     }
-#                 }
-#                 $FirewallRules = Get-NetFirewallRule -DisplayName $Name -PolicyStore "ActiveStore"
-#                 $FirewallRuleSet = @()
-#                 ForEach ($Rule In $FirewallRules) {
-#                     if ($Verbose) { Write-Output "Processing rule `"$($Rule.DisplayName)`" ($($Rule.Name))" }
+                    # Created Enriched Object
+                    $HashProps = [PSCustomObject]@{
+                        Name                = $Rule.Name
+                        DisplayName         = $Rule.DisplayName
+                        Description         = $Rule.Description
+                        Group               = $Rule.Group
+                        Enabled             = $Rule.Enabled
+                        Profile             = $Rule.Profile
+                        Platform            = StringArrayToList $Rule.Platform
+                        Direction           = $Rule.Direction
+                        Action              = $Rule.Action
+                        EdgeTraversalPolicy = $Rule.EdgeTraversalPolicy
+                        LooseSourceMapping  = $Rule.LooseSourceMapping
+                        LocalOnlyMapping    = $Rule.LocalOnlyMapping
+                        Owner               = $Rule.Owner
+                        LocalAddress        = StringArrayToList $AdressFilter.LocalAddress
+                        RemoteAddress       = StringArrayToList $AdressFilter.RemoteAddress
+                        Protocol            = $PortFilter.Protocol
+                        LocalPort           = StringArrayToList $PortFilter.LocalPort
+                        RemotePort          = StringArrayToList $PortFilter.RemotePort
+                        IcmpType            = StringArrayToList $PortFilter.IcmpType
+                        DynamicTarget       = $PortFilter.DynamicTarget
+                        Program             = $ApplicationFilter.Program -Replace "$($ENV:SystemRoot.Replace("\","\\"))\\", "%SystemRoot%\" -Replace "$(${ENV:ProgramFiles(x86)}.Replace("\","\\").Replace("(","\(").Replace(")","\)"))\\", "%ProgramFiles(x86)%\" -Replace "$($ENV:ProgramFiles.Replace("\","\\"))\\", "%ProgramFiles%\"
+                        Package             = $ApplicationFilter.Package
+                        Service             = $ServiceFilter.Service
+                        InterfaceAlias      = StringArrayToList $InterfaceFilter.InterfaceAlias
+                        InterfaceType       = $InterfaceTypeFilter.InterfaceType
+                        LocalUser           = $SecurityFilter.LocalUser
+                        RemoteUser          = $SecurityFilter.RemoteUser
+                        RemoteMachine       = $SecurityFilter.RemoteMachine
+                        Authentication      = $SecurityFilter.Authentication
+                        Encryption          = $SecurityFilter.Encryption
+                        OverrideBlockRules  = $SecurityFilter.OverrideBlockRules
+                    }
+                    $FirewallRuleSet += $HashProps
+                }
+                return $FirewallRuleSet
+            }
+            Get-EnrichedFirewallRules    
+        ))
+            #netsh advfirewall firewall show rule name=all
 
-#                     $AdressFilter        = $Rule | Get-NetFirewallAddressFilter
-#                     $PortFilter          = $Rule | Get-NetFirewallPortFilter
-#                     $ApplicationFilter   = $Rule | Get-NetFirewallApplicationFilter
-#                     $ServiceFilter       = $Rule | Get-NetFirewallServiceFilter
-#                     $InterfaceFilter     = $Rule | Get-NetFirewallInterfaceFilter
-#                     $InterfaceTypeFilter = $Rule | Get-NetFirewallInterfaceTypeFilter
-#                     $SecurityFilter      = $Rule | Get-NetFirewallSecurityFilter
+        #####################
+        #####################
+        $CompiledResults.add('Firewall Profiles',$(
+            Get-NetFirewallProfile | Select-Object -ExcludeProperty _*, Cim*
+        ))
+            #netsh advfirewall show allprofiles state
 
-#                     # Created Enriched Object
-#                     $HashProps = [PSCustomObject]@{
-#                         Name                = $Rule.Name
-#                         DisplayName         = $Rule.DisplayName
-#                         Description         = $Rule.Description
-#                         Group               = $Rule.Group
-#                         Enabled             = $Rule.Enabled
-#                         Profile             = $Rule.Profile
-#                         Platform            = StringArrayToList $Rule.Platform
-#                         Direction           = $Rule.Direction
-#                         Action              = $Rule.Action
-#                         EdgeTraversalPolicy = $Rule.EdgeTraversalPolicy
-#                         LooseSourceMapping  = $Rule.LooseSourceMapping
-#                         LocalOnlyMapping    = $Rule.LocalOnlyMapping
-#                         Owner               = $Rule.Owner
-#                         LocalAddress        = StringArrayToList $AdressFilter.LocalAddress
-#                         RemoteAddress       = StringArrayToList $AdressFilter.RemoteAddress
-#                         Protocol            = $PortFilter.Protocol
-#                         LocalPort           = StringArrayToList $PortFilter.LocalPort
-#                         RemotePort          = StringArrayToList $PortFilter.RemotePort
-#                         IcmpType            = StringArrayToList $PortFilter.IcmpType
-#                         DynamicTarget       = $PortFilter.DynamicTarget
-#                         Program             = $ApplicationFilter.Program -Replace "$($ENV:SystemRoot.Replace("\","\\"))\\", "%SystemRoot%\" -Replace "$(${ENV:ProgramFiles(x86)}.Replace("\","\\").Replace("(","\(").Replace(")","\)"))\\", "%ProgramFiles(x86)%\" -Replace "$($ENV:ProgramFiles.Replace("\","\\"))\\", "%ProgramFiles%\"
-#                         Package             = $ApplicationFilter.Package
-#                         Service             = $ServiceFilter.Service
-#                         InterfaceAlias      = StringArrayToList $InterfaceFilter.InterfaceAlias
-#                         InterfaceType       = $InterfaceTypeFilter.InterfaceType
-#                         LocalUser           = $SecurityFilter.LocalUser
-#                         RemoteUser          = $SecurityFilter.RemoteUser
-#                         RemoteMachine       = $SecurityFilter.RemoteMachine
-#                         Authentication      = $SecurityFilter.Authentication
-#                         Encryption          = $SecurityFilter.Encryption
-#                         OverrideBlockRules  = $SecurityFilter.OverrideBlockRules
-#                     }
-#                     $FirewallRuleSet += $HashProps
-#                 }
-#                 return $FirewallRuleSet
-#             }
-#             Get-EnrichedFirewallRules    
-#         ))
-#             #netsh advfirewall firewall show rule name=all
+    #########################
+    ### Accounts / Groups
+    #########################
 
-#         #####################
-#         #####################
-# ------------------------------------------------------- -ExcludeProperty _*, Cim*
-#         $CompiledResults.add('NetFirewallProfile',$(
-#             Get-NetFirewallProfile
-#         ))
-#             #netsh advfirewall show allprofiles state
+        #####################
+        #####################
+        $CompiledResults.add('Local Users',$(
+            Get-LocalUser | Select-Object -Property * -ExcludeProperty _*, Cim*
+        ))
+            # net user
 
-#     #########################
-#     ### Accounts / Groups
-#     #########################
+        #####################
+        #####################
+        $CompiledResults.add('Non-Local Users',$(
+            Get-WmiObject -Class Win32_UserAccount -Filter "LocalAccount='False'" | Select-Object -ExcludeProperty _*, Cim*
+        ))
 
-#         #####################
-#         #####################
-# ------------------------------------------------------- -ExcludeProperty _*, Cim*
-#         $CompiledResults.add('LocalUser',$(
-#             Get-LocalUser | Select-Object -Property *
-#         ))
-#             # net user
+        #####################
+        #####################
+        $CompiledResults.add('Local Groups',$(
+            Get-LocalGroup | Select-Object -Property * -ExcludeProperty _*, Cim*
+        ))
+            # net localgroup
 
-#         #####################
-#         #####################
-# ------------------------------------------------------- -ExcludeProperty _*, Cim*
-#         $CompiledResults.add('NonLocalUser',$(
-#             Get-WmiObject -Class Win32_UserAccount -Filter "LocalAccount='False'"
-#         ))
+        #####################
+        #####################
+        $CompiledResults.add('Non-Local Groups',$(
+            Get-WmiObject -Class Win32_Group -Filter { LocalAccount='False' } | Select-Object -ExcludeProperty _*, Cim*
+        ))
 
-#         #####################
-#         #####################
-# ------------------------------------------------------- -ExcludeProperty _*, Cim*
-#         $CompiledResults.add('LocalGroup',$(
-#             Get-LocalGroup | Select-Object -Property *
-#         ))
-#             # net localgroup
+        #####################
+        #####################
+        $CompiledResults.add('Local Group Administrators',$(
+            Get-LocalGroupMember -Group administrators | Select-Object -ExcludeProperty _*, Cim*
+        ))
+            # net localgroup administrators
 
-#         #####################
-#         #####################
-# ------------------------------------------------------- -ExcludeProperty _*, Cim*
-#         $CompiledResults.add('NonLocalGroup',$(
-#             Get-WmiObject -Class Win32_Group -Filter { LocalAccount='False' }
-#         ))
+    #########################
+    ### Shares
+    #########################
 
-#         #####################
-#         #####################
-# ------------------------------------------------------- -ExcludeProperty _*, Cim*
-#         $CompiledResults.add('LocalGroupAdministrators',$(
-#             Get-LocalGroupMember -Group administrators
-#         ))
-#             # net localgroup administrators
+        #####################
+        #####################
+        $CompiledResults.add('SMB Shares',$(
+            Get-SmbShare | Select-Object -Property * -ExcludeProperty _*, Cim*
+        ))
 
-#     #########################
-#     ### Shares
-#     #########################
+        #####################
+        #####################
+        $CompiledResults.add('SMB Share Access',$(
+            Get-SmbShare | Foreach-Object {Get-SmbShareAccess -Name $_.Name} | Select-Object -Property * -ExcludeProperty _*, Cim*
+        ))
+            # Get-WmiObject -Class Win32_Share #<-- Similar to above
 
-#         #####################
-#         #####################
-# ------------------------------------------------------- -ExcludeProperty _*, Cim*
-#         $CompiledResults.add('SmbConnection',$(
-#             Get-SmbConnection | Select-Object -Property *
-#         ))
+        #####################
+        #####################
+        $CompiledResults.add('SMB Connections',$(
+            Get-SmbConnection | Select-Object -Property * -ExcludeProperty _*, Cim*
+        ))
 
-#         #####################
-#         #####################
-# ------------------------------------------------------- -ExcludeProperty _*, Cim*
-#         $CompiledResults.add('SmbShare',$(
-#             Get-SmbShare | Foreach-Object {Get-SmbShareAccess -Name $_.Name} | Select-Object -Property *
-#         ))
-#             # Get-WmiObject -Class Win32_Share #<-- Similar to above
+        #####################
+        #####################
+        $CompiledResults.add('SMB Mappings',$(
+            Get-SmbMapping | Select-Object -Property * -ExcludeProperty _*, Cim*
+        ))
 
-#         #####################
-#         #####################
-# ------------------------------------------------------- -ExcludeProperty _*, Cim*
-#         $CompiledResults.add('SmbMapping',$(
-#             Get-SmbMapping | Select-Object -Property *
-#         ))
+        #####################
+        #####################
+        $CompiledResults.add('SMB Sessions',$(
+            Get-SmbSession | Select-Object -Property * -ExcludeProperty _*, Cim*
+        ))
 
-#         #####################
-#         #####################
-# ------------------------------------------------------- -ExcludeProperty _*, Cim*
-#         $CompiledResults.add('SmbOpenFile',$(
-#             Get-SmbOpenFile | Select-Object -Property *
-#         ))
+        #####################
+        #####################
+        $CompiledResults.add('SMB Open Files',$(
+            Get-SmbOpenFile | Select-Object -Property * -ExcludeProperty _*, Cim*
+        ))
 
-#         #####################
-#         #####################
-# ------------------------------------------------------- -ExcludeProperty _*, Cim*
-#         $CompiledResults.add('SmbSession',$(
-#             Get-SmbSession | Select-Object -Property *
-#         ))
+    #########################
+    ### Startup
+    #########################
 
-#         #####################
-#         #####################
-# ------------------------------------------------------- -ExcludeProperty _*, Cim*
-#         $CompiledResults.add('SmbShare',$(
-#             Get-SmbShare | Select-Object -Property *
-#         ))
+        #####################
+        #####################
+        $CompiledResults.add('Startup Commands (Registry)',$(
+            $ErrorActionPreference = 'SilentlyContinue'
 
-#     #########################
-#     ### Startup
-#     #########################
+            $SHA256  = [System.Security.Cryptography.HashAlgorithm]::Create("SHA256")
+            $MD5     = [System.Security.Cryptography.HashAlgorithm]::Create("MD5")
+                $regkeys = @(
+                'HKLM:\Software\Microsoft\Windows\CurrentVersion\Run',
+                'HKCU:\Software\Microsoft\Windows\CurrentVersion\Run',
+                'HKLM:\Software\Microsoft\Windows\CurrentVersion\RunOnce',
+                'HKCU:\Software\Microsoft\Windows\CurrentVersion\RunOnce',
+                'HKLM:\Software\Microsoft\Windows\CurrentVersion\RunServices',
+                'HKLM:\Software\Microsoft\Windows\CurrentVersion\RunServicesOnce',
+                'HCCU:\Software\Microsoft\Windows\Curre ntVersion\RunOnce\Setup',
+                'HKLM:\Software\Microsoft\Windows NT\CurrentVersion\Winlogon',
+                'HKLM:\Software\Microsoft\Active Setup\Installed Components',
+                'HKLM:\System\CurrentControlSet\Servic es\VxD',
+                'HKCU:\Control Panel\Desktop',
+                'HKLM:\System\CurrentControlSet\Control\Session Manager',
+                'HKLM:\System\CurrentControlSet\Services',
+                'HKLM:\System\CurrentControlSet\Services\Winsock2\Parameters\Protocol_Catalog\Catalog_Entries',
+                'HKLM:\System\Control\WOW\cmdline',
+                'HKLM:\System\Control\WOW\wowcmdline',
+                'HKLM:\Software\Microsoft\Windows NT\CurrentVersion\Winlogon\Userinit',
+                'HKLM:\Software\Microsoft\Windows\Curr entVersion\ShellServiceObjectDelayLoad',
+                'HKCU:\Software\Microsoft\Windows NT\CurrentVersion\Windows\run',
+                'HKCU:\Software\Microsoft\Windows NT\CurrentVersion\Windows\load',
+                'HKCU:\Software\Microsoft\Windows\Curre ntVersion\Policies\Explorer\run',
+                'HLKM:\Software\Microsoft\Windows\Curr entVersion\Policies\Explorer\run'
+            )
+            $Startups = @()
+            foreach ($key in $regkeys) {
+                $entry = Get-ItemProperty -Path $key
+                $entry = $entry | Select-Object * -ExcludeProperty PSPath, PSParentPath, PSChildName, PSDrive, PSProvider
+                #$entry.psobject.Properties |ft
+                foreach($item in $entry.PSObject.Properties) {
+                    $value = $item.value.replace('"', '')
+                    # The entry could be an actual path
+                    if(Test-Path $value) {
 
-#         #####################
-#         #####################
-# ------------------------------------------------------- -ExcludeProperty _*, Cim*
-#         $CompiledResults.add('',$(
-#             $ErrorActionPreference = 'SilentlyContinue'
-
-#             $SHA256  = [System.Security.Cryptography.HashAlgorithm]::Create("SHA256")
-#             $MD5     = [System.Security.Cryptography.HashAlgorithm]::Create("MD5")
-#                 $regkeys = @(
-#                 'HKLM:\Software\Microsoft\Windows\CurrentVersion\Run',
-#                 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Run',
-#                 'HKLM:\Software\Microsoft\Windows\CurrentVersion\RunOnce',
-#                 'HKCU:\Software\Microsoft\Windows\CurrentVersion\RunOnce',
-#                 'HKLM:\Software\Microsoft\Windows\CurrentVersion\RunServices',
-#                 'HKLM:\Software\Microsoft\Windows\CurrentVersion\RunServicesOnce',
-#                 'HCCU:\Software\Microsoft\Windows\Curre ntVersion\RunOnce\Setup',
-#                 'HKLM:\Software\Microsoft\Windows NT\CurrentVersion\Winlogon',
-#                 'HKLM:\Software\Microsoft\Active Setup\Installed Components',
-#                 'HKLM:\System\CurrentControlSet\Servic es\VxD',
-#                 'HKCU:\Control Panel\Desktop',
-#                 'HKLM:\System\CurrentControlSet\Control\Session Manager',
-#                 'HKLM:\System\CurrentControlSet\Services',
-#                 'HKLM:\System\CurrentControlSet\Services\Winsock2\Parameters\Protocol_Catalog\Catalog_Entries',
-#                 'HKLM:\System\Control\WOW\cmdline',
-#                 'HKLM:\System\Control\WOW\wowcmdline',
-#                 'HKLM:\Software\Microsoft\Windows NT\CurrentVersion\Winlogon\Userinit',
-#                 'HKLM:\Software\Microsoft\Windows\Curr entVersion\ShellServiceObjectDelayLoad',
-#                 'HKCU:\Software\Microsoft\Windows NT\CurrentVersion\Windows\run',
-#                 'HKCU:\Software\Microsoft\Windows NT\CurrentVersion\Windows\load',
-#                 'HKCU:\Software\Microsoft\Windows\Curre ntVersion\Policies\Explorer\run',
-#                 'HLKM:\Software\Microsoft\Windows\Curr entVersion\Policies\Explorer\run'
-#             )
-#             $Startups = @()
-#             foreach ($key in $regkeys) {
-#                 $entry = Get-ItemProperty -Path $key
-#                 $entry = $entry | Select-Object * -ExcludeProperty PSPath, PSParentPath, PSChildName, PSDrive, PSProvider
-#                 #$entry.psobject.Properties |ft
-#                 foreach($item in $entry.PSObject.Properties) {
-#                     $value = $item.value.replace('"', '')
-#                     # The entry could be an actual path
-#                     if(Test-Path $value) {
-
-#                         $filebytes   = [system.io.file]::ReadAllBytes($value)
-#                         $AuthenticodeSignature = Get-AuthenticodeSignature $value
-#                         $HashObject  = New-Object PSObject -Property @{
-#                             Name     = Split-Path $Value -Leaf
-#                             Path     = $value
-#                             SignatureStatus = $AuthenticodeSignature.Status
-#                             SignatureCompany = ($AuthenticodeSignature.SignerCertificate.SubjectName.Name -split ',')[0].TrimStart('CN=')
-#                             MD5      = [System.BitConverter]::ToString($md5.ComputeHash($filebytes)) -replace "-", "";
-#                             SHA256   = [System.BitConverter]::ToString($sha256.ComputeHash($filebytes)) -replace "-","";
-#                             PSComputerName = $env:COMPUTERNAME
-#                         }
-#                         $Startups += $HashObject
-#                     }
-#                 }
-#             }
-#             $Startups | Select-Object -Property Name, Path, MD5, SHA256, SignatureStatus, SignatureCompany    
-#         ))
-#         $GetRegistryStartupCommands = "$Path\Get-RegistryStartupCommands.ps1"
+                        $filebytes   = [system.io.file]::ReadAllBytes($value)
+                        $AuthenticodeSignature = Get-AuthenticodeSignature $value
+                        $HashObject  = New-Object PSObject -Property @{
+                            Name     = Split-Path $Value -Leaf
+                            Path     = $value
+                            SignatureStatus = $AuthenticodeSignature.Status
+                            SignatureCompany = ($AuthenticodeSignature.SignerCertificate.SubjectName.Name -split ',')[0].TrimStart('CN=')
+                            MD5      = [System.BitConverter]::ToString($md5.ComputeHash($filebytes)) -replace "-", "";
+                            SHA256   = [System.BitConverter]::ToString($sha256.ComputeHash($filebytes)) -replace "-","";
+                            PSComputerName = $env:COMPUTERNAME
+                        }
+                        $Startups += $HashObject
+                    }
+                }
+            }
+            $Startups | Select-Object -Property Name, Path, MD5, SHA256, SignatureStatus, SignatureCompany -ExcludeProperty _*, Cim*
+        ))
         
-#         #####################
-#         #####################
-# ------------------------------------------------------- -ExcludeProperty _*, Cim*
-#         $CompiledResults.add('Win32_StartupCommand',$(
-#             Get-WmiObject -Class Win32_StartupCommand
-#         ))
-
-#     #########################
-#     ### PowerShell
-#     #########################
-
-#         #####################
-#         #####################
-# ------------------------------------------------------- -ExcludeProperty _*, Cim*
-#         $CompiledResults.add('TestWSMan',$(
-#             Test-WSMan | Select-Object -Property *
-#         ))
-
-#         #####################
-#         #####################
-# ------------------------------------------------------- -ExcludeProperty _*, Cim*
-#         $CompiledResults.add('ServiceWinRM',$(
-#             Get-Service -Name WinRM | Select-Object -Property *
-#         ))
-
-#         #####################
-#         #####################
-# ------------------------------------------------------- -ExcludeProperty _*, Cim*
-#         $CompiledResults.add('WSManTrustedHosts',$(
-#             Get-Item WSMan:\localhost\Client\TrustedHosts
-#         ))
-
-#         #####################
-#         #####################
-# ------------------------------------------------------- -ExcludeProperty _*, Cim*
-#         $CompiledResults.add('PSReadLineHistoryUserHistoryy',$(
-#             Get-Content (Get-PSReadLineOption | Select-Object -ExpandProperty HistorySavePath)
-#         ))
-
-
-# ------------------------------------------------------- -ExcludeProperty _*, Cim*
-#         $CompiledResults.add('PSReadLineHistoryConsoleHost',$(
-#             Get-Content "$env:APPDATA\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt"
-#         ))
-
-#         #####################
-#         #####################
-# ------------------------------------------------------- -ExcludeProperty _*, Cim*
-#         $CompiledResults.add('PowerShellSessions',$(
-#             Get-WSManInstance -ResourceURI Shell -Enumerate | Select-Object -Property *
-#         ))
-
-#         #####################
-#         #####################
-# ------------------------------------------------------- -ExcludeProperty _*, Cim*
-#         $CompiledResults.add('Command',$(
-#             Get-Command
-#         ))
-
-#         #####################
-#         #####################
-# ------------------------------------------------------- -ExcludeProperty _*, Cim*
-#         $CompiledResults.add('InstalledModule',$(
-#             Get-InstalledModule
-#         ))
-
-#         #####################
-#         #####################
-# ------------------------------------------------------- -ExcludeProperty _*, Cim*
-#         $CompiledResults.add('Module',$(
-#             Get-Module
-#         ))
-
-#         #####################
-#         #####################
-# ------------------------------------------------------- -ExcludeProperty _*, Cim*
-#         $CompiledResults.add('PSProfileAllUsersAllHosts',$(
-#             Get-Content $Profile.AllUsersAllHosts
-#         ))
-
-#         #####################
-#         #####################
-# ------------------------------------------------------- -ExcludeProperty _*, Cim*
-#         $CompiledResults.add('PSProfileAllUsersCurrentHost',$(
-#             Get-Content $Profile.AllUsersCurrentHost
-#         ))
-
-#         #####################
-#         #####################
-# ------------------------------------------------------- -ExcludeProperty _*, Cim*
-#         $CompiledResults.add('PSProfileCurrentUserAllHosts',$(
-#             Get-Content $Profile.CurrentUserAllHosts
-#         ))
-
-#         #####################
-#         #####################
-# ------------------------------------------------------- -ExcludeProperty _*, Cim*
-#         $CompiledResults.add('PSProfileCurrentUserCurrentHost',$(
-#             Get-Content $Profile.CurrentUserCurrentHost
-#         ))
-
-#         #####################
-#         #####################
-# ------------------------------------------------------- -ExcludeProperty _*, Cim*
-#         $CompiledResults.add('PowerShellHistory',$(
-#             $Users = Get-ChildItem C:\Users | Where-Object {$_.PSIsContainer -eq $true}
-
-#             $Results = @()
-#             Foreach ($User in $Users) {
-#                 $UserPowerShellHistoryPath = "$($User.FullName)\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt"
-#                 if (Test-Path $UserPowerShellHistoryPath) {
-#                     $count = 1
-#                     $UserHistory += Get-Content "$UserPowerShellHistoryPath" -ErrorAction Stop | ForEach-Object {"$_ `r`n"}
-#                     foreach ($HistoryEntry in $UserHistory) {
-#                         $Results += [PSCustomObject]@{
-#                             PSComputerName    = "$env:COMPUTERNAME"
-#                             HistoryCount      = "$Count"
-#                             ProfileName       = "$($User.Name)"
-#                             PowerShellHistory = "$HistoryEntry"
-#                             ProfilePath       = "$($User.FullName)"
-#                             HistoryPath       = "$UserPowerShellHistoryPath"
-#                         }
-#                         $Count += 1
-#                     }
-#                 }
-#                 else {
-#                     $Results += [PSCustomObject]@{
-#                         PSComputerName    = "$env:COMPUTERNAME"
-#                         HistoryCount      = "0"
-#                         ProfileName       = "$($User.Name)"
-#                         PowerShellHistory = "There is not PowerShell History for $($User.BaseName)."
-#                         ProfilePath       = "$($User.FullName)"
-#                         HistoryPath       = "$UserPowerShellHistoryPath"
-#                     }
-#                 }
-#             }
-#             $Results    
-#         ))
-
-#     #########################
-#     ### SRUM Dump
-#     #########################
-# ------------------------------------------------------- -ExcludeProperty _*, Cim*
-
-#         function Invoke-SRUMDump {
-#             <#
-#                 .SYNOPSIS
-#                     Invoke-SRUMDump is a pure PowerShell/ .Net capability that enables the dumping of the System Resource Utilization Management (SRUM) database for CSVs. The database generally 
-#                     contains 30 days of information that is vital to incident response and forensics.
-
-#                 .NOTES  
-#                     Modified By    : high101bro (modified for PoSh-EasyWin compatibility)
-#                     Modified Date  : 26 August 21
-
-#                     File Name      : Invoke-SRUMDump.ps1
-#                     Version        : v.0.2
-#                     Author         : @WiredPulse
-#                     Created        : 20 May 21
-#             #>
-
-#             [CmdletBinding()]
-#             param(
-#                 [parameter(ParameterSetName="set1")] [switch]$Live,
-#                 [parameter(ParameterSetName="set2")] [switch]$Offline,
-#                 [parameter(ParameterSetName="set2", Mandatory=$true)] $Hive,
-#                 [parameter(ParameterSetName="set2", Mandatory=$true)] $Srum,
-#                 $ExportDir = "$env:USERPROFILE\desktop\srum"
-#             )
-
-
-#             $currentPrincipal = New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())
-#             if(-not($currentPrincipal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator))){
-#                 throw "Error: This script needs to be ran as a user with Administrator rights"
-#             }
-
-#             [string]$date = Get-Date -UFormat %m-%d-%Y
-#             $ExportDir = $ExportDir+'_'+$date
-
-#             if(-not(test-path $ExportDir)){
-#                 new-item $ExportDir -ItemType Directory | out-null
-#             }
-
-#             if($live){
-#                 if(test-path C:\Windows\System32\sru\SRUDB.dat){
-#                     copy-item C:\Windows\System32\sru\SRUDB.dat $ExportDir
-#                     $path = "$exportdir\SRUDB.dat"
-#                     if(-not(test-path $path)){
-#                         throw "Error: SrumDB couldn't be copied"
-#                     }
-#                 }
-#                 else{
-#                     throw "ERROR: SrumDB doesn't exist in C:\windows\system32\sru"
-#                 }
-#             }
-#             else{
-#                 $path = $Srum
-#                 if(-not(test-path $srum)){
-#                     throw "Error: SrumDB file doesn't exist at the specified path"
-#                 }
-#                 if(-not(test-path $hive)){
-#                     throw "Error: Hive file doens't exist at the specified path"
-#                 }
-#                 try{
-#                     New-PSDrive -PSProvider Registry -Name SRUM_Reg_Parse -Root HKEY_USERS | Out-Null
-#                     reg load hku\srum $hive | out-null
-#                 }
-#                 catch{
-#                     throw "Error: Can't mount Software Hive"
-#                 }
-#             }
-
-#             $lookupLUID = @{
-#                 1 = "IF_TYPE_OTHER"
-#                 2 = "IF_TYPE_REGULAR_1822"
-#                 3 = "IF_TYPE_HDH_1822"
-#                 4 = "IF_TYPE_DDN_X25"
-#                 5 = "IF_TYPE_RFC877_X25"
-#                 6 = "IF_TYPE_ETHERNET_CSMACD"
-#                 7 = "IF_TYPE_IS088023_CSMACD"
-#                 8 = "IF_TYPE_ISO88024_TOKENBUS"
-#                 9 = "IF_TYPE_ISO88025_TOKENRING"
-#                 10 = "IF_TYPE_ISO88026_MAN"
-#                 11 = "IF_TYPE_STARLAN"
-#                 12 = "IF_TYPE_PROTEON_10MBIT"
-#                 13 = "IF_TYPE_PROTEON_80MBIT"
-#                 14 = "IF_TYPE_HYPERCHANNEL"
-#                 15 = "IF_TYPE_FDDI"
-#                 16 = "IF_TYPE_LAP_B"
-#                 17 = "IF_TYPE_SDLC"
-#                 18 = "IF_TYPE_DS1"
-#                 19 = "IF_TYPE_E1"
-#                 20 = "IF_TYPE_BASIC_ISDN"
-#                 21 = "IF_TYPE_PRIMARY_ISDN"
-#                 22 = "IF_TYPE_PROP_POINT2POINT_SERIAL"
-#                 23 = "IF_TYPE_PPP"
-#                 24 = "IF_TYPE_SOFTWARE_LOOPBACK"
-#                 25 = "IF_TYPE_EON"
-#                 26 = "IF_TYPE_ETHERNET_3MBIT"
-#                 27 = "IF_TYPE_NSIP"
-#                 28 = "IF_TYPE_SLIP"
-#                 29 = "IF_TYPE_ULTRA"
-#                 30 = "IF_TYPE_DS3"
-#                 31 = "IF_TYPE_SIP"
-#                 32 = "IF_TYPE_FRAMERELAY"
-#                 33 = "IF_TYPE_RS232"
-#                 34 = "IF_TYPE_PARA"
-#                 35 = "IF_TYPE_ARCNET"
-#                 36 = "IF_TYPE_ARCNET_PLUS"
-#                 37 = "IF_TYPE_ATM"
-#                 38 = "IF_TYPE_MIO_X25"
-#                 39 = "IF_TYPE_SONET"
-#                 40 = "IF_TYPE_X25_PLE"
-#                 41 = "IF_TYPE_ISO88022_LLC"
-#                 42 = "IF_TYPE_LOCALTALK"
-#                 43 = "IF_TYPE_SMDS_DXI"
-#                 44 = "IF_TYPE_FRAMERELAY_SERVICE"
-#                 45 = "IF_TYPE_V35"
-#                 46 = "IF_TYPE_HSSI"
-#                 47 = "IF_TYPE_HIPPI"
-#                 48 = "IF_TYPE_MODEM"
-#                 49 = "IF_TYPE_AAL5"
-#                 50 = "IF_TYPE_SONET_PATH"
-#                 51 = "IF_TYPE_SONET_VT"
-#                 52 = "IF_TYPE_SMDS_ICIP"
-#                 53 = "IF_TYPE_PROP_VIRTUAL"
-#                 54 = "IF_TYPE_PROP_MULTIPLEXOR"
-#                 55 = "IF_TYPE_IEEE80212"
-#                 56 = "IF_TYPE_FIBRECHANNEL"
-#                 57 = "IF_TYPE_HIPPIINTERFACE"
-#                 58 = "IF_TYPE_FRAMERELAY_INTERCONNECT"
-#                 59 = "IF_TYPE_AFLANE_8023"
-#                 60 = "IF_TYPE_AFLANE_8025"
-#                 61 = "IF_TYPE_CCTEMUL"
-#                 62 = "IF_TYPE_FASTETHER"
-#                 63 = "IF_TYPE_ISDN"
-#                 64 = "IF_TYPE_V11"
-#                 65 = "IF_TYPE_V36"
-#                 66 = "IF_TYPE_G703_64K"
-#                 67 = "IF_TYPE_G703_2MB"
-#                 68 = "IF_TYPE_QLLC"
-#                 69 = "IF_TYPE_FASTETHER_FX"
-#                 70 = "IF_TYPE_CHANNEL"
-#                 71 = "IF_TYPE_IEEE80211"
-#                 72 = "IF_TYPE_IBM370PARCHAN"
-#                 73 = "IF_TYPE_ESCON"
-#                 74 = "IF_TYPE_DLSW"
-#                 75 = "IF_TYPE_ISDN_S"
-#                 76 = "IF_TYPE_ISDN_U"
-#                 77 = "IF_TYPE_LAP_D"
-#                 78 = "IF_TYPE_IPSWITCH"
-#                 79 = "IF_TYPE_RSRB"
-#                 80 = "IF_TYPE_ATM_LOGICAL"
-#                 81 = "IF_TYPE_DS0"
-#                 82 = "IF_TYPE_DS0_BUNDLE"
-#                 83 = "IF_TYPE_BSC"
-#                 84 = "IF_TYPE_ASYNC"
-#                 85 = "IF_TYPE_CNR"
-#                 86 = "IF_TYPE_ISO88025R_DTR"
-#                 87 = "IF_TYPE_EPLRS"
-#                 88 = "IF_TYPE_ARAP"
-#                 89 = "IF_TYPE_PROP_CNLS"
-#                 90 = "IF_TYPE_HOSTPAD"
-#                 91 = "IF_TYPE_TERMPAD"
-#                 92 = "IF_TYPE_FRAMERELAY_MPI"
-#                 93 = "IF_TYPE_X213"
-#                 94 = "IF_TYPE_ADSL"
-#                 95 = "IF_TYPE_RADSL"
-#                 96 = "IF_TYPE_SDSL"
-#                 97 = "IF_TYPE_VDSL"
-#                 98 = "IF_TYPE_ISO88025_CRFPRINT"
-#                 99 = "IF_TYPE_MYRINET"
-#                 100 = "IF_TYPE_VOICE_EM"
-#                 101 = "IF_TYPE_VOICE_FXO"
-#                 102 = "IF_TYPE_VOICE_FXS"
-#                 103 = "IF_TYPE_VOICE_ENCAP"
-#                 104 = "IF_TYPE_VOICE_OVERIP"
-#                 105 = "IF_TYPE_ATM_DXI"
-#                 106 = "IF_TYPE_ATM_FUNI"
-#                 107 = "IF_TYPE_ATM_IMA"
-#                 108 = "IF_TYPE_PPPMULTILINKBUNDLE"
-#                 109 = "IF_TYPE_IPOVER_CDLC"
-#                 110 = "IF_TYPE_IPOVER_CLAW"
-#                 111 = "IF_TYPE_STACKTOSTACK"
-#                 112 = "IF_TYPE_VIRTUALIPADDRESS"
-#                 113 = "IF_TYPE_MPC"
-#                 114 = "IF_TYPE_IPOVER_ATM"
-#                 115 = "IF_TYPE_ISO88025_FIBER"
-#                 116 = "IF_TYPE_TDLC"
-#                 117 = "IF_TYPE_GIGABITETHERNET"
-#                 118 = "IF_TYPE_HDLC"
-#                 119 = "IF_TYPE_LAP_F"
-#                 120 = "IF_TYPE_V37"
-#                 121 = "IF_TYPE_X25_MLP"
-#                 122 = "IF_TYPE_X25_HUNTGROUP"
-#                 123 = "IF_TYPE_TRANSPHDLC"
-#                 124 = "IF_TYPE_INTERLEAVE"
-#                 125 = "IF_TYPE_FAST"
-#                 126 = "IF_TYPE_IP"
-#                 127 = "IF_TYPE_DOCSCABLE_MACLAYER"
-#                 128 = "IF_TYPE_DOCSCABLE_DOWNSTREAM"
-#                 129 = "IF_TYPE_DOCSCABLE_UPSTREAM"
-#                 130 = "IF_TYPE_A12MPPSWITCH"
-#                 131 = "IF_TYPE_TUNNEL"
-#                 132 = "IF_TYPE_COFFEE"
-#                 133 = "IF_TYPE_CES"
-#                 134 = "IF_TYPE_ATM_SUBINTERFACE"
-#                 135 = "IF_TYPE_L2_VLAN"
-#                 136 = "IF_TYPE_L3_IPVLAN"
-#                 137 = "IF_TYPE_L3_IPXVLAN"
-#                 138 = "IF_TYPE_DIGITALPOWERLINE"
-#                 139 = "IF_TYPE_MEDIAMAILOVERIP"
-#                 140 = "IF_TYPE_DTM"
-#                 141 = "IF_TYPE_DCN"
-#                 142 = "IF_TYPE_IPFORWARD"
-#                 143 = "IF_TYPE_MSDSL"
-#                 144 = "IF_TYPE_IEEE1394"
-#                 145 = "IF_TYPE_RECEIVE_ONLY"
-#             }
-
-#             function profiles{
-#                 $keys = (Get-ChildItem 'Srum_Reg_Parse:\srum\Microsoft\WlanSvc\Interfaces\*\profiles\' -Exclude metadata -Recurse).pspath
-#                 $global:table = @{}
-#                 foreach($key in $keys){
-#                     $parsed = ''
-#                     try{
-#                         $temp = [System.Text.Encoding]::ascii.GetString(((Get-ItemProperty ($key + '\metadata')).'channel hints'))
-#                         for($i = 0; $i -lt 100; $i++){
-#                             $temp = ($Temp.Split('?'))[0]
-#                             if($temp[$i] -match "[-a-zA-Z0-9]"){
-#                                 $parsed += @($temp[$i])
-#                         }
-#                         }
-#                         $table[((Get-ItemProperty $key).profileindex)] = $parsed
-#                     }
-#                     catch{}
-#                 }
-#             }
-
-#             function liveProfiles{
-#                 $keys = (Get-ChildItem 'HKLM:\SOFTWARE\Microsoft\WlanSvc\Interfaces\*\profiles\' -Exclude metadata -Recurse).pspath
-#                 $global:table = @{}
-#                 foreach($key in $keys){
-#                     $parsed = ''
-#                     try{
-#                         $temp = [System.Text.Encoding]::ascii.GetString(((Get-ItemProperty ($key + '\metadata')).'channel hints'))
-#                         for($i = 0; $i -lt 100; $i++){
-#                             $temp = ($Temp.Split('?'))[0]
-#                             if($temp[$i] -match "[-a-zA-Z0-9]"){
-#                                 $parsed += @($temp[$i])
-#                         }
-#                         }
-#                         $table[((Get-ItemProperty $key).profileindex)] = $parsed
-#                     }
-#                     catch{}
-#                 }
-#             }
-
-#             function replace-ssids{
-#                 foreach($entry in $table.keys){
-#                     foreach($temp in $out){
-#                         if($temp.l2profileid -eq $entry){
-#                             $temp.l2profileid = $table.item($entry)
-#                         }
-#                     }   
-#                 }
-#             }
-
-#             function sids-app-interface-time{
-#                 foreach($item in $out){
-#                     if($item.InterfaceLuid -notlike "if*"){
-#                         [int]$item2 = ([long]$item.interfaceluid) -shr 48
-#                         $item.interfaceluid = $lookupLUID.get_item($item2)
-#                     }
-#                     if($item.connectedtime -notlike "*m*"){
-#                         $ts =  [timespan]::fromseconds($item.ConnectedTime)
-#                         $item.ConnectedTime = "{0:hh'h' mm'm' ss's'}" -f ([datetime]$ts.Ticks)
-#                     }
-#                     $item.UserId = $hashSid.get_item([int]"$($item.UserId)")  
-
-#                     $item.AppId = $hashApp.get_item([int]"$($item.appid)")  
-#                 }
-#             }
-
-#             function sids-app-interface{
-#                 foreach($item in $out){
-#                     if($item.InterfaceLuid -notlike "if*"){
-#                         [int]$item2 = ([long]$item.interfaceluid) -shr 48
-#                         $item.interfaceluid = $lookupLUID.get_item($item2)
-#                     }
-#                     $item.UserId = $hashSid.get_item([int]"$($item.UserId)")  
-
-#                     $item.AppId = $hashApp.get_item([int]"$($item.appid)")  
-#                 }
-#             }
-
-#             function sids-app{
-#                 foreach($item in $out){
-#                     $item.UserId = $hashSid.get_item([int]"$($item.UserId)")  
-
-#                     $item.AppId = $hashApp.get_item([int]"$($item.appid)")  
-#                 }
-#             }
-
-#             Function Get-SRUMTableDataRows{
-#             Param(
-#                 $Session,
-#                 $JetTable,
-#                 $BlobStrType=[System.Text.Encoding]::UTF16,
-#                 $FutureTimeLimit = [System.TimeSpan]::FromDays(36500)
-#             )
-
-
-#             $DBRows = [System.Collections.ArrayList]@()
-#             Try{
-#                 [Microsoft.Isam.Esent.Interop.ColumnInfo[]]$Columns = [Microsoft.Isam.Esent.Interop.Api]::GetTableColumns($Session, $JetTable.JetTableid)
-#                 if ([Microsoft.Isam.Esent.Interop.Api]::TryMoveFirst($Session, $JetTable.JetTableid)){
-#                     do{
-#                         $Row = New-Object PSObject 
-#                         foreach ($Column in $Columns){
-#                             switch ($Column.Coltyp){
-#                                 ([Microsoft.Isam.Esent.Interop.JET_coltyp]::Bit) {
-#                                     $Buffer = [Microsoft.Isam.Esent.Interop.Api]::RetrieveColumnAsBoolean($Session, $JetTable.JetTableid, $Column.Columnid)
-#                                     break
-#                                 }
-#                                 ([Microsoft.Isam.Esent.Interop.JET_coltyp]::DateTime) {
-#                                     $Buffer = [Microsoft.Isam.Esent.Interop.Api]::RetrieveColumnAsDateTime($Session, $JetTable.JetTableid, $Column.Columnid)
-#                                     break
-#                                 }
-#                                 ([Microsoft.Isam.Esent.Interop.JET_coltyp]::IEEEDouble) {
-#                                     $Buffer = [Microsoft.Isam.Esent.Interop.Api]::RetrieveColumnAsDouble($Session, $JetTable.JetTableid, $Column.Columnid)
-#                                     break
-#                                 }
-#                                 ([Microsoft.Isam.Esent.Interop.JET_coltyp]::IEEESingle) {
-#                                     $Buffer = [Microsoft.Isam.Esent.Interop.Api]::RetrieveColumnAsFloat($Session, $JetTable.JetTableid, $Column.Columnid)
-#                                     break
-#                                 }
-#                                 ([Microsoft.Isam.Esent.Interop.JET_coltyp]::Long) {
-#                                     $Buffer = [Microsoft.Isam.Esent.Interop.Api]::RetrieveColumnAsInt32($Session, $JetTable.JetTableid, $Column.Columnid)
-#                                     break
-#                                 }
-#                                 ([Microsoft.Isam.Esent.Interop.JET_coltyp]::Binary) {
-#                                     if ( $BlobStrType -eq [System.Text.Encoding]::UTF16 ) {
-#                                         $Buffer = [Microsoft.Isam.Esent.Interop.Api]::RetrieveColumnAsString($Session, $JetTable.JetTableid, $Column.Columnid)
-#                                     } else {
-#                                         $Buffer = [Microsoft.Isam.Esent.Interop.Api]::RetrieveColumnAsString($Session, $JetTable.JetTableid, $Column.Columnid, $BlobStrType)
-#                                     }
-#                                     break
-#                                 }
-#                                 ([Microsoft.Isam.Esent.Interop.JET_coltyp]::LongBinary) {
-#                                     $Buffer = [Microsoft.Isam.Esent.Interop.Api]::RetrieveColumn($Session, $JetTable.JetTableid, $Column.Columnid)
-#                                     break
-#                                 }
-#                                 ([Microsoft.Isam.Esent.Interop.JET_coltyp]::LongText) {
-#                                     if ( $BlobStrType -eq [System.Text.Encoding]::UTF16 ) {
-#                                         $Buffer = [Microsoft.Isam.Esent.Interop.Api]::RetrieveColumnAsString($Session, $JetTable.JetTableid, $Column.Columnid)
-#                                     } 
-#                                     else {
-#                                         $Buffer = [Microsoft.Isam.Esent.Interop.Api]::RetrieveColumnAsString($Session, $JetTable.JetTableid, $Column.Columnid, $BlobStrType)
-#                                     }
-#                                     if (![System.String]::IsNullOrEmpty($Buffer)) {
-#                                         $Buffer = $Buffer.Replace("`0", "")
-#                                     }
-#                                     break
-#                                 }
-#                                 ([Microsoft.Isam.Esent.Interop.JET_coltyp]::Text) {
-#                                     if ( $BlobStrType -eq [System.Text.Encoding]::UTF16 ) {
-#                                         $Buffer = [Microsoft.Isam.Esent.Interop.Api]::RetrieveColumnAsString($Session, $JetTable.JetTableid, $Column.Columnid)
-#                                     } else {
-#                                         $Buffer = [Microsoft.Isam.Esent.Interop.Api]::RetrieveColumnAsString($Session, $JetTable.JetTableid, $Column.Columnid, $BlobStrType)
-#                                     }
-#                                     if (![System.String]::IsNullOrEmpty($Buffer)) {
-#                                         $Buffer = $Buffer.Replace("`0", "")
-#                                     }
-#                                     break
-#                                 }
-#                                 ([Microsoft.Isam.Esent.Interop.JET_coltyp]::Currency) {
-#                                     $Buffer = [Microsoft.Isam.Esent.Interop.Api]::RetrieveColumnAsString($Session, $JetTable.JetTableid, $Column.Columnid, [System.Text.Encoding]::UTF8)
-#                                     if (![System.String]::IsNullOrEmpty($Buffer)) {
-#                                         $Buffer = $Buffer.Replace("`0", "")
-#                                     }
-#                                     break
-#                                 }
-#                                 ([Microsoft.Isam.Esent.Interop.JET_coltyp]::Short) {
-#                                     $Buffer = [Microsoft.Isam.Esent.Interop.Api]::RetrieveColumnAsInt16($Session, $JetTable.JetTableid, $Column.Columnid)
-#                                     break
-#                                 }
-#                                 ([Microsoft.Isam.Esent.Interop.JET_coltyp]::UnsignedByte) {
-#                                     $Buffer = [Microsoft.Isam.Esent.Interop.Api]::RetrieveColumnAsByte($Session, $JetTable.JetTableid, $Column.Columnid)
-#                                     break
-#                                 }
-#                                 (14) {
-#                                     $Buffer = [Microsoft.Isam.Esent.Interop.Api]::RetrieveColumnAsInt32($Session, $JetTable.JetTableid, $Column.Columnid)
-#                                     break
-#                                 }
-#                                 (15) {
-#                                     try{
-#                                         $Buffer = [Microsoft.Isam.Esent.Interop.Api]::RetrieveColumnAsInt64($Session, $JetTable.JetTableid, $Column.Columnid)
-#                                     } 
-#                                     catch{ 
-#                                         $Buffer = "Error"
-#                                     }
-#                                     if ($Buffer -Ne "Error" -and $column.name -eq "ConnectStartTime"){
-#                                         try {
-#                                             $DateTime = [System.DateTime]::FromBinary($Buffer)
-#                                             $DateTime = $DateTime.AddYears(1600)
-#                                             $buffer = $DateTime
-#                                             if ($DateTime -gt (Get-Date -Year 1970 -Month 1 -Day 1) -and $DateTime -lt ([System.DateTime]::UtcNow.Add($FutureTimeLimit))){
-#                                                 $Buffer = $DateTime
-#                                             }
-#                                         }
-#                                         catch {}
-#                                     }
-#                                     break
-#                                 }
-#                                 default {
-#                                     Write-Warning -Message "Did not match column type to $_"
-#                                     $Buffer = [System.String]::Empty
-#                                     break
-#                                 }
-#                             }       
-#                             $Row | Add-Member -type NoteProperty -name $Column.Name -Value $Buffer 
-#                         }
-#                         [void]$DBRows.Add($row)
-#                     } 
-#                     while ([Microsoft.Isam.Esent.Interop.Api]::TryMoveNext($Session, $JetTable.JetTableid))      
-#                 }
-#             }
-#             Catch{
-#                 throw "Error: Could not read table"
-#                 Break
-#             }
-#             return $DBRows
-#             }
-
-#             function map{
-#             $TableNameDBID="SruDbIdMapTable"
-#             [Microsoft.Isam.Esent.Interop.Table]$TableDBID = New-Object -TypeName Microsoft.Isam.Esent.Interop.Table($Session, $DatabaseId, $TableNameDBID, [Microsoft.Isam.Esent.Interop.OpenTableGrbit]::None)
-#             try{
-#                 $NewTable = @{Name=$TableDBID.Name;Id=$TableDBID.JetTableid;Rows=@()}
-#                 $DBRows = @()
-#                 [Microsoft.Isam.Esent.Interop.ColumnInfo[]]$Columns = [Microsoft.Isam.Esent.Interop.Api]::GetTableColumns($Session, $TableDBID.JetTableid)
-#                 $jettable = $Tabledbid
-#             }
-#             catch{
-#                 throw "ERROR: Cannot access file, the file is locked or in use"
-#             }
-
-#             write-host -ForegroundColor Yellow "[+] " -NoNewline; Write-Host -ForegroundColor Green "Retrieving SruIdDbMap Table..."
-#             $map = Get-SRUMTableDataRows -Session $Session -JetTable $TableDBId 
-#             write-host -ForegroundColor Yellow "[+] " -NoNewline; Write-Host -ForegroundColor Green "Translating SIDs and Applications from SruIdDbMap... This Could take up to 15 Minutes..."
-#             $global:hashSid = @{}
-#             $global:hashApp = @{}
-#             foreach($mData in $map){
-#                 if($mData.idtype -eq 3){
-#                     try{
-#                         $hex = $mData | Select-Object -ExpandProperty idblob
-#                         $hexString = ($hex|ForEach-Object ToString X2) -join ''   
-#                         $Bytes = [byte[]]::new($HexString.Length / 2)
-
-#                         For($i=0; $i -lt $HexString.Length; $i+=2){
-#                             $Bytes[$i/2] =[convert]::ToByte($HexString.Substring($i, 2), 16)
-#                         }
-#                         $idblobSid = (New-Object System.Security.Principal.SecurityIdentifier($Bytes,0)).Value
-#                         $hashSid.add($mData.idindex, $idblobSid)
-#                     }
-#                     catch{
-#                         $idblobSid = "Unable to Retrieve"
-#                         $hashSid.add($mData.idindex, $idblobSid)
-#                     }
-#                 }
-#                 else{
-#                     try{
-#                         $bytes = $mData | Select-Object -ExpandProperty idblob
-#                         $idblobApp = [System.Text.Encoding]::unicode.GetString($bytes)
-#                         $hashApp.add($mData.idindex, $idblobApp)
-#                         }
-#                     catch{
-#                         $idblobApp = "Unable to Retrieve"
-#                         $hashApp.add($mData.idindex, $idblobApp)
-#                     }
-#                 }
-#             }
-
-#             }
-
-#             function networkConnectivity{
-#             $tab = "{DD6636C4-8929-4683-974E-22C046A43763}"
-#             [Microsoft.Isam.Esent.Interop.Table]$Tab2 = New-Object -TypeName Microsoft.Isam.Esent.Interop.Table($Session, $DatabaseId, $Tab, [Microsoft.Isam.Esent.Interop.OpenTableGrbit]::None)
-
-#             $NewTable = @{Name=$TableDBID.Name;Id=$TableDBID.JetTableid;Rows=@()}
-#             $DBRows = @()
-#             [Microsoft.Isam.Esent.Interop.ColumnInfo[]]$Columns = [Microsoft.Isam.Esent.Interop.Api]::GetTableColumns($Session, $Tab2.JetTableid)
-#             $jettable = $tab2
-
-#             write-host -ForegroundColor Yellow "[+] " -NoNewline; Write-Host -ForegroundColor Green "Retrieving Network Connectivity Table..."
-#             $global:out = Get-SRUMTableDataRows -Session $Session -JetTable $Tab2
-
-#             write-host -ForegroundColor Yellow "[+] " -NoNewline; Write-Host -ForegroundColor Green "Network Connectivity: Normalizing Wireless Profile Data..."
-#             if($Live){
-#                 liveProfiles
-#             }
-#             else{
-#                 Profiles
-#             }
-#             replace-ssids
-
-#             write-host -ForegroundColor Yellow "[+] " -NoNewline; Write-Host -ForegroundColor Green "Network Connectivity: Normalizing User SIDs, Connected Time, Interface LUIDs, and Applications..."
-#             sids-app-interface-time
-
-#             write-host -ForegroundColor Yellow "[+] " -NoNewline; Write-Host -ForegroundColor Green "Exporting Network Connectivity Table..."
-
-#             $CompiledResults.add('InvokeSRUMDumpNetworkConnectivity',$(
-#                 $out | Select-Object @{Name='SRUM Entry ID'; Expression='AutoIncID'}, @{Name='SRUM Entry Creation'; Expression='Timestamp'}, @{Name='Application'; Expression='Appid'}, @{Name='User SID'; Expression='UserID'}, @{Name='Interface'; Expression='InterfaceLUID'}, @{Name='Profile'; Expression='L2ProfileID'}, @{Name='Connected Time'; Expression='ConnectedTime'}, @{Name='Connect Start Time (UTC)'; Expression='ConnectStartTime'}, @{Name='Profile Flags'; Expression='L2ProfileFlags'}
-#             ))
-#             }
-
-#             function networkData{
-#             $tab = "{973F5D5C-1D90-4944-BE8E-24B94231A174}"
-#             [Microsoft.Isam.Esent.Interop.Table]$Tab3 = New-Object -TypeName Microsoft.Isam.Esent.Interop.Table($Session, $DatabaseId, $Tab, [Microsoft.Isam.Esent.Interop.OpenTableGrbit]::None)
-
-#             $NewTable = @{Name=$TableDBID.Name;Id=$TableDBID.JetTableid;Rows=@()}
-#             $DBRows = @()
-#             [Microsoft.Isam.Esent.Interop.ColumnInfo[]]$Columns = [Microsoft.Isam.Esent.Interop.Api]::GetTableColumns($Session, $Tab3.JetTableid)
-#             $jettable = $tab3
-
-#             write-host -ForegroundColor Yellow "[+] " -NoNewline; Write-Host -ForegroundColor Green "Retrieving Network Data Usage Table... This Could take up to 15 Minutes..."
-#             $global:out = Get-SRUMTableDataRows -Session $Session -JetTable $Tab3
-
-#             write-host -ForegroundColor Yellow "[+] " -NoNewline; Write-Host -ForegroundColor Green "Network Data Usage: Normalizing Wireless Profile Data..."
-#             if($Live){
-#                 liveProfiles
-#             }
-#             else{
-#                 Profiles
-#             }
-#             replace-ssids
-
-#             write-host -ForegroundColor Yellow "[+] " -NoNewline; Write-Host -ForegroundColor Green "Network Data Usage: Normalizing User SIDs, Interface LUIDs, and Applications..." 
-#             sids-app-interface
-
-#             write-host -ForegroundColor Yellow "[+] " -NoNewline; Write-Host -ForegroundColor Green "Exporting Network Data Usage Table..."
-
-#             $CompiledResults.add('InvokeSRUMDumpNetworkDataUsage',$(
-#                 $out | Select-Object @{Name='SRUM Entry ID'; Expression='AutoIncID'}, @{Name='SRUM Entry Creation'; Expression='Timestamp'}, @{Name='Application'; Expression='Appid'}, @{Name='User SID'; Expression='UserID'}, @{Name='Interface'; Expression='InterfaceLUID'}, @{Name='Profile'; Expression='L2ProfileID'}, @{Name='Profile Flags'; Expression='L2ProfileFlags'}, @{Name='Bytes Sent'; Expression='bytessent'}, @{Name='Bytes Received'; Expression='bytesrecvd'}
-#             ))
-#             }
-
-#             function applicationUse{
-#             $tab = "{D10CA2FE-6FCF-4F6D-848E-B2E99266FA89}"
-#             [Microsoft.Isam.Esent.Interop.Table]$Tab4 = New-Object -TypeName Microsoft.Isam.Esent.Interop.Table($Session, $DatabaseId, $Tab, [Microsoft.Isam.Esent.Interop.OpenTableGrbit]::None)
-
-#             $NewTable = @{Name=$TableDBID.Name;Id=$TableDBID.JetTableid;Rows=@()}
-#             $DBRows = @()
-#             [Microsoft.Isam.Esent.Interop.ColumnInfo[]]$Columns = [Microsoft.Isam.Esent.Interop.Api]::GetTableColumns($Session, $Tab4.JetTableid)
-#             $jettable = $tab4
-
-#             write-host -ForegroundColor Yellow "[+] " -NoNewline; Write-Host -ForegroundColor Green "Retrieving Application Usage Table..."
-#             $global:out = Get-SRUMTableDataRows -Session $Session -JetTable $Tab4
-
-#             write-host -ForegroundColor Yellow "[+] " -NoNewline; Write-Host -ForegroundColor Green "Application Usage: Normalizing User SIDs and Applications..."
-#             sids-app
-
-#             write-host -ForegroundColor Yellow "[+] " -NoNewline; Write-Host -ForegroundColor Green "Exporting Application Usage Table..."
-#             $CompiledResults.add('InvokeSRUMDumpApplicationUsage',$(
-#                 $out | Select-Object @{Name='SRUM Entry ID'; Expression='AutoIncID'}, @{Name='SRUM Entry Creation'; Expression='Timestamp'}, @{Name='Application'; Expression='Appid'}, @{Name='User SID'; Expression='UserID'}, BackgroundBytesRead, BackgroundBytesWritten, BackgroundContextSwitches, BackgroundCycleTime, BackgroundNumberOfFlushes, BackgroundNumReadOperations, BackgroundNumWriteOperations, FaceTime, ForegroundBytesRead, ForegroundBytesWritten, ForegroundContextSwitches, ForegroundCycleTime, ForegroundNumberOfFlushes, ForegroundNumReadOperations, ForegroundNumWriteOperations
-#             ))
-#             }
-
-#             function applicationTimeline{
-#             $tab = "{5C8CF1C7-7257-4F13-B223-970EF5939312}"
-#             [Microsoft.Isam.Esent.Interop.Table]$Tab5 = New-Object -TypeName Microsoft.Isam.Esent.Interop.Table($Session, $DatabaseId, $Tab, [Microsoft.Isam.Esent.Interop.OpenTableGrbit]::None)
-
-#             $NewTable = @{Name=$TableDBID.Name;Id=$TableDBID.JetTableid;Rows=@()}
-#             $DBRows = @()
-#             [Microsoft.Isam.Esent.Interop.ColumnInfo[]]$Columns = [Microsoft.Isam.Esent.Interop.Api]::GetTableColumns($Session, $Tab5.JetTableid)
-#             $jettable = $tab5
-
-#             write-host -ForegroundColor Yellow "[+] " -NoNewline; Write-Host -ForegroundColor Green "Retrieving Application Timeline Table..."
-#             $global:out = Get-SRUMTableDataRows -Session $Session -JetTable $Tab5
-
-#             write-host -ForegroundColor Yellow "[+] " -NoNewline; Write-Host -ForegroundColor Green "Application Timeline: Normalizing User SIDs and Applications..."
-#             sids-app
-
-#             write-host -ForegroundColor Yellow "[+] " -NoNewline; Write-Host -ForegroundColor Green "Exporting Application Timeline Table to $exportDir\ApplicationTimeline..."
-#             $CompiledResults.add('InvokeSRUMDumpApplicationUsage',$(
-#                 $out | Select-Object @{Name='SRUM Entry ID'; Expression='AutoIncID'}, @{Name='SRUM Entry Creation'; Expression='Timestamp'}, @{Name='Application'; Expression='Appid'}, @{Name='User SID'; Expression='UserID'}, BinaryData, EndTime, DurationMS, SpanMS, TimelineEnd, InFocusTimeline, UserInputTimeline, CompRenderedTimeline, CompDirtiedTimeline, CompPropagatedTimeline, AudioInTimeline, AudioTimeline, CPUTimeline, DiskTimeline, NetworkTimeline, MBBTimline, InFocusS, PSMForegroundS, UserInputS, CompRenderedS, CompDiriedS, CompPropagatedS, AudioS, AudioOutS, Cycles, CyclesBreakdown, CyclesWOB, CyclesWOBBreakdown, DiskRaw, NetworkTailRaw, NetworkBytesRaw, MBBTailRaw, DisplayRequiredS, DisplayRequiredTimeline, KeyboardInputTimeline, KeyboardInputS, MouseInputS
-#             ))
-#             }
-
-#             function pushNotifications{
-#             $tab = "{D10CA2FE-6FCF-4F6D-848E-B2E99266FA86}"
-#             [Microsoft.Isam.Esent.Interop.Table]$Tab6 = New-Object -TypeName Microsoft.Isam.Esent.Interop.Table($Session, $DatabaseId, $Tab, [Microsoft.Isam.Esent.Interop.OpenTableGrbit]::None)
-
-#             $NewTable = @{Name=$TableDBID.Name;Id=$TableDBID.JetTableid;Rows=@()}
-#             $DBRows = @()
-#             [Microsoft.Isam.Esent.Interop.ColumnInfo[]]$Columns = [Microsoft.Isam.Esent.Interop.Api]::GetTableColumns($Session, $Tab6.JetTableid)
-#             $jettable = $tab6
-
-#             write-host -ForegroundColor Yellow "[+] " -NoNewline; Write-Host -ForegroundColor Green "Retrieving Push Notifications Table..."
-#             $out = Get-SRUMTableDataRows -Session $Session -JetTable $Tab6
-
-#             write-host -ForegroundColor Yellow "[+] " -NoNewline; Write-Host -ForegroundColor Green "Push Notifications: Normalizing User SIDs and Applications..."
-#             sids-app
-
-#             write-host -ForegroundColor Yellow "[+] " -NoNewline; Write-Host -ForegroundColor Green "Exporting Push Notifications Table..."
-#             $CompiledResults.add('InvokeSRUMDumpPushNotifications',$(
-#                 $out | Select-Object @{Name='SRUM Entry ID'; Expression='AutoIncID'}, @{Name='SRUM Entry Creation'; Expression='Timestamp'}, @{Name='Application'; Expression='Appid'}, @{Name='User SID'; Expression='UserID'}, NotificationType, PayloadSize, NetworkType
-#             ))
-#             }
-
-#             $EsentDllPath = "$env:SYSTEMROOT\Microsoft.NET\assembly\GAC_MSIL\microsoft.isam.esent.interop\v4.0_10.0.0.0__31bf3856ad364e35\Microsoft.Isam.Esent.Interop.dll"
-#             Add-Type -Path $EsentDllPath
-
-#             write-host -ForegroundColor Yellow "[+] " -NoNewline; Write-Host -ForegroundColor Green "Connecting to the Database..."
-#             [System.Int32]$FileType = -1
-#             [System.Int32]$PageSize = -1
-#             [Microsoft.Isam.Esent.Interop.Api]::JetGetDatabaseFileInfo($Path, [ref]$PageSize, [Microsoft.Isam.Esent.Interop.JET_DbInfo]::PageSize)
-#             [Microsoft.Isam.Esent.Interop.Api]::JetGetDatabaseFileInfo($Path, [ref]$FileType, [Microsoft.Isam.Esent.Interop.JET_DbInfo]::FileType)
-#             [Microsoft.Isam.Esent.Interop.JET_filetype]$DBType = [Microsoft.Isam.Esent.Interop.JET_filetype]($FileType)
-
-#             write-host -ForegroundColor Yellow "[+] " -NoNewline; Write-Host -ForegroundColor Green "Opening a JET Session..."
-#             [Microsoft.Isam.Esent.Interop.JET_INSTANCE]$Instance = New-Object -TypeName Microsoft.Isam.Esent.Interop.JET_INSTANCE
-#             [Microsoft.Isam.Esent.Interop.JET_SESID]$Session = New-Object -TypeName Microsoft.Isam.Esent.Interop.JET_SESID
-#             $Temp = [Microsoft.Isam.Esent.Interop.Api]::JetSetSystemParameter($Instance, [Microsoft.Isam.Esent.Interop.JET_SESID]::Nil, [Microsoft.Isam.Esent.Interop.JET_param]::DatabasePageSize, $PageSize, $null)
-#             $Temp = [Microsoft.Isam.Esent.Interop.Api]::JetSetSystemParameter($Instance, [Microsoft.Isam.Esent.Interop.JET_SESID]::Nil, [Microsoft.Isam.Esent.Interop.JET_param]::Recovery, [int]$Recovery, $null)
-#             $Temp = [Microsoft.Isam.Esent.Interop.Api]::JetSetSystemParameter($Instance, [Microsoft.Isam.Esent.Interop.JET_SESID]::Nil, [Microsoft.Isam.Esent.Interop.JET_param]::CircularLog, [int]$CircularLogging, $null)
-#             [Microsoft.Isam.Esent.Interop.Api]::JetCreateInstance2([ref]$Instance, "Instance", "Instance", [Microsoft.Isam.Esent.Interop.CreateInstanceGrbit]::None)
-#             $Temp = [Microsoft.Isam.Esent.Interop.Api]::JetInit2([ref]$Instance, [Microsoft.Isam.Esent.Interop.InitGrbit]::None)
-#             [Microsoft.Isam.Esent.Interop.Api]::JetBeginSession($Instance, [ref]$Session, $UserName, $Password)
-
-#             write-host -ForegroundColor Yellow "[+] " -NoNewline; Write-Host -ForegroundColor Green "Opening the Database..."
-#             [Microsoft.Isam.Esent.Interop.JET_DBID]$DatabaseId = New-Object -TypeName Microsoft.Isam.Esent.Interop.JET_DBID
-#             $Temp = [Microsoft.Isam.Esent.Interop.Api]::JetAttachDatabase($Session, $Path, [Microsoft.Isam.Esent.Interop.AttachDatabaseGrbit]::ReadOnly)
-#             $Temp = [Microsoft.Isam.Esent.Interop.Api]::JetOpenDatabase($Session, $Path, $Connect, [ref]$DatabaseId, [Microsoft.Isam.Esent.Interop.OpenDatabaseGrbit]::ReadOnly)
-
-#             map
-#             networkConnectivity
-#             networkData
-#             applicationUse
-#             applicationTimeline
-#             pushNotifications
-
-#             [gc]::collect()
-#             if($offline){
-#                 remove-psdrive -Name SRUM_Reg_Parse
-#                 reg unload hku\srum | Out-Null
-#             }
-
-#             write-host -ForegroundColor Yellow "[+] " -NoNewline; Write-Host -ForegroundColor Green "Gracefully shutting down the Connection to the Database..."
-#             Write-Verbose -Message "Shutting down database $Path due to normal close operation."
-#             [Microsoft.Isam.Esent.Interop.Api]::JetCloseDatabase($Session, $DatabaseId, [Microsoft.Isam.Esent.Interop.CloseDatabaseGrbit]::None)
-#             [Microsoft.Isam.Esent.Interop.Api]::JetDetachDatabase($Session, $Path)
-#             [Microsoft.Isam.Esent.Interop.Api]::JetEndSession($Session, [Microsoft.Isam.Esent.Interop.EndSessionGrbit]::None)
-#             [Microsoft.Isam.Esent.Interop.Api]::JetTerm($Instance)
-#             write-host -ForegroundColor Yellow "[+] " -NoNewline; Write-Host -ForegroundColor Green "Shutdown Completed Successfully"
-#         }
-#         Invoke-SRUMDump -live
+        #####################
+        #####################
+        $CompiledResults.add('Startup Commands',$(
+            Get-WmiObject -Class Win32_StartupCommand | Select-Object -ExcludeProperty _*, Cim*
+        ))
+
+    #########################
+    ### PowerShell
+    #########################
+
+        #####################
+        #####################
+        $CompiledResults.add('WinRM Status',$(
+            $WinRMService = Get-Service -Name WinRM
+            $WSManTest = Test-WSMan | Select-Object -Property * -ExcludeProperty _*, Cim*
+            $WinRMService | Add-Member -MemberType NoteProperty -Name wsmid -Value $WSManTest.wsmid -Force
+            $WinRMService | Add-Member -MemberType NoteProperty -Name ProtocolVersion -Value $WSManTest.ProtocolVersion -Force
+            $WinRMService | Add-Member -MemberType NoteProperty -Name ProductVendor -Value $WSManTest.ProductVendor -Force
+            $WinRMService | Add-Member -MemberType NoteProperty -Name ProductVersion -Value $WSManTest.ProductVersion -Force
+            $WinRMService | Select-Object -Property * -ExcludeProperty _*, Cim*
+        ))
+
+
+        #####################
+        #####################
+        $CompiledResults.add('WSMan TrustedHosts',$(
+            Get-Item WSMan:\localhost\Client\TrustedHosts
+        ))
+
+        #####################
+        #####################
+        $CompiledResults.add('PowerShell Sessions',$(
+            Get-WSManInstance -ResourceURI Shell -Enumerate | Select-Object -Property Name, Owner, ClientIP, State, @{n='ShellRunDateTime';e={[System.Xml.XmlConvert]::ToTimeSpan($_.ShellRunTime).ToString()}}, @{n='ShellInactivityDateTime';e={[System.Xml.XmlConvert]::ToTimeSpan($_.ShellInactivity).ToString()}}, ProcessId, ChildProcesses, Profileloaded, @{n='MaxIdleTimeOutDateTime';e={[System.Xml.XmlConvert]::ToTimeSpan($_.MaxIdleTimeOut).ToString()}}, InputStreams, OutputStreams, Locale, MemoryUsed, CompressionMode, BufferMode, Encoding, ShellId, ResourceUri, rsp -ExcludeProperty _*, Cim*
+        ))
+
+        #####################
+        #####################
+        $CompiledResults.add('PowerShell Commands',$(
+            Get-Command | Select-Object -ExcludeProperty _*, Cim*
+        ))
+
+        #####################
+        #####################
+        $CompiledResults.add('Powershell Modules Installed',$(
+            Get-InstalledModule | Select-Object -ExcludeProperty _*, Cim*
+        ))
+
+        #####################
+        #####################
+        $CompiledResults.add('Powershell Modules Available',$(
+            Get-Module | Select-Object -ExcludeProperty _*, Cim*
+        ))
+
+        #####################
+        #####################
+        $CompiledResults.add('PowerShell Profile (All Users All Hosts)',$(
+            Get-Content $Profile.AllUsersAllHosts
+        ))
+
+        #####################
+        #####################
+        $CompiledResults.add('PowerShell Profile (All Users Current Host)',$(
+            Get-Content $Profile.AllUsersCurrentHost
+        ))
+
+        #####################
+        #####################
+        $CompiledResults.add('PowerShell Profile (Current User All Hosts)',$(
+            Get-Content $Profile.CurrentUserAllHosts
+        ))
+
+        #####################
+        #####################
+        $CompiledResults.add('PowerShell Profile (Current User Current Host)',$(
+            Get-Content $Profile.CurrentUserCurrentHost
+        ))
+
+        #####################
+        #####################
+        $CompiledResults.add('PowerShell Command History',$(
+            $Users = Get-ChildItem C:\Users | Where-Object {$_.PSIsContainer -eq $true}
+
+            $Results = @()
+            Foreach ($User in $Users) {
+                $UserPowerShellHistoryPath = "$($User.FullName)\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt"
+                if (Test-Path $UserPowerShellHistoryPath) {
+                    $count = 1
+                    $UserHistory += Get-Content "$UserPowerShellHistoryPath" -ErrorAction Stop | ForEach-Object {"$_ `r`n"}
+                    foreach ($HistoryEntry in $UserHistory) {
+                        $Results += [PSCustomObject]@{
+                            PSComputerName    = "$env:COMPUTERNAME"
+                            HistoryCount      = "$Count"
+                            ProfileName       = "$($User.Name)"
+                            PowerShellHistory = "$HistoryEntry"
+                            ProfilePath       = "$($User.FullName)"
+                            HistoryPath       = "$UserPowerShellHistoryPath"
+                        }
+                        $Count += 1
+                    }
+                }
+                else {
+                    $Results += [PSCustomObject]@{
+                        PSComputerName    = "$env:COMPUTERNAME"
+                        HistoryCount      = "0"
+                        ProfileName       = "$($User.Name)"
+                        PowerShellHistory = "There is not PowerShell History for $($User.BaseName)."
+                        ProfilePath       = "$($User.FullName)"
+                        HistoryPath       = "$UserPowerShellHistoryPath"
+                    }
+                }
+            }
+            $Results | Select-Object -ExcludeProperty _*, Cim*
+        ))
+        # #####################
+        # #####################
+        # $CompiledResults.add('PowerShell Command History',$(
+        #     Get-Content (Get-PSReadLineOption | Select-Object -ExpandProperty HistorySavePath -ExcludeProperty _*, Cim*)
+        #     #Get-Content "$env:APPDATA\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt"
+        # ))
+
+
+    #########################
+    ### SRUM Dump
+    #########################
+
+        function Invoke-SRUMDump {
+            <#
+                .SYNOPSIS
+                    Invoke-SRUMDump is a pure PowerShell/ .Net capability that enables the dumping of the System Resource Utilization Management (SRUM) database for CSVs. The database generally 
+                    contains 30 days of information that is vital to incident response and forensics.
+
+                .NOTES  
+                    Modified By    : high101bro (modified for PoSh-EasyWin compatibility)
+                    Modified Date  : 26 August 21
+
+                    File Name      : Invoke-SRUMDump.ps1
+                    Version        : v.0.2
+                    Author         : @WiredPulse
+                    Created        : 20 May 21
+            #>
+
+            [CmdletBinding()]
+            param(
+                [parameter(ParameterSetName="set1")] [switch]$Live,
+                [parameter(ParameterSetName="set2")] [switch]$Offline,
+                [parameter(ParameterSetName="set2", Mandatory=$true)] $Hive,
+                [parameter(ParameterSetName="set2", Mandatory=$true)] $Srum,
+                $ExportDir = "$env:USERPROFILE\desktop\srum"
+            )
+
+
+            $currentPrincipal = New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())
+            if(-not($currentPrincipal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator))){
+                throw "Error: This script needs to be ran as a user with Administrator rights"
+            }
+
+            [string]$date = Get-Date -UFormat %m-%d-%Y
+            $ExportDir = $ExportDir+'_'+$date
+
+            if(-not(test-path $ExportDir)){
+                new-item $ExportDir -ItemType Directory | out-null
+            }
+
+            if($live){
+                if(test-path C:\Windows\System32\sru\SRUDB.dat){
+                    copy-item C:\Windows\System32\sru\SRUDB.dat $ExportDir
+                    $path = "$exportdir\SRUDB.dat"
+                    if(-not(test-path $path)){
+                        throw "Error: SrumDB couldn't be copied"
+                    }
+                }
+                else{
+                    throw "ERROR: SrumDB doesn't exist in C:\windows\system32\sru"
+                }
+            }
+            else{
+                $path = $Srum
+                if(-not(test-path $srum)){
+                    throw "Error: SrumDB file doesn't exist at the specified path"
+                }
+                if(-not(test-path $hive)){
+                    throw "Error: Hive file doens't exist at the specified path"
+                }
+                try{
+                    New-PSDrive -PSProvider Registry -Name SRUM_Reg_Parse -Root HKEY_USERS | Out-Null
+                    reg load hku\srum $hive | out-null
+                }
+                catch{
+                    throw "Error: Can't mount Software Hive"
+                }
+            }
+
+            $lookupLUID = @{
+                1 = "IF_TYPE_OTHER"
+                2 = "IF_TYPE_REGULAR_1822"
+                3 = "IF_TYPE_HDH_1822"
+                4 = "IF_TYPE_DDN_X25"
+                5 = "IF_TYPE_RFC877_X25"
+                6 = "IF_TYPE_ETHERNET_CSMACD"
+                7 = "IF_TYPE_IS088023_CSMACD"
+                8 = "IF_TYPE_ISO88024_TOKENBUS"
+                9 = "IF_TYPE_ISO88025_TOKENRING"
+                10 = "IF_TYPE_ISO88026_MAN"
+                11 = "IF_TYPE_STARLAN"
+                12 = "IF_TYPE_PROTEON_10MBIT"
+                13 = "IF_TYPE_PROTEON_80MBIT"
+                14 = "IF_TYPE_HYPERCHANNEL"
+                15 = "IF_TYPE_FDDI"
+                16 = "IF_TYPE_LAP_B"
+                17 = "IF_TYPE_SDLC"
+                18 = "IF_TYPE_DS1"
+                19 = "IF_TYPE_E1"
+                20 = "IF_TYPE_BASIC_ISDN"
+                21 = "IF_TYPE_PRIMARY_ISDN"
+                22 = "IF_TYPE_PROP_POINT2POINT_SERIAL"
+                23 = "IF_TYPE_PPP"
+                24 = "IF_TYPE_SOFTWARE_LOOPBACK"
+                25 = "IF_TYPE_EON"
+                26 = "IF_TYPE_ETHERNET_3MBIT"
+                27 = "IF_TYPE_NSIP"
+                28 = "IF_TYPE_SLIP"
+                29 = "IF_TYPE_ULTRA"
+                30 = "IF_TYPE_DS3"
+                31 = "IF_TYPE_SIP"
+                32 = "IF_TYPE_FRAMERELAY"
+                33 = "IF_TYPE_RS232"
+                34 = "IF_TYPE_PARA"
+                35 = "IF_TYPE_ARCNET"
+                36 = "IF_TYPE_ARCNET_PLUS"
+                37 = "IF_TYPE_ATM"
+                38 = "IF_TYPE_MIO_X25"
+                39 = "IF_TYPE_SONET"
+                40 = "IF_TYPE_X25_PLE"
+                41 = "IF_TYPE_ISO88022_LLC"
+                42 = "IF_TYPE_LOCALTALK"
+                43 = "IF_TYPE_SMDS_DXI"
+                44 = "IF_TYPE_FRAMERELAY_SERVICE"
+                45 = "IF_TYPE_V35"
+                46 = "IF_TYPE_HSSI"
+                47 = "IF_TYPE_HIPPI"
+                48 = "IF_TYPE_MODEM"
+                49 = "IF_TYPE_AAL5"
+                50 = "IF_TYPE_SONET_PATH"
+                51 = "IF_TYPE_SONET_VT"
+                52 = "IF_TYPE_SMDS_ICIP"
+                53 = "IF_TYPE_PROP_VIRTUAL"
+                54 = "IF_TYPE_PROP_MULTIPLEXOR"
+                55 = "IF_TYPE_IEEE80212"
+                56 = "IF_TYPE_FIBRECHANNEL"
+                57 = "IF_TYPE_HIPPIINTERFACE"
+                58 = "IF_TYPE_FRAMERELAY_INTERCONNECT"
+                59 = "IF_TYPE_AFLANE_8023"
+                60 = "IF_TYPE_AFLANE_8025"
+                61 = "IF_TYPE_CCTEMUL"
+                62 = "IF_TYPE_FASTETHER"
+                63 = "IF_TYPE_ISDN"
+                64 = "IF_TYPE_V11"
+                65 = "IF_TYPE_V36"
+                66 = "IF_TYPE_G703_64K"
+                67 = "IF_TYPE_G703_2MB"
+                68 = "IF_TYPE_QLLC"
+                69 = "IF_TYPE_FASTETHER_FX"
+                70 = "IF_TYPE_CHANNEL"
+                71 = "IF_TYPE_IEEE80211"
+                72 = "IF_TYPE_IBM370PARCHAN"
+                73 = "IF_TYPE_ESCON"
+                74 = "IF_TYPE_DLSW"
+                75 = "IF_TYPE_ISDN_S"
+                76 = "IF_TYPE_ISDN_U"
+                77 = "IF_TYPE_LAP_D"
+                78 = "IF_TYPE_IPSWITCH"
+                79 = "IF_TYPE_RSRB"
+                80 = "IF_TYPE_ATM_LOGICAL"
+                81 = "IF_TYPE_DS0"
+                82 = "IF_TYPE_DS0_BUNDLE"
+                83 = "IF_TYPE_BSC"
+                84 = "IF_TYPE_ASYNC"
+                85 = "IF_TYPE_CNR"
+                86 = "IF_TYPE_ISO88025R_DTR"
+                87 = "IF_TYPE_EPLRS"
+                88 = "IF_TYPE_ARAP"
+                89 = "IF_TYPE_PROP_CNLS"
+                90 = "IF_TYPE_HOSTPAD"
+                91 = "IF_TYPE_TERMPAD"
+                92 = "IF_TYPE_FRAMERELAY_MPI"
+                93 = "IF_TYPE_X213"
+                94 = "IF_TYPE_ADSL"
+                95 = "IF_TYPE_RADSL"
+                96 = "IF_TYPE_SDSL"
+                97 = "IF_TYPE_VDSL"
+                98 = "IF_TYPE_ISO88025_CRFPRINT"
+                99 = "IF_TYPE_MYRINET"
+                100 = "IF_TYPE_VOICE_EM"
+                101 = "IF_TYPE_VOICE_FXO"
+                102 = "IF_TYPE_VOICE_FXS"
+                103 = "IF_TYPE_VOICE_ENCAP"
+                104 = "IF_TYPE_VOICE_OVERIP"
+                105 = "IF_TYPE_ATM_DXI"
+                106 = "IF_TYPE_ATM_FUNI"
+                107 = "IF_TYPE_ATM_IMA"
+                108 = "IF_TYPE_PPPMULTILINKBUNDLE"
+                109 = "IF_TYPE_IPOVER_CDLC"
+                110 = "IF_TYPE_IPOVER_CLAW"
+                111 = "IF_TYPE_STACKTOSTACK"
+                112 = "IF_TYPE_VIRTUALIPADDRESS"
+                113 = "IF_TYPE_MPC"
+                114 = "IF_TYPE_IPOVER_ATM"
+                115 = "IF_TYPE_ISO88025_FIBER"
+                116 = "IF_TYPE_TDLC"
+                117 = "IF_TYPE_GIGABITETHERNET"
+                118 = "IF_TYPE_HDLC"
+                119 = "IF_TYPE_LAP_F"
+                120 = "IF_TYPE_V37"
+                121 = "IF_TYPE_X25_MLP"
+                122 = "IF_TYPE_X25_HUNTGROUP"
+                123 = "IF_TYPE_TRANSPHDLC"
+                124 = "IF_TYPE_INTERLEAVE"
+                125 = "IF_TYPE_FAST"
+                126 = "IF_TYPE_IP"
+                127 = "IF_TYPE_DOCSCABLE_MACLAYER"
+                128 = "IF_TYPE_DOCSCABLE_DOWNSTREAM"
+                129 = "IF_TYPE_DOCSCABLE_UPSTREAM"
+                130 = "IF_TYPE_A12MPPSWITCH"
+                131 = "IF_TYPE_TUNNEL"
+                132 = "IF_TYPE_COFFEE"
+                133 = "IF_TYPE_CES"
+                134 = "IF_TYPE_ATM_SUBINTERFACE"
+                135 = "IF_TYPE_L2_VLAN"
+                136 = "IF_TYPE_L3_IPVLAN"
+                137 = "IF_TYPE_L3_IPXVLAN"
+                138 = "IF_TYPE_DIGITALPOWERLINE"
+                139 = "IF_TYPE_MEDIAMAILOVERIP"
+                140 = "IF_TYPE_DTM"
+                141 = "IF_TYPE_DCN"
+                142 = "IF_TYPE_IPFORWARD"
+                143 = "IF_TYPE_MSDSL"
+                144 = "IF_TYPE_IEEE1394"
+                145 = "IF_TYPE_RECEIVE_ONLY"
+            }
+
+            function profiles{
+                $keys = (Get-ChildItem 'Srum_Reg_Parse:\srum\Microsoft\WlanSvc\Interfaces\*\profiles\' -Exclude metadata -Recurse).pspath
+                $global:table = @{}
+                foreach($key in $keys){
+                    $parsed = ''
+                    try{
+                        $temp = [System.Text.Encoding]::ascii.GetString(((Get-ItemProperty ($key + '\metadata')).'channel hints'))
+                        for($i = 0; $i -lt 100; $i++){
+                            $temp = ($Temp.Split('?'))[0]
+                            if($temp[$i] -match "[-a-zA-Z0-9]"){
+                                $parsed += @($temp[$i])
+                        }
+                        }
+                        $table[((Get-ItemProperty $key).profileindex)] = $parsed
+                    }
+                    catch{}
+                }
+            }
+
+            function liveProfiles{
+                $keys = (Get-ChildItem 'HKLM:\SOFTWARE\Microsoft\WlanSvc\Interfaces\*\profiles\' -Exclude metadata -Recurse).pspath
+                $global:table = @{}
+                foreach($key in $keys){
+                    $parsed = ''
+                    try{
+                        $temp = [System.Text.Encoding]::ascii.GetString(((Get-ItemProperty ($key + '\metadata')).'channel hints'))
+                        for($i = 0; $i -lt 100; $i++){
+                            $temp = ($Temp.Split('?'))[0]
+                            if($temp[$i] -match "[-a-zA-Z0-9]"){
+                                $parsed += @($temp[$i])
+                        }
+                        }
+                        $table[((Get-ItemProperty $key).profileindex)] = $parsed
+                    }
+                    catch{}
+                }
+            }
+
+            function replace-ssids{
+                foreach($entry in $table.keys){
+                    foreach($temp in $out){
+                        if($temp.l2profileid -eq $entry){
+                            $temp.l2profileid = $table.item($entry)
+                        }
+                    }   
+                }
+            }
+
+            function sids-app-interface-time{
+                foreach($item in $out){
+                    if($item.InterfaceLuid -notlike "if*"){
+                        [int]$item2 = ([long]$item.interfaceluid) -shr 48
+                        $item.interfaceluid = $lookupLUID.get_item($item2)
+                    }
+                    if($item.connectedtime -notlike "*m*"){
+                        $ts =  [timespan]::fromseconds($item.ConnectedTime)
+                        $item.ConnectedTime = "{0:hh'h' mm'm' ss's'}" -f ([datetime]$ts.Ticks)
+                    }
+                    $item.UserId = $hashSid.get_item([int]"$($item.UserId)")  
+
+                    $item.AppId = $hashApp.get_item([int]"$($item.appid)")  
+                }
+            }
+
+            function sids-app-interface{
+                foreach($item in $out){
+                    if($item.InterfaceLuid -notlike "if*"){
+                        [int]$item2 = ([long]$item.interfaceluid) -shr 48
+                        $item.interfaceluid = $lookupLUID.get_item($item2)
+                    }
+                    $item.UserId = $hashSid.get_item([int]"$($item.UserId)")  
+
+                    $item.AppId = $hashApp.get_item([int]"$($item.appid)")  
+                }
+            }
+
+            function sids-app{
+                foreach($item in $out){
+                    $item.UserId = $hashSid.get_item([int]"$($item.UserId)")  
+
+                    $item.AppId = $hashApp.get_item([int]"$($item.appid)")  
+                }
+            }
+
+            Function Get-SRUMTableDataRows{
+            Param(
+                $Session,
+                $JetTable,
+                $BlobStrType=[System.Text.Encoding]::UTF16,
+                $FutureTimeLimit = [System.TimeSpan]::FromDays(36500)
+            )
+
+
+            $DBRows = [System.Collections.ArrayList]@()
+            Try{
+                [Microsoft.Isam.Esent.Interop.ColumnInfo[]]$Columns = [Microsoft.Isam.Esent.Interop.Api]::GetTableColumns($Session, $JetTable.JetTableid)
+                if ([Microsoft.Isam.Esent.Interop.Api]::TryMoveFirst($Session, $JetTable.JetTableid)){
+                    do{
+                        $Row = New-Object PSObject 
+                        foreach ($Column in $Columns){
+                            switch ($Column.Coltyp){
+                                ([Microsoft.Isam.Esent.Interop.JET_coltyp]::Bit) {
+                                    $Buffer = [Microsoft.Isam.Esent.Interop.Api]::RetrieveColumnAsBoolean($Session, $JetTable.JetTableid, $Column.Columnid)
+                                    break
+                                }
+                                ([Microsoft.Isam.Esent.Interop.JET_coltyp]::DateTime) {
+                                    $Buffer = [Microsoft.Isam.Esent.Interop.Api]::RetrieveColumnAsDateTime($Session, $JetTable.JetTableid, $Column.Columnid)
+                                    break
+                                }
+                                ([Microsoft.Isam.Esent.Interop.JET_coltyp]::IEEEDouble) {
+                                    $Buffer = [Microsoft.Isam.Esent.Interop.Api]::RetrieveColumnAsDouble($Session, $JetTable.JetTableid, $Column.Columnid)
+                                    break
+                                }
+                                ([Microsoft.Isam.Esent.Interop.JET_coltyp]::IEEESingle) {
+                                    $Buffer = [Microsoft.Isam.Esent.Interop.Api]::RetrieveColumnAsFloat($Session, $JetTable.JetTableid, $Column.Columnid)
+                                    break
+                                }
+                                ([Microsoft.Isam.Esent.Interop.JET_coltyp]::Long) {
+                                    $Buffer = [Microsoft.Isam.Esent.Interop.Api]::RetrieveColumnAsInt32($Session, $JetTable.JetTableid, $Column.Columnid)
+                                    break
+                                }
+                                ([Microsoft.Isam.Esent.Interop.JET_coltyp]::Binary) {
+                                    if ( $BlobStrType -eq [System.Text.Encoding]::UTF16 ) {
+                                        $Buffer = [Microsoft.Isam.Esent.Interop.Api]::RetrieveColumnAsString($Session, $JetTable.JetTableid, $Column.Columnid)
+                                    } else {
+                                        $Buffer = [Microsoft.Isam.Esent.Interop.Api]::RetrieveColumnAsString($Session, $JetTable.JetTableid, $Column.Columnid, $BlobStrType)
+                                    }
+                                    break
+                                }
+                                ([Microsoft.Isam.Esent.Interop.JET_coltyp]::LongBinary) {
+                                    $Buffer = [Microsoft.Isam.Esent.Interop.Api]::RetrieveColumn($Session, $JetTable.JetTableid, $Column.Columnid)
+                                    break
+                                }
+                                ([Microsoft.Isam.Esent.Interop.JET_coltyp]::LongText) {
+                                    if ( $BlobStrType -eq [System.Text.Encoding]::UTF16 ) {
+                                        $Buffer = [Microsoft.Isam.Esent.Interop.Api]::RetrieveColumnAsString($Session, $JetTable.JetTableid, $Column.Columnid)
+                                    } 
+                                    else {
+                                        $Buffer = [Microsoft.Isam.Esent.Interop.Api]::RetrieveColumnAsString($Session, $JetTable.JetTableid, $Column.Columnid, $BlobStrType)
+                                    }
+                                    if (![System.String]::IsNullOrEmpty($Buffer)) {
+                                        $Buffer = $Buffer.Replace("`0", "")
+                                    }
+                                    break
+                                }
+                                ([Microsoft.Isam.Esent.Interop.JET_coltyp]::Text) {
+                                    if ( $BlobStrType -eq [System.Text.Encoding]::UTF16 ) {
+                                        $Buffer = [Microsoft.Isam.Esent.Interop.Api]::RetrieveColumnAsString($Session, $JetTable.JetTableid, $Column.Columnid)
+                                    } else {
+                                        $Buffer = [Microsoft.Isam.Esent.Interop.Api]::RetrieveColumnAsString($Session, $JetTable.JetTableid, $Column.Columnid, $BlobStrType)
+                                    }
+                                    if (![System.String]::IsNullOrEmpty($Buffer)) {
+                                        $Buffer = $Buffer.Replace("`0", "")
+                                    }
+                                    break
+                                }
+                                ([Microsoft.Isam.Esent.Interop.JET_coltyp]::Currency) {
+                                    $Buffer = [Microsoft.Isam.Esent.Interop.Api]::RetrieveColumnAsString($Session, $JetTable.JetTableid, $Column.Columnid, [System.Text.Encoding]::UTF8)
+                                    if (![System.String]::IsNullOrEmpty($Buffer)) {
+                                        $Buffer = $Buffer.Replace("`0", "")
+                                    }
+                                    break
+                                }
+                                ([Microsoft.Isam.Esent.Interop.JET_coltyp]::Short) {
+                                    $Buffer = [Microsoft.Isam.Esent.Interop.Api]::RetrieveColumnAsInt16($Session, $JetTable.JetTableid, $Column.Columnid)
+                                    break
+                                }
+                                ([Microsoft.Isam.Esent.Interop.JET_coltyp]::UnsignedByte) {
+                                    $Buffer = [Microsoft.Isam.Esent.Interop.Api]::RetrieveColumnAsByte($Session, $JetTable.JetTableid, $Column.Columnid)
+                                    break
+                                }
+                                (14) {
+                                    $Buffer = [Microsoft.Isam.Esent.Interop.Api]::RetrieveColumnAsInt32($Session, $JetTable.JetTableid, $Column.Columnid)
+                                    break
+                                }
+                                (15) {
+                                    try{
+                                        $Buffer = [Microsoft.Isam.Esent.Interop.Api]::RetrieveColumnAsInt64($Session, $JetTable.JetTableid, $Column.Columnid)
+                                    } 
+                                    catch{ 
+                                        $Buffer = "Error"
+                                    }
+                                    if ($Buffer -Ne "Error" -and $column.name -eq "ConnectStartTime"){
+                                        try {
+                                            $DateTime = [System.DateTime]::FromBinary($Buffer)
+                                            $DateTime = $DateTime.AddYears(1600)
+                                            $buffer = $DateTime
+                                            if ($DateTime -gt (Get-Date -Year 1970 -Month 1 -Day 1) -and $DateTime -lt ([System.DateTime]::UtcNow.Add($FutureTimeLimit))){
+                                                $Buffer = $DateTime
+                                            }
+                                        }
+                                        catch {}
+                                    }
+                                    break
+                                }
+                                default {
+                                    Write-Warning -Message "Did not match column type to $_"
+                                    $Buffer = [System.String]::Empty
+                                    break
+                                }
+                            }       
+                            $Row | Add-Member -type NoteProperty -name $Column.Name -Value $Buffer 
+                        }
+                        [void]$DBRows.Add($row)
+                    } 
+                    while ([Microsoft.Isam.Esent.Interop.Api]::TryMoveNext($Session, $JetTable.JetTableid))      
+                }
+            }
+            Catch{
+                throw "Error: Could not read table"
+                Break
+            }
+            return $DBRows
+            }
+
+            function map{
+            $TableNameDBID="SruDbIdMapTable"
+            [Microsoft.Isam.Esent.Interop.Table]$TableDBID = New-Object -TypeName Microsoft.Isam.Esent.Interop.Table($Session, $DatabaseId, $TableNameDBID, [Microsoft.Isam.Esent.Interop.OpenTableGrbit]::None)
+            try{
+                $NewTable = @{Name=$TableDBID.Name;Id=$TableDBID.JetTableid;Rows=@()}
+                $DBRows = @()
+                [Microsoft.Isam.Esent.Interop.ColumnInfo[]]$Columns = [Microsoft.Isam.Esent.Interop.Api]::GetTableColumns($Session, $TableDBID.JetTableid)
+                $jettable = $Tabledbid
+            }
+            catch{
+                throw "ERROR: Cannot access file, the file is locked or in use"
+            }
+
+            write-host -ForegroundColor Yellow "[+] " -NoNewline; Write-Host -ForegroundColor Green "Retrieving SruIdDbMap Table..."
+            $map = Get-SRUMTableDataRows -Session $Session -JetTable $TableDBId 
+            write-host -ForegroundColor Yellow "[+] " -NoNewline; Write-Host -ForegroundColor Green "Translating SIDs and Applications from SruIdDbMap... This Could take up to 15 Minutes..."
+            $global:hashSid = @{}
+            $global:hashApp = @{}
+            foreach($mData in $map){
+                if($mData.idtype -eq 3){
+                    try{
+                        $hex = $mData | Select-Object -ExpandProperty idblob
+                        $hexString = ($hex|ForEach-Object ToString X2) -join ''   
+                        $Bytes = [byte[]]::new($HexString.Length / 2)
+
+                        For($i=0; $i -lt $HexString.Length; $i+=2){
+                            $Bytes[$i/2] =[convert]::ToByte($HexString.Substring($i, 2), 16)
+                        }
+                        $idblobSid = (New-Object System.Security.Principal.SecurityIdentifier($Bytes,0)).Value
+                        $hashSid.add($mData.idindex, $idblobSid)
+                    }
+                    catch{
+                        $idblobSid = "Unable to Retrieve"
+                        $hashSid.add($mData.idindex, $idblobSid)
+                    }
+                }
+                else{
+                    try{
+                        $bytes = $mData | Select-Object -ExpandProperty idblob
+                        $idblobApp = [System.Text.Encoding]::unicode.GetString($bytes)
+                        $hashApp.add($mData.idindex, $idblobApp)
+                        }
+                    catch{
+                        $idblobApp = "Unable to Retrieve"
+                        $hashApp.add($mData.idindex, $idblobApp)
+                    }
+                }
+            }
+
+            }
+
+            function networkConnectivity{
+            $tab = "{DD6636C4-8929-4683-974E-22C046A43763}"
+            [Microsoft.Isam.Esent.Interop.Table]$Tab2 = New-Object -TypeName Microsoft.Isam.Esent.Interop.Table($Session, $DatabaseId, $Tab, [Microsoft.Isam.Esent.Interop.OpenTableGrbit]::None)
+
+            $NewTable = @{Name=$TableDBID.Name;Id=$TableDBID.JetTableid;Rows=@()}
+            $DBRows = @()
+            [Microsoft.Isam.Esent.Interop.ColumnInfo[]]$Columns = [Microsoft.Isam.Esent.Interop.Api]::GetTableColumns($Session, $Tab2.JetTableid)
+            $jettable = $tab2
+
+            write-host -ForegroundColor Yellow "[+] " -NoNewline; Write-Host -ForegroundColor Green "Retrieving Network Connectivity Table..."
+            $global:out = Get-SRUMTableDataRows -Session $Session -JetTable $Tab2
+
+            write-host -ForegroundColor Yellow "[+] " -NoNewline; Write-Host -ForegroundColor Green "Network Connectivity: Normalizing Wireless Profile Data..."
+            if($Live){
+                liveProfiles
+            }
+            else{
+                Profiles
+            }
+            replace-ssids
+
+            write-host -ForegroundColor Yellow "[+] " -NoNewline; Write-Host -ForegroundColor Green "Network Connectivity: Normalizing User SIDs, Connected Time, Interface LUIDs, and Applications..."
+            sids-app-interface-time
+
+            write-host -ForegroundColor Yellow "[+] " -NoNewline; Write-Host -ForegroundColor Green "Exporting Network Connectivity Table..."
+
+            # #####################
+            # #####################
+            $CompiledResults.add('SRUM Network Connectivity',$(
+                $out | Select-Object @{Name='SRUM Entry ID'; Expression='AutoIncID'}, @{Name='SRUM Entry Creation'; Expression='Timestamp'}, @{Name='Application'; Expression='Appid'}, @{Name='User SID'; Expression='UserID'}, @{Name='Interface'; Expression='InterfaceLUID'}, @{Name='Profile'; Expression='L2ProfileID'}, @{Name='Connected Time'; Expression='ConnectedTime'}, @{Name='Connect Start Time (UTC)'; Expression='ConnectStartTime'}, @{Name='Profile Flags'; Expression='L2ProfileFlags'}
+            ))
+            }
+
+            function networkData{
+            $tab = "{973F5D5C-1D90-4944-BE8E-24B94231A174}"
+            [Microsoft.Isam.Esent.Interop.Table]$Tab3 = New-Object -TypeName Microsoft.Isam.Esent.Interop.Table($Session, $DatabaseId, $Tab, [Microsoft.Isam.Esent.Interop.OpenTableGrbit]::None)
+
+            $NewTable = @{Name=$TableDBID.Name;Id=$TableDBID.JetTableid;Rows=@()}
+            $DBRows = @()
+            [Microsoft.Isam.Esent.Interop.ColumnInfo[]]$Columns = [Microsoft.Isam.Esent.Interop.Api]::GetTableColumns($Session, $Tab3.JetTableid)
+            $jettable = $tab3
+
+            write-host -ForegroundColor Yellow "[+] " -NoNewline; Write-Host -ForegroundColor Green "Retrieving Network Data Usage Table... This Could take up to 15 Minutes..."
+            $global:out = Get-SRUMTableDataRows -Session $Session -JetTable $Tab3
+
+            write-host -ForegroundColor Yellow "[+] " -NoNewline; Write-Host -ForegroundColor Green "Network Data Usage: Normalizing Wireless Profile Data..."
+            if($Live){
+                liveProfiles
+            }
+            else{
+                Profiles
+            }
+            replace-ssids
+
+            write-host -ForegroundColor Yellow "[+] " -NoNewline; Write-Host -ForegroundColor Green "Network Data Usage: Normalizing User SIDs, Interface LUIDs, and Applications..." 
+            sids-app-interface
+
+            write-host -ForegroundColor Yellow "[+] " -NoNewline; Write-Host -ForegroundColor Green "Exporting Network Data Usage Table..."
+
+            # #####################
+            # #####################
+            $CompiledResults.add('SRUM Network Data Usage',$(
+                $out | Select-Object @{Name='SRUM Entry ID'; Expression='AutoIncID'}, @{Name='SRUM Entry Creation'; Expression='Timestamp'}, @{Name='Application'; Expression='Appid'}, @{Name='User SID'; Expression='UserID'}, @{Name='Interface'; Expression='InterfaceLUID'}, @{Name='Profile'; Expression='L2ProfileID'}, @{Name='Profile Flags'; Expression='L2ProfileFlags'}, @{Name='Bytes Sent'; Expression='bytessent'}, @{Name='Bytes Received'; Expression='bytesrecvd'}
+            ))
+            }
+
+            function applicationUse{
+            $tab = "{D10CA2FE-6FCF-4F6D-848E-B2E99266FA89}"
+            [Microsoft.Isam.Esent.Interop.Table]$Tab4 = New-Object -TypeName Microsoft.Isam.Esent.Interop.Table($Session, $DatabaseId, $Tab, [Microsoft.Isam.Esent.Interop.OpenTableGrbit]::None)
+
+            $NewTable = @{Name=$TableDBID.Name;Id=$TableDBID.JetTableid;Rows=@()}
+            $DBRows = @()
+            [Microsoft.Isam.Esent.Interop.ColumnInfo[]]$Columns = [Microsoft.Isam.Esent.Interop.Api]::GetTableColumns($Session, $Tab4.JetTableid)
+            $jettable = $tab4
+
+            write-host -ForegroundColor Yellow "[+] " -NoNewline; Write-Host -ForegroundColor Green "Retrieving Application Usage Table..."
+            $global:out = Get-SRUMTableDataRows -Session $Session -JetTable $Tab4
+
+            write-host -ForegroundColor Yellow "[+] " -NoNewline; Write-Host -ForegroundColor Green "Application Usage: Normalizing User SIDs and Applications..."
+            sids-app
+
+            write-host -ForegroundColor Yellow "[+] " -NoNewline; Write-Host -ForegroundColor Green "Exporting Application Usage Table..."
+
+            # #####################
+            # #####################
+            $CompiledResults.add('SRUM Application Usage',$(
+                $out | Select-Object @{Name='SRUM Entry ID'; Expression='AutoIncID'}, @{Name='SRUM Entry Creation'; Expression='Timestamp'}, @{Name='Application'; Expression='Appid'}, @{Name='User SID'; Expression='UserID'}, BackgroundBytesRead, BackgroundBytesWritten, BackgroundContextSwitches, BackgroundCycleTime, BackgroundNumberOfFlushes, BackgroundNumReadOperations, BackgroundNumWriteOperations, FaceTime, ForegroundBytesRead, ForegroundBytesWritten, ForegroundContextSwitches, ForegroundCycleTime, ForegroundNumberOfFlushes, ForegroundNumReadOperations, ForegroundNumWriteOperations
+            ))
+            }
+
+            function applicationTimeline{
+            $tab = "{5C8CF1C7-7257-4F13-B223-970EF5939312}"
+            [Microsoft.Isam.Esent.Interop.Table]$Tab5 = New-Object -TypeName Microsoft.Isam.Esent.Interop.Table($Session, $DatabaseId, $Tab, [Microsoft.Isam.Esent.Interop.OpenTableGrbit]::None)
+
+            $NewTable = @{Name=$TableDBID.Name;Id=$TableDBID.JetTableid;Rows=@()}
+            $DBRows = @()
+            [Microsoft.Isam.Esent.Interop.ColumnInfo[]]$Columns = [Microsoft.Isam.Esent.Interop.Api]::GetTableColumns($Session, $Tab5.JetTableid)
+            $jettable = $tab5
+
+            write-host -ForegroundColor Yellow "[+] " -NoNewline; Write-Host -ForegroundColor Green "Retrieving Application Timeline Table..."
+            $global:out = Get-SRUMTableDataRows -Session $Session -JetTable $Tab5
+
+            write-host -ForegroundColor Yellow "[+] " -NoNewline; Write-Host -ForegroundColor Green "Application Timeline: Normalizing User SIDs and Applications..."
+            sids-app
+
+            write-host -ForegroundColor Yellow "[+] " -NoNewline; Write-Host -ForegroundColor Green "Exporting Application Timeline Table to $exportDir\ApplicationTimeline..."
+
+            # #####################
+            # #####################
+            $CompiledResults.add('SRUM Application Timeline',$(
+                $out | Select-Object @{Name='SRUM Entry ID'; Expression='AutoIncID'}, @{Name='SRUM Entry Creation'; Expression='Timestamp'}, @{Name='Application'; Expression='Appid'}, @{Name='User SID'; Expression='UserID'}, BinaryData, EndTime, DurationMS, SpanMS, TimelineEnd, InFocusTimeline, UserInputTimeline, CompRenderedTimeline, CompDirtiedTimeline, CompPropagatedTimeline, AudioInTimeline, AudioTimeline, CPUTimeline, DiskTimeline, NetworkTimeline, MBBTimline, InFocusS, PSMForegroundS, UserInputS, CompRenderedS, CompDiriedS, CompPropagatedS, AudioS, AudioOutS, Cycles, CyclesBreakdown, CyclesWOB, CyclesWOBBreakdown, DiskRaw, NetworkTailRaw, NetworkBytesRaw, MBBTailRaw, DisplayRequiredS, DisplayRequiredTimeline, KeyboardInputTimeline, KeyboardInputS, MouseInputS
+            ))
+            }
+
+            function pushNotifications{
+            $tab = "{D10CA2FE-6FCF-4F6D-848E-B2E99266FA86}"
+            [Microsoft.Isam.Esent.Interop.Table]$Tab6 = New-Object -TypeName Microsoft.Isam.Esent.Interop.Table($Session, $DatabaseId, $Tab, [Microsoft.Isam.Esent.Interop.OpenTableGrbit]::None)
+
+            $NewTable = @{Name=$TableDBID.Name;Id=$TableDBID.JetTableid;Rows=@()}
+            $DBRows = @()
+            [Microsoft.Isam.Esent.Interop.ColumnInfo[]]$Columns = [Microsoft.Isam.Esent.Interop.Api]::GetTableColumns($Session, $Tab6.JetTableid)
+            $jettable = $tab6
+
+            write-host -ForegroundColor Yellow "[+] " -NoNewline; Write-Host -ForegroundColor Green "Retrieving Push Notifications Table..."
+            $out = Get-SRUMTableDataRows -Session $Session -JetTable $Tab6
+
+            write-host -ForegroundColor Yellow "[+] " -NoNewline; Write-Host -ForegroundColor Green "Push Notifications: Normalizing User SIDs and Applications..."
+            sids-app
+
+            write-host -ForegroundColor Yellow "[+] " -NoNewline; Write-Host -ForegroundColor Green "Exporting Push Notifications Table..."
+
+            # #####################
+            # #####################
+            $CompiledResults.add('SRUM Push Notifications',$(
+                $out | Select-Object @{Name='SRUM Entry ID'; Expression='AutoIncID'}, @{Name='SRUM Entry Creation'; Expression='Timestamp'}, @{Name='Application'; Expression='Appid'}, @{Name='User SID'; Expression='UserID'}, NotificationType, PayloadSize, NetworkType
+            ))
+            }
+
+            $EsentDllPath = "$env:SYSTEMROOT\Microsoft.NET\assembly\GAC_MSIL\microsoft.isam.esent.interop\v4.0_10.0.0.0__31bf3856ad364e35\Microsoft.Isam.Esent.Interop.dll"
+            Add-Type -Path $EsentDllPath
+
+            write-host -ForegroundColor Yellow "[+] " -NoNewline; Write-Host -ForegroundColor Green "Connecting to the Database..."
+            [System.Int32]$FileType = -1
+            [System.Int32]$PageSize = -1
+            [Microsoft.Isam.Esent.Interop.Api]::JetGetDatabaseFileInfo($Path, [ref]$PageSize, [Microsoft.Isam.Esent.Interop.JET_DbInfo]::PageSize)
+            [Microsoft.Isam.Esent.Interop.Api]::JetGetDatabaseFileInfo($Path, [ref]$FileType, [Microsoft.Isam.Esent.Interop.JET_DbInfo]::FileType)
+            [Microsoft.Isam.Esent.Interop.JET_filetype]$DBType = [Microsoft.Isam.Esent.Interop.JET_filetype]($FileType)
+
+            write-host -ForegroundColor Yellow "[+] " -NoNewline; Write-Host -ForegroundColor Green "Opening a JET Session..."
+            [Microsoft.Isam.Esent.Interop.JET_INSTANCE]$Instance = New-Object -TypeName Microsoft.Isam.Esent.Interop.JET_INSTANCE
+            [Microsoft.Isam.Esent.Interop.JET_SESID]$Session = New-Object -TypeName Microsoft.Isam.Esent.Interop.JET_SESID
+            $Temp = [Microsoft.Isam.Esent.Interop.Api]::JetSetSystemParameter($Instance, [Microsoft.Isam.Esent.Interop.JET_SESID]::Nil, [Microsoft.Isam.Esent.Interop.JET_param]::DatabasePageSize, $PageSize, $null)
+            $Temp = [Microsoft.Isam.Esent.Interop.Api]::JetSetSystemParameter($Instance, [Microsoft.Isam.Esent.Interop.JET_SESID]::Nil, [Microsoft.Isam.Esent.Interop.JET_param]::Recovery, [int]$Recovery, $null)
+            $Temp = [Microsoft.Isam.Esent.Interop.Api]::JetSetSystemParameter($Instance, [Microsoft.Isam.Esent.Interop.JET_SESID]::Nil, [Microsoft.Isam.Esent.Interop.JET_param]::CircularLog, [int]$CircularLogging, $null)
+            [Microsoft.Isam.Esent.Interop.Api]::JetCreateInstance2([ref]$Instance, "Instance", "Instance", [Microsoft.Isam.Esent.Interop.CreateInstanceGrbit]::None)
+            $Temp = [Microsoft.Isam.Esent.Interop.Api]::JetInit2([ref]$Instance, [Microsoft.Isam.Esent.Interop.InitGrbit]::None)
+            [Microsoft.Isam.Esent.Interop.Api]::JetBeginSession($Instance, [ref]$Session, $UserName, $Password)
+
+            write-host -ForegroundColor Yellow "[+] " -NoNewline; Write-Host -ForegroundColor Green "Opening the Database..."
+            [Microsoft.Isam.Esent.Interop.JET_DBID]$DatabaseId = New-Object -TypeName Microsoft.Isam.Esent.Interop.JET_DBID
+            $Temp = [Microsoft.Isam.Esent.Interop.Api]::JetAttachDatabase($Session, $Path, [Microsoft.Isam.Esent.Interop.AttachDatabaseGrbit]::ReadOnly)
+            $Temp = [Microsoft.Isam.Esent.Interop.Api]::JetOpenDatabase($Session, $Path, $Connect, [ref]$DatabaseId, [Microsoft.Isam.Esent.Interop.OpenDatabaseGrbit]::ReadOnly)
+
+            map
+            networkConnectivity
+            networkData
+            applicationUse
+            applicationTimeline
+            pushNotifications
+
+            [gc]::collect()
+            if($offline){
+                remove-psdrive -Name SRUM_Reg_Parse
+                reg unload hku\srum | Out-Null
+            }
+
+            write-host -ForegroundColor Yellow "[+] " -NoNewline; Write-Host -ForegroundColor Green "Gracefully shutting down the Connection to the Database..."
+            Write-Verbose -Message "Shutting down database $Path due to normal close operation."
+            [Microsoft.Isam.Esent.Interop.Api]::JetCloseDatabase($Session, $DatabaseId, [Microsoft.Isam.Esent.Interop.CloseDatabaseGrbit]::None)
+            [Microsoft.Isam.Esent.Interop.Api]::JetDetachDatabase($Session, $Path)
+            [Microsoft.Isam.Esent.Interop.Api]::JetEndSession($Session, [Microsoft.Isam.Esent.Interop.EndSessionGrbit]::None)
+            [Microsoft.Isam.Esent.Interop.Api]::JetTerm($Instance)
+            write-host -ForegroundColor Yellow "[+] " -NoNewline; Write-Host -ForegroundColor Green "Shutdown Completed Successfully"
+        }
+        Invoke-SRUMDump -live
 
     #########################
     ### Restore Points
@@ -2138,73 +2107,59 @@ $EndpointDataSystemSnapshotScriptBlock = {
             Get-ComputerRestorePoint | Select-Object -Property @{n='CreationDateTime';e={$_.ConvertToDateTime(($_.CreationTime))}}, Description, SequenceNumber, EventType, RestorePointType -ExcludeProperty _*, Cim*
         ))
 
-#     #########################
-#     ### Prefetch
-#     #########################
 
-#         # GRAB FIRST AS THIS IS VERY VOLITILE
-#         # number of time an application has been executed,
-#         # The original path of execution,
-#         # the last time of execution
-#             # Note: Up to last 8 times application executed is stored in prefetch file. If I also add the timestamp of the prefetch file creation - we will have 9 run times of the application.
-#         # When a malicious file was executed?
-#         # Where it was launched from?
-#         # How many times it has been run?
-#         # What DLLs were used by the malicious code?
-#         # Name and location of the malicious file (even if deleted)?
+    #########################
+    ### Virtualization
+    #########################
 
-#         #####################
-#         #####################
-#         $CompiledResults.add('PrefetchFiles',$(
-#             Get-ChildItem C:\Windows\Prefetch -Force
-#         ))
+        #####################
+        #####################
+        $CompiledResults.add('VMWare Detected',$(
+            $VMwareDetected   = $False
+            $VMNetworkAdapter = $(Get-WmiObject Win32_NetworkAdapter -Filter 'Manufacturer LIKE "%VMware%" OR Name LIKE "%VMware%"')
+            $VMBios           = $(Get-WmiObject Win32_BIOS -Filter 'SerialNumber LIKE "%VMware%"')
+            $VMWareService    = $(Get-Service | Where-Object {$_.Name -match "vmware" -and $_.Status -eq 'Running'} | Select-Object -ExpandProperty Name)
+            $VMWareProcess    = $(Get-Process | Where-Object Name -match "vmware" | Select-Object -ExpandProperty Name)
+            $VMToolsProcess   = $(Get-Process | Where-Object Name -match "vmtoolsd" | Select-Object -ExpandProperty Name)
+            if($VMNetworkAdapter -or $VMBios -or $VMToolsProcess) {
+                $VMwareDetected = $True
+            }
+            [PSCustomObject]@{
+                PSComputerName   = $env:COMPUTERNAME
+                Name             = 'VMWare Detection'
+                VMWareDetected   = $VMwareDetected
+                VMNetworkAdapter = $VMNetworkAdapter
+                VMBIOS           = $VMBIOS
+                VMWareService    = $VMWareService
+                VMWareProcess    = $VMWareProcess
+                VMToolsProcess   = $VMToolsProcess
+            }    
+        ))
 
-#     #########################
-#     ### Virtualization
-#     #########################
+        #####################
+        #####################
+        $CompiledResults.add('Hyper-V Status',$(
+            Get-WindowsOptionalFeature -FeatureName Microsoft-Hyper-V-All -Online | Select-Object -Property DisplayName, FeatureName, Online, State, RestartRequired, RestartNeeded, LogPath, Description, CustomProperties -ExcludeProperty _*, Cim*
+        ))
 
-#         #####################
-#         #####################
-# ------------------------------------------------------- -ExcludeProperty _*, Cim*
-#         $CompiledResults.add('DetectVMWareHosts',$(
-#             $VMwareDetected   = $False
-#             $VMNetworkAdapter = $(Get-WmiObject Win32_NetworkAdapter -Filter 'Manufacturer LIKE "%VMware%" OR Name LIKE "%VMware%"')
-#             $VMBios           = $(Get-WmiObject Win32_BIOS -Filter 'SerialNumber LIKE "%VMware%"')
-#             $VMWareService    = $(Get-Service | Where-Object {$_.Name -match "vmware" -and $_.Status -eq 'Running'} | Select-Object -ExpandProperty Name)
-#             $VMWareProcess    = $(Get-Process | Where-Object Name -match "vmware" | Select-Object -ExpandProperty Name)
-#             $VMToolsProcess   = $(Get-Process | Where-Object Name -match "vmtoolsd" | Select-Object -ExpandProperty Name)
-#             if($VMNetworkAdapter -or $VMBios -or $VMToolsProcess) {
-#                 $VMwareDetected = $True
-#             }
-#             [PSCustomObject]@{
-#                 PSComputerName   = $env:COMPUTERNAME
-#                 Name             = 'VMWare Detection'
-#                 VMWareDetected   = $VMwareDetected
-#                 VMNetworkAdapter = $VMNetworkAdapter
-#                 VMBIOS           = $VMBIOS
-#                 VMWareService    = $VMWareService
-#                 VMWareProcess    = $VMWareProcess
-#                 VMToolsProcess   = $VMToolsProcess
-#             }    
-#         ))
+        #####################
+        #####################
+        $CompiledResults.add('Hyper-V VMs',$(
+            Get-VM -VMName * | Select-Object -Property * -ExcludeProperty _*, Cim*
+        ))
 
-#         #####################
-#         #####################
-#         $CompiledResults.add('VM',$(
-#             Get-VM -VMName * | Select-Object -Property * -ExcludeProperty _*, Cim*
-#         ))
+        #####################
+        #####################
+        # $CompiledResults.add('Hyper-V VM Network Adapters',$(
+        #     Get-VMNetworkAdapter -VMName * | Select-Object -ExcludeProperty _*, Cim*
+        # ))
+            # This is done above in the network section
 
-#         #####################
-#         #####################
-#         $CompiledResults.add('',$(
-#             Get-VMNetworkAdapter -VMName * | Select-Object -Property * -ExcludeProperty _*, Cim*
-#         ))
-
-#         #####################
-#         #####################
-#         $CompiledResults.add('VMSnapshot',$(
-#             Get-VMSnapshot -VMName * | Select-Object -ExcludeProperty _*, Cim*
-#         ))
+        #####################
+        #####################
+        $CompiledResults.add('Hyper-V VM Snapshots',$(
+            Get-VMSnapshot -VMName * | Select-Object -ExcludeProperty _*, Cim*
+        ))
 
         $CompiledResults
 }
