@@ -5,11 +5,6 @@ $EndpointDataSystemSnapshotScriptBlock = {
     #########################
     ### Overview
     #########################
-        #####################
-        #####################
-        $CompiledResults.add('Set Variables',$(
-            Get-ChildItem Variable: | Select-Object -Property Name, Key, Value, * -ExcludeProperty _*, Cim* -ErrorAction SilentlyContinue
-        ))
 
         #####################
         #####################
@@ -70,6 +65,12 @@ $EndpointDataSystemSnapshotScriptBlock = {
             Get-ChildItem Env: | Select-Object -Property Name, Key, Value, * -ExcludeProperty _*, Cim* -ErrorAction SilentlyContinue
         ))
             # Get-WmiObject -Class Win32_Environment # <-- similar as above
+
+        #####################
+        #####################
+        $CompiledResults.add('Set Variables',$(
+            Get-ChildItem Variable: | Select-Object -Property Name, Key, Value, * -ExcludeProperty _*, Cim* -ErrorAction SilentlyContinue | Where-Object {$_.Name -ne 'Error'}
+        ))
 
         #####################
         #####################

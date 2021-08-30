@@ -30,15 +30,17 @@ function script:Invoke-PSWriteHTMLEndpointSnapshot {
 
         ###########
         New-HTMLTab -Name 'Powershell' -IconRegular window-maximize {
-            New-HTMLSection -HeaderText 'PowerShell Version' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
-                New-HTMLTable -DataTable $InputData.'PowerShell Version' {
-                    New-TableHeader -Color Blue -Alignment left -Title 'PowerShell Version' -FontSize 18
-                } -Buttons @('copyHtml5', 'excelHtml5', 'csvHtml5', 'pdfHtml5', 'pageLength') -SearchRegularExpression
-            }
-            New-HTMLSection -HeaderText 'PowerShell Sessions' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
-                New-HTMLTable -DataTable $InputData.'PowerShell Sessions' {
-                    New-TableHeader -Color Blue -Alignment left -Title 'PowerShell Sessions' -FontSize 18
-                } -Buttons @('copyHtml5', 'excelHtml5', 'csvHtml5', 'pdfHtml5', 'pageLength') -SearchRegularExpression
+            New-HTMLSection -HeaderText 'PowerShell' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
+                New-HTMLPanel {
+                    New-HTMLTable -DataTable $InputData.'PowerShell Version' {
+                        New-TableHeader -Color Blue -Alignment left -Title 'PowerShell Version' -FontSize 18
+                    } -Buttons @('copyHtml5', 'excelHtml5', 'csvHtml5', 'pdfHtml5', 'pageLength') -SearchRegularExpression
+                }
+                New-HTMLPanel {
+                    New-HTMLTable -DataTable $InputData.'PowerShell Sessions' {
+                        New-TableHeader -Color Blue -Alignment left -Title 'PowerShell Sessions' -FontSize 18
+                    } -Buttons @('copyHtml5', 'excelHtml5', 'csvHtml5', 'pdfHtml5', 'pageLength') -SearchRegularExpression
+                }
             }
             New-HTMLSection -HeaderText 'Environmental Variables' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
                 New-HTMLTable -DataTable $InputData.'Environmental Variables' {
