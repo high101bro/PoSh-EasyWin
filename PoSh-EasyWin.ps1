@@ -31,7 +31,7 @@
                                        TCP 49152-65535 (Windows Vista, Server 2008 and above)
                                        TCP 1024 -65535 (Windows NT4, Windows 2000, Windows 2003)
     Optional       : PsExec.exe, Procmon.exe, Autoruns.exe, Sysmon.exe,
-                     etl2pcapng.exe, WinPmem.exe, kitty.exe, plink.exe
+                     etl2pcapng.exe, kitty.exe, plink.exe
 
     Author         : Daniel Komnick (high101bro)
     Email          : high101bro@gmail.com

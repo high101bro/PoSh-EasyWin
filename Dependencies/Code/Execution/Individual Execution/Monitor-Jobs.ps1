@@ -1183,7 +1183,7 @@ if ($MonitorMode) {
                             script:Individual-PSWriteHTML -Title 'Network Connections' -Data {                         
                                 script:Invoke-PSWriteHTMLNetworkConnections -InputData `$script:PSWriteHTMLResults$JobId -MenuPrompt
                             }
-                        }        
+                        }
                         Invoke-Item `$script:PSWriteHTMLFilePath$JobId
                     }
                     elseif ((Test-Path "`$script:PSWriteHTMLFilePath$JobId")) {

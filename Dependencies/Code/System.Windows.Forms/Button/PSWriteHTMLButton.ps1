@@ -118,7 +118,7 @@ $PSWriteHTMLForm = New-Object System.Windows.Forms.Form -Property @{
     MinimizeBox     = $true
     AutoScroll      = $True
     Add_Load        = {}
-    Add_Closing     = {}
+    Add_Closing     = {$This.dispose()}
 }
 
 
@@ -216,11 +216,164 @@ CommonButtonSettings -Button $PSWriteHTMLGraphDataButton
 
 $PSWriteHTMLForm.Showdialog()
 
+
 $PSWriteHTMLCheckedItemsList = @()
 foreach($Checked in $PSWriteHTMLCheckedListBox.CheckedItems) {
     $PSWriteHTMLCheckedItemsList += $Checked
 }
 
+
+# if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 -and $PSWriteHTMLCheckedItemsList -Contains 'Endpoint Data Deep Dive (Under Development)') {                       
+#                         $PSWriteHTMLSelectCommandsForm = New-Object System.Windows.Forms.Form -Property @{
+#                             Text            = "Select Data to Collect"
+#                             StartPosition   = "CenterScreen"
+#                             Width           = $FormScale * 350
+#                             Height          = $FormScale * 294
+#                             Icon            = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
+#                             FormBorderStyle = 'Sizable'
+#                             ShowIcon        = $true
+#                             showintaskbar   = $false
+#                             ControlBox      = $true
+#                             MaximizeBox     = $false
+#                             MinimizeBox     = $true
+#                             AutoScroll      = $True
+#                             Add_Load        = {}
+#                             Add_Closing     = {$This.dispose()}
+#                         }
+ 
+                        
+#                         $PSWriteHTMLSelectCommandsCheckedListBox = New-Object -TypeName System.Windows.Forms.CheckedListBox -Property @{
+#                             Text   = "Select Data to Collect"
+#                             Left   = $FormScale * 5
+#                             Top    = $FormScale * 5
+#                             Width  = $FormScale * 270
+#                             Height = $FormScale * 150
+#                             ScrollAlwaysVisible = $true
+#                             Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+#                             Add_Click = {}
+#                         }
+#                         $PSWriteHTMLSelectCommandsCheckedBoxList = @(
+#                             'Active User Sessions',
+#                             'Antivirus Products',
+#                             'Audit Options',
+#                             'auditpol',
+#                             'BIOS',
+#                             'Computer Info',
+#                             'Computer Restore Points',
+#                             'Confirm Secure Boot UEFI',
+#                             'Crashed Applications',
+#                             'Disks',
+#                             'DNS Cache',
+#                             'Driver Details',
+#                             'Environmental Variables',
+#                             'Event Logs - Application (Last 1000)',
+#                             'Event Logs - Login Event Details (Past 30 Days)',
+#                             'Event Logs - Security (Last 1000)',
+#                             'Event Logs - System (Last 1000)',
+#                             'EventLog List',
+#                             'Failed Logins (Past 30 Days)',
+#                             'Firewall Profiles',
+#                             'Firewall Rules',
+#                             'Functions',
+#                             'Hosts File',
+#                             'Hyper-V Status',
+#                             'Hyper-V VM Network Adapters',
+#                             'Hyper-V VM Network Adapters',
+#                             'Hyper-V VM Snapshots',
+#                             'Hyper-V VMs',
+#                             'IP Configuration',
+#                             'Local Group Administrators',
+#                             'Local Groups',
+#                             'Local Users',
+#                             'Logical Disks',
+#                             'Memory Performance',
+#                             'Motherboard',
+#                             'Mp Computer Status',
+#                             'Mp Preferences',
+#                             'Mp Threat',
+#                             'Mp Threat Detection',
+#                             'Network Login Information',
+#                             'Network TCP Connections',
+#                             'Network UDP Endpoints',
+#                             'Non-Local Groups',
+#                             'Non-Local Users',
+#                             'Physical Memory',
+#                             'PNP Devices',
+#                             'Port Proxy',
+#                             'PowerShell Command History',
+#                             'PowerShell Commands',
+#                             'Powershell Modules Available',
+#                             'Powershell Modules Installed',
+#                             'PowerShell Profile (All Users All Hosts)',
+#                             'PowerShell Profile (All Users Current Host)',
+#                             'PowerShell Profile (Current User All Hosts)',
+#                             'PowerShell Profile (Current User Current Host)',
+#                             'PowerShell Sessions',
+#                             'PowerShell Sessions',
+#                             'PowerShell Version',
+#                             'Prefetch',
+#                             'Printers',
+#                             'Processes',
+#                             'Processor (CPU)',
+#                             'Product Info',
+#                             'PSDrives',
+#                             'Scheduled Jobs',
+#                             'Scheduled Tasks',
+#                             'schtasks',
+#                             'Secure Boot Policy',
+#                             'Security HotFixes',
+#                             'Services',
+#                             'Set Variables',
+#                             'SMB Connections',
+#                             'SMB Mappings',
+#                             'SMB Open Files',
+#                             'SMB Sessions',
+#                             'SMB Share Access',
+#                             'SMB Shares',
+#                             'Software (Registry)',
+#                             'SRUM Application Timeline',
+#                             'SRUM Application Usage',
+#                             'SRUM Network Connectivity',
+#                             'SRUM Network Data Usage',
+#                             'SRUM Push Notifications',
+#                             'Startup Commands',
+#                             'Startup Commands (Registry)',
+#                             'Successful Logins (Past 30 Days)',
+#                             'System DateTimes',
+#                             'System Drivers',
+#                             'USB Controllers & Devices',
+#                             'USB History',
+#                             'VMWare Detected',
+#                             'Windows Optional Features',
+#                             'WinEvent LogList',
+#                             'WinRM Status',
+#                             'Wireless Networks',
+#                             'WSMan TrustedHosts'
+#                         )
+                        
+#                         foreach ( $Option in $PSWriteHTMLSelectCommandsCheckedBoxList ) { $PSWriteHTMLSelectCommandsCheckedListBox.Items.Add($Option) }
+#                         $PSWriteHTMLSelectCommandsForm.Controls.Add($PSWriteHTMLSelectCommandsCheckedListBox)
+                        
+                        
+#                         $PSWriteHTMLGraphDataButton = New-Object -TypeName System.Windows.Forms.Button -Property @{
+#                             Text   = "Collect and Graph Data"
+#                             Left   = $FormScale * 5
+#                             Top    = $PSWriteHTMLSelectCommandsCheckedListBox.Top + $PSWriteHTMLSelectCommandsCheckedListBox.Height + $($FormScale * 5)
+#                             Width  = $FormScale * 150
+#                             Height = $FormScale * 22
+#                             Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+#                             Add_Click = { 
+#                                 $PSWriteHTMLSelectCommandsForm.Close()    
+#                             }
+#                         }
+#                         $PSWriteHTMLSelectCommandsForm.Controls.Add($PSWriteHTMLGraphDataButton)
+#                         CommonButtonSettings -Button $PSWriteHTMLGraphDataButton
+                        
+#                         $PSWriteHTMLSelectCommandsForm.Showdialog()
+                        
+#                         $PSWriteHTMLSelectCommandsCheckedListBox.CheckedItems | ogv
+    
+# }
 
 
 
@@ -341,7 +494,6 @@ function script:Individual-PSWriteHTML {
 ##                                                                                                ##
 ####################################################################################################
 ####################################################################################################
-Generate-ComputerList
 
 if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 -and $PSWriteHTMLCheckedItemsList -match 'Endpoint') {
 
@@ -451,7 +603,7 @@ if ($PSWriteHTMLCheckedItemsList -contains 'Endpoint Data Deep Dive (Under Devel
     $script:ProgressBarQueriesProgressBar.Refresh()
 
     # if ($PSWriteHTMLIndividualWebPagesCheckbox.checked -and $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
-    #     if ($PSWriteHTMLCheckedListBox.CheckedItems.Count -gt 0 -and $script:ComputerList.count -gt 0) {
+    #     if ($PSWriteHTMLCheckedItemsList.Count -gt 0 -and $script:ComputerList.count -gt 0) {
     #         script:Individual-PSWriteHTML -Title 'Process Data' -Data { script:Invoke-PSWriteHTMLProcess }
     #     }
     # }
@@ -501,7 +653,7 @@ if ($PSWriteHTMLCheckedItemsList -contains 'Endpoint Process Data') {
     $script:ProgressBarQueriesProgressBar.Refresh()
 
     # if ($PSWriteHTMLIndividualWebPagesCheckbox.checked -and $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
-    #     if ($PSWriteHTMLCheckedListBox.CheckedItems.Count -gt 0 -and $script:ComputerList.count -gt 0) {
+    #     if ($PSWriteHTMLCheckedItemsList.Count -gt 0 -and $script:ComputerList.count -gt 0) {
     #         script:Individual-PSWriteHTML -Title 'Process Data' -Data { script:Invoke-PSWriteHTMLProcess }
     #     }
     # }
@@ -545,7 +697,7 @@ if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 
     $script:ProgressBarQueriesProgressBar.Refresh()
 
     # if ($script:PSWriteHTMLIndividualWebPagesCheckbox.checked -eq $true -and $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
-    #     if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 -and $PSWriteHTMLCheckedListBox.CheckedItems.Count -gt 0) {
+    #     if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 -and $PSWriteHTMLCheckedItemsList.Count -gt 0) {
     #         script:Individual-PSWriteHTML -Title 'Network Connections' -Data { script:Invoke-PSWriteHTMLNetworkConnections -InputData $script:EndpointDataNetworkConnections }
     #     }
     # }
@@ -590,7 +742,7 @@ if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 
     $script:ProgressBarQueriesProgressBar.Refresh()
 
     # if ($script:PSWriteHTMLIndividualWebPagesCheckbox.checked -eq $true -and $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
-    #     if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 -and $PSWriteHTMLCheckedListBox.CheckedItems.Count -gt 0) {
+    #     if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 -and $PSWriteHTMLCheckedItemsList.Count -gt 0) {
     #         script:Individual-PSWriteHTML -Title 'Console Logons' { script:Invoke-PSWriteHTMLConsoleLogons -InputData $script:EndpointDataConsoleLogons}
     #     }
     # }        
@@ -635,7 +787,7 @@ if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 
     $script:ProgressBarQueriesProgressBar.Refresh()
 
     # if ($script:PSWriteHTMLIndividualWebPagesCheckbox.checked -eq $true -and $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
-    #     if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 -and $PSWriteHTMLCheckedListBox.CheckedItems.Count -gt 0) {
+    #     if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 -and $PSWriteHTMLCheckedItemsList.Count -gt 0) {
     #         script:Individual-PSWriteHTML -Title 'PowerShell Sessions' { script:PowerShellSessionsData -InputData $script:EndpointDataConsoleLogons }
     #     }
     # } 
@@ -680,7 +832,7 @@ if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 
     $script:ProgressBarQueriesProgressBar.Refresh()
 
     # if ($script:PSWriteHTMLIndividualWebPagesCheckbox.checked -eq $true -and $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
-    #     if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 -and $PSWriteHTMLCheckedListBox.CheckedItems.Count -gt 0) {
+    #     if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 -and $PSWriteHTMLCheckedItemsList.Count -gt 0) {
     #         script:Individual-PSWriteHTML -Title 'Logon Activity' -Data { script:EndpointLogonActivity }
     #     }
     # }
@@ -711,7 +863,6 @@ if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 
 ##                                                                                                ##
 ####################################################################################################
 ####################################################################################################
-Generate-ComputerList
 
 if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 -and $PSWriteHTMLCheckedItemsList -match 'Active Directory'){
     if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
@@ -1245,7 +1396,7 @@ if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 
 ####################################################################################################
 
 
-if ($PSWriteHTMLCheckedListBox.CheckedItems.Count -gt 0 -and `
+if ($PSWriteHTMLCheckedItemsList.Count -gt 0 -and `
     $script:PSWriteHTMLFormOkay -eq $true -and `
     $script:ComputerList.count -gt 0 -and `
     ($PSWriteHTMLCheckedItemsList -match 'Endpoint' -or $PSWriteHTMLCheckedItemsList -match 'Active Directory')
