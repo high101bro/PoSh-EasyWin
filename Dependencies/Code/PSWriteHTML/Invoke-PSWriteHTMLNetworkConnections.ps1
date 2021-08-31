@@ -204,9 +204,6 @@ function script:Invoke-PSWriteHTMLNetworkConnections {
                             $Filter = { $_.LocalAddress -notmatch $false }
                         }
             
-                        # $script:PoShEasyWinIPAddress | ogv
-                        # $script:PSWriteHTMLExcludeEasyWinFromGraphsCheckboxchecked | ogv
-                        # $script:PSWriteHTMLExcludeIPv6FromGraphsCheckboxchecked | ogv
 
                         $InputData | Where-Object -FilterScript $filter | ForEach-Object {
                             function New-ComputerNode {

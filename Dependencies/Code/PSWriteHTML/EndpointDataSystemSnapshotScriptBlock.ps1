@@ -1,11 +1,17 @@
 $EndpointDataSystemSnapshotScriptBlock = {
+    param (
+        $CheckedItems
+    )
 
     $CompiledResults = @{}
 
     #########################
-    ### Prefetch
+    ### Overview
     #########################
 
+    if ($CheckedItems -contains 'System Info' ) {
+        #####################
+        #####################
         # GRAB FIRST AS THIS IS VERY VOLITILE
         # number of time an application has been executed,
         # The original path of execution,
@@ -21,13 +27,8 @@ $EndpointDataSystemSnapshotScriptBlock = {
         #####################
         $CompiledResults.add('Prefetch',$(
             Get-ChildItem C:\Windows\Prefetch -Force
-        ))
+        ))    
 
-        #########################
-    ### Overview
-    #########################
-
-    
         #####################
         #####################
         $CompiledResults.add('Computer Info',$(
@@ -71,41 +72,10 @@ $EndpointDataSystemSnapshotScriptBlock = {
 
         #####################
         #####################
-        $CompiledResults.add('Computer Restore Point',$(
-            Get-ComputerRestorePoint | Select-Object -Property * -ExcludeProperty _*, Cim*
+        $CompiledResults.add('Computer Restore Points',$(
+            Get-ComputerRestorePoint | Select-Object -Property @{n='CreationDateTime';e={$_.ConvertToDateTime(($_.CreationTime))}}, Description, SequenceNumber, EventType, RestorePointType -ExcludeProperty _*, Cim*
         ))
 
-        #####################
-        #####################
-        $CompiledResults.add('PowerShell Version',$(
-            $PSVersionTable
-        ))
-
-        #####################
-        #####################
-        $CompiledResults.add('Environmental Variables',$(
-            Get-ChildItem Env: | Select-Object -Property Name, Key, Value, * -ExcludeProperty _*, Cim* -ErrorAction SilentlyContinue
-        ))
-            # Get-WmiObject -Class Win32_Environment # <-- similar as above
-
-        #####################
-        #####################
-        $CompiledResults.add('Set Variables',$(
-            Get-ChildItem Variable: | Select-Object -Property Name, Key, Value, * -ExcludeProperty _*, Cim* -ErrorAction SilentlyContinue | Where-Object {$_.Name -ne 'Error'}
-        ))
-
-        #####################
-        #####################
-        $CompiledResults.add('Functions',$(
-            Get-ChildItem Function: | Select-Object -Property Name, Version, Module, Source, Options, Visibility, RemotingCapability, CommandType, Verb, Noun, HelpFile, OutputType, Parameters, ParameterSets, ScriptBlock, * -ExcludeProperty _*, Cim* -ErrorAction SilentlyContinue
-        ))
-
-        #####################
-        #####################
-        $CompiledResults.add('PSDrives',$(
-            Get-PSDrive | Select-Object -Property Name, Root, Provider, Used, Free, Description, * -ExcludeProperty _*, Cim* -ErrorAction SilentlyContinue
-        ))
-        
         #####################
         #####################
         $CompiledResults.add('Scheduled Jobs',$(
@@ -123,17 +93,13 @@ $EndpointDataSystemSnapshotScriptBlock = {
         $CompiledResults.add('schtasks',$(
             schtasks /query /V /FO CSV | ConvertFrom-Csv | ConvertTo-Csv -NoTypeInformation | ConvertFrom-Csv
         ))
-
-        #####################
-        #####################
-        $CompiledResults.add('Windows Optional Features',$(
-            Get-WindowsOptionalFeature -Online | Select-Object -Property * -ExcludeProperty _*, Cim*
-        ))
+    }
 
     #########################
     ### Networking
     #########################
 
+    if ($CheckedItems -contains 'Network' ) {
         #####################
         #####################
         $CompiledResults.add('Network TCP Connections',$(
@@ -327,13 +293,13 @@ $EndpointDataSystemSnapshotScriptBlock = {
         $CompiledResults.add('Hyper-V VM Network Adapters',$(
             Get-VMNetworkAdapter -VMName * | Select-Object -ExcludeProperty _*, Cim*
         ))
-            
-        # Packet Capture ???
-
+    }      
+      
     #########################
     ### Process
     #########################
 
+    if ($CheckedItems -contains 'Processes' ) {
         #####################
         #####################
         $CompiledResults.add('Processes',$(
@@ -515,11 +481,13 @@ $EndpointDataSystemSnapshotScriptBlock = {
                 MD5Hash, SignerCertificate, StatusMessage, SignerCompany, Company, Product, ProductVersion, Description,
                 MemoryUsage -ExcludeProperty _*, Cim*
         ))
+    }
 
     #########################
     ### Service
     #########################
 
+    if ($CheckedItems -contains 'Services' ) {
         #####################
         #####################
         $CompiledResults.add('Services',$(
@@ -531,11 +499,13 @@ $EndpointDataSystemSnapshotScriptBlock = {
             }
             $service | Select-Object -Property PSComputerName, Name, State, Status, Started, StartMode, StartName, ProcessID, ProcessName,  PathName, Caption, Description, DelayedAutoStart, AcceptPause, AcceptStop -ExcludeProperty _*, Cim*
         ))
+    }
 
     #########################
     ### Login Activity
     #########################
 
+    if ($CheckedItems -contains 'Accounts' ) {
         #####################
         #####################
         $CompiledResults.add('Active User Sessions',$(
@@ -681,11 +651,13 @@ $EndpointDataSystemSnapshotScriptBlock = {
             }
             Get-LoginEvents -StartTime $([datetime]::Today.AddDays(-30)) -EndTime $([datetime]::Today) | Select-Object -ExcludeProperty _*, Cim*
         ))
+    }
 
     #########################
     ### Event Logs
     #########################
 
+    if ($CheckedItems -contains 'Event Logs' ) {
         #####################
         #####################
         $CompiledResults.add('EventLog List',$(
@@ -715,7 +687,7 @@ $EndpointDataSystemSnapshotScriptBlock = {
         $CompiledResults.add('Event Logs - Security (Last 1000)',$(
             Get-WinEvent -LogName Security -MaxEvents 1000 | Select-Object -Property LogName, TimeCreated, TaskDisplayName, KeyWordsDisplayNames, ProcessId, ThreadId, Id, Version, LevelDisplayName, Level, Task, ContainerLog, OpCode, OpCodeDisplayName, KeyWords, RecordId, ProviderName, ProviderId, ActivityId, Qualifiers, MachineName, UserId, @{n='Properties';e={$_.Properties.Value}}, Message -ExcludeProperty _*, Cim*
         ))
-
+    }
 
      #########################
 #     ### Registry
@@ -727,6 +699,7 @@ $EndpointDataSystemSnapshotScriptBlock = {
     ### Hardware
     #########################
 
+    if ($CheckedItems -contains 'Hardware' ) {
         #####################
         #####################
         $CompiledResults.add('Driver Details',$(
@@ -874,12 +847,14 @@ $EndpointDataSystemSnapshotScriptBlock = {
         $CompiledResults.add('Printers',$(
             Get-WmiObject -Class Win32_Printer | Select-Object -ExcludeProperty _*, Cim*
         ))
+    }
 
     #########################
     ### Software
     #########################
 
-    #####################
+    if ($CheckedItems -contains 'Software' ) {
+        #####################
         #####################
         $CompiledResults.add('Software (Registry)',$(
             $Software = @()
@@ -967,10 +942,18 @@ $EndpointDataSystemSnapshotScriptBlock = {
             $UniqueFault
         ))
 
+        #####################
+        #####################
+        $CompiledResults.add('Windows Optional Features',$(
+            Get-WindowsOptionalFeature -Online | Select-Object -Property * -ExcludeProperty _*, Cim*
+        ))
+    }
+
     #########################
     ### Security
     #########################
 
+    if ($CheckedItems -contains 'Security' ) {
         #####################
         #####################
         $CompiledResults.add('Audit Options',$(
@@ -1077,11 +1060,7 @@ $EndpointDataSystemSnapshotScriptBlock = {
         $CompiledResults.add('Antivirus Products',$(
             Get-WmiObject -Namespace root\SecurityCenter2 -Class AntivirusProduct | Select-Object -ExcludeProperty _*, Cim*
         ))
-
-    #########################
-    ### Firewall
-    #########################
-
+    
         #####################
         #####################
         $CompiledResults.add('Firewall Rules',$(
@@ -1165,11 +1144,13 @@ $EndpointDataSystemSnapshotScriptBlock = {
             Get-NetFirewallProfile | Select-Object -ExcludeProperty _*, Cim*
         ))
             #netsh advfirewall show allprofiles state
+    }
 
     #########################
     ### Accounts / Groups
     #########################
 
+    if ($CheckedItems -contains 'Accounts' ) {
         #####################
         #####################
         $CompiledResults.add('Local Users',$(
@@ -1202,11 +1183,13 @@ $EndpointDataSystemSnapshotScriptBlock = {
             Get-LocalGroupMember -Group administrators | Select-Object -ExcludeProperty _*, Cim*
         ))
             # net localgroup administrators
-
+    }
+    
     #########################
     ### Shares
     #########################
 
+    if ($CheckedItems -contains 'Shares' ) {
         #####################
         #####################
         $CompiledResults.add('SMB Shares',$(
@@ -1243,11 +1226,13 @@ $EndpointDataSystemSnapshotScriptBlock = {
         $CompiledResults.add('SMB Open Files',$(
             Get-SmbOpenFile | Select-Object -Property * -ExcludeProperty _*, Cim*
         ))
+    }
 
     #########################
     ### Startup
     #########################
 
+    if ($CheckedItems -contains 'Startup' ) {
         #####################
         #####################
         $CompiledResults.add('Startup Commands (Registry)',$(
@@ -1312,11 +1297,13 @@ $EndpointDataSystemSnapshotScriptBlock = {
         $CompiledResults.add('Startup Commands',$(
             Get-WmiObject -Class Win32_StartupCommand | Select-Object -ExcludeProperty _*, Cim*
         ))
+    }
 
     #########################
     ### PowerShell
     #########################
 
+    if ($CheckedItems -contains 'PowerShell' ) {
         #####################
         #####################
         $CompiledResults.add('WinRM Status',$(
@@ -1340,6 +1327,37 @@ $EndpointDataSystemSnapshotScriptBlock = {
         #####################
         $CompiledResults.add('PowerShell Sessions',$(
             Get-WSManInstance -ResourceURI Shell -Enumerate | Select-Object -Property Name, Owner, ClientIP, State, @{n='ShellRunDateTime';e={[System.Xml.XmlConvert]::ToTimeSpan($_.ShellRunTime).ToString()}}, @{n='ShellInactivityDateTime';e={[System.Xml.XmlConvert]::ToTimeSpan($_.ShellInactivity).ToString()}}, ProcessId, ChildProcesses, Profileloaded, @{n='MaxIdleTimeOutDateTime';e={[System.Xml.XmlConvert]::ToTimeSpan($_.MaxIdleTimeOut).ToString()}}, InputStreams, OutputStreams, Locale, MemoryUsed, CompressionMode, BufferMode, Encoding, ShellId, ResourceUri, rsp -ExcludeProperty _*, Cim*
+        ))
+
+        #####################
+        #####################
+        $CompiledResults.add('PowerShell Version',$(
+            $PSVersionTable
+        ))
+
+        #####################
+        #####################
+        $CompiledResults.add('Environmental Variables',$(
+            Get-ChildItem Env: | Select-Object -Property Name, Key, Value, * -ExcludeProperty _*, Cim* -ErrorAction SilentlyContinue
+        ))
+            # Get-WmiObject -Class Win32_Environment # <-- similar as above
+
+        #####################
+        #####################
+        $CompiledResults.add('Set Variables',$(
+            Get-ChildItem Variable: | Select-Object -Property Name, Key, Value, * -ExcludeProperty _*, Cim* -ErrorAction SilentlyContinue | Where-Object {$_.Name -ne 'Error'}
+        ))
+
+        #####################
+        #####################
+        $CompiledResults.add('Functions',$(
+            Get-ChildItem Function: | Select-Object -Property Name, Version, Module, Source, Options, Visibility, RemotingCapability, CommandType, Verb, Noun, HelpFile, OutputType, Parameters, ParameterSets, ScriptBlock, * -ExcludeProperty _*, Cim* -ErrorAction SilentlyContinue
+        ))
+
+        #####################
+        #####################
+        $CompiledResults.add('PSDrives',$(
+            Get-PSDrive | Select-Object -Property Name, Root, Provider, Used, Free, Description, * -ExcludeProperty _*, Cim* -ErrorAction SilentlyContinue
         ))
 
         #####################
@@ -1426,12 +1444,14 @@ $EndpointDataSystemSnapshotScriptBlock = {
         #     Get-Content (Get-PSReadLineOption | Select-Object -ExpandProperty HistorySavePath -ExcludeProperty _*, Cim*)
         #     #Get-Content "$env:APPDATA\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt"
         # ))
-
+    }
 
     #########################
     ### SRUM Dump
     #########################
 
+
+    if ($CheckedItems -contains 'SRUM ') {
         function Invoke-SRUMDump {
             <#
                 .SYNOPSIS
@@ -2098,20 +2118,14 @@ $EndpointDataSystemSnapshotScriptBlock = {
             write-host -ForegroundColor Yellow "[+] " -NoNewline; Write-Host -ForegroundColor Green "Shutdown Completed Successfully"
         }
         Invoke-SRUMDump -live
-
-    #########################
-    ### Restore Points
-    #########################
-
-        $CompiledResults.add('Computer Restore Points',$(
-            Get-ComputerRestorePoint | Select-Object -Property @{n='CreationDateTime';e={$_.ConvertToDateTime(($_.CreationTime))}}, Description, SequenceNumber, EventType, RestorePointType -ExcludeProperty _*, Cim*
-        ))
+    }
 
 
     #########################
     ### Virtualization
     #########################
 
+    if ($CheckedItems -contains 'Virtualization' ) {
         #####################
         #####################
         $CompiledResults.add('VMWare Detected',$(
@@ -2150,6 +2164,10 @@ $EndpointDataSystemSnapshotScriptBlock = {
 
         #####################
         #####################
+        $CompiledResults['Hyper-V VM Network Adapters'] = $(
+            Get-VMNetworkAdapter -VMName * | Select-Object -ExcludeProperty _*, Cim*
+        )
+            #This is done above in the network section
         # $CompiledResults.add('Hyper-V VM Network Adapters',$(
         #     Get-VMNetworkAdapter -VMName * | Select-Object -ExcludeProperty _*, Cim*
         # ))
@@ -2160,6 +2178,7 @@ $EndpointDataSystemSnapshotScriptBlock = {
         $CompiledResults.add('Hyper-V VM Snapshots',$(
             Get-VMSnapshot -VMName * | Select-Object -ExcludeProperty _*, Cim*
         ))
+    }
 
-        $CompiledResults
+    $CompiledResults
 }

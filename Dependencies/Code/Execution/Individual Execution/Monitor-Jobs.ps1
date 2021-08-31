@@ -19,9 +19,10 @@ function Monitor-Jobs {
         [switch]$PcapSwitch,
         [switch]$PSWriteHTMLSwitch,
         $PSWriteHTML,
-        $PSWriteHTMLFilePath
+        $PSWriteHTMLFilePath,
+        [string[]]$PSWriteHTMLOptions
     )
-
+    
     $JobId = Get-Random -Minimum 100009 -Maximum 999999
     if ($txt) {
         $SaveResultsCmd = 'Out-File'
@@ -773,15 +774,17 @@ if ($MonitorMode) {
     `$script:InputValues$JobId         = `$InputValues
     `$script:ArgumentList$JobId        = `$ArgumentList 
     `$script:PSWriteHTMLFilePath$JobId = `$PSWriteHTMLFilePath
+    `$script:PSWriteHTMLOptions$JobId  = `$PSWriteHTMLOptions
 "@
-#    if ($SMITH) {
-#        Invoke-Expression @"
-#        `$script:SmithScript$JobId  = `$SmithScript
-#        `$script:RestartTime$JobId  = `$RestartTime
-#        `$script:InputValues$JobId  = `$InputValues
-#        `$script:ArgumentList$JobId = `$ArgumentList 
-#"@
-#    }
+
+    if ($SMITH) {
+       Invoke-Expression @"
+       `$script:SmithScript$JobId  = `$SmithScript
+       `$script:RestartTime$JobId  = `$RestartTime
+       `$script:InputValues$JobId  = `$InputValues
+       `$script:ArgumentList$JobId = `$ArgumentList 
+"@
+   }
 
     if ($PSWriteHTMLSwitch) {
         Invoke-Expression @"
@@ -1176,7 +1179,7 @@ if ($MonitorMode) {
                     `$script:PSWriteHTMLResults$JobId = `$script:CurrentJobs$JobId | Receive-Job -Keep
                     if (`$script:PSWriteHTMLResults$JobId) {
                         if ("$PSWriteHTML" -eq 'EndpointDataSystemSnapshot') {                            
-                            script:Individual-PSWriteHTML -Title 'Endpoint Snapshot' -Data { script:Invoke-PSWriteHTMLEndpointSnapshot -InputData `$script:PSWriteHTMLResults$JobId -MenuPrompt }
+                            script:Individual-PSWriteHTML -Title 'Endpoint Snapshot' -Data { script:Invoke-PSWriteHTMLEndpointSnapshot -InputData `$script:PSWriteHTMLResults$JobId -CheckedItems `$script:PSWriteHTMLOptions$JobId -MenuPrompt }
                         }
                         elseif ("$PSWriteHTML" -eq 'EndpointDataNetworkConnections') {
                             `$script:PSWriteHTMLResults$JobId = `$script:CurrentJobs$JobId | Receive-Job -Keep
@@ -2309,7 +2312,7 @@ if ($DisableReRun) {
 
                 if ("$PSWriteHTML" -eq 'EndpointDataSystemSnapshot') {
                     `$script:PSWriteHTMLResults$JobId = `$script:CurrentJobs$JobId | Receive-Job -Keep
-                    script:Individual-PSWriteHTML -Title 'Endpoint Snapshot' -Data { script:Invoke-PSWriteHTMLEndpointSnapshot -InputData `$script:PSWriteHTMLResults$JobId }
+                    script:Individual-PSWriteHTML -Title 'Endpoint Snapshot' -Data { script:Invoke-PSWriteHTMLEndpointSnapshot -InputData `$script:PSWriteHTMLResults$JobId -CheckedItems `$script:PSWriteHTMLOptions$JobId }
                 }
                 elseif ("$PSWriteHTML" -eq 'PSWriteHTMLProcesses') {
                     `$script:PSWriteHTMLResults$JobId = `$script:CurrentJobs$JobId | Receive-Job -Keep
