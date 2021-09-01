@@ -4,8 +4,6 @@ function script:Invoke-PSWriteHTMLEndpointSnapshot {
         [switch]$MenuPrompt,
         [string[]]$CheckedItems
     )
-    if ($MenuPrompt) { script:Launch-NetworkConnectionGUI }
-
     ##############################################################
     ##############################################################
     ##############################################################
@@ -335,6 +333,9 @@ function script:Invoke-PSWriteHTMLEndpointSnapshot {
     ##############################################################
     ##############################################################
     if ($CheckedItems -contains 'Network' ) {
+        
+        if ($MenuPrompt) { script:Launch-NetworkConnectionGUI }
+
         New-HTMLTab -Name 'Network' -IconBrands acquisitions-incorporated {
             ###########
             script:Invoke-PSWriteHTMLNetworkConnections -InputData $InputData.'Network TCP Connections'
