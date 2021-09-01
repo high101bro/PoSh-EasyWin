@@ -578,8 +578,7 @@ if ($PSWriteHTMLCheckedListBox.CheckedItems -contains 'Endpoint Data Deep Dive (
     $StatusListBox.Items.Clear()
     $StatusListBox.Items.Add("Endpoint Data Deep Dive (Under Development)")
 
-    $CollectionName = 'test name'
-
+    $CollectionName = 'Endpoint Analysis'
 
     if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
         foreach ($TargetComputer in $script:ComputerList) {
@@ -603,13 +602,11 @@ if ($PSWriteHTMLCheckedListBox.CheckedItems -contains 'Endpoint Data Deep Dive (
                 Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock `$EndpointDataSystemSnapshotScriptBlock -ArgumentList `$script:PSWriteHTMLSelectCommandsCheckedListBox.CheckedItems -ComputerName $TargetComputer -AsJob -JobName 'PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)'"
             }
         }
-        Monitor-Jobs -CollectionName $CollectionName -MonitorMode -PSWriteHTMLSwitch -PSWriteHTML 'EndpointDataSystemSnapshot' -PSWriteHTMLFilePath $script:PSWriteHTMLFilePath -PSWriteHTMLOptions $script:PSWriteHTMLSelectCommandsCheckedListBox.CheckedItems -xml
+        Monitor-Jobs -CollectionName $CollectionName -MonitorMode -PSWriteHTMLSwitch -PSWriteHTML 'EndpointDataSystemSnapshot' -PSWriteHTMLFilePath $script:PSWriteHTMLFilePath -PSWriteHTMLOptions $script:PSWriteHTMLSelectCommandsCheckedListBox.CheckedItems -ComputerName $TargetComputer -xml
     }
     elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
-        $GetEndpointDataDeepDiveResults = Invoke-Command -ScriptBlock $EndpointDataSystemSnapshotScriptBlock -ArgumentList @($script:PSWriteHTMLSelectCommandsCheckedListBox.CheckedItems,$null) -Session $PSSession | Select-Object -Property *
+        Invoke-Command -ScriptBlock $EndpointDataSystemSnapshotScriptBlock -ArgumentList $script:PSWriteHTMLSelectCommandsCheckedListBox.CheckedItems -Session $PSSession | Select-Object -Property *
     } 
-
-    $GetEndpointDataDeepDiveResults
 
     $script:ProgressBarQueriesProgressBar.Value += 1
     $script:ProgressBarQueriesProgressBar.Refresh()

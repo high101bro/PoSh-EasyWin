@@ -2,6 +2,7 @@
 function Monitor-Jobs {
     param(
         $CollectionName,
+        $ComputerName,
         [switch]$txt,
         [switch]$xml,
         [String]$SaveProperties,
@@ -23,7 +24,7 @@ function Monitor-Jobs {
         [string[]]$PSWriteHTMLOptions
     )
     
-    $JobId = Get-Random -Minimum 100009 -Maximum 999999
+    $JobId = Get-Random
     if ($txt) {
         $SaveResultsCmd = 'Out-File'
         $ImportDataCmd  = 'Get-Content'
@@ -775,6 +776,8 @@ if ($MonitorMode) {
     `$script:ArgumentList$JobId        = `$ArgumentList 
     `$script:PSWriteHTMLFilePath$JobId = `$PSWriteHTMLFilePath
     `$script:PSWriteHTMLOptions$JobId  = `$PSWriteHTMLOptions
+    `$script:CollectionName$JobId      = `$ComputerName
+
 "@
 
     if ($SMITH) {
@@ -788,7 +791,10 @@ if ($MonitorMode) {
 
     if ($PSWriteHTMLSwitch) {
         Invoke-Expression @"
-        if ("$PSWriteHTML" -eq 'PSWriteHTMLProcesses') {
+        if ("$PSWriteHTML" -eq 'EndpointDataSystemSnapshot') {
+            `$script:JobName$JobId = "Endpoint Analysis `$(`$(`$script:PSWriteHTMLOptions$JobId).count) `$(`$script:CollectionName$JobId) (Browser)"
+        }
+        elseif ("$PSWriteHTML" -eq 'PSWriteHTMLProcesses') {
             `$script:JobName$JobId = 'Process Data (Browser)'
         }
         elseif ("$PSWriteHTML" -eq 'EndpointDataNetworkConnections') {
