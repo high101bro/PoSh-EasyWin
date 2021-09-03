@@ -1,4 +1,5 @@
 $ComputerListPSSessionButtonAdd_Click = {
+    
     $InformationTabControl.SelectedTab = $Section3ResultsTab
     Create-TreeViewCheckBoxArray -Endpoint
     Generate-ComputerList

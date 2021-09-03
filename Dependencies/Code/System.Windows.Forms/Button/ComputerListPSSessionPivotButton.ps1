@@ -3,12 +3,12 @@ $ComputerListPSSessionPivotButtonAdd_Click = {
     $InformationTabControl.SelectedTab = $Section3ResultsTab
     Create-TreeViewCheckBoxArray -Endpoint
     Generate-ComputerList
-
+    
     if ($script:ComputerListProvideCredentialsCheckBox.Checked) { $Username = $script:Credential.UserName}
     else {$Username = $PoShEasyWinAccountLaunch }
 
     if ($script:ComputerListEndpointNameToolStripLabel.text) {
-        $VerifyAction = Verify-Action -Title "Verification: PowerShell Session" -Question "Connecting Account:  $Username`n`nEnter a PowerShell Session to the following?" -Computer $($script:ComputerListEndpointNameToolStripLabel.text)
+        $VerifyAction = Verify-Action -Title "Verification: PowerShell Session" -Question "Connecting Account:  $Username`n`nEnter a PowerShell BROKEN Session to the following?" -Computer $($script:ComputerListEndpointNameToolStripLabel.text)
         if ($script:ComputerListUseDNSCheckbox.checked) { 
             $script:ComputerTreeViewSelected = $script:ComputerListEndpointNameToolStripLabel.text 
         }

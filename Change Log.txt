@@ -16,7 +16,10 @@ Accounts Treeview
 Check if Move feature is working properly
 
 TODO:
-winrm get winrm/config/winrs
+pivot commands not showing destination endpoint
+pivot scanning
+
+
 !!!!!!!! checking custom group box makes user add commands turn blue... wierd?
 !!!!!!!! add refresh to treeviews
 !!!!!!!! some users show up with 1 group when they have none

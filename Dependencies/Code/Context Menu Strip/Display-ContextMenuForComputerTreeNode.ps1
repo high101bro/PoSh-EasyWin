@@ -142,9 +142,9 @@ Command:
 
 
             $ComputerListEventViewerToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
-                Text        = "  - Event Viewer GUI"
+                Text        = "  - Event Viewer GUI (Connect)"
                 ForeColor   = 'Black'
-                Add_Click   = $EventViewerButtonAdd_Click
+                Add_Click   = $EventViewerConnectionButtonAdd_Click
                 ToolTipText = "
 Establishes an interactive session and displays a GUI with an endpoint.
 
@@ -159,6 +159,33 @@ Default ports, protocols, and services:
 Command:
     Show-EventLog -ComputerName <Hostname>
 "
+            }
+            $script:ComputerListContextMenuStrip.Items.Add($ComputerListEventViewerToolStripButton)
+
+            $ComputerListEventViewerToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
+                Text        = "  - Event Viewer GUI (Collect)"
+                ForeColor   = 'Black'
+                Add_Click   = $EventViewerCollectionButtonAdd_Click
+                ToolTipText = '
+Collects data on available Event Logs and saves them locally for review with Event Viewer.
+
+Default ports, protocols, and services: 
+    TCP / 47001 - Endpoint Listener
+    TCP / 5985 [HTTP]  Windows 7+
+    TCP / 5986 [HTTPS] Windows 7+
+    TCP / 80   [HTTP]  Windows Vista-
+    TCP / 443  [HTTPS] Windows Vista-
+    Windows Remote Management (WinRM)
+    Regardless of the transport protocol used (HTTP or HTTPS), WinRM always encrypts all PowerShell remoting communication after initial authentication
+
+Command:
+    foreach ($SelectedEventLogs in $EventLogSelection) {
+        $EventLogPullDateTime = (Get-Date).ToString("yyyy-MM-dd HH.mm.ss")
+        $EventLogSaveName = "c:\$($ComputerName) - $($SelectedEventLogs.LogFileName) ($($EventLogPullDateTime)) .evtx"
+        $SelectedEventLogs.BackupEventlog("$EventLogSaveName")
+        eventvwr -l:"$EventLogSaveName"
+    }
+'
             }
             $script:ComputerListContextMenuStrip.Items.Add($ComputerListEventViewerToolStripButton)
 
@@ -187,7 +214,7 @@ Command:
             #         }
             #         if ($This.selectedItem -eq ' - Event Viewer')  { 
             #             $script:ComputerListContextMenuStrip.Close()
-            #             & $EventViewerButtonAdd_Click
+            #             & $EventViewerConnectionButtonAdd_Click
             #         }
             #     }
             # }

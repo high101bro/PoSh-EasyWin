@@ -37,8 +37,11 @@ Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\ComputerList
 Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\ComputerListPsExecButton.ps1"
 . "$Dependencies\Code\System.Windows.Forms\Button\ComputerListPsExecButton.ps1"
 
-Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\EventViewerButton.ps1"
-. "$Dependencies\Code\System.Windows.Forms\Button\EventViewerButton.ps1"
+Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\EventViewerConnectionButton.ps1"
+. "$Dependencies\Code\System.Windows.Forms\Button\EventViewerConnectionButton.ps1"
+
+Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\EventViewerCollectionButton.ps1"
+. "$Dependencies\Code\System.Windows.Forms\Button\EventViewerCollectionButton.ps1"
 
 # Rolls the credenaisl: 250 characters of random: abcdefghiklmnoprstuvwxyzABCDEFGHKLMNOPRSTUVWXYZ1234567890
 Update-FormProgress "$Dependencies\Code\Credential Management\Generate-NewRollingPassword.ps1"

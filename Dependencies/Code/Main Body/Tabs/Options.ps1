@@ -355,7 +355,7 @@ $OptionSaveCliXmlDataCheckBox = New-Object System.Windows.Forms.Checkbox -Proper
     Width   = $FormScale * 300
     Height  = $FormScale * 22
     Enabled = $true
-    Checked = $false
+    Checked = $true
     Font    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     Add_Click = { $This.Checked | Set-Content "$PoShHome\Settings\Save XML Data - Object Data Used For Terminals.txt" -Force }
 }
