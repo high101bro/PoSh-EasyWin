@@ -166,7 +166,7 @@ Command:
                 Text        = "  - Event Viewer GUI (Collect)"
                 ForeColor   = 'Black'
                 Add_Click   = $EventViewerCollectionButtonAdd_Click
-                ToolTipText = '
+                ToolTipText = "
 Collects data on available Event Logs and saves them locally for review with Event Viewer.
 
 Default ports, protocols, and services: 
@@ -178,14 +178,10 @@ Default ports, protocols, and services:
     Windows Remote Management (WinRM)
     Regardless of the transport protocol used (HTTP or HTTPS), WinRM always encrypts all PowerShell remoting communication after initial authentication
 
-Command:
-    foreach ($SelectedEventLogs in $EventLogSelection) {
-        $EventLogPullDateTime = (Get-Date).ToString("yyyy-MM-dd HH.mm.ss")
-        $EventLogSaveName = "c:\$($ComputerName) - $($SelectedEventLogs.LogFileName) ($($EventLogPullDateTime)) .evtx"
-        $SelectedEventLogs.BackupEventlog("$EventLogSaveName")
-        eventvwr -l:"$EventLogSaveName"
-    }
-'
+Command Ex:
+    `$EventLogSaveName = (Get-WmiObject -Class Win32_NTEventlogFile | Where-Object LogfileName -EQ 'Security').BackupEventlog('c:\Windows\Temp\Hostname (yyyy-MM-dd HH.mm.ss) Security.evtx')
+    eventvwr -l:'c:\Windows\Temp\Hostname (yyyy-MM-dd HH.mm.ss) Security.evtx'
+"
             }
             $script:ComputerListContextMenuStrip.Items.Add($ComputerListEventViewerToolStripButton)
 

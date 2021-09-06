@@ -91,7 +91,22 @@ $EventViewerCollectionButtonAdd_Click = {
 
             Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock { Remove-Item 'c:\Windows\Temp\$EventLogSelectionLogFileName ($EventLogPullDateTime).evtx' -Force } -FromSession `$Session"
 
-            eventvwr -l:"$EventLogSaveName"
+            # Opens results with Windows Event Viewer
+            if (Verify-Action -Title 'Windows Event Viewer' -Question "View Logs with Windows Event Viewer?") {
+                eventvwr -l:"$EventLogSaveName"
+                Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "eventvwr -l:'$EventLogSaveName'"
+            }
+
+            # Prompts to open .evtx files with chainsaw.exe by F-Secure Countercept
+            if (Verify-Action -Title 'Event Logs Post-Processing' -Question "Process the collected event logs with ChainSaw by F-Secure Countercept?") {
+                Invoke-Expression "'$Dependencies\Executables\chainsaw\chainsaw.exe' hunt '$EventLogSaveName' --rules '$Dependencies\Executables\chainsaw\sigma_rules\' --mapping '$Dependencies\Executables\chainsaw\mapping_files\sigma-mapping.yml' --full --lateral-all --csv"
+                $EvtxDirectory = Get-ChildItem "$Dependencies\Executables\chainsaw\chainsaw_*" | Select-Object -Last 1
+                $EvtxFile = $null
+                Foreach ($EvtxFile in $(Get-ChildItem $EvtxDirectory)) {
+                    $EvtxFile.fullpath | ogv
+                    Import-Csv "$($EvtxFile.FullPath)" | Out-GridView -Title "Chainsaw by F-Secure Countercept - $EvtxFile"
+                }
+            }
         }
         $Session | Remove-PSSession
 

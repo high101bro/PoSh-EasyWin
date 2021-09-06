@@ -28,6 +28,11 @@ pivot scanning
 v5.4.1 -
 ==================================================
 
+Computer treeview context menu
+	- Renamed Event Viewer GUI to Event Viewer GUI (Connect)
+	- Added Event Viewer GUI (Collect) 
+		Starts a sessions with an endpoint and allows you to download various types of logs to view locally with eventvwr
+
 Updated PSWriteHTML
 	- Fixed Network Connection Filter, preventing the need to rerun the collection if you want to filter the results again
 	- Added new Endpoint Deep Dive Section.
