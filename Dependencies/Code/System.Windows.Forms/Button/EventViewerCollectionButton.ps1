@@ -51,10 +51,15 @@ $EventViewerCollectionButtonAdd_Click = {
             
         $EventLogSelectionLogFileName = $null
         $EventLogSelectionLogFileName = (Invoke-Command -ScriptBlock { 
-            Get-WmiObject -Class Win32_NTEventlogFile 
+            # Method 1: Didn't list all event logs, like sysmon
+            # Get-WmiObject -Class Win32_NTEventlogFile 
+
+            # Method 2 - Lists all available logs
+            wevtutil enum-logs
         } `
         -Session $Session `
-        | Out-GridView -Title 'Event Log Selection' -OutputMode 'Single').LogFileName
+        | Out-GridView -Title 'Event Log Selection' -OutputMode 'Single')
+        #| Out-GridView -Title 'Event Log Selection' -OutputMode 'Single').LogFileName
 
         if ($EventLogSelectionLogFileName) {
             # Clears localhost previously saved results... these results appear automatically when viewing saved .evtx logs
@@ -69,7 +74,12 @@ $EventViewerCollectionButtonAdd_Click = {
                     $EventLogSelectionLogFileName,
                     $EventLogPullDateTime
                 )
-                (Get-WmiObject -Class Win32_NTEventlogFile | Where-Object { $_.LogFileName -eq $EventLogSelectionLogFileName }).BackupEventlog("c:\Windows\Temp\$EventLogSelectionLogFileName ($EventLogPullDateTime).evtx")
+                # Method 1: Didn't list all event logs, like sysmon
+                #(Get-WmiObject -Class Win32_NTEventlogFile | Where-Object { $_.LogFileName -eq $EventLogSelectionLogFileName }).BackupEventlog("c:\Windows\Temp\$EventLogSelectionLogFileName ($EventLogPullDateTime).evtx")
+
+                # Method 2 - Lists all available logs
+                wevtutil epl $EventLogSelectionLogFileName "c:\Windows\Temp\$EventLogSelectionLogFileName ($EventLogPullDateTime).evtx"
+
             } `
             -ArgumentList @($EventLogSelectionLogFileName, $EventLogPullDateTime) `
             -Session $Session
@@ -92,7 +102,7 @@ $EventViewerCollectionButtonAdd_Click = {
             Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock { Remove-Item 'c:\Windows\Temp\$EventLogSelectionLogFileName ($EventLogPullDateTime).evtx' -Force } -FromSession `$Session"
 
             # Opens results with Windows Event Viewer
-            if (Verify-Action -Title 'Windows Event Viewer' -Question "View Logs with Windows Event Viewer?") {
+            if (Verify-Action -Title 'Windows Event Viewer' -Question "View the following Event Logs with Windows Event Viewer?`n`n$EventLogSelectionLogFileName") {
                 eventvwr -l:"$EventLogSaveName"
                 Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "eventvwr -l:'$EventLogSaveName'"
             }
@@ -103,7 +113,6 @@ $EventViewerCollectionButtonAdd_Click = {
                 $EvtxDirectory = Get-ChildItem "$Dependencies\Executables\chainsaw\chainsaw_*" | Select-Object -Last 1
                 $EvtxFile = $null
                 Foreach ($EvtxFile in $(Get-ChildItem $EvtxDirectory)) {
-                    $EvtxFile.fullpath | ogv
                     Import-Csv "$($EvtxFile.FullPath)" | Out-GridView -Title "Chainsaw by F-Secure Countercept - $EvtxFile"
                 }
             }
