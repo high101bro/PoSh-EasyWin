@@ -62,44 +62,48 @@ $EventViewerCollectionButtonAdd_Click = {
         #| Out-GridView -Title 'Event Log Selection' -OutputMode 'Single').LogFileName
 
         if ($EventLogSelectionLogFileName) {
+            $EventLogSelectionLogFileSaveName = $EventLogSelectionLogFileName.replace('/','-')
+
             # Clears localhost previously saved results... these results appear automatically when viewing saved .evtx logs
             Get-ChildItem -Path "$env:ProgramData\Microsoft\Event Viewer\ExternalLogs" | Remove-Item -Force
 
             $EventLogPullDateTime = (Get-Date).ToString('yyyy-MM-dd HH.mm.ss')
             New-Item -Type Directory -Path $script:CollectionSavedDirectoryTextBox.Text -ErrorAction SilentlyContinue
-            $EventLogSaveName = "$($script:CollectionSavedDirectoryTextBox.Text)\$($script:ComputerTreeViewSelected) ($($EventLogPullDateTime)) $($EventLogSelectionLogFileName).evtx"
+            $EventLogSaveName = "$($script:CollectionSavedDirectoryTextBox.Text)\$($script:ComputerTreeViewSelected) ($($EventLogPullDateTime)) $($EventLogSelectionLogFileSaveName).evtx"
 
             Invoke-Command -ScriptBlock { 
                 param(
                     $EventLogSelectionLogFileName,
+                    $EventLogSelectionLogFileSaveName,
                     $EventLogPullDateTime
                 )
                 # Method 1: Didn't list all event logs, like sysmon
-                #(Get-WmiObject -Class Win32_NTEventlogFile | Where-Object { $_.LogFileName -eq $EventLogSelectionLogFileName }).BackupEventlog("c:\Windows\Temp\$EventLogSelectionLogFileName ($EventLogPullDateTime).evtx")
+                #(Get-WmiObject -Class Win32_NTEventlogFile | Where-Object { $_.LogFileName -eq $EventLogSelectionLogFileName }).BackupEventlog("c:\Windows\Temp\$EventLogSelectionLogFileSaveName ($EventLogPullDateTime).evtx")
 
                 # Method 2 - Lists all available logs
-                wevtutil epl $EventLogSelectionLogFileName "c:\Windows\Temp\$EventLogSelectionLogFileName ($EventLogPullDateTime).evtx"
+                wevtutil epl $EventLogSelectionLogFileName "c:\Windows\Temp\$EventLogSelectionLogFileSaveName ($EventLogPullDateTime).evtx"
 
             } `
-            -ArgumentList @($EventLogSelectionLogFileName, $EventLogPullDateTime) `
+            -ArgumentList @($EventLogSelectionLogFileName, $EventLogSelectionLogFileSaveName, $EventLogPullDateTime) `
             -Session $Session
 
-            Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock { (Get-WmiObject -Class Win32_NTEventlogFile | Where-Object { `$_.LogFileName -eq $EventLogSelectionLogFileName }).BackupEventlog('c:\Windows\Temp\$EventLogSelectionLogFileName ($EventLogPullDateTime).evtx') } -FromSession `$Session"
+            Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock { (Get-WmiObject -Class Win32_NTEventlogFile | Where-Object { `$_.LogFileName -eq $EventLogSelectionLogFileName }).BackupEventlog('c:\Windows\Temp\$EventLogSelectionLogFileSaveName ($EventLogPullDateTime).evtx') } -FromSession `$Session"
 
-            Copy-Item -Path "c:\Windows\Temp\$EventLogSelectionLogFileName ($EventLogPullDateTime).evtx" -Destination "$EventLogSaveName" -FromSession $Session
-            Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Copy-Item -Path 'c:\Windows\Temp\$EventLogSelectionLogFileName ($EventLogPullDateTime).evtx' -Destination "$EventLogSaveName" -FromSession `$Session"
+            Copy-Item -Path "c:\Windows\Temp\$EventLogSelectionLogFileSaveName ($EventLogPullDateTime).evtx" -Destination "$EventLogSaveName" -FromSession $Session
+            Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Copy-Item -Path 'c:\Windows\Temp\$EventLogSelectionLogFileSaveName ($EventLogPullDateTime).evtx' -Destination "$EventLogSaveName" -FromSession `$Session"
 
             Invoke-Command -ScriptBlock { 
                 param(
                     $EventLogSelectionLogFileName,
+                    $EventLogSelectionLogFileSaveName,
                     $EventLogPullDateTime
                 )
-                Remove-Item "c:\Windows\Temp\$EventLogSelectionLogFileName ($EventLogPullDateTime).evtx" -Force
+                Remove-Item "c:\Windows\Temp\$EventLogSelectionLogFileSaveName ($EventLogPullDateTime).evtx" -Force
             } `
-            -ArgumentList @($EventLogSelectionLogFileName, $EventLogPullDateTime) `
+            -ArgumentList @($EventLogSelectionLogFileName, $EventLogSelectionLogFileSaveName, $EventLogPullDateTime) `
             -Session $Session
 
-            Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock { Remove-Item 'c:\Windows\Temp\$EventLogSelectionLogFileName ($EventLogPullDateTime).evtx' -Force } -FromSession `$Session"
+            Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock { Remove-Item 'c:\Windows\Temp\$EventLogSelectionLogFileSaveName ($EventLogPullDateTime).evtx' -Force } -FromSession `$Session"
 
             # Opens results with Windows Event Viewer
             if (Verify-Action -Title 'Windows Event Viewer' -Question "View the following Event Logs with Windows Event Viewer?`n`n$EventLogSelectionLogFileName") {

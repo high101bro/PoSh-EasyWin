@@ -28,6 +28,8 @@ pivot scanning
 v5.4.1 -
 ==================================================
 
+Added chainsaw.exe support
+
 Computer treeview context menu
 	- Renamed Event Viewer GUI to Event Viewer GUI (Connect)
 	- Added Event Viewer GUI (Collect) 

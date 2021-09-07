@@ -13,7 +13,7 @@
 |  Requirements  |  PowerShell v3 (Ideally v5)                                     |
 |                |  WinRM and/or DCOM/RPC                                          |
 |  Optional      |  PsExec.exe, Procmon.exe, Autoruns.exe, Sysmon.exe,             |
-|                |  etl2pcapng.exe, kitty.exe, plink.exe              |
+|                |  etl2pcapng.exe, kitty.exe, plink.exe, chainsaw.exe             |
 |                |                                                                 |
 
 ***
