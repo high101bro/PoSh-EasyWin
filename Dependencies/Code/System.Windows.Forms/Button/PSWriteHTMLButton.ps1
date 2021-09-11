@@ -212,7 +212,7 @@ $PSWriteHTMLGraphDataButton = New-Object -TypeName System.Windows.Forms.Button -
     }
 }
 $PSWriteHTMLForm.Controls.Add($PSWriteHTMLGraphDataButton)
-CommonButtonSettings -Button $PSWriteHTMLGraphDataButton
+Apply-CommonButtonSettings -Button $PSWriteHTMLGraphDataButton
 
 $PSWriteHTMLForm.Showdialog()
 
@@ -376,7 +376,7 @@ if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 
                             }
                         }
                         $PSWriteHTMLSelectCommandsForm.Controls.Add($PSWriteHTMLGraphDataButton)
-                        CommonButtonSettings -Button $PSWriteHTMLGraphDataButton
+                        Apply-CommonButtonSettings -Button $PSWriteHTMLGraphDataButton
                         
                         $PSWriteHTMLSelectCommandsForm.Showdialog()
                         

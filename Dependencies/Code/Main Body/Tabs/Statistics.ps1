@@ -24,7 +24,7 @@ $StatisticsRefreshButton = New-Object System.Windows.Forms.Button -Property @{
     Add_Click = $StatisticsRefreshButtonAdd_Click
 }
 $Section2StatisticsTab.Controls.Add($StatisticsRefreshButton)
-CommonButtonSettings -Button $StatisticsRefreshButton
+Apply-CommonButtonSettings -Button $StatisticsRefreshButton
 
 
 Load-Code "$Dependencies\Code\System.Windows.Forms\Button\StatisticsViewLogButton.ps1"
@@ -39,7 +39,7 @@ $StatisticsViewLogButton = New-Object System.Windows.Forms.Button -Property @{
     Add_MouseHover = $StatisticsViewLogButtonAdd_MouseHover
 }
 $Section2StatisticsTab.Controls.Add($StatisticsViewLogButton)
-CommonButtonSettings -Button $StatisticsViewLogButton
+Apply-CommonButtonSettings -Button $StatisticsViewLogButton
 
 
 $PoshEasyWinStatistics = New-Object System.Windows.Forms.Textbox -Property @{

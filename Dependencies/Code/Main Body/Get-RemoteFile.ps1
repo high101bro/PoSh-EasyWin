@@ -182,8 +182,8 @@ function Get-RemoteFile {
         $PoShEasyWin.Refresh()
     }
 
-    CommonButtonSettings -Button $RetrieveFilesButton
+    Apply-CommonButtonSettings -Button $RetrieveFilesButton
 
-    CommonButtonSettings -Button $OpenXmlResultsButton
-    CommonButtonSettings -Button $OpenCsvResultsButton
+    Apply-CommonButtonSettings -Button $OpenXmlResultsButton
+    Apply-CommonButtonSettings -Button $OpenCsvResultsButton
 }

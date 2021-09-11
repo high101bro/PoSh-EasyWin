@@ -44,6 +44,6 @@ $FeatureRequestReportBugButton = New-Object System.Windows.Forms.Button -Propert
     }
 }
 $Section3AboutTab.Controls.Add($FeatureRequestReportBugButton)
-CommonButtonSettings -Button $FeatureRequestReportBugButton
+Apply-CommonButtonSettings -Button $FeatureRequestReportBugButton
 $FeatureRequestReportBugButton.bringtofront()
 

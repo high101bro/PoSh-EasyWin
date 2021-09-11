@@ -339,7 +339,7 @@ If the localhost is joined to the domain
     Resources:
         https://docs.microsoft.com/en-us/sysinternals/downloads/sysmon
 Tips in order to run PoSh-EasyWin:
-    Scripts downloaded from the internet are blocked for execution as a security precaution
+    Scripts downloaded from the internet are blocked for execution as a Windodws' security precaution
         You may have to use the Unblock-File cmdlet to be able to run the script
             PS> Get-ChildItem -Path C:\Path\To\PoSh-Easywin -Recurse | Unblock-File
     Set the execution policy [Option 1] Locally via command line

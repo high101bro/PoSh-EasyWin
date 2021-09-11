@@ -15,12 +15,7 @@
 #         New-Item -ItemType Directory -Path "$script:IndividualHostResults\$CollectionName" -Force
 
 #         # if the SaveDirectory parameter is provided, it will be used to identify where to save the results to
-#         if ($SaveDirectory) {
-#             $CollectionSavedDirectory = $SaveDirectory
-#         }
-#         else {
-#             $CollectionSavedDirectory = "$script:IndividualHostResults\$CollectionName"
-#         }
+#         $CollectionSavedDirectory = "$script:IndividualHostResults\$CollectionName"
 
 #         $script:ProgressBarEndpointsProgressBar.Maximum = $script:ComputerList.count
 
@@ -201,13 +196,7 @@
         $script:IndividualHostResults = "$script:CollectedDataTimeStampDirectory\Results By Endpoints"
         New-Item -ItemType Directory -Path "$script:IndividualHostResults\$CollectionName" -Force
 
-        # if the SaveDirectory parameter is provided, it will be used to identify where to save the results to
-        if ($SaveDirectory) {
-            $CollectionSavedDirectory = $SaveDirectory
-        }
-        else {
-            $CollectionSavedDirectory = "$script:IndividualHostResults\$CollectionName"
-        }
+        $CollectionSavedDirectory = "$script:IndividualHostResults\$CollectionName"
 
         $script:ProgressBarEndpointsProgressBar.Maximum = $script:ComputerList.count
 

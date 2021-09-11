@@ -174,10 +174,10 @@ function Get-RemoteAlternateDataStream {
         if ($SelectedFilesToExtractStreamData) { Start-Sleep -Seconds 1;  Invoke-Item -Path $RetrieveFilesSaveDirectory }
         $PoShEasyWin.Refresh()
     }
-    CommonButtonSettings -Button $FileSearchAlternateDataStreamDirectoryExtractStreamDataButton
+    Apply-CommonButtonSettings -Button $FileSearchAlternateDataStreamDirectoryExtractStreamDataButton
 
-    CommonButtonSettings -Button $RetrieveFilesButton
+    Apply-CommonButtonSettings -Button $RetrieveFilesButton
 
-    CommonButtonSettings -Button $OpenXmlResultsButton
-    CommonButtonSettings -Button $OpenCsvResultsButton
+    Apply-CommonButtonSettings -Button $OpenXmlResultsButton
+    Apply-CommonButtonSettings -Button $OpenCsvResultsButton
 }

@@ -75,6 +75,10 @@ function Deselect-AllCommands {
     $SysinternalsProcessMonitorCheckbox.ForeColor                = 'Blue'
     $ExeScriptUserSpecifiedExecutableAndScriptCheckbox.ForeColor = 'Blue'
 
-#Update-TreeViewData -Commands -TreeView $script:CommandsTreeView.Nodes
+    $script:PreviousQueryCount = 0
+    $script:SectionQueryCount = 0
+
+    # This has the added affect of updating the command count which in part has to do with the disable/color change of the 'Execute Script' button
+    Update-TreeViewData -Commands -TreeView $script:CommandsTreeView.Nodes
 }
 

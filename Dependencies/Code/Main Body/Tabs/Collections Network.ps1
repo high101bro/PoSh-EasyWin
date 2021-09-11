@@ -43,7 +43,7 @@ $NetworkConnectionsSearchGroupBox = New-Object System.Windows.Forms.GroupBox -Pr
                 Add_Click = { Import-Csv "$Dependencies\Reference RegEx Examples.csv" | Out-GridView }
             }
             $NetworkConnectionsSearchGroupBox.Controls.Add($SupportsRegexButton)
-            CommonButtonSettings -Button $SupportsRegexButton
+            Apply-CommonButtonSettings -Button $SupportsRegexButton
 $Section1NetworkConnectionsSearchTab.Controls.Add($NetworkConnectionsSearchGroupBox)
 
 
@@ -60,7 +60,9 @@ $NetworkConnectionSearchRemoteIPAddressCheckbox = New-Object System.Windows.Form
     Height = $FormScale * 22
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
     ForeColor = 'Blue'
-    Add_Click = { 
+    Add_Click = {
+        Update-QueryCount
+        
         Update-TreeViewData -Commands -TreeView $script:CommandsTreeView.Nodes
         if ($this.checked){$this.ForeColor = 'Red'} else {$this.ForeColor = 'Blue'}
     }
@@ -79,7 +81,7 @@ $Section1NetworkConnectionsSearchTab.Controls.Add($NetworkConnectionSearchRemote
             Add_Click = $NetworkConnectionSearchRemoteIPAddressSelectionButtonAdd_Click
         }
         $Section1NetworkConnectionsSearchTab.Controls.Add($NetworkConnectionSearchRemoteIPAddressSelectionButton)
-        CommonButtonSettings -Button $NetworkConnectionSearchRemoteIPAddressSelectionButton
+        Apply-CommonButtonSettings -Button $NetworkConnectionSearchRemoteIPAddressSelectionButton
 
 
         Update-FormProgress "$Dependencies\Code\System.Windows.Forms\RichTextBox\NetworkConnectionSearchRemoteIPAddressRichTextbox.ps1"
@@ -111,6 +113,8 @@ $NetworkConnectionSearchRemotePortCheckbox = New-Object System.Windows.Forms.Che
     Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
     ForeColor = 'Blue'
     Add_Click = { 
+        Update-QueryCount
+        
         Update-TreeViewData -Commands -TreeView $script:CommandsTreeView.Nodes
         if ($this.checked){$this.ForeColor = 'Red'} else {$this.ForeColor = 'Blue'}
     }
@@ -129,7 +133,7 @@ $Section1NetworkConnectionsSearchTab.Controls.Add($NetworkConnectionSearchRemote
             Add_Click = $NetworkConnectionSearchRemotePortSelectionButtonAdd_Click
         }
         $Section1NetworkConnectionsSearchTab.Controls.Add($NetworkConnectionSearchRemotePortSelectionButton)
-        CommonButtonSettings -Button $NetworkConnectionSearchRemotePortSelectionButton
+        Apply-CommonButtonSettings -Button $NetworkConnectionSearchRemotePortSelectionButton
 
 
         Update-FormProgress "$Dependencies\Code\System.Windows.Forms\RichTextBox\NetworkConnectionSearchRemotePortRichTextbox.ps1"
@@ -161,6 +165,8 @@ $NetworkConnectionSearchLocalPortCheckbox = New-Object System.Windows.Forms.Chec
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
     ForeColor = 'Blue'
     Add_Click = { 
+        Update-QueryCount
+        
         Update-TreeViewData -Commands -TreeView $script:CommandsTreeView.Nodes
         if ($this.checked){$this.ForeColor = 'Red'} else {$this.ForeColor = 'Blue'}
     }
@@ -179,7 +185,7 @@ $Section1NetworkConnectionsSearchTab.Controls.Add($NetworkConnectionSearchLocalP
             Add_Click = $NetworkConnectionSearchLocalPortSelectionButtonAdd_Click
         }
         $Section1NetworkConnectionsSearchTab.Controls.Add($NetworkConnectionSearchLocalPortSelectionButton)
-        CommonButtonSettings -Button $NetworkConnectionSearchLocalPortSelectionButton
+        Apply-CommonButtonSettings -Button $NetworkConnectionSearchLocalPortSelectionButton
 
 
         Update-FormProgress "$Dependencies\Code\System.Windows.Forms\RichTextBox\NetworkConnectionSearchLocalPortRichTextbox.ps1"
@@ -229,6 +235,8 @@ $NetworkConnectionSearchCommandLineCheckbox = New-Object System.Windows.Forms.Ch
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
     ForeColor = 'Blue'
     Add_Click = {
+        Update-QueryCount
+        
         Update-TreeViewData -Commands -TreeView $script:CommandsTreeView.Nodes
         if ($this.checked){$this.ForeColor = 'Red'} else {$this.ForeColor = 'Blue'}
     }
@@ -263,6 +271,8 @@ $NetworkConnectionSearchExecutablePathCheckbox = New-Object System.Windows.Forms
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
     ForeColor = 'Blue'
     Add_Click = {
+        Update-QueryCount
+        
         Update-TreeViewData -Commands -TreeView $script:CommandsTreeView.Nodes
         if ($this.checked){$this.ForeColor = 'Red'} else {$this.ForeColor = 'Blue'}
     }
@@ -317,6 +327,8 @@ $NetworkConnectionSearchProcessCheckbox = New-Object System.Windows.Forms.CheckB
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
     ForeColor = 'Blue'
     Add_Click = {
+        Update-QueryCount
+        
         Update-TreeViewData -Commands -TreeView $script:CommandsTreeView.Nodes
         if ($this.checked){$this.ForeColor = 'Red'} else {$this.ForeColor = 'Blue'}
     }
@@ -355,6 +367,8 @@ $NetworkConnectionSearchDNSCacheCheckbox = New-Object System.Windows.Forms.Check
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
     ForeColor = 'Blue'
     Add_Click = {
+        Update-QueryCount
+        
         Update-TreeViewData -Commands -TreeView $script:CommandsTreeView.Nodes
         if ($this.checked){$this.ForeColor = 'Red'} else {$this.ForeColor = 'Blue'}
     }

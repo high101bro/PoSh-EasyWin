@@ -176,7 +176,7 @@ $AutoChartPullNewDataButton = New-Object System.Windows.Forms.Button -Property @
     Height = $FormScale * 22
 }
  $script:AutoChartsIndividualTab01.Controls.Add($AutoChartPullNewDataButton)
-CommonButtonSettings -Button $AutoChartPullNewDataButton
+Apply-CommonButtonSettings -Button $AutoChartPullNewDataButton
 $AutoChartPullNewDataButton.Add_Click({
 
     #====================
@@ -398,7 +398,7 @@ $script:AutoChart01ServicesOptionsButton = New-Object Windows.Forms.Button -Prop
     Size      = @{ Width  = $FormScale * 75
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart01ServicesOptionsButton
+Apply-CommonButtonSettings -Button $script:AutoChart01ServicesOptionsButton
 $script:AutoChart01ServicesOptionsButton.Add_Click({
     if ($script:AutoChart01ServicesOptionsButton.Text -eq 'Options v') {
         $script:AutoChart01ServicesOptionsButton.Text = 'Options ^'
@@ -545,7 +545,7 @@ $script:AutoChart01Services3DToggleButton = New-Object Windows.Forms.Button -Pro
     Size      = @{ Width  = $FormScale * 65
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart01Services3DToggleButton
+Apply-CommonButtonSettings -Button $script:AutoChart01Services3DToggleButton
 $script:AutoChart01Services3DInclination = 0
 $script:AutoChart01Services3DToggleButton.Add_Click({
 
@@ -631,7 +631,7 @@ $script:AutoChart01ServicesCheckDiffButton = New-Object Windows.Forms.Button -Pr
     Anchor    = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
 }
-CommonButtonSettings -Button $script:AutoChart01ServicesCheckDiffButton
+Apply-CommonButtonSettings -Button $script:AutoChart01ServicesCheckDiffButton
 $script:AutoChart01ServicesCheckDiffButton.Add_Click({
     $script:AutoChart01ServicesInvestDiffDropDownArraY = $script:AutoChartDataSourceCsv | Select-Object -Property 'Name' -ExpandProperty 'Name' | Sort-Object -Unique
 
@@ -676,7 +676,7 @@ $script:AutoChart01ServicesCheckDiffButton.Add_Click({
         Width    = $FormScale * 100
         Height   = $FormScale * 20
     }
-    CommonButtonSettings -Button $script:AutoChart01ServicesInvestDiffExecuteButton
+    Apply-CommonButtonSettings -Button $script:AutoChart01ServicesInvestDiffExecuteButton
     $script:AutoChart01ServicesInvestDiffExecuteButton.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart01 -Filter $script:AutoChart01ServicesFilterComboBox.SelectedItem }})
     $script:AutoChart01ServicesInvestDiffExecuteButton.Add_Click({ script:InvestigateDifference-AutoChart01 -Filter $script:AutoChart01ServicesFilterComboBox.SelectedItem })
 
@@ -742,7 +742,7 @@ $script:AutoChart01ServicesExpandChartButton = New-Object System.Windows.Forms.B
                 Height = $FormScale * 23 }
     Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartOpenResultsOpenFileDialogfilename -QueryName "Services" -QueryTabName "Service Names" -PropertyX "Name" -PropertyY "ComputerName" }
 }
-CommonButtonSettings -Button $script:AutoChart01ServicesExpandChartButton
+Apply-CommonButtonSettings -Button $script:AutoChart01ServicesExpandChartButton
 $script:AutoChart01ServicesManipulationPanel.Controls.Add($script:AutoChart01ServicesExpandChartButton)
 
 
@@ -753,7 +753,7 @@ $script:AutoChart01ServicesOpenInShell = New-Object Windows.Forms.Button -Proper
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart01ServicesOpenInShell
+Apply-CommonButtonSettings -Button $script:AutoChart01ServicesOpenInShell
 $script:AutoChart01ServicesOpenInShell.Add_Click({ AutoChartOpenDataInShell })
 $script:AutoChart01ServicesManipulationPanel.controls.Add($script:AutoChart01ServicesOpenInShell)
 
@@ -765,7 +765,7 @@ $script:AutoChart01ServicesResults = New-Object Windows.Forms.Button -Property @
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart01ServicesResults
+Apply-CommonButtonSettings -Button $script:AutoChart01ServicesResults
 $script:AutoChart01ServicesResults.Add_Click({ $script:AutoChartDataSourceCsv | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" })
 $script:AutoChart01ServicesManipulationPanel.controls.Add($script:AutoChart01ServicesResults)
 
@@ -777,7 +777,7 @@ $script:AutoChart01ServicesSaveButton = New-Object Windows.Forms.Button -Propert
     Size     = @{ Width  = $FormScale * 205
                   Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart01ServicesSaveButton
+Apply-CommonButtonSettings -Button $script:AutoChart01ServicesSaveButton
 [enum]::GetNames('System.Windows.Forms.DataVisualization.Charting.ChartImageFormat')
 $script:AutoChart01ServicesSaveButton.Add_Click({
     Save-ChartImage -Chart $script:AutoChart01Services -Title $script:AutoChart01ServicesTitle
@@ -955,7 +955,7 @@ $script:AutoChart02ServicesOptionsButton = New-Object Windows.Forms.Button -Prop
     Size      = @{ Width  = $FormScale * 75
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart02ServicesOptionsButton
+Apply-CommonButtonSettings -Button $script:AutoChart02ServicesOptionsButton
 $script:AutoChart02ServicesOptionsButton.Add_Click({
     if ($script:AutoChart02ServicesOptionsButton.Text -eq 'Options v') {
         $script:AutoChart02ServicesOptionsButton.Text = 'Options ^'
@@ -1100,7 +1100,7 @@ $script:AutoChart02Services3DToggleButton = New-Object Windows.Forms.Button -Pro
     Size      = @{ Width  = $FormScale * 65
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart02Services3DToggleButton
+Apply-CommonButtonSettings -Button $script:AutoChart02Services3DToggleButton
 $script:AutoChart02Services3DInclination = 0
 $script:AutoChart02Services3DToggleButton.Add_Click({
     $script:AutoChart02Services3DInclination += 10
@@ -1184,7 +1184,7 @@ $script:AutoChart02ServicesCheckDiffButton = New-Object Windows.Forms.Button -Pr
                    Height = $FormScale * 23 }
     Anchor    = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
 }
-CommonButtonSettings -Button $script:AutoChart02ServicesCheckDiffButton
+Apply-CommonButtonSettings -Button $script:AutoChart02ServicesCheckDiffButton
 $script:AutoChart02ServicesCheckDiffButton.Add_Click({
     $script:AutoChart02ServicesInvestDiffDropDownArraY = $script:AutoChartDataSourceCsv | Select-Object -Property 'Name' -ExpandProperty 'Name' | Sort-Object -Unique
 
@@ -1229,7 +1229,7 @@ $script:AutoChart02ServicesCheckDiffButton.Add_Click({
         Width    = $FormScale * 100
         Height   = $FormScale * 20
     }
-    CommonButtonSettings -Button $script:AutoChart02ServicesInvestDiffExecuteButton
+    Apply-CommonButtonSettings -Button $script:AutoChart02ServicesInvestDiffExecuteButton
     $script:AutoChart02ServicesInvestDiffExecuteButton.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart02 }})
     $script:AutoChart02ServicesInvestDiffExecuteButton.Add_Click({ script:InvestigateDifference-AutoChart02 })
 
@@ -1295,7 +1295,7 @@ $script:AutoChart02ServicesExpandChartButton = New-Object System.Windows.Forms.B
                 Height = $FormScale * 23 }
     Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartOpenResultsOpenFileDialogfilename -QueryName "Services" -QueryTabName "Services per Endpoint" -PropertyX "ComputerName" -PropertyY "Name" }
 }
-CommonButtonSettings -Button $script:AutoChart02ServicesExpandChartButton
+Apply-CommonButtonSettings -Button $script:AutoChart02ServicesExpandChartButton
 $script:AutoChart02ServicesManipulationPanel.Controls.Add($script:AutoChart02ServicesExpandChartButton)
 
 
@@ -1306,7 +1306,7 @@ $script:AutoChart02ServicesOpenInShell = New-Object Windows.Forms.Button -Proper
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart02ServicesOpenInShell
+Apply-CommonButtonSettings -Button $script:AutoChart02ServicesOpenInShell
 $script:AutoChart02ServicesOpenInShell.Add_Click({ AutoChartOpenDataInShell })
 $script:AutoChart02ServicesManipulationPanel.controls.Add($script:AutoChart02ServicesOpenInShell)
 
@@ -1318,7 +1318,7 @@ $script:AutoChart02ServicesResults = New-Object Windows.Forms.Button -Property @
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart02ServicesResults
+Apply-CommonButtonSettings -Button $script:AutoChart02ServicesResults
 $script:AutoChart02ServicesResults.Add_Click({ $script:AutoChartDataSourceCsv | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" })
 $script:AutoChart02ServicesManipulationPanel.controls.Add($script:AutoChart02ServicesResults)
 
@@ -1330,7 +1330,7 @@ $script:AutoChart02ServicesSaveButton = New-Object Windows.Forms.Button -Propert
     Size     = @{ Width  = $FormScale * 205
                   Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart02ServicesSaveButton
+Apply-CommonButtonSettings -Button $script:AutoChart02ServicesSaveButton
 [enum]::GetNames('System.Windows.Forms.DataVisualization.Charting.ChartImageFormat')
 $script:AutoChart02ServicesSaveButton.Add_Click({
     Save-ChartImage -Chart $script:AutoChart02Services -Title $script:AutoChart02ServicesTitle
@@ -1489,7 +1489,7 @@ $script:AutoChart03ServicesOptionsButton = New-Object Windows.Forms.Button -Prop
     Size      = @{ Width  = $FormScale * 75
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart03ServicesOptionsButton
+Apply-CommonButtonSettings -Button $script:AutoChart03ServicesOptionsButton
 $script:AutoChart03ServicesOptionsButton.Add_Click({
     if ($script:AutoChart03ServicesOptionsButton.Text -eq 'Options v') {
         $script:AutoChart03ServicesOptionsButton.Text = 'Options ^'
@@ -1642,7 +1642,7 @@ $script:AutoChart03Services3DToggleButton = New-Object Windows.Forms.Button -Pro
     Size      = @{ Width  = $FormScale * 65
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart03Services3DToggleButton
+Apply-CommonButtonSettings -Button $script:AutoChart03Services3DToggleButton
 $script:AutoChart03Services3DInclination = 0
 $script:AutoChart03Services3DToggleButton.Add_Click({
     $script:AutoChart03Services3DInclination += 10
@@ -1725,7 +1725,7 @@ $script:AutoChart03ServicesCheckDiffButton = New-Object Windows.Forms.Button -Pr
                    Height = $FormScale * 23 }
     Anchor    = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
 }
-CommonButtonSettings -Button $script:AutoChart03ServicesCheckDiffButton
+Apply-CommonButtonSettings -Button $script:AutoChart03ServicesCheckDiffButton
 $script:AutoChart03ServicesCheckDiffButton.Add_Click({
     $script:AutoChart03ServicesInvestDiffDropDownArraY = $script:AutoChartDataSourceCsv | Select-Object -Property 'Name' -ExpandProperty 'Name' | Sort-Object -Unique
 
@@ -1770,7 +1770,7 @@ $script:AutoChart03ServicesCheckDiffButton.Add_Click({
         Width    = $FormScale * 100
         Height   = $FormScale * 20
     }
-    CommonButtonSettings -Button $script:AutoChart03ServicesInvestDiffExecuteButton
+    Apply-CommonButtonSettings -Button $script:AutoChart03ServicesInvestDiffExecuteButton
     $script:AutoChart03ServicesInvestDiffExecuteButton.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart03 }})
     $script:AutoChart03ServicesInvestDiffExecuteButton.Add_Click({ script:InvestigateDifference-AutoChart03 })
 
@@ -1836,7 +1836,7 @@ $script:AutoChart03ServicesExpandChartButton = New-Object System.Windows.Forms.B
                 Height = $FormScale * 23 }
     Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartOpenResultsOpenFileDialogfilename -QueryName "Services" -QueryTabName "Service Names" -PropertyX "Name" -PropertyY "ComputerName" }
 }
-CommonButtonSettings -Button $script:AutoChart03ServicesExpandChartButton
+Apply-CommonButtonSettings -Button $script:AutoChart03ServicesExpandChartButton
 $script:AutoChart03ServicesManipulationPanel.Controls.Add($script:AutoChart03ServicesExpandChartButton)
 
 
@@ -1847,7 +1847,7 @@ $script:AutoChart03ServicesOpenInShell = New-Object Windows.Forms.Button -Proper
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart03ServicesOpenInShell
+Apply-CommonButtonSettings -Button $script:AutoChart03ServicesOpenInShell
 $script:AutoChart03ServicesOpenInShell.Add_Click({ AutoChartOpenDataInShell })
 $script:AutoChart03ServicesManipulationPanel.controls.Add($script:AutoChart03ServicesOpenInShell)
 
@@ -1859,7 +1859,7 @@ $script:AutoChart03ServicesResults = New-Object Windows.Forms.Button -Property @
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart03ServicesResults
+Apply-CommonButtonSettings -Button $script:AutoChart03ServicesResults
 $script:AutoChart03ServicesResults.Add_Click({ $script:AutoChartDataSourceCsv | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" })
 $script:AutoChart03ServicesManipulationPanel.controls.Add($script:AutoChart03ServicesResults)
 
@@ -1871,7 +1871,7 @@ $script:AutoChart03ServicesSaveButton = New-Object Windows.Forms.Button -Propert
     Size     = @{ Width  = $FormScale * 205
                   Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart03ServicesSaveButton
+Apply-CommonButtonSettings -Button $script:AutoChart03ServicesSaveButton
 [enum]::GetNames('System.Windows.Forms.DataVisualization.Charting.ChartImageFormat')
 $script:AutoChart03ServicesSaveButton.Add_Click({
     Save-ChartImage -Chart $script:AutoChart03Services -Title $script:AutoChart03ServicesTitle
@@ -2031,7 +2031,7 @@ $script:AutoChart04ServicesOptionsButton = New-Object Windows.Forms.Button -Prop
     Size      = @{ Width  = $FormScale * 75
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart04ServicesOptionsButton
+Apply-CommonButtonSettings -Button $script:AutoChart04ServicesOptionsButton
 $script:AutoChart04ServicesOptionsButton.Add_Click({
     if ($script:AutoChart04ServicesOptionsButton.Text -eq 'Options v') {
         $script:AutoChart04ServicesOptionsButton.Text = 'Options ^'
@@ -2177,7 +2177,7 @@ $script:AutoChart04Services3DToggleButton = New-Object Windows.Forms.Button -Pro
     Size      = @{ Width  = $FormScale * 65
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart04Services3DToggleButton
+Apply-CommonButtonSettings -Button $script:AutoChart04Services3DToggleButton
 $script:AutoChart04Services3DInclination = 0
 $script:AutoChart04Services3DToggleButton.Add_Click({
     $script:AutoChart04Services3DInclination += 10
@@ -2260,7 +2260,7 @@ $script:AutoChart04ServicesCheckDiffButton = New-Object Windows.Forms.Button -Pr
                    Height = $FormScale * 23 }
     Anchor    = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
 }
-CommonButtonSettings -Button $script:AutoChart04ServicesCheckDiffButton
+Apply-CommonButtonSettings -Button $script:AutoChart04ServicesCheckDiffButton
 $script:AutoChart04ServicesCheckDiffButton.Add_Click({
     $script:AutoChart04ServicesInvestDiffDropDownArraY = $script:AutoChartDataSourceCsv | Select-Object -Property 'Name' -ExpandProperty 'Name' | Sort-Object -Unique
 
@@ -2305,7 +2305,7 @@ $script:AutoChart04ServicesCheckDiffButton.Add_Click({
         Width    = $FormScale * 100
         Height   = $FormScale * 20
     }
-    CommonButtonSettings -Button $script:AutoChart04ServicesInvestDiffExecuteButton
+    Apply-CommonButtonSettings -Button $script:AutoChart04ServicesInvestDiffExecuteButton
     $script:AutoChart04ServicesInvestDiffExecuteButton.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart04 }})
     $script:AutoChart04ServicesInvestDiffExecuteButton.Add_Click({ script:InvestigateDifference-AutoChart04 })
 
@@ -2371,7 +2371,7 @@ $script:AutoChart04ServicesExpandChartButton = New-Object System.Windows.Forms.B
                 Height = $FormScale * 23 }
     Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartOpenResultsOpenFileDialogfilename -QueryName "Services" -QueryTabName "Service Names" -PropertyX "Name" -PropertyY "ComputerName" }
 }
-CommonButtonSettings -Button $script:AutoChart04ServicesExpandChartButton
+Apply-CommonButtonSettings -Button $script:AutoChart04ServicesExpandChartButton
 $script:AutoChart04ServicesManipulationPanel.Controls.Add($script:AutoChart04ServicesExpandChartButton)
 
 
@@ -2382,7 +2382,7 @@ $script:AutoChart04ServicesOpenInShell = New-Object Windows.Forms.Button -Proper
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart04ServicesOpenInShell
+Apply-CommonButtonSettings -Button $script:AutoChart04ServicesOpenInShell
 $script:AutoChart04ServicesOpenInShell.Add_Click({ AutoChartOpenDataInShell })
 $script:AutoChart04ServicesManipulationPanel.controls.Add($script:AutoChart04ServicesOpenInShell)
 
@@ -2394,7 +2394,7 @@ $script:AutoChart04ServicesResults = New-Object Windows.Forms.Button -Property @
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart04ServicesResults
+Apply-CommonButtonSettings -Button $script:AutoChart04ServicesResults
 $script:AutoChart04ServicesResults.Add_Click({ $script:AutoChartDataSourceCsv | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" })
 $script:AutoChart04ServicesManipulationPanel.controls.Add($script:AutoChart04ServicesResults)
 
@@ -2406,7 +2406,7 @@ $script:AutoChart04ServicesSaveButton = New-Object Windows.Forms.Button -Propert
     Size     = @{ Width  = $FormScale * 205
                   Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart04ServicesSaveButton
+Apply-CommonButtonSettings -Button $script:AutoChart04ServicesSaveButton
 [enum]::GetNames('System.Windows.Forms.DataVisualization.Charting.ChartImageFormat')
 $script:AutoChart04ServicesSaveButton.Add_Click({
     Save-ChartImage -Chart $script:AutoChart04Services -Title $script:AutoChart04ServicesTitle
@@ -2570,7 +2570,7 @@ $script:AutoChart05ServicesOptionsButton = New-Object Windows.Forms.Button -Prop
     Size      = @{ Width  = $FormScale * 75
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart05ServicesOptionsButton
+Apply-CommonButtonSettings -Button $script:AutoChart05ServicesOptionsButton
 $script:AutoChart05ServicesOptionsButton.Add_Click({
     if ($script:AutoChart05ServicesOptionsButton.Text -eq 'Options v') {
         $script:AutoChart05ServicesOptionsButton.Text = 'Options ^'
@@ -2693,7 +2693,7 @@ $script:AutoChart05Services3DToggleButton = New-Object Windows.Forms.Button -Pro
     Size      = @{ Width  = $FormScale * 65
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart05Services3DToggleButton
+Apply-CommonButtonSettings -Button $script:AutoChart05Services3DToggleButton
 $script:AutoChart05Services3DInclination = 0
 $script:AutoChart05Services3DToggleButton.Add_Click({
     $script:AutoChart05Services3DInclination += 10
@@ -2776,7 +2776,7 @@ $script:AutoChart05ServicesCheckDiffButton = New-Object Windows.Forms.Button -Pr
                    Height = $FormScale * 23 }
     Anchor    = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
 }
-CommonButtonSettings -Button $script:AutoChart05ServicesCheckDiffButton
+Apply-CommonButtonSettings -Button $script:AutoChart05ServicesCheckDiffButton
 $script:AutoChart05ServicesCheckDiffButton.Add_Click({
     $script:AutoChart05ServicesInvestDiffDropDownArraY = $script:AutoChartDataSourceCsv | Select-Object -Property 'ProcessName' -ExpandProperty 'ProcessName' | Sort-Object -Unique
 
@@ -2821,7 +2821,7 @@ $script:AutoChart05ServicesCheckDiffButton.Add_Click({
         Width    = $FormScale * 100
         Height   = $FormScale * 20
     }
-    CommonButtonSettings -Button $script:AutoChart05ServicesInvestDiffExecuteButton
+    Apply-CommonButtonSettings -Button $script:AutoChart05ServicesInvestDiffExecuteButton
     $script:AutoChart05ServicesInvestDiffExecuteButton.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart05 }})
     $script:AutoChart05ServicesInvestDiffExecuteButton.Add_Click({ script:InvestigateDifference-AutoChart05 })
 
@@ -2887,7 +2887,7 @@ $script:AutoChart05ServicesExpandChartButton = New-Object System.Windows.Forms.B
                 Height = $FormScale * 23 }
     Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartOpenResultsOpenFileDialogfilename -QueryName "Services" -QueryTabName "Service Names" -PropertyX "Name" -PropertyY "ComputerName" }
 }
-CommonButtonSettings -Button $script:AutoChart05ServicesExpandChartButton
+Apply-CommonButtonSettings -Button $script:AutoChart05ServicesExpandChartButton
 $script:AutoChart05ServicesManipulationPanel.Controls.Add($script:AutoChart05ServicesExpandChartButton)
 
 
@@ -2898,7 +2898,7 @@ $script:AutoChart05ServicesOpenInShell = New-Object Windows.Forms.Button -Proper
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart05ServicesOpenInShell
+Apply-CommonButtonSettings -Button $script:AutoChart05ServicesOpenInShell
 $script:AutoChart05ServicesOpenInShell.Add_Click({ AutoChartOpenDataInShell })
 $script:AutoChart05ServicesManipulationPanel.controls.Add($script:AutoChart05ServicesOpenInShell)
 
@@ -2910,7 +2910,7 @@ $script:AutoChart05ServicesResults = New-Object Windows.Forms.Button -Property @
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart05ServicesResults
+Apply-CommonButtonSettings -Button $script:AutoChart05ServicesResults
 $script:AutoChart05ServicesResults.Add_Click({ $script:AutoChartDataSourceCsv | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" })
 $script:AutoChart05ServicesManipulationPanel.controls.Add($script:AutoChart05ServicesResults)
 
@@ -2922,7 +2922,7 @@ $script:AutoChart05ServicesSaveButton = New-Object Windows.Forms.Button -Propert
     Size     = @{ Width  = $FormScale * 205
                   Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart05ServicesSaveButton
+Apply-CommonButtonSettings -Button $script:AutoChart05ServicesSaveButton
 [enum]::GetNames('System.Windows.Forms.DataVisualization.Charting.ChartImageFormat')
 $script:AutoChart05ServicesSaveButton.Add_Click({
     Save-ChartImage -Chart $script:AutoChart05Services -Title $script:AutoChart05ServicesTitle
@@ -3082,7 +3082,7 @@ $script:AutoChart06ServicesOptionsButton = New-Object Windows.Forms.Button -Prop
     Size      = @{ Width  = $FormScale * 75
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart06ServicesOptionsButton
+Apply-CommonButtonSettings -Button $script:AutoChart06ServicesOptionsButton
 $script:AutoChart06ServicesOptionsButton.Add_Click({
     if ($script:AutoChart06ServicesOptionsButton.Text -eq 'Options v') {
         $script:AutoChart06ServicesOptionsButton.Text = 'Options ^'
@@ -3205,7 +3205,7 @@ $script:AutoChart06Services3DToggleButton = New-Object Windows.Forms.Button -Pro
     Size      = @{ Width  = $FormScale * 65
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart06Services3DToggleButton
+Apply-CommonButtonSettings -Button $script:AutoChart06Services3DToggleButton
 $script:AutoChart06Services3DInclination = 0
 $script:AutoChart06Services3DToggleButton.Add_Click({
     $script:AutoChart06Services3DInclination += 10
@@ -3288,7 +3288,7 @@ $script:AutoChart06ServicesCheckDiffButton = New-Object Windows.Forms.Button -Pr
                    Height = $FormScale * 23 }
     Anchor    = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
 }
-CommonButtonSettings -Button $script:AutoChart06ServicesCheckDiffButton
+Apply-CommonButtonSettings -Button $script:AutoChart06ServicesCheckDiffButton
 $script:AutoChart06ServicesCheckDiffButton.Add_Click({
     $script:AutoChart06ServicesInvestDiffDropDownArraY = $script:AutoChartDataSourceCsv | Select-Object -Property 'StartName' -ExpandProperty 'StartName' | Sort-Object -Unique
 
@@ -3333,7 +3333,7 @@ $script:AutoChart06ServicesCheckDiffButton.Add_Click({
         Width    = $FormScale * 100
         Height   = $FormScale * 20
     }
-    CommonButtonSettings -Button $script:AutoChart06ServicesInvestDiffExecuteButton
+    Apply-CommonButtonSettings -Button $script:AutoChart06ServicesInvestDiffExecuteButton
     $script:AutoChart06ServicesInvestDiffExecuteButton.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart06 }})
     $script:AutoChart06ServicesInvestDiffExecuteButton.Add_Click({ script:InvestigateDifference-AutoChart06 })
 
@@ -3399,7 +3399,7 @@ $script:AutoChart06ServicesExpandChartButton = New-Object System.Windows.Forms.B
                 Height = $FormScale * 23 }
     Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartOpenResultsOpenFileDialogfilename -QueryName "Services" -QueryTabName "Service Names" -PropertyX "Name" -PropertyY "ComputerName" }
 }
-CommonButtonSettings -Button $script:AutoChart06ServicesExpandChartButton
+Apply-CommonButtonSettings -Button $script:AutoChart06ServicesExpandChartButton
 $script:AutoChart06ServicesManipulationPanel.Controls.Add($script:AutoChart06ServicesExpandChartButton)
 
 
@@ -3410,7 +3410,7 @@ $script:AutoChart06ServicesOpenInShell = New-Object Windows.Forms.Button -Proper
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart06ServicesOpenInShell
+Apply-CommonButtonSettings -Button $script:AutoChart06ServicesOpenInShell
 $script:AutoChart06ServicesOpenInShell.Add_Click({ AutoChartOpenDataInShell })
 $script:AutoChart06ServicesManipulationPanel.controls.Add($script:AutoChart06ServicesOpenInShell)
 
@@ -3422,7 +3422,7 @@ $script:AutoChart06ServicesResults = New-Object Windows.Forms.Button -Property @
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart06ServicesResults
+Apply-CommonButtonSettings -Button $script:AutoChart06ServicesResults
 $script:AutoChart06ServicesResults.Add_Click({ $script:AutoChartDataSourceCsv | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" })
 $script:AutoChart06ServicesManipulationPanel.controls.Add($script:AutoChart06ServicesResults)
 
@@ -3434,7 +3434,7 @@ $script:AutoChart06ServicesSaveButton = New-Object Windows.Forms.Button -Propert
     Size     = @{ Width  = $FormScale * 205
                   Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart06ServicesSaveButton
+Apply-CommonButtonSettings -Button $script:AutoChart06ServicesSaveButton
 [enum]::GetNames('System.Windows.Forms.DataVisualization.Charting.ChartImageFormat')
 $script:AutoChart06ServicesSaveButton.Add_Click({
     Save-ChartImage -Chart $script:AutoChart06Services -Title $script:AutoChart06ServicesTitle

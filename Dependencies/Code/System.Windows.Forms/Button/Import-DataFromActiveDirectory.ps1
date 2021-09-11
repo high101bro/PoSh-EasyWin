@@ -211,7 +211,7 @@ Function Import-DataFromActiveDirectory {
                     }
                 }
                 $ImportFromADWinRMGroupBox.Controls.Add($ImportFromADWinRMImportButton)
-                CommonButtonSettings -Button $ImportFromADWinRMImportButton
+                Apply-CommonButtonSettings -Button $ImportFromADWinRMImportButton
             $ImportFromADFrom.Controls.Add($ImportFromADWinRMGroupBox)
         
         
@@ -301,7 +301,7 @@ Function Import-DataFromActiveDirectory {
                     }
                 }
                 $ImportFromADLocalhostGroupBox.Controls.Add($ImportFromADLocalhostImportButton)
-                CommonButtonSettings -Button $ImportFromADLocalhostImportButton
+                Apply-CommonButtonSettings -Button $ImportFromADLocalhostImportButton
             $ImportFromADFrom.Controls.Add($ImportFromADLocalhostGroupBox)
         
         
@@ -421,7 +421,7 @@ Function Import-DataFromActiveDirectory {
                 }
             }
             $ImportFromADAutoPullGroupBox.Controls.Add($ImportFromADImportButton)
-            CommonButtonSettings -Button $ImportFromADImportButton
+            Apply-CommonButtonSettings -Button $ImportFromADImportButton
             $ImportFromADFrom.Controls.Add($ImportFromADAutoPullGroupBox)
         
             [System.GC]::Collect()
@@ -610,7 +610,7 @@ Function Import-DataFromActiveDirectory {
                     }
                 }
                 $ImportFromADWinRMGroupBox.Controls.Add($ImportFromADWinRMImportButton)
-                CommonButtonSettings -Button $ImportFromADWinRMImportButton
+                Apply-CommonButtonSettings -Button $ImportFromADWinRMImportButton
             $ImportFromADFrom.Controls.Add($ImportFromADWinRMGroupBox)
         
         
@@ -700,7 +700,7 @@ Function Import-DataFromActiveDirectory {
                     }
                 }
                 $ImportFromADLocalhostGroupBox.Controls.Add($ImportFromADLocalhostImportButton)
-                CommonButtonSettings -Button $ImportFromADLocalhostImportButton
+                Apply-CommonButtonSettings -Button $ImportFromADLocalhostImportButton
                 $ImportFromADFrom.Controls.Add($ImportFromADLocalhostGroupBox)
         
             [System.GC]::Collect()

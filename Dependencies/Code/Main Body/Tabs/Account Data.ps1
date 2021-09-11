@@ -678,7 +678,7 @@ $Section3AccountDataTagsAddButton = New-Object System.Windows.Forms.Button -Prop
     }
 }
 $Section3AccountDataTab.Controls.Add($Section3AccountDataTagsAddButton)
-CommonButtonSettings -Button $Section3AccountDataTagsAddButton
+Apply-CommonButtonSettings -Button $Section3AccountDataTagsAddButton
 
 
 ###############
@@ -863,5 +863,5 @@ $Section3AccountDataUpdateDataButton = New-Object System.Windows.Forms.Button -P
 }
 $Section3AccountDataTab.Controls.Add($Section3AccountDataUpdateDataButton)
 $Section3AccountDataUpdateDataButton.bringtofront()
-CommonButtonSettings -Button $Section3AccountDataUpdateDataButton
+Apply-CommonButtonSettings -Button $Section3AccountDataUpdateDataButton
 

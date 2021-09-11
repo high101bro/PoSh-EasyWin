@@ -20,10 +20,17 @@
     Updated        : 07 May 2021
     Created        : 21 Aug 2018
 
-    Requirements   : PowerShell v3.0 - Splatting Arguments
-                                     - PowerShell Charts support
-                                v4.0 - The use of Copy-Item -Session
-                                v5.1 - PSWriteHTML Module support
+    Requirements   : PowerShell v6.0+ - PowerShell Core is not supported
+                                      - The GUI requires access to Windows.System.Forms
+                                v5.1  - PSWriteHTML Module support
+                                      - Fully tested, the majority of users will have this version
+                                v4.0  - The use of Copy-Item -Session
+                                      - Partially Tested
+                                v3.0  - Splatting Arguments
+                                      - PowerShell Charts support
+                                      - Limited testing
+                                v2.0  - Not supported, code makes heavy use of splatting
+                                                                      
                    : WinRM   HTTP    - TCP/5985 Windows 7+ ( 80 Vista-)
                              HTTPS   - TCP/5986 Windows 7+ (443 Vista-)
                              Endpoint Listener - TCP/47001
@@ -41,6 +48,32 @@
     PoSh-EasyWin is the Endpoint Analysis Solution Your Windows Intranet Needs that provides a
     simple user interface to execute any number of commands against any number of computers within
     a network, access hosts, manage data, and analyze their results.
+
+    Though this may look like a program, it is still a script that has a GUI interface built
+    using the .Net Framework and WinForms. So when it's conducting queries, the GUI will be
+    unresponsive to user interaction even though you are able to view status and timer updates.
+
+    A few ways to run the script if you're unable to:
+    - Unblock-File if downloaded from the internet, Windows automatically blocks them as a security precatuion
+        You may have to use the Unblock-File cmdlet to be able to run the script.
+            - For addtional info on: Get-Help Unblock-File
+        How to Unblock the file:
+            - Unblock-File -Path .\PoSh-EasyWin.ps1
+            - Get-ChildItem -Path C:\Path\To\PoSh-Easywin -Recurse | Unblock-File
+
+    - Update Execution Policy locally
+        Open a PowerShell terminal with Administrator privledges
+            - Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope Process
+            - Get-ExecutionPolicy -List
+
+    - Update Execution Policy via GPO
+        Open the GPO for editing. In the GPO editor, select:
+            - Computer Configuration > Policies > Administrative Templates > Windows Components > Windows PowerShell
+            - Right-click "Turn on script execution", then select "Edit"
+            - In the winodws that appears, click on "Enabled" radio button
+            - Under "Execution Policy", select "Allow All Scripts"
+            - Click on "Ok", then close the GPO Editor
+            - Push out GPO Updates, or on the computer's powershell/cmd terminal, type in `"gpupdate /force"
 
     Copyright (C) 2018  Daniel S Komnick
 
@@ -61,6 +94,17 @@
     That said, I didn't track all sites and individuals that deserve credit. In the unlikely event you believe you do, please notify me.
 
     .EXAMPLE
+    Scripts downloaded from the internet are blocked for execution as a Windodws' security precaution
+
+        Unblock-File .\PoSh-EasyWin.ps1
+        .\PoSh-EasyWin.ps1
+
+            -or
+
+        Get-ChildItem -Path C:\Path\To\PoSh-Easywin -Recurse | Unblock-File
+        .\PoSh-EasyWin.ps1
+
+    .EXAMPLE
     This will run PoSh-EasyWin.ps1 and provide prompts that will tailor your collection.
 
         PowerShell.exe -ExecutionPolicy ByPass -NoProfile -File .\PoSh-EasyWin.ps1
@@ -69,30 +113,7 @@
     https://github.com/high101bro/PoSh-EasyWin
 
     .NOTES
-    Though this may look like a program, it is still a script that has a GUI interface built
-    using the .Net Framework and WinForms. So when it's conducting queries, the GUI will be
-    unresponsive to user interaction even though you are able to view status and timer updates.
 
-    In order to run the script:
-    - Downloaded from the internet
-        You may have to use the Unblock-File cmdlet to be able to run the script.
-            - For addtional info on: Get-Help Unblock-File
-        How to Unblock the file:
-            - Unblock-File -Path .\PoSh-EasyWin.ps1
-
-    - Update Execution Policy locally
-        Open a PowerShell terminal with Administrator privledges
-            - Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope Process
-            - Get-ExecutionPolicy -List
-
-    - Update Execution Policy via GPO
-        Open the GPO for editing. In the GPO editor, select:
-            - Computer Configuration > Policies > Administrative Templates > Windows Components > Windows PowerShell
-            - Right-click "Turn on script execution", then select "Edit"
-            - In the winodws that appears, click on "Enabled" radio button
-            - Under "Execution Policy", select "Allow All Scripts"
-            - Click on "Ok", then close the GPO Editor
-            - Push out GPO Updates, or on the computer's powershell/cmd terminal, type in `"gpupdate /force"
 #>
 
 [CmdletBinding(
@@ -106,98 +127,13 @@
 param (
     [Parameter(
         Mandatory=$false,
-        HelpMessage="The provided credentials will launch PoSh-EasyWin, and is subsequentially used for querying unless otherwise changed.")]
-    [ValidateNotNullOrEmpty()]
-    [System.Management.Automation.PSCredential] $Credential,
-
-
-    [Parameter(
-        Mandatory=$false,
         HelpMessage="Skips the terminal privledge elevation check to run with higher permissions.")]
     [switch]$SkipEvelationCheck,
-
 
     [Parameter(
         Mandatory=$false,
         HelpMessage="Launches PoSh-EasyWin without hiding the parent PowerShell Terminal.")]
     [switch]$ShowTerminal,
-
-
-    [Parameter(
-        Mandatory=$true,
-        ParameterSetName="No GUI Computer Name",
-        ValueFromPipeline=$true,
-        HelpMessage="Enter one or more computer names separated by commas, or imported from a file as an array. Entries will only query if they already exist within script.")]
-    [Alias('PSComputerName','CN','MachineName')]
-    [ValidateLength(1,63)]
-        # NetBIOS Names Lenghts:   1-15
-        # DNS Name Lengths:        2-63
-    [ValidateNotNullOrEmpty()]
-    [string[]] $ComputerName,
-
-
-            [Parameter(
-                Mandatory=$false,
-                ParameterSetName="No GUI Computer Name",
-                HelpMessage="Enter a sting(s) to filter out computers whose name matches in part or in whole.")]
-            [Parameter(
-                Mandatory=$false,
-                ParameterSetName="No GUI Computer Search",
-                HelpMessage="Enter a sting(s) to filter out computers whose name matches in part or in whole.")]
-            [string[]] $FilterOutComputer,
-
-
-            [Parameter(
-                Mandatory=$false,
-                ParameterSetName="No GUI Computer Name",
-                HelpMessage="Enter a string(s) to filter back in computer names that were filtered out.")]
-            [Parameter(
-                Mandatory=$false,
-                ParameterSetName="No GUI Computer Search",
-                HelpMessage="Enter a string(s) to filter back in computer names that were filtered out.")]
-            [string[]] $FilterInComputer,
-
-
-    [Parameter(
-        Mandatory=$false,
-        ParameterSetName="No GUI Computer Name",
-        HelpMessage="Only the selected Protocol will be displayed.")]
-    [Parameter(
-        Mandatory=$false,
-        ParameterSetName="No GUI Computer Search",
-        HelpMessage="Only the selected Protocol will be displayed.")]
-    [ValidateSet('RPC','WinRM')]
-    [string] $Protocol,
-
-
-    [Parameter(
-        Mandatory=$false,
-        ParameterSetName="No GUI Computer Name",
-        HelpMessage="Location where to save collected data.")]
-    [Parameter(
-        Mandatory=$false,
-        ParameterSetName="No GUI Computer Search",
-        HelpMessage="Location where to save collected data.")]
-    [string]
-    $SaveDirectory = "$(Split-Path -parent $MyInvocation.MyCommand.Definition)\Collected Data\$((Get-Date).ToString('yyyy-MM-dd @ HHmm ss'))",
-
-
-    [Parameter(
-        Mandatory=$false,
-        ParameterSetName="GUI")]
-    [Parameter(
-        Mandatory=$false,
-        ParameterSetName="No GUI Computer Name",
-        HelpMessage="Enter the amount of time in seconds that a command will run until it timesout. The default is 300 seconds.")]
-    [Parameter(
-        Mandatory=$false,
-        ParameterSetName="No GUI Computer Search",
-        HelpMessage="Enter the amount of time in seconds that a command will run until it timesout. The default is 300 seconds.")]
-    [ValidateRange(30,600)]
-    #[ValidatePattern("[0-9][0-9][0-9][0-9]")]
-    [ValidateNotNullOrEmpty()]
-    [int] $JobTimeOutSeconds = 120,
-
 
     [Parameter(
         Mandatory=$false,
@@ -206,13 +142,7 @@ param (
     [ValidateSet('Calibri','Courier','Arial')]
         # This this validation set is expanded, ensure that larger fonts don't cause words to be truncated in the GUI
     [ValidateNotNull()]
-    [string] $Font = "Courier",
-
-
-    [Parameter(
-        Mandatory=$false,
-        HelpMessage="Enables the audiable voice completion message at the end of queries/collections.")]
-    [switch] $AudibleCompletionMessage
+    [string]$Font = "Courier"
 )
 
 # Keycodes
@@ -303,16 +233,24 @@ $PoShHome                            = $PSScriptRoot #Deprecated# Split-Path -pa
         # Location of separate queries
         $script:CollectedDataTimeStampDirectory = "$CollectedDataDirectory\$((Get-Date).ToString('yyyy-MM-dd @ HHmm ss'))"
 
+        $SaveLocation = "$(Split-Path -parent $MyInvocation.MyCommand.Definition)\Collected Data\$((Get-Date).ToString('yyyy-MM-dd HH.mm.ss'))"
+
+
 # Send Files listbox value store
 $script:SendFilesValueStoreListBox = @()
 
+# Used to track the number of previous queries selected
+$script:PreviousQueryCount = 0
+
+# Maintains the count of all the queries selected
+$script:SectionQueryCount = 0
+function Update-QueryCount {
+    if ($this.checked){$script:SectionQueryCount++}
+    else {$script:SectionQueryCount--}
+}
+
 # Keeps track of the number of RPC protocol commands selected, if the value is ever greater than one, it'll set the collection mode to 'Monitor Jobs'
 $script:RpcCommandCount = 0
-
-# If the credential parameter is provided, it will use those credentials throughout the script and for queries unless otherwise selected
-if ( $Credential ) { $script:Credential = $Credential }
-# Clears out the Credential variable. Specify Credentials provided will stored in this variable
-else { $script:Credential = $null }
 
 # Creates Shortcut for PoSh-EasyWin on Desktop
 $FileToShortCut      = $($myinvocation.mycommand.definition)
@@ -331,7 +269,7 @@ if (-not (Test-Path $ShortcutDestination)) {
 # Note: Unable to . source this code from another file or use the call '&' operator to use as external cmdlet; it won't run the new terminal/GUI as Admin
 <# #Requires -RunAsAdministrator #>
 If (-NOT $SkipEvelationCheck -and -NOT ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) {
-    $ElevateShell = [System.Windows.Forms.MessageBox]::Show("PoSh-EasyWin is writen in PowerShell and makes use of the .NET Framwork and WinForms to generate the user interface.`n`nIf you experience performance, user interface, or remoting issues, then running the tool with elevated privileges often helps. You can create and use alternate credentials for remoting within the Credential Management section.`n`nWould you like to relaunch this tool using administrator privileges.","PoSh-EasyWin",'YesNoCancel',"Warning")
+    $ElevateShell = [System.Windows.Forms.MessageBox]::Show("PoSh-EasyWin is writen in PowerShell and makes use of the .NET Framwork and WinForms to generate the user interface.`n`nIf you experience performance, user interface, or remoting issues, trying to run the tool with elevated permissions often helps. You can create and use alternate credentials for remoting within the Credential Management section.`n`nUse the -SkipElevationCheck if you want to avoid seeing this prompt.`n`nWould you like to relaunch this tool using administrator privileges.","PoSh-EasyWin",'YesNoCancel',"Warning")
     switch ($ElevateShell) {
         'Yes'{
             if ($ShowTerminal) { Start-Process PowerShell.exe -Verb runAs -ArgumentList $ThisScript }
@@ -351,6 +289,12 @@ elseif (-NOT $SkipEvelationCheck) {
     else               { Start-Process PowerShell.exe -Verb runAs -ArgumentList "$ThisScript -SkipEvelationCheck" -WindowStyle Hidden }
     exit
 }
+elseif ($SkipEvelationCheck -and ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) {
+    Write-Host "`nThe " -ForegroundColor Green -NoNewline
+    Write-Host "-SkipElevationCheck " -NoNewline
+    Write-Host "parameter is not needed if the terminal used already has elevated permissions.`n" -ForegroundColor Green
+}
+
 $FormAdminCheck = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")
 
 # Creates a log entry to an external file
@@ -366,21 +310,21 @@ Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "PoSh-EasyWin Start
 # This prompts the user for accepting the GPLv3 License
 if ($AcceptEULA) {
     Write-Host  "You accepted the EULA." -ForeGroundColor Green
-    Write-Host "For more infor, visit https://www.gnu.org/licenses/gpl-3.0.html or view a copy in the Dependencies folder." -ForeGroundColor Yellow
+    Write-Host "For more infor, visit https://www.gnu.org/licenses/gpl-3.0.html or view a copy in the Dependencies folder.`n" -ForeGroundColor Yellow
 }
 else {
     Get-Content "$Dependencies\GPLv3 Notice.txt" | Out-GridView -Title 'PoSh-EasyWin User Agreement' -PassThru | Set-Variable -Name UserAgreement
     if ($UserAgreement) {
         Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "PoSh-EasyWin User Agreemennt Accepted By: $([System.Security.Principal.WindowsIdentity]::GetCurrent().Name)"
         Write-Host "You accepted the EULA." -ForeGroundColor Green
-        Write-Host "For more infor, visit https://www.gnu.org/licenses/gpl-3.0.html or view a copy in the Dependencies folder." -ForeGroundColor Yellow
+        Write-Host "For more infor, visit https://www.gnu.org/licenses/gpl-3.0.html or view a copy in the Dependencies folder.`n" -ForeGroundColor Yellow
         Start-Sleep -Seconds 1
     }
     else {
         [system.media.systemsounds]::Exclamation.play()
         Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "PoSh-EasyWin User Agreemennt NOT Accepted By: $([System.Security.Principal.WindowsIdentity]::GetCurrent().Name)"
         Write-Host "You must accept the EULA to continue." -ForeGroundColor Red
-        Write-Host "For more infor, visit https://www.gnu.org/licenses/gpl-3.0.html or view a copy in the Dependencies folder." -ForeGroundColor Yellow
+        Write-Host "For more infor, visit https://www.gnu.org/licenses/gpl-3.0.html or view a copy in the Dependencies folder.`n" -ForeGroundColor Yellow
         exit
     }
     Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "===================================================================================================="
@@ -388,7 +332,7 @@ else {
 
 
 # These are the common settings for buttons in a function
-. "$Dependencies\Code\Main Body\CommonButtonSettings.ps1"
+. "$Dependencies\Code\Main Body\Apply-CommonButtonSettings.ps1"
 
 
 # Scales the PoSh-EasyWin GUI as desired by the user
@@ -898,7 +842,7 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel
                         Add_MouseHover = $ComputerTreeNodeSearchButtonAdd_MouseHover
                     }
                     $ComputerTreeviewTab.Controls.Add($ComputerTreeNodeSearchButton)
-                    CommonButtonSettings -Button $ComputerTreeNodeSearchButton
+                    Apply-CommonButtonSettings -Button $ComputerTreeNodeSearchButton
 
                     Remove-EmptyCategory -Endpoint
 
@@ -1099,7 +1043,7 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel
                         Add_MouseHover = $AccountsTreeNodeSearchButtonAdd_MouseHover
                     }
                     $AccountsTreeviewTab.Controls.Add($AccountsTreeNodeSearchButton)
-                    CommonButtonSettings -Button $AccountsTreeNodeSearchButton
+                    Apply-CommonButtonSettings -Button $AccountsTreeNodeSearchButton
 
                     Remove-EmptyCategory -Accounts
 
@@ -1275,10 +1219,6 @@ Update-FormProgress "$Dependencies\Code\Execution\Individual Execution\Query-Eve
 Update-FormProgress "$Dependencies\Code\Execution\Individual Execution\Query-Registry.ps1"
 . "$Dependencies\Code\Execution\Individual Execution\Query-Registry.ps1"
 
-# Provides $script:SectionQueryCount variable data
-Update-FormProgress "$Dependencies\Code\Execution\Count-SectionQueries.ps1"
-. "$Dependencies\Code\Execution\Count-SectionQueries.ps1"
-
 # Generate list of endpoints to query
 Update-FormProgress "$Dependencies\Code\Main Body\Generate-ComputerList.ps1"
 . "$Dependencies\Code\Main Body\Generate-ComputerList.ps1"
@@ -1354,16 +1294,12 @@ $ExecuteScriptHandler = {
 
     # Assigns the path to save the Collections to
     $script:CollectedDataTimeStampDirectory = $script:CollectionSavedDirectoryTextBox.Text
-    if ($SaveDirectory) { $script:CollectedDataTimeStampDirectory = $SaveDirectory }
 
     # Location of Uncompiled Results
     $script:IndividualHostResults = "$script:CollectedDataTimeStampDirectory\Results By Endpoints"
 
     # This function compiles the selected treeview comamnds, placing the proper command type and protocol into a variable list to be executed.
     Compile-SelectedCommandTreeNode
-
-    # Counts the section queries and assigns value to the $script:SectionQueryCount variable
-    Count-SectionQueries
 
     if ($script:EventLogsStartTimePicker.Checked -xor $script:EventLogsStopTimePicker.Checked) {
         # This brings specific tabs to the forefront/front view
@@ -1872,6 +1808,10 @@ Update-FormProgress "$Dependencies\Code\Execution\Command Line\Select-ComputersA
 # Note the Execution button itself is located in the Select Computer section
 $script:ComputerListExecuteButton.Add_Click($ExecuteScriptHandler)
 
+# Starts the ticker for the GUI and adds the status bar
+Update-FormProgress "$Dependencies\Code\Main Body\Start-FormTicker.ps1"
+. "$Dependencies\Code\Main Body\Start-FormTicker.ps1"
+
 #Show the Form
 $script:ProgressBarFormProgressBar.Value = 250
 $script:ProgressBarSelectionForm.Hide()
@@ -1880,11 +1820,13 @@ $script:ProgressBarSelectionForm.Hide()
 Update-FormProgress "Finished Loading!"
 Start-Sleep -Milliseconds 500
 
-
 # Shows the GUI
 $PoShEasyWin.ShowDialog() | Out-Null
 
 } # END for $ScriptBlockForGuiLoadAndProgressBar
+
+
+
 
 $ScriptBlockProgressBarInput = {
     $script:ProgressBarMessageLabel.text = "PowerShell - Endpoint Analysis Solution Your Windows Intranet Needs!"

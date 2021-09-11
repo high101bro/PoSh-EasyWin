@@ -643,7 +643,7 @@ display, these results will need to be navigated to manually.
     Add_SelectedIndexChanged = {
         function Get-HostDataCsvResults {
             param(
-                $ComboxInput
+                [string]$ComboxInput
             )
             # Searches though the all Collection Data Directories to find files that match
             $ListOfCollectedDataDirectories = $null
@@ -653,7 +653,7 @@ display, these results will need to be navigated to manually.
                 $CSVFiles = Get-ChildItem -Path $CollectionDir -Recurse | Where-Object {$_.Extension -match 'csv'}
                 foreach ($CSVFile in $CSVFiles) {
                     # Searches for the CSV file that matches the data selected
-                    if ($CSVFile.BaseName -match $ComboxInput) {
+                    if ($CSVFile.BaseName -like "*$($ComboxInput)*") {
                         $CsvComputerNameList = Import-Csv $CSVFile.FullName | Select-Object -Property ComputerName -Unique
                         foreach ($computer in $CsvComputerNameList){
                             if ("$computer" -match "$($script:Section3HostDataNameTextBox.Text)"){
@@ -665,7 +665,7 @@ display, these results will need to be navigated to manually.
             }
         }
     
-        Get-HostDataCsvResults -ComboxInput $Section3HostDataSelectionComboBox.SelectedItem
+        Get-HostDataCsvResults -ComboxInput $This.SelectedItem
     
         $Section3HostDataSelectionDateTimeComboBox.DataSource = $null
         if (($script:CSVFileMatch).count -eq 0) {
@@ -755,7 +755,7 @@ If this is the case, navigate to the csv file manually.
     }
 }
 $Section3HostDataTab.Controls.Add($Section3HostDataGridViewButton)
-CommonButtonSettings -Button $Section3HostDataGridViewButton
+Apply-CommonButtonSettings -Button $Section3HostDataGridViewButton
 
 
 if ((Test-Path -Path "$Dependencies\Modules\PSWriteHTML") -and (Get-Content "$PoShHome\Settings\PSWriteHTML Module Install.txt") -match 'Yes') {
@@ -783,7 +783,7 @@ if ((Test-Path -Path "$Dependencies\Modules\PSWriteHTML") -and (Get-Content "$Po
         }
     }
     $Section3HostDataTab.Controls.Add($Section3HostDataPSWriteHTMLButton)
-    CommonButtonSettings -Button $Section3HostDataPSWriteHTMLButton    
+    Apply-CommonButtonSettings -Button $Section3HostDataPSWriteHTMLButton    
 }
 
 
@@ -838,7 +838,7 @@ $Section3EndpointDataTagsAddButton = New-Object System.Windows.Forms.Button -Pro
     }
 }
 $Section3HostDataTab.Controls.Add($Section3EndpointDataTagsAddButton)
-CommonButtonSettings -Button $Section3EndpointDataTagsAddButton
+Apply-CommonButtonSettings -Button $Section3EndpointDataTagsAddButton
 
 
 ###############
@@ -1029,5 +1029,5 @@ $Section3EndpointDataUpdateDataButton = New-Object System.Windows.Forms.Button -
 }
 $Section3HostDataTab.Controls.Add($Section3EndpointDataUpdateDataButton)
 $Section3EndpointDataUpdateDataButton.bringtofront()
-CommonButtonSettings -Button $Section3EndpointDataUpdateDataButton
+Apply-CommonButtonSettings -Button $Section3EndpointDataUpdateDataButton
 

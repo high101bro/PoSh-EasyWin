@@ -21,13 +21,13 @@ $OpenXmlResultsButtonAdd_Click = {
         Remove-Variable -Name ViewImportResults -Force -ErrorAction SilentlyContinue
     }
 
-    CommonButtonSettings -Button $RetrieveFilesButton
+    Apply-CommonButtonSettings -Button $RetrieveFilesButton
 
-    CommonButtonSettings -Button $OpenXmlResultsButton
-    CommonButtonSettings -Button $OpenCsvResultsButton
+    Apply-CommonButtonSettings -Button $OpenXmlResultsButton
+    Apply-CommonButtonSettings -Button $OpenCsvResultsButton
 
-    CommonButtonSettings -Button $AutoCreateDashboardChartButton
-    CommonButtonSettings -Button $SendFilesButton
+    Apply-CommonButtonSettings -Button $AutoCreateDashboardChartButton
+    Apply-CommonButtonSettings -Button $SendFilesButton
 }
 $OpenXmlResultsButtonAdd_MouseHover = {
     Show-ToolTip -Title "Open Data In Shell (PowerShell Terminal)" -Icon "Info" -Message @"

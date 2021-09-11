@@ -27,6 +27,55 @@ pivot scanning
 ==================================================
 v5.4.1 -
 ==================================================
+!!!!!!!!!!!!!!!!!!!!!!!! add button to re open previous packet captures
+!!!!!!!!!!!!!!!!!!!!!!!! give previous packet captures metadata somehow to help describe them.... when selecting them the second time you reopen or browse to them
+
+
+Taskbar PoSh-EasyWin Icon Menus
+	- Renamed 'Abort / Reload' to 'Restart Tool'
+
+Updated Computer and Accounts Treeview Context Menu
+	- moved the 'Uncheck All nodes' Button outside of the combobox as it's used frequently
+
+PoSh-EasyWin parameters
+	- Removed -Credential, it wasn't working properly and with the advent of stored credentials was superceeded
+	- Updated message for -SkipElevationCheck code and messages
+	- The CLI version of this tool has been deprecated/removed for awhile now
+		- Removed -ComputerName
+		- Removed -FilterOutComputer
+		- Removed -FilterInComputer
+		- Removed -Protocol
+	- Removed -SaveDirectory, too complicated and unnecessary
+	- Removed -JobTimeOutSeconds, opted for better implementation with saved/autoloading
+	- Removed -AudibleCompletionMessage, opted for better implementation with saved/autoloading
+
+Remove function Count-SectionQueries.ps1
+	- simplied function and placed at beginning of main script
+	- added code to each relavant checkbox to update query count
+
+Added Status Bar to main PoSh-EasyWin window
+	- much overdue... sigh
+	- Shows datetime, number of endpoints and queries selected
+
+Documenting Word Art / Character Art
+	- Why I haven't done this before is beyond me... 
+	- https://flamingtext.com/logo/Design-Style
+	- https://www11.flamingtext.com/net-fu/dynamic.cgi?script=style-logo&text=PoSh-EasyWin&fontname=Black+Ops+One&fillTextColor=%23006fff&fillOutlineColor=%2320d
+		Font: Display --> Black Ops One
+	- https://onlinepngtools.com/create-transparent-png
+
+Added New Packet Capture Feature (Pktmon.exe)
+	- Supports Windows 10+, Server 2019+
+	- Dynmically builds command as options are selected
+	- Added filter support
+		- Choose from dropdown filters to add or modify, or just write your own
+		- Able to view existing filters
+	- Added Start and Stop packet capture buttons
+		- Checks if session exists before executing command
+		- Stop automatically copies etl file back, converts it to pcapng and opens it, then cleans up unneeded files
+	- Added status fields that provides status info on cmd executions
+	- Added start new session or remove session buttons
+	- Status bar at bottom shows status of PSSession
 
 Added chainsaw.exe support
 

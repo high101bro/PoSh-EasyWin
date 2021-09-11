@@ -75,7 +75,7 @@ $ActionsTabProcessKillerGroupBox = New-Object System.Windows.Forms.GroupBox -Pro
                 }
             }
             $ActionsTabProcessKillerGroupBox.Controls.Add($ActionsTabProcessKillerButton)
-            CommonButtonSettings -Button $ActionsTabProcessKillerButton
+            Apply-CommonButtonSettings -Button $ActionsTabProcessKillerButton
 $Section1ActionOnEndpointTab.Controls.Add($ActionsTabProcessKillerGroupBox)
 
 
@@ -143,7 +143,7 @@ $ActionsTabServiceKillerGroupBox = New-Object System.Windows.Forms.GroupBox -Pro
                 }
             }
             $ActionsTabServiceKillerGroupBox.Controls.Add($ActionsTabServiceKillerButton)
-            CommonButtonSettings -Button $ActionsTabServiceKillerButton
+            Apply-CommonButtonSettings -Button $ActionsTabServiceKillerButton
 $Section1ActionOnEndpointTab.Controls.Add($ActionsTabServiceKillerGroupBox)
 
 
@@ -211,7 +211,7 @@ $ActionsTabAccountLogoutGroupBox = New-Object System.Windows.Forms.GroupBox -Pro
                 }
             }
             $ActionsTabAccountLogoutGroupBox.Controls.Add($ActionsTabAccountLogoutButton)
-            CommonButtonSettings -Button $ActionsTabAccountLogoutButton
+            Apply-CommonButtonSettings -Button $ActionsTabAccountLogoutButton
 $Section1ActionOnEndpointTab.Controls.Add($ActionsTabAccountLogoutGroupBox)
 
 
@@ -279,7 +279,7 @@ $ActionsTabKillNetworkConnectionGroupBox = New-Object System.Windows.Forms.Group
                 }
             }
             $ActionsTabKillNetworkConnectionGroupBox.Controls.Add($ActionsTabSelectNetworkConnectionsToKillButton)
-            CommonButtonSettings -Button $ActionsTabSelectNetworkConnectionsToKillButton
+            Apply-CommonButtonSettings -Button $ActionsTabSelectNetworkConnectionsToKillButton
 $Section1ActionOnEndpointTab.Controls.Add($ActionsTabKillNetworkConnectionGroupBox)
 
 
@@ -374,5 +374,5 @@ $ActionsTabQuarantineEndpointGroupBox = New-Object System.Windows.Forms.GroupBox
                 }
             }
             $ActionsTabQuarantineEndpointGroupBox.Controls.Add($ActionsTabQuarantineEndpointsButton)
-            CommonButtonSettings -Button $ActionsTabQuarantineEndpointsButton
+            Apply-CommonButtonSettings -Button $ActionsTabQuarantineEndpointsButton
 $Section1ActionOnEndpointTab.Controls.Add($ActionsTabQuarantineEndpointGroupBox)

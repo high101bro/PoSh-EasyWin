@@ -49,15 +49,16 @@ function Update-TreeViewData {
                 $Category.NodeFont  = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,1,1)
                 $Category.ForeColor = [System.Drawing.Color]::FromArgb(0,0,0,224)
                 foreach ($Entry in $Category.nodes) {
-                    if ($Commands) { $script:TreeeViewCommandsCount += 1 }
-                    if ($Accounts) { $script:TreeeViewAccountsCount += 1 }
-                    if ($Endpoint) { $script:TreeeViewEndpointCount += 1 }
+                    if ($Commands) { $script:TreeeViewCommandsCount++ }
+                    if ($Accounts) { $script:TreeeViewAccountsCount++ }
+                    if ($Endpoint) { $script:TreeeViewEndpointCount++ }
                     $Entry.Checked   = $True
                     $Entry.NodeFont  = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,1,1)
                     $Entry.ForeColor = [System.Drawing.Color]::FromArgb(0,0,0,224)
                 }
             }
         }
+
         if ($root.isselected) {
             $script:rootSelected     = $root
             $script:CategorySelected = $null
@@ -81,10 +82,10 @@ function Update-TreeViewData {
 
                     #    $Category.Expand()
                     if ($Category.Text -match '[\[(]WinRM[)\]]' ) {
-                        $script:WinRMCommandCount += 1
+                        $script:WinRMCommandCount++
                     }
                     if ($Category.Text -match '[\[(]rpc[)\]]' ) {
-                        $script:RpcCommandCount += 1
+                        $script:RpcCommandCount++
                         if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
                             [system.media.systemsounds]::Exclamation.play()
                             $StatusListBox.Items.Clear()
@@ -98,7 +99,7 @@ function Update-TreeViewData {
                         }
                     }
                     if ($Category.Text -match '[\[(]smb[)\]]' ) {
-                        $script:SmbCommandCount += 1
+                        $script:SmbCommandCount++
                         if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
                             # This brings specific tabs to the forefront/front view
 
@@ -118,15 +119,15 @@ function Update-TreeViewData {
                     $Root.ForeColor     = [System.Drawing.Color]::FromArgb(0,0,0,224)
 
                     foreach ($Entry in $Category.nodes) {
-                        if ($Commands) { $script:TreeeViewCommandsCount += 1 }
-                        if ($Accounts) { $script:TreeeViewAccountsCount += 1 }
-                        if ($Endpoint) { $script:TreeeViewEndpointCount += 1 }
+                        if ($Commands) { $script:TreeeViewCommandsCount++ }
+                        if ($Accounts) { $script:TreeeViewAccountsCount++ }
+                        if ($Endpoint) { $script:TreeeViewEndpointCount++ }
 
                         if ($Entry.Text -match '[\[(]WinRM[)\]]' ) {
-                            $script:WinRMCommandCount += 1
+                            $script:WinRMCommandCount++
                         }
                         if ($Entry.Text -match '[\[(]rpc[)\]]') {
-                            $script:RpcCommandCount += 1
+                            $script:RpcCommandCount++
                             if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
                                 [system.media.systemsounds]::Exclamation.play()
                                 $StatusListBox.Items.Clear()
@@ -140,7 +141,7 @@ function Update-TreeViewData {
                             }
                         }
                         if ($Entry.Text -match '[\[(]smb[)\]]') {
-                            $script:SmbCommandCount += 1
+                            $script:SmbCommandCount++
                             if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
                                 [system.media.systemsounds]::Exclamation.play()
                                 $StatusListBox.Items.Clear()
@@ -152,8 +153,8 @@ function Update-TreeViewData {
                             }
                         }
 
-                        $EntryNodeCheckedCountforCategory += 1
-                        $EntryNodeCheckedCountforRoot     += 1
+                        $EntryNodeCheckedCountforCategory++
+                        $EntryNodeCheckedCountforRoot++
                         $Entry.Checked   = $True
                         $Entry.NodeFont  = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,1,1)
                         $Entry.ForeColor = [System.Drawing.Color]::FromArgb(0,0,0,224)
@@ -171,10 +172,10 @@ function Update-TreeViewData {
                             $script:EntryChecked = $entry.text
 
                             if ($Entry.Text -match '[\[(]WinRM[)\]]' ) {
-                                $script:WinRMCommandCount += 1
+                                $script:WinRMCommandCount++
                             }
                             if ($Entry.Text -match '[\[(]rpc[)\]]') {
-                                $script:RpcCommandCount += 1
+                                $script:RpcCommandCount++
                                 if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
                                     [system.media.systemsounds]::Exclamation.play()
                                     $StatusListBox.Items.Clear()
@@ -188,7 +189,7 @@ function Update-TreeViewData {
                                 }
                             }
                             if ($Entry.Text -match '[\[(]smb[)\]]') {
-                                $script:SmbCommandCount += 1
+                                $script:SmbCommandCount++
                                 if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
                                     [system.media.systemsounds]::Exclamation.play()
                                     $StatusListBox.Items.Clear()
@@ -200,15 +201,15 @@ function Update-TreeViewData {
                                 }
                             }
 
-                            if ($Commands) { $script:TreeeViewCommandsCount += 1 }
-                            if ($Accounts) { $script:TreeeViewAccountsCount += 1 }
-                            if ($Endpoint) { $script:TreeeViewEndpointCount += 1 }
-                            $EntryNodeCheckedCountforCategory += 1
-                            $EntryNodeCheckedCountforRoot     += 1
+                            if ($Commands) { $script:TreeeViewCommandsCount++ }
+                            if ($Accounts) { $script:TreeeViewAccountsCount++ }
+                            if ($Endpoint) { $script:TreeeViewEndpointCount++ }
+                            $EntryNodeCheckedCountforCategory++
+                            $EntryNodeCheckedCountforRoot++
                             $Entry.NodeFont  = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,1,1)
                             $Entry.ForeColor = [System.Drawing.Color]::FromArgb(0,0,0,224)
                         }
-                        elseif (!($Entry.checked)) {
+                        elseif (-not $Entry.checked) {
                             if ($CategoryCheck -eq $False) {$Category.Checked = $False}
                             $Entry.NodeFont  = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,1,1)
                             $Entry.ForeColor = [System.Drawing.Color]::FromArgb(0,0,0,0)
@@ -251,7 +252,7 @@ function Update-TreeViewData {
             }
 
             foreach ($Entry in $Category.nodes) {
-                $EntryNodesWithinCategory += 1
+                $EntryNodesWithinCategory++
 
                 if ($Commands) {
                     if ($Entry.isselected) {
@@ -353,7 +354,9 @@ function Update-TreeViewData {
                         $Section1CommandsTab.Controls.Add($CommandsTreeViewRemoveCommandButton)
                         $CommandsTreeViewRemoveCommandButton.bringtofront()
                     }
-                    else { $EntryQueryHistoryChecked-- }
+                    else { 
+                        $EntryQueryHistoryChecked-- 
+                    }
                 }
 
                 if ($Endpoint) {
@@ -466,11 +469,11 @@ function Update-TreeViewData {
                 }
 
                 if ($entry.checked) {
-                    if ($Commands) { $script:TreeeViewCommandsCount += 1 }
-                    if ($Accounts) { $script:TreeeViewAccountsCount += 1 }
-                    if ($Endpoint) { $script:TreeeViewEndpointCount += 1 }
-                    $EntryNodeCheckedCountforCategory += 1
-                    $EntryNodeCheckedCountforRoot     += 1
+                    if ($Commands) { $script:TreeeViewCommandsCount++ }
+                    if ($Accounts) { $script:TreeeViewAccountsCount++ }
+                    if ($Endpoint) { $script:TreeeViewEndpointCount++ }
+                    $EntryNodeCheckedCountforCategory++
+                    $EntryNodeCheckedCountforRoot++
                     $Entry.NodeFont     = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,1,1)
                     $Entry.ForeColor    = [System.Drawing.Color]::FromArgb(0,0,0,224)
                     $Category.NodeFont  = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,1,1)
@@ -478,7 +481,7 @@ function Update-TreeViewData {
                     $Root.NodeFont      = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,1,1)
                     $Root.ForeColor     = [System.Drawing.Color]::FromArgb(0,0,0,224)
                 }
-                if (!($entry.checked)) {
+                if (-not $entry.checked) {
                     $Entry.NodeFont     = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,1,1)
                     $Entry.ForeColor    = [System.Drawing.Color]::FromArgb(0,0,0,0)
                 }
@@ -503,8 +506,28 @@ function Update-TreeViewData {
     }
     #$EnsureViisible.EnsureVisible()
 
+
     # Note: If adding new checkboxes to other areas, make sure also add it to the script handler
     if ($Commands) {
+        # Removes prevous query count from overall count, needed to maintain accurate count
+        $script:SectionQueryCount -= $script:PreviousQueryCount
+        $SectionQueryTempCount = 0
+        # Counts queries checked
+        [System.Windows.Forms.TreeNodeCollection]$AllNodes = $TreeView
+        foreach ($root in $AllNodes) {
+            foreach ($Category in $root.Nodes) {
+                foreach ($Entry in $Category.nodes) {
+                    if ($Entry.checked) {
+                        $SectionQueryTempCount += 1
+                    }
+                }
+            }
+        }
+        # Tracks previous count and tallies up new query total
+        $script:PreviousQueryCount = $SectionQueryTempCount
+        $script:SectionQueryCount += $script:PreviousQueryCount
+
+        
         if ($CustomQueryScriptBlockCheckBox.checked)                    { $script:TreeeViewCommandsCount++ }
         if ($RegistrySearchCheckbox.checked)                            { $script:TreeeViewCommandsCount++ }
         if ($AccountsCurrentlyLoggedInConsoleCheckbox.checked)          { $script:TreeeViewCommandsCount++ }
@@ -538,7 +561,7 @@ function Update-TreeViewData {
     }
     else {
         $script:ComputerListExecuteButton.Enabled   = $false
-        CommonButtonSettings -Button $script:ComputerListExecuteButton
+        Apply-CommonButtonSettings -Button $script:ComputerListExecuteButton
     }
     $StatisticsRefreshButton.PerformClick()
 
@@ -560,11 +583,11 @@ function Update-TreeViewData {
         $ActionsTabQuarantineEndpointsButton.backcolor = 'lightgreen'
     }
     else {
-        CommonButtonSettings -Button $ActionsTabProcessKillerButton
-        CommonButtonSettings -Button $ActionsTabServiceKillerButton
-        CommonButtonSettings -Button $ActionsTabAccountLogoutButton
-        CommonButtonSettings -Button $ActionsTabSelectNetworkConnectionsToKillButton
-        CommonButtonSettings -Button $ActionsTabQuarantineEndpointsButton
+        Apply-CommonButtonSettings -Button $ActionsTabProcessKillerButton
+        Apply-CommonButtonSettings -Button $ActionsTabServiceKillerButton
+        Apply-CommonButtonSettings -Button $ActionsTabAccountLogoutButton
+        Apply-CommonButtonSettings -Button $ActionsTabSelectNetworkConnectionsToKillButton
+        Apply-CommonButtonSettings -Button $ActionsTabQuarantineEndpointsButton
     }
 
     script:Minimize-MonitorJobsTab

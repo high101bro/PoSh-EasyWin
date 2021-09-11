@@ -161,7 +161,7 @@ function script:Launch-NetworkConnectionGUI {
         }
     }
     $script:PSWriteHTMLSupportForm.Controls.Add($PSWriteHTMLSupportOkayButton)
-    CommonButtonSettings -Button $PSWriteHTMLSupportOkayButton
+    Apply-CommonButtonSettings -Button $PSWriteHTMLSupportOkayButton
 
     $script:PSWriteHTMLSupportForm.ShowDialog()    
 }

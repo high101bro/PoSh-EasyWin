@@ -183,7 +183,7 @@ $AutoChartPullNewDataButton = New-Object System.Windows.Forms.Button -Property @
     Height = $FormScale * 22
 }
  $script:AutoChartsIndividualTab01.Controls.Add($AutoChartPullNewDataButton)
-CommonButtonSettings -Button $AutoChartPullNewDataButton
+Apply-CommonButtonSettings -Button $AutoChartPullNewDataButton
 $AutoChartPullNewDataButton.Add_Click({
 
     #====================
@@ -411,7 +411,7 @@ $script:AutoChart01DeepBlueOptionsButton = New-Object Windows.Forms.Button -Prop
     Size      = @{ Width  = $FormScale * 75
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart01DeepBlueOptionsButton
+Apply-CommonButtonSettings -Button $script:AutoChart01DeepBlueOptionsButton
 $script:AutoChart01DeepBlueOptionsButton.Add_Click({
     if ($script:AutoChart01DeepBlueOptionsButton.Text -eq 'Options v') {
         $script:AutoChart01DeepBlueOptionsButton.Text = 'Options ^'
@@ -534,7 +534,7 @@ $script:AutoChart01DeepBlue3DToggleButton = New-Object Windows.Forms.Button -Pro
     Size      = @{ Width  = $FormScale * 65
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart01DeepBlue3DToggleButton
+Apply-CommonButtonSettings -Button $script:AutoChart01DeepBlue3DToggleButton
 $script:AutoChart01DeepBlue3DInclination = 0
 $script:AutoChart01DeepBlue3DToggleButton.Add_Click({
 
@@ -613,7 +613,7 @@ $script:AutoChart01DeepBlueCheckDiffButton = New-Object Windows.Forms.Button -Pr
                    Height = $FormScale * 23 }
     Anchor    = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
 }
-CommonButtonSettings -Button $script:AutoChart01DeepBlueCheckDiffButton
+Apply-CommonButtonSettings -Button $script:AutoChart01DeepBlueCheckDiffButton
 $script:AutoChart01DeepBlueCheckDiffButton.Add_Click({
     $script:AutoChart01DeepBlueInvestDiffDropDownArraY = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'Message' | Sort-Object -Unique
 
@@ -658,7 +658,7 @@ $script:AutoChart01DeepBlueCheckDiffButton.Add_Click({
         Width    = $FormScale * 100
         Height   = $FormScale * 20
     }
-    CommonButtonSettings -Button $script:AutoChart01DeepBlueInvestDiffExecuteButton
+    Apply-CommonButtonSettings -Button $script:AutoChart01DeepBlueInvestDiffExecuteButton
     $script:AutoChart01DeepBlueInvestDiffExecuteButton.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart01DeepBlue }})
     $script:AutoChart01DeepBlueInvestDiffExecuteButton.Add_Click({ script:InvestigateDifference-AutoChart01DeepBlue })
 
@@ -724,7 +724,7 @@ $AutoChart01DeepBlueExpandChartButton = New-Object System.Windows.Forms.Button -
                 Height = $FormScale * 23 }
     Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Application Name" -QueryTabName "Application Name" -PropertyX "Name" -PropertyY "ComputerName" }
 }
-CommonButtonSettings -Button $AutoChart01DeepBlueExpandChartButton
+Apply-CommonButtonSettings -Button $AutoChart01DeepBlueExpandChartButton
 $script:AutoChart01DeepBlueManipulationPanel.Controls.Add($AutoChart01DeepBlueExpandChartButton)
 
 
@@ -735,7 +735,7 @@ $script:AutoChart01DeepBlueOpenInShell = New-Object Windows.Forms.Button -Proper
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart01DeepBlueOpenInShell
+Apply-CommonButtonSettings -Button $script:AutoChart01DeepBlueOpenInShell
 $script:AutoChart01DeepBlueOpenInShell.Add_Click({ AutoChartOpenDataInShell })
 $script:AutoChart01DeepBlueManipulationPanel.controls.Add($script:AutoChart01DeepBlueOpenInShell)
 
@@ -747,7 +747,7 @@ $script:AutoChart01DeepBlueSortButton = New-Object Windows.Forms.Button -Propert
     Size     = @{ Width  = $FormScale * 100
                   Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart01DeepBlueSortButton
+Apply-CommonButtonSettings -Button $script:AutoChart01DeepBlueSortButton
 $script:AutoChart01DeepBlueSortButton.Add_Click({
     if ($this.Text -eq "View: Count") {
         $script:AutoChart01DeepBlueOverallDataResults = $script:AutoChart01DeepBlueOverallDataResultsSortCount
@@ -770,7 +770,7 @@ $script:AutoChart01DeepBlueViewResults = New-Object Windows.Forms.Button -Proper
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart01DeepBlueViewResults
+Apply-CommonButtonSettings -Button $script:AutoChart01DeepBlueViewResults
 $script:AutoChart01DeepBlueViewResults.Add_Click({
     $script:AutoChartDataSourceCsv | Out-GridView })
 $script:AutoChart01DeepBlueManipulationPanel.controls.Add($script:AutoChart01DeepBlueViewResults)
@@ -784,7 +784,7 @@ $script:AutoChart01DeepBlueSaveButton = New-Object Windows.Forms.Button -Propert
     Size     = @{ Width  = $FormScale * 100
                   Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart01DeepBlueSaveButton
+Apply-CommonButtonSettings -Button $script:AutoChart01DeepBlueSaveButton
 [enum]::GetNames('System.Windows.Forms.DataVisualization.Charting.ChartImageFormat')
 $script:AutoChart01DeepBlueSaveButton.Add_Click({
     Save-ChartImage -Chart $script:AutoChart01DeepBlue -Title $script:AutoChart01DeepBlueTitle
@@ -963,7 +963,7 @@ $script:AutoChart02DeepBlueOptionsButton = New-Object Windows.Forms.Button -Prop
     Size      = @{ Width  = $FormScale * 75
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart02DeepBlueOptionsButton
+Apply-CommonButtonSettings -Button $script:AutoChart02DeepBlueOptionsButton
 $script:AutoChart02DeepBlueOptionsButton.Add_Click({
     if ($script:AutoChart02DeepBlueOptionsButton.Text -eq 'Options v') {
         $script:AutoChart02DeepBlueOptionsButton.Text = 'Options ^'
@@ -1086,7 +1086,7 @@ $script:AutoChart02DeepBlue3DToggleButton = New-Object Windows.Forms.Button -Pro
     Size      = @{ Width  = $FormScale * 65
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart02DeepBlue3DToggleButton
+Apply-CommonButtonSettings -Button $script:AutoChart02DeepBlue3DToggleButton
 $script:AutoChart02DeepBlue3DInclination = 0
 $script:AutoChart02DeepBlue3DToggleButton.Add_Click({
 
@@ -1165,7 +1165,7 @@ $script:AutoChart02DeepBlueCheckDiffButton = New-Object Windows.Forms.Button -Pr
                    Height = $FormScale * 23 }
     Anchor    = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
 }
-CommonButtonSettings -Button $script:AutoChart02DeepBlueCheckDiffButton
+Apply-CommonButtonSettings -Button $script:AutoChart02DeepBlueCheckDiffButton
 $script:AutoChart02DeepBlueCheckDiffButton.Add_Click({
     $script:AutoChart02DeepBlueInvestDiffDropDownArraY = $script:AutoChartDataSourceCsv | Select-Object -Property 'Message' -ExpandProperty 'Message' | Sort-Object -Unique
 
@@ -1210,7 +1210,7 @@ $script:AutoChart02DeepBlueCheckDiffButton.Add_Click({
         Width    = $FormScale * 100
         Height   = $FormScale * 20
     }
-    CommonButtonSettings -Button $script:AutoChart02DeepBlueInvestDiffExecuteButton
+    Apply-CommonButtonSettings -Button $script:AutoChart02DeepBlueInvestDiffExecuteButton
     $script:AutoChart02DeepBlueInvestDiffExecuteButton.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart02DeepBlue }})
     $script:AutoChart02DeepBlueInvestDiffExecuteButton.Add_Click({ script:InvestigateDifference-AutoChart02DeepBlue })
 
@@ -1276,7 +1276,7 @@ $AutoChart02DeepBlueExpandChartButton = New-Object System.Windows.Forms.Button -
                 Height = $FormScale * 23 }
     Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Application Name" -QueryTabName "Findings Per Endpoint" -PropertyX "Name" -PropertyY "ComputerName" }
 }
-CommonButtonSettings -Button $AutoChart02DeepBlueExpandChartButton
+Apply-CommonButtonSettings -Button $AutoChart02DeepBlueExpandChartButton
 $script:AutoChart02DeepBlueManipulationPanel.Controls.Add($AutoChart02DeepBlueExpandChartButton)
 
 
@@ -1287,7 +1287,7 @@ $script:AutoChart02DeepBlueOpenInShell = New-Object Windows.Forms.Button -Proper
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart02DeepBlueOpenInShell
+Apply-CommonButtonSettings -Button $script:AutoChart02DeepBlueOpenInShell
 $script:AutoChart02DeepBlueOpenInShell.Add_Click({ AutoChartOpenDataInShell })
 $script:AutoChart02DeepBlueManipulationPanel.controls.Add($script:AutoChart02DeepBlueOpenInShell)
 
@@ -1299,7 +1299,7 @@ $script:AutoChart02DeepBlueSortButton = New-Object Windows.Forms.Button -Propert
     Size     = @{ Width  = $FormScale * 100
                   Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart02DeepBlueSortButton
+Apply-CommonButtonSettings -Button $script:AutoChart02DeepBlueSortButton
 $script:AutoChart02DeepBlueSortButton.Add_Click({
     if ($this.Text -eq "View: Count") {
         $script:AutoChart02DeepBlueOverallDataResults = $script:AutoChart02DeepBlueOverallDataResultsSortCount
@@ -1322,7 +1322,7 @@ $script:AutoChart02DeepBlueViewResults = New-Object Windows.Forms.Button -Proper
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart02DeepBlueViewResults
+Apply-CommonButtonSettings -Button $script:AutoChart02DeepBlueViewResults
 $script:AutoChart02DeepBlueViewResults.Add_Click({
     $script:AutoChartDataSourceCsv | Out-GridView })
 $script:AutoChart02DeepBlueManipulationPanel.controls.Add($script:AutoChart02DeepBlueViewResults)
@@ -1336,7 +1336,7 @@ $script:AutoChart02DeepBlueSaveButton = New-Object Windows.Forms.Button -Propert
     Size     = @{ Width  = $FormScale * 100
                   Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart02DeepBlueSaveButton
+Apply-CommonButtonSettings -Button $script:AutoChart02DeepBlueSaveButton
 [enum]::GetNames('System.Windows.Forms.DataVisualization.Charting.ChartImageFormat')
 $script:AutoChart02DeepBlueSaveButton.Add_Click({
     Save-ChartImage -Chart $script:AutoChart02DeepBlue -Title $script:AutoChart02DeepBlueTitle

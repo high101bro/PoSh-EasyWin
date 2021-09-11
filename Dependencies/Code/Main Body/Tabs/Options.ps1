@@ -28,10 +28,8 @@ $OptionTextToSpeachButton = New-Object System.Windows.Forms.Button -Property @{
         }
     }
 }
-# Cmdlet Parameter Option
-if ($AudibleCompletionMessage) {$OptionTextToSpeachCheckBox.Checked = $True}
 $Section2OptionsTab.Controls.Add($OptionTextToSpeachButton)
-CommonButtonSettings -Button $OptionTextToSpeachButton
+Apply-CommonButtonSettings -Button $OptionTextToSpeachButton
 
 
 $OptionViewReadMeButton = New-Object System.Windows.Forms.Button -Property @{
@@ -44,7 +42,7 @@ $OptionViewReadMeButton = New-Object System.Windows.Forms.Button -Property @{
     Add_Click = { Launch-ReadMe -ReadMe }
 }
 $Section2OptionsTab.Controls.Add($OptionViewReadMeButton)
-CommonButtonSettings -Button $OptionViewReadMeButton
+Apply-CommonButtonSettings -Button $OptionViewReadMeButton
 
 
 Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\PoShEasyWinLicenseAndAboutButton.ps1"
@@ -60,7 +58,7 @@ $PoShEasyWinLicenseAndAboutButton = New-Object Windows.Forms.Button -Property @{
     Add_MouseHover = $PoShEasyWinLicenseAndAboutButtonAdd_MouseHover
 }
 $Section2OptionsTab.Controls.Add($PoShEasyWinLicenseAndAboutButton)
-CommonButtonSettings -Button $PoShEasyWinLicenseAndAboutButton
+Apply-CommonButtonSettings -Button $PoShEasyWinLicenseAndAboutButton
 
 
 $OptionSearchComputersForPreviouslyCollectedDataProcessesGroupBox = New-Object System.Windows.Forms.Groupbox -Property @{
@@ -289,7 +287,6 @@ if (Test-Path "$PoShHome\Settings\Audible Completion Message.txt") {
     if ((Get-Content "$PoShHome\Settings\Audible Completion Message.txt") -eq 'True'){$OptionTextToSpeachCheckBox.checked = $true}
     else {$OptionTextToSpeachCheckBox.checked = $false}
 }
-if ($AudibleCompletionMessage) {$OptionTextToSpeachCheckBox.Checked = $True}
 $Section2OptionsTab.Controls.Add($OptionTextToSpeachCheckBox)
 
 

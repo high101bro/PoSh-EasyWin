@@ -80,7 +80,7 @@ $ManageCredentialsGroupBox = New-Object System.Windows.Forms.GroupBox -Property 
                 Add_MouseHover = $ProvideCredentialsButtonAdd_MouseHover
             }
             $ManageCredentialsGroupBox.Controls.Add($ProvideCredentialsButton)
-            CommonButtonSettings -Button $ProvideCredentialsButton
+            Apply-CommonButtonSettings -Button $ProvideCredentialsButton
 
 
             Update-FormProgress "$Dependencies\Code\System.Windows.Forms\CheckBox\ComputerListProvideCredentialsCheckBox.ps1"
@@ -120,7 +120,7 @@ $PivotExecutionGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
                 #Add_MouseHover = $ManageWindowsPortProxyButtonAdd_MouseHover
             }
             $PivotExecutionGroupBox.Controls.Add($ManageWindowsPortProxyButton)
-            CommonButtonSettings -Button $ManageWindowsPortProxyButton            
+            Apply-CommonButtonSettings -Button $ManageWindowsPortProxyButton            
 
 
             $script:ComputerListPivotExecutionCheckbox = New-Object System.Windows.Forms.Checkbox -Property @{
@@ -303,7 +303,7 @@ $ExecutionModeGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
             Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ComboBox\OptionJobTimeoutSelectionComboBox.ps1"
             . "$Dependencies\Code\System.Windows.Forms\ComboBox\OptionJobTimeoutSelectionComboBox.ps1"
             $script:OptionJobTimeoutSelectionComboBox = New-Object -TypeName System.Windows.Forms.Combobox -Property @{
-                Text   = $JobTimeOutSeconds
+                Text   = '180'
                 Left   = $script:OptionJobTimeoutSelectionLabel.Left + $script:OptionJobTimeoutSelectionLabel.Width + $($FormScale * 5)
                 Top    = $script:OptionJobTimeoutSelectionLabel.Top - $($FormScale * 3)
                 Width  = $FormScale * 50
@@ -332,7 +332,7 @@ $ExecutionModeGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
             }
             ### $script:ComputerListExecuteButton.Add_Click($ExecuteScriptHandler) ### Is located lower in the script
             $ExecutionModeGroupBox.Controls.Add($script:ComputerListExecuteButton)
-            CommonButtonSettings -Button $script:ComputerListExecuteButton
+            Apply-CommonButtonSettings -Button $script:ComputerListExecuteButton
             
 $Section3ActionTab.Controls.Add($ExecutionModeGroupBox)
 

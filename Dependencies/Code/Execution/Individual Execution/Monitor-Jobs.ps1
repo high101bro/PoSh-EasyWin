@@ -274,7 +274,7 @@ function Monitor-Jobs {
             Width  = `$FormScale * 75
             Height = `$FormScale * 20
         }
-        CommonButtonSettings -Button `$script:GeneratedAutoChartOptionsButton$ChartNumber
+        Apply-CommonButtonSettings -Button `$script:GeneratedAutoChartOptionsButton$ChartNumber
         `$script:GeneratedAutoChartOptionsButton$ChartNumber.Add_Click({
             if (`$script:GeneratedAutoChartOptionsButton$ChartNumber.Text -eq 'Options v') {
                 `$script:GeneratedAutoChartOptionsButton$ChartNumber.Text = 'Options ^'
@@ -395,7 +395,7 @@ function Monitor-Jobs {
             Width  = `$FormScale * 65
             Height = `$FormScale * 20
         }
-        CommonButtonSettings -Button `$script:GeneratedAutoChart3DToggleButton$ChartNumber
+        Apply-CommonButtonSettings -Button `$script:GeneratedAutoChart3DToggleButton$ChartNumber
         `$script:GeneratedAutoChart3DInclination$ChartNumber = 0
         `$script:GeneratedAutoChart3DToggleButton$ChartNumber.Add_Click({
 
@@ -468,7 +468,7 @@ function Monitor-Jobs {
             Height = `$FormScale * 23
             Anchor = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
         }
-        CommonButtonSettings -Button `$script:GeneratedAutoChartCheckDiffButton$ChartNumber
+        Apply-CommonButtonSettings -Button `$script:GeneratedAutoChartCheckDiffButton$ChartNumber
         `$script:GeneratedAutoChartCheckDiffButton$ChartNumber.Add_Click({
             `$script:GeneratedAutoChartInvestDiffDropDownArray$ChartNumber = `$script:SourceCSVData$ChartNumber | Select-Object -Property `$script:PropertyX$ChartNumber -ExpandProperty `$script:PropertyX$ChartNumber | Sort-Object -Unique
 
@@ -516,7 +516,7 @@ function Monitor-Jobs {
                 Add_KeyDown = { if (`$_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart$ChartNumber } }
                 Add_Click   = { script:InvestigateDifference-AutoChart$ChartNumber }
             }
-            CommonButtonSettings -Button `$script:GeneratedAutoChartInvestDiffExecuteButton$ChartNumber
+            Apply-CommonButtonSettings -Button `$script:GeneratedAutoChartInvestDiffExecuteButton$ChartNumber
             
 
             `$script:GeneratedAutoChartInvestDiffPosResultsLabel$ChartNumber = New-Object System.Windows.Forms.Label -Property @{
@@ -582,7 +582,7 @@ function Monitor-Jobs {
                 Generate-AutoChartsCommand -FilePath `$script:AutoChartDataSourceCsv$JobId -QueryName "Processes" -QueryTabName `$script:SeriesName$ChartNumber -PropertyX `$script:PropertyX$ChartNumber -PropertyY `$script:PropertyY$ChartNumber 
             }
         }
-        CommonButtonSettings -Button `$AutoChart01ExpandChartButton
+        Apply-CommonButtonSettings -Button `$AutoChart01ExpandChartButton
         `$script:GeneratedAutoChartManipulationPanel$ChartNumber.Controls.Add(`$AutoChart01ExpandChartButton)
 
 
@@ -602,7 +602,7 @@ function Monitor-Jobs {
                 else { [System.Windows.MessageBox]::Show("Error: Cannot Import Data!`nThe associated .xml file was not located.","PoSh-EasyWin") }
             }
         }
-        CommonButtonSettings -Button `$script:GeneratedAutoChartOpenInShell$ChartNumber
+        Apply-CommonButtonSettings -Button `$script:GeneratedAutoChartOpenInShell$ChartNumber
         `$script:GeneratedAutoChartManipulationPanel$ChartNumber.controls.Add(`$script:GeneratedAutoChartOpenInShell$ChartNumber)
 
 
@@ -619,7 +619,7 @@ function Monitor-Jobs {
                 else { [System.Windows.MessageBox]::Show("No CSV data available.","PoSh-EasyWin") }
             }
         }
-        CommonButtonSettings -Button `$script:GeneratedAutoChartGridView$ChartNumber
+        Apply-CommonButtonSettings -Button `$script:GeneratedAutoChartGridView$ChartNumber
         `$script:GeneratedAutoChartManipulationPanel$ChartNumber.controls.Add(`$script:GeneratedAutoChartGridView$ChartNumber)
 
 
@@ -630,7 +630,7 @@ function Monitor-Jobs {
             Width  = `$FormScale * 205
             Height = `$FormScale * 23
         }
-        CommonButtonSettings -Button `$script:GeneratedAutoChartSaveButton$ChartNumber
+        Apply-CommonButtonSettings -Button `$script:GeneratedAutoChartSaveButton$ChartNumber
         [enum]::GetNames('System.Windows.Forms.DataVisualization.Charting.ChartImageFormat')
         `$script:GeneratedAutoChartSaveButton$ChartNumber.Add_Click({
             Save-ChartImage -Chart `$script:GeneratedAutoChart$ChartNumber -Title `$script:GeneratedAutoChartTitle$ChartNumber
@@ -1395,7 +1395,7 @@ if ($MonitorMode) {
                                                                                                 }
                                                                                             }
                                                                                             `$ChartGenerationOptionsForm.Controls.Add(`$ChartGenerationPropertyList1Button)
-                                                                                            CommonButtonSettings -Button `$ChartGenerationPropertyList1Button
+                                                                                            Apply-CommonButtonSettings -Button `$ChartGenerationPropertyList1Button
                                                                 
                                                                                 foreach ( `$Property in `$ChartProperties ) { `$script:ChartGenerationPropertyList1ListBox.Items.Add(`$Property) }
                                                                 
@@ -1445,7 +1445,7 @@ if ($MonitorMode) {
                                                                                     }
                                                                                 }
                                                                                 `$ChartGenerationOptionsForm.Controls.Add(`$ChartGenerationPropertyList3Button)
-                                                                                CommonButtonSettings -Button `$ChartGenerationPropertyList3Button
+                                                                                Apply-CommonButtonSettings -Button `$ChartGenerationPropertyList3Button
                                                                 
                                                                     `$ChartGenerationOptionsForm.ShowDialog()
                                                             }
@@ -1551,7 +1551,7 @@ if ($MonitorMode) {
                                                 }
                                             }
                                             `$script:MonitorJobsDetailsRunningGroupBox$JobId.Controls.Add(`$script:MonitorJobsDetailsRunningSelectAllButton$JobId)
-                                            CommonButtonSettings -Button `$script:MonitorJobsDetailsRunningSelectAllButton$JobId
+                                            Apply-CommonButtonSettings -Button `$script:MonitorJobsDetailsRunningSelectAllButton$JobId
                                     
                                     
                                             `$script:MonitorJobsDetailsRunningSelectedForTreeNodeButton$JobId = New-Object System.Windows.Forms.Button -Property @{
@@ -1589,7 +1589,7 @@ if ($MonitorMode) {
                                                 }
                                             }
                                             `$script:MonitorJobsDetailsRunningGroupBox$JobId.Controls.Add(`$script:MonitorJobsDetailsRunningSelectedForTreeNodeButton$JobId)
-                                            CommonButtonSettings -Button `$script:MonitorJobsDetailsRunningSelectedForTreeNodeButton$JobId        
+                                            Apply-CommonButtonSettings -Button `$script:MonitorJobsDetailsRunningSelectedForTreeNodeButton$JobId        
     
     
                                             `$script:MonitorJobsDetailsCompletedGroupBox$JobId = New-Object System.Windows.Forms.GroupBox -Property @{
@@ -1632,7 +1632,7 @@ if ($MonitorMode) {
                                                     }
                                                 }
                                                 `$script:MonitorJobsDetailsCompletedGroupBox$JobId.Controls.Add(`$script:MonitorJobsDetailsCompletedSelectAllButton$JobId)
-                                                CommonButtonSettings -Button `$script:MonitorJobsDetailsCompletedSelectAllButton$JobId
+                                                Apply-CommonButtonSettings -Button `$script:MonitorJobsDetailsCompletedSelectAllButton$JobId
         
                                         
                                                 `$script:MonitorJobsDetailsCompletedSelectedForTreeNodeLButton$JobId = New-Object System.Windows.Forms.Button -Property @{
@@ -1670,7 +1670,7 @@ if ($MonitorMode) {
                                                     }
                                                 }
                                                 `$script:MonitorJobsDetailsCompletedGroupBox$JobId.Controls.Add(`$script:MonitorJobsDetailsCompletedSelectedForTreeNodeLButton$JobId)
-                                                CommonButtonSettings -Button `$script:MonitorJobsDetailsCompletedSelectedForTreeNodeLButton$JobId
+                                                Apply-CommonButtonSettings -Button `$script:MonitorJobsDetailsCompletedSelectedForTreeNodeLButton$JobId
                                                                                
     
                                         `$script:MonitorJobsDetailsStoppedGroupBox$JobId = New-Object System.Windows.Forms.GroupBox -Property @{
@@ -1714,7 +1714,7 @@ if ($MonitorMode) {
                                                 }
                                             }
                                             `$script:MonitorJobsDetailsStoppedGroupBox$JobId.Controls.Add(`$script:MonitorJobsDetailsStoppedSelectAllButton$JobId)
-                                            CommonButtonSettings -Button `$script:MonitorJobsDetailsStoppedSelectAllButton$JobId
+                                            Apply-CommonButtonSettings -Button `$script:MonitorJobsDetailsStoppedSelectAllButton$JobId
     
                                             
                                             `$script:MonitorJobsDetailsStoppedSelectedForTreeNodeButton$JobId = New-Object System.Windows.Forms.Button -Property @{
@@ -1752,7 +1752,7 @@ if ($MonitorMode) {
                                                 }
                                             }
                                             `$script:MonitorJobsDetailsStoppedGroupBox$JobId.Controls.Add(`$script:MonitorJobsDetailsStoppedSelectedForTreeNodeButton$JobId)
-                                            CommonButtonSettings -Button `$script:MonitorJobsDetailsStoppedSelectedForTreeNodeButton$JobId
+                                            Apply-CommonButtonSettings -Button `$script:MonitorJobsDetailsStoppedSelectedForTreeNodeButton$JobId
     
     
                                             `$script:MonitorJobsDetailsFailedGroupBox$JobId = New-Object System.Windows.Forms.GroupBox -Property @{
@@ -1796,7 +1796,7 @@ if ($MonitorMode) {
                                                     }
                                                 }
                                                 `$script:MonitorJobsDetailsFailedGroupBox$JobId.Controls.Add(`$script:MonitorJobsDetailsFailedSelectAllButton$JobId)
-                                                CommonButtonSettings -Button `$script:MonitorJobsDetailsFailedSelectAllButton$JobId
+                                                Apply-CommonButtonSettings -Button `$script:MonitorJobsDetailsFailedSelectAllButton$JobId
     
                                         
                                                 `$script:MonitorJobsDetailsFailedSelectedForTreeNodeButton$JobId = New-Object System.Windows.Forms.Button -Property @{
@@ -1833,7 +1833,7 @@ if ($MonitorMode) {
                                                     }
                                                 }
                                                 `$script:MonitorJobsDetailsFailedGroupBox$JobId.Controls.Add(`$script:MonitorJobsDetailsFailedSelectedForTreeNodeButton$JobId)
-                                                CommonButtonSettings -Button `$script:MonitorJobsDetailsFailedSelectedForTreeNodeButton$JobId
+                                                Apply-CommonButtonSettings -Button `$script:MonitorJobsDetailsFailedSelectedForTreeNodeButton$JobId
     
                                                 
                                         `$script:MonitorJobsDetailsStatusGroupBox$JobId = New-Object System.Windows.Forms.GroupBox -Property @{
@@ -2200,13 +2200,13 @@ if ($DisableReRun) {
         ))
 
         
-        CommonButtonSettings -Button `$script:Section3MonitorJobDetailsButton$JobId
-        CommonButtonSettings -Button `$script:Section3MonitorJobCommandButton$JobId
-        CommonButtonSettings -Button `$script:Section3MonitorJobViewButton$JobId
-        CommonButtonSettings -Button `$script:Section3MonitorJobShellButton$JobId
-        CommonButtonSettings -Button `$script:Section3MonitorJobChartsButton$JobId
-        CommonButtonSettings -Button `$script:Section3MonitorJobRemoveButton$JobId
-        CommonButtonSettings -Button `$script:Section3MonitorJobOptionsButton$JobId
+        Apply-CommonButtonSettings -Button `$script:Section3MonitorJobDetailsButton$JobId
+        Apply-CommonButtonSettings -Button `$script:Section3MonitorJobCommandButton$JobId
+        Apply-CommonButtonSettings -Button `$script:Section3MonitorJobViewButton$JobId
+        Apply-CommonButtonSettings -Button `$script:Section3MonitorJobShellButton$JobId
+        Apply-CommonButtonSettings -Button `$script:Section3MonitorJobChartsButton$JobId
+        Apply-CommonButtonSettings -Button `$script:Section3MonitorJobRemoveButton$JobId
+        Apply-CommonButtonSettings -Button `$script:Section3MonitorJobOptionsButton$JobId
         
         `$script:Section3MonitorJobRemoveButton$JobId.ForeColor = 'Red'
 
@@ -2403,7 +2403,7 @@ if ($DisableReRun) {
                             }
                         }    
                         `$script:Section3MonitorJobPanel$JobId.Controls.Add(`$script:Section3MonitorJobViewHTMLorTextButton$JobId)
-                        CommonButtonSettings -Button `$script:Section3MonitorJobViewHTMLorTextButton$JobId    
+                        Apply-CommonButtonSettings -Button `$script:Section3MonitorJobViewHTMLorTextButton$JobId    
                     }
                     elseif ((Test-Path -Path "`$Dependencies\Modules\PSWriteHTML") -and (Get-Content "`$PoShHome\Settings\PSWriteHTML Module Install.txt") -match 'Yes') {
                         `$script:Section3MonitorJobViewHTMLorTextButton$JobId = New-Object System.Windows.Forms.Button -Property @{
@@ -2444,7 +2444,7 @@ if ($DisableReRun) {
                             }
                         }
                         `$script:Section3MonitorJobPanel$JobId.Controls.Add(`$script:Section3MonitorJobViewHTMLorTextButton$JobId)
-                        CommonButtonSettings -Button `$script:Section3MonitorJobViewHTMLorTextButton$JobId    
+                        Apply-CommonButtonSettings -Button `$script:Section3MonitorJobViewHTMLorTextButton$JobId    
                     }
 
                     

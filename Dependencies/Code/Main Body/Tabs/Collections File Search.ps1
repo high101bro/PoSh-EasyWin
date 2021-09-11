@@ -28,6 +28,8 @@ $FileSearchDirectoryListingCheckbox = New-Object System.Windows.Forms.CheckBox -
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
     ForeColor = 'Blue'
     Add_Click = { 
+        Update-QueryCount
+        
         Update-TreeViewData -Commands -TreeView $script:CommandsTreeView.Nodes
         if ($this.checked){$this.ForeColor = 'Red'} else {$this.ForeColor = 'Blue'}
     }
@@ -100,7 +102,9 @@ $FileSearchFileSearchCheckbox = New-Object System.Windows.Forms.CheckBox -Proper
     Height = $FormScale * 22
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
     ForeColor = 'Blue'
-    Add_Click = { 
+    Add_Click = {
+        Update-QueryCount
+
         Update-TreeViewData -Commands -TreeView $script:CommandsTreeView.Nodes
         if ($this.checked){$this.ForeColor = 'Red'} else {$this.ForeColor = 'Blue'}
     }
@@ -218,6 +222,8 @@ $FileSearchAlternateDataStreamCheckbox = New-Object System.Windows.Forms.CheckBo
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
     ForeColor = 'Blue'
     Add_Click = { 
+        Update-QueryCount
+        
         Update-TreeViewData -Commands -TreeView $script:CommandsTreeView.Nodes
         if ($this.checked){$this.ForeColor = 'Red'} else {$this.ForeColor = 'Blue'}
     }
@@ -289,4 +295,4 @@ $Section1FileSearchTab.Controls.Add($FileSearchAlternateDataStreamCheckbox)
             Add_Click = $FileSearchAlternateDataStreamDirectoryExtractStreamDataButtonAdd_Click
         }
         $Section1FileSearchTab.Controls.Add($FileSearchAlternateDataStreamDirectoryExtractStreamDataButton)
-        CommonButtonSettings -Button $FileSearchAlternateDataStreamDirectoryExtractStreamDataButton
+        Apply-CommonButtonSettings -Button $FileSearchAlternateDataStreamDirectoryExtractStreamDataButton

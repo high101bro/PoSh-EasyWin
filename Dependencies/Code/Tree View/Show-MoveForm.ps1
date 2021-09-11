@@ -59,7 +59,7 @@ function Show-MoveForm {
                 $AccountsTreeNodePopup.close()
             }                
         }
-        CommonButtonSettings -Button $AccountsTreeNodePopupExecuteButton
+        Apply-CommonButtonSettings -Button $AccountsTreeNodePopupExecuteButton
         $AccountsTreeNodePopup.Controls.Add($AccountsTreeNodePopupExecuteButton)
         $AccountsTreeNodePopup.ShowDialog()
     }
@@ -115,7 +115,7 @@ function Show-MoveForm {
                 $ComputerTreeNodePopup.close()
             }                
         }
-        CommonButtonSettings -Button $ComputerTreeNodePopupExecuteButton
+        Apply-CommonButtonSettings -Button $ComputerTreeNodePopupExecuteButton
         $ComputerTreeNodePopup.Controls.Add($ComputerTreeNodePopupExecuteButton)
         $ComputerTreeNodePopup.ShowDialog()
     }

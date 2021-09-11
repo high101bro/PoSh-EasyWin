@@ -156,7 +156,7 @@ $SendFilesButtonAdd_Click = {
                         }
                     }
                     $FileTransferOptionsForm.Controls.Add($FileTransferChooseFilesButton)
-                    CommonButtonSettings -Button $FileTransferChooseFilesButton
+                    Apply-CommonButtonSettings -Button $FileTransferChooseFilesButton
     
 
 
@@ -190,7 +190,7 @@ $SendFilesButtonAdd_Click = {
                         }
                     }
                     $FileTransferOptionsForm.Controls.Add($FileTransferChooseDirectoryButton)
-                    CommonButtonSettings -Button $FileTransferChooseDirectoryButton
+                    Apply-CommonButtonSettings -Button $FileTransferChooseDirectoryButton
                         
 
                     $FileTransferPropertyList1Button = New-Object System.Windows.Forms.Button -Property @{
@@ -207,7 +207,7 @@ $SendFilesButtonAdd_Click = {
                         }
                     }
                     $FileTransferOptionsForm.Controls.Add($FileTransferPropertyList1Button)
-                    CommonButtonSettings -Button $FileTransferPropertyList1Button
+                    Apply-CommonButtonSettings -Button $FileTransferPropertyList1Button
     
     
                     $FileTransferRemoveButton = New-Object System.Windows.Forms.Button -Property @{
@@ -229,7 +229,7 @@ $SendFilesButtonAdd_Click = {
                         }
                     }
                     $FileTransferOptionsForm.Controls.Add($FileTransferRemoveButton)
-                    CommonButtonSettings -Button $FileTransferRemoveButton
+                    Apply-CommonButtonSettings -Button $FileTransferRemoveButton
         
     
 
@@ -435,7 +435,7 @@ $($SearchString.trim())
                         }
                     }
                     $FileTransferOptionsForm.Controls.Add($FileTransferSendButton)
-                    CommonButtonSettings -Button $FileTransferSendButton
+                    Apply-CommonButtonSettings -Button $FileTransferSendButton
     
                     
 

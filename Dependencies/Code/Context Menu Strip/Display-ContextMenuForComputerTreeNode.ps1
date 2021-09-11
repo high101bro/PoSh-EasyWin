@@ -242,7 +242,7 @@ Command Ex:
 
 
     $ComputerListSelectedNodeActionsToolStripLabel = New-Object System.Windows.Forms.ToolStripLabel -Property @{
-        Text      = "Node Actions"
+        Text      = "Node Actions: Selected"
         Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),1,2,1)
         ForeColor = 'Black'
     }
@@ -358,7 +358,7 @@ Command Ex:
                     Add_Click = { AddHost-ComputerTreeNode }
                     Add_KeyDown = { if ($_.KeyCode -eq "Enter") { AddHost-ComputerTreeNode } }    
                 }
-                CommonButtonSettings -Button $ComputerTreeNodePopupAddHostButton
+                Apply-CommonButtonSettings -Button $ComputerTreeNodePopupAddHostButton
                 $ComputerTreeNodePopup.Controls.Add($ComputerTreeNodePopupAddHostButton)
             
                 # $script:ComputerTreeView.ExpandAll()
@@ -413,7 +413,7 @@ Command Ex:
                         Width  = $FormScale * 100
                         Height = $FormScale * 22
                     }
-                    CommonButtonSettings -Button $ComputerTreeNodeRenamePopupButton
+                    Apply-CommonButtonSettings -Button $ComputerTreeNodeRenamePopupButton
                     $ComputerTreeNodeRenamePopupButton.Add_Click({ Rename-ComputerTreeNodeSelected })
                     $ComputerTreeNodeRenamePopup.Controls.Add($ComputerTreeNodeRenamePopupButton)
 
@@ -633,12 +633,21 @@ Command Ex:
 
 
     $ComputerListCheckedNodeActionsToolStripLabel = New-Object System.Windows.Forms.ToolStripLabel -Property @{
-        Text      = "Node Actions"
+        Text      = "Node Actions: All"
         Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),1,2,1)
         ForeColor = 'Black'
     }
     $script:ComputerListContextMenuStrip.Items.Add($ComputerListCheckedNodeActionsToolStripLabel)
 
+    $ComputerListCheckedNodeActionsDeselectAllButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
+        Text        = "  - Uncheck All Nodes"
+        ForeColor   = 'Black'
+        Add_Click   = {
+            $script:ComputerListContextMenuStrip.Close()
+            Deselect-AllComputers
+        }
+    }
+    $script:ComputerListContextMenuStrip.Items.Add($ComputerListCheckedNodeActionsDeselectAllButton)
 
     $ComputerListCheckedNodeActionsToolStripComboBox = New-Object System.Windows.Forms.ToolStripComboBox -Property @{
         Size = @{ Width  = $FormScale * 150 }
@@ -648,11 +657,6 @@ Command Ex:
         Add_SelectedIndexChanged = {
             $script:ComputerListContextMenuStrip.Close()
 
-            if ($This.selectedItem -eq ' - Uncheck All Nodes') { 
-                $script:ComputerListContextMenuStrip.Close()
-
-                Deselect-AllComputers
-            }
             if ($This.selectedItem -eq ' - NSLookup (Hostname to IP)')  { 
                 $script:ComputerListContextMenuStrip.Close()
 
@@ -886,7 +890,6 @@ Command Ex:
             }
         }
     }
-    $ComputerListCheckedNodeActionsToolStripComboBox.Items.Add(' - Uncheck All Nodes')
     $ComputerListCheckedNodeActionsToolStripComboBox.Items.Add(' - NSLookup (Hostname to IP)')
     $ComputerListCheckedNodeActionsToolStripComboBox.Items.Add(' - Tag Nodes With Metadata')
     $ComputerListCheckedNodeActionsToolStripComboBox.Items.Add(' - Move Nodes To New OU/CN')

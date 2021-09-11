@@ -45,7 +45,7 @@ $script:CustomGroupCommandsListListListList = @()
 #======================================================================
 
 $script:TreeeViewEndpointCount = 0
-$script:TreeeViewCommandsCount     = 0
+$script:TreeeViewCommandsCount = 0
 
 # Handles the behavior of nodes when clicked, such as checking all sub-checkboxes, changing text colors, and Tabs selected.
 # Also counts the total number of checkboxes checked (both command and computer treenodes, and other query checkboxes) and
@@ -165,7 +165,7 @@ function Update-CustomCommandGroup {
                     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
                     Add_Click = { Invoke-Command $GroupCommandUniqueNameCheck }
                 }
-                CommonButtonSettings -Button $GroupCommandsGroupNameCreateButton
+                Apply-CommonButtonSettings -Button $GroupCommandsGroupNameCreateButton
                 $GroupCommandsForm.Controls.Add($GroupCommandsGroupNameCreateButton)
 
     $GroupCommandsForm.ShowDialog()
@@ -330,7 +330,7 @@ $CommandsTreeViewSearchButton = New-Object System.Windows.Forms.Button -Property
     Add_MouseHover = $CommandsTreeViewSearchButtonAdd_MouseHover
 }
 $Section1CommandsTab.Controls.Add($CommandsTreeViewSearchButton)
-CommonButtonSettings -Button $CommandsTreeViewSearchButton
+Apply-CommonButtonSettings -Button $CommandsTreeViewSearchButton
 
 
 Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\CommandsTreeviewGroupCommandsButton.ps1"
@@ -360,7 +360,7 @@ $CommandsTreeviewGroupCommandsButton = New-Object System.Windows.Forms.Button -P
     }
 }
 $Section1CommandsTab.Controls.Add($CommandsTreeviewGroupCommandsButton)
-CommonButtonSettings -Button $CommandsTreeviewGroupCommandsButton
+Apply-CommonButtonSettings -Button $CommandsTreeviewGroupCommandsButton
 
 
 $CommandsTreeviewDeselectAllButton = New-Object System.Windows.Forms.Button -Property @{
@@ -378,7 +378,7 @@ $CommandsTreeviewDeselectAllButton = New-Object System.Windows.Forms.Button -Pro
     }
 }
 $Section1CommandsTab.Controls.Add($CommandsTreeviewDeselectAllButton)
-CommonButtonSettings -Button $CommandsTreeviewDeselectAllButton
+Apply-CommonButtonSettings -Button $CommandsTreeviewDeselectAllButton
 
 
 Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\CommandsTreeViewQueryHistoryRemovalButton.ps1"
@@ -391,7 +391,7 @@ $CommandsTreeViewRemoveCommandButton = New-Object System.Windows.Forms.Button -P
     Height = $FormScale * 22
     Add_Click = $CommandsTreeViewRemoveCommandButtonAdd_Click
 }
-CommonButtonSettings -Button $CommandsTreeViewRemoveCommandButton
+Apply-CommonButtonSettings -Button $CommandsTreeViewRemoveCommandButton
 # Note: This button is added/removed dynamicallly when custom group commands category treenodes are selected
 
 
@@ -408,9 +408,9 @@ $script:CommandsTreeView = New-Object System.Windows.Forms.TreeView -Property @{
     Add_Click        = { 
         Update-TreeViewData -Commands -TreeView $script:CommandsTreeView.Nodes
     }
-    Add_AfterSelect  = { 
-        Update-TreeViewData -Commands -TreeView $script:CommandsTreeView.Nodes
-    }
+    # Add_AfterSelect  = { 
+    #     Update-TreeViewData -Commands -TreeView $script:CommandsTreeView.Nodes
+    # }
 }
 $script:CommandsTreeView.Sort()
 $Section1CommandsTab.Controls.Add($script:CommandsTreeView)
@@ -430,6 +430,8 @@ $CustomQueryScriptBlockCheckBox = New-Object System.Windows.Forms.CheckBox -Prop
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),1,2,1)
     ForeColor = 'Blue'
     Add_Click = {
+        Update-QueryCount
+        
         Update-TreeViewData -Commands -TreeView $script:CommandsTreeView.Nodes
         if ($script:CustomQueryScriptBlockTextbox.text -ne $script:CustomQueryScriptBlockSaved) {
             $CustomQueryScriptBlockCheckBox.checked = $false
@@ -528,7 +530,7 @@ $CustomQueryScriptBlockGroupBox = New-Object System.Windows.Forms.GroupBox -Prop
                     $script:CustomQueryScriptBlockTextbox.forecolor = 'black'
                 }
             }
-            CommonButtonSettings -Button $CustomQueryScriptBlockVerifyButton
+            Apply-CommonButtonSettings -Button $CustomQueryScriptBlockVerifyButton
             $CustomQueryScriptBlockGroupBox.controls.add($CustomQueryScriptBlockVerifyButton)
 
 
@@ -545,7 +547,7 @@ $CustomQueryScriptBlockGroupBox = New-Object System.Windows.Forms.GroupBox -Prop
                     $script:CustomQueryScriptBlockTextbox.forecolor = 'black'
                 }
             }
-            CommonButtonSettings -Button $CustomQueryScriptBlockSearchAndBuildButton
+            Apply-CommonButtonSettings -Button $CustomQueryScriptBlockSearchAndBuildButton
             $CustomQueryScriptBlockGroupBox.controls.add($CustomQueryScriptBlockSearchAndBuildButton)
 
 
@@ -629,7 +631,7 @@ $CustomQueryScriptBlockGroupBox = New-Object System.Windows.Forms.GroupBox -Prop
                     $script:CustomQueryScriptBlockDisableSyntaxCheckbox.checked = $false
                 }
             }
-            CommonButtonSettings -Button $CustomQueryScriptBlockAddCommandButton
+            Apply-CommonButtonSettings -Button $CustomQueryScriptBlockAddCommandButton
             $CustomQueryScriptBlockGroupBox.controls.add($CustomQueryScriptBlockAddCommandButton)
 
 $Section1CommandsTab.controls.add($CustomQueryScriptBlockGroupBox)

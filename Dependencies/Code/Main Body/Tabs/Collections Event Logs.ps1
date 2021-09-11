@@ -187,7 +187,9 @@ $EventLogsEventIDsManualEntryCheckbox  = New-Object System.Windows.Forms.CheckBo
     Height = $FormScale * 22
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
     ForeColor = 'Blue'
-    Add_Click = { 
+    Add_Click = {
+        Update-QueryCount
+        
         Update-TreeViewData -Commands -TreeView $script:CommandsTreeView.Nodes
         if ($this.checked){$this.ForeColor = 'Red'} else {$this.ForeColor = 'Blue'}
     }
@@ -218,7 +220,7 @@ $EventLogsEventIDsManualEntrySelectionButton = New-Object System.Windows.Forms.B
     Add_Click = $EventLogsEventIDsManualEntrySelectionButtonAdd_Click
 }
 $Section1EventLogsTab.Controls.Add($EventLogsEventIDsManualEntrySelectionButton)
-CommonButtonSettings -Button $EventLogsEventIDsManualEntrySelectionButton
+Apply-CommonButtonSettings -Button $EventLogsEventIDsManualEntrySelectionButton
 
 
 $EventLogsEventIDsManualEntryClearButton = New-Object System.Windows.Forms.Button -Property @{
@@ -230,7 +232,7 @@ $EventLogsEventIDsManualEntryClearButton = New-Object System.Windows.Forms.Butto
     Add_Click = { $EventLogsEventIDsManualEntryTextbox.Text = "" }
 }
 $Section1EventLogsTab.Controls.Add($EventLogsEventIDsManualEntryClearButton)
-CommonButtonSettings -Button $EventLogsEventIDsManualEntryClearButton
+Apply-CommonButtonSettings -Button $EventLogsEventIDsManualEntryClearButton
 
 
 $EventLogsEventIDsManualEntryTextbox = New-Object System.Windows.Forms.TextBox -Property @{
@@ -262,7 +264,22 @@ $EventLogsQuickPickSelectionCheckbox = New-Object System.Windows.Forms.CheckBox 
     Height = $FormScale * 22
     Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
     ForeColor = 'Blue'
-    Add_Click = { 
+    Checked = $false
+    Enabled = $false
+    Add_Click = {
+        if ($this.Checked -and $this.enabled -and $EventLogsQuickPickSelectionCheckedListBox.CheckedItems.count -gt 0) {
+            $script:SectionQueryCount += $EventLogsQuickPickSelectionCheckedlistbox.CheckedItems.count
+            $EventLogsQuickPickSelectionCheckedListBox.Enabled = $false
+            $EventLogsQuickPickSelectionSelectAllButton.Enabled = $false
+            $EventLogsQuickPickSelectionClearButton.Enabled = $false
+        }
+        else {
+            $script:SectionQueryCount -= $EventLogsQuickPickSelectionCheckedlistbox.CheckedItems.count
+            $EventLogsQuickPickSelectionCheckedListBox.Enabled = $true
+            $EventLogsQuickPickSelectionSelectAllButton.Enabled = $true
+            $EventLogsQuickPickSelectionClearButton.Enabled = $true
+        }
+
         Update-TreeViewData -Commands -TreeView $script:CommandsTreeView.Nodes
         if ($this.checked){$this.ForeColor = 'Red'} else {$this.ForeColor = 'Blue'}
     }
@@ -293,7 +310,7 @@ $EventLogsQuickPickSelectionClearButton = New-Object System.Windows.Forms.Button
     Add_Click = $EventLogsQuickPickSelectionClearButtonAdd_Click
 }
 $Section1EventLogsTab.Controls.Add($EventLogsQuickPickSelectionClearButton)
-CommonButtonSettings -Button $EventLogsQuickPickSelectionClearButton
+Apply-CommonButtonSettings -Button $EventLogsQuickPickSelectionClearButton
 
 
 $EventLogsQuickPickSelectionSelectAllButton = New-Object System.Windows.Forms.Button -Property @{
@@ -305,11 +322,19 @@ $EventLogsQuickPickSelectionSelectAllButton = New-Object System.Windows.Forms.Bu
     Add_Click = { For ($i=0;$i -lt $EventLogsQuickPickSelectionCheckedlistbox.Items.count;$i++) { $EventLogsQuickPickSelectionCheckedlistbox.SetItemChecked($i,$true) } }
 }
 $Section1EventLogsTab.Controls.Add($EventLogsQuickPickSelectionSelectAllButton)
-CommonButtonSettings -Button $EventLogsQuickPickSelectionSelectAllButton
+Apply-CommonButtonSettings -Button $EventLogsQuickPickSelectionSelectAllButton
 
 
-Update-FormProgress "$Dependencies\Code\System.Windows.Forms\CheckedListBox\EventLogsQuickPickSelectionCheckedListBox.ps1"
-. "$Dependencies\Code\System.Windows.Forms\CheckedListBox\EventLogsQuickPickSelectionCheckedListBox.ps1"
+$EventLogsQuickPickSelectionCheckboxUpdate = {
+    if ($EventLogsQuickPickSelectionCheckedListBox.CheckedItems.count -gt 0) {
+        $EventLogsQuickPickSelectionCheckbox.enabled = $true
+    }
+    else {
+        $EventLogsQuickPickSelectionCheckbox.enabled = $false
+        $EventLogsQuickPickSelectionCheckbox.checked = $false
+    }
+
+}
 $EventLogsQuickPickSelectionCheckedListBox = New-Object -TypeName System.Windows.Forms.CheckedListBox -Property @{
     Name   = "Event Logs Selection"
     Text   = "Event Logs Selection"
@@ -319,11 +344,24 @@ $EventLogsQuickPickSelectionCheckedListBox = New-Object -TypeName System.Windows
     Height = $FormScale * 150
     ScrollAlwaysVisible = $true
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    Add_Click = $EventLogsQuickPickSelectionCheckedListBoxAdd_Click
+    ForeColor = 'Blue'
+    Add_MouseHover = $EventLogsQuickPickSelectionCheckboxUpdate
+    Add_MouseEnter = $EventLogsQuickPickSelectionCheckboxUpdate
+    Add_MouseLeave = $EventLogsQuickPickSelectionCheckboxUpdate
+    Add_Click = {
+        & $EventLogsQuickPickSelectionCheckboxUpdate
+        $InformationTabControl.SelectedTab = $Section3ResultsTab
+        foreach ( $Query in $script:EventLogQueries ) {
+            If ( $Query.Name -imatch $EventLogsQuickPickSelectionCheckedListBox.SelectedItem ) {
+                $ResultsListBox.Items.Clear()
+                $CommandFileNotes = Get-Content -Path $Query.FilePath
+                foreach ($line in $CommandFileNotes) {$ResultsListBox.Items.Add("$line")}
+            }
+        }    
+    }
 }
 foreach ( $Query in $script:EventLogQueries ) { $EventLogsQuickPickSelectionCheckedListBox.Items.Add("$($Query.Name)") }
 $Section1EventLogsTab.Controls.Add($EventLogsQuickPickSelectionCheckedListBox)
-
 
 #============================================================================================================================================================
 # Event Logs - Event IDs To Monitor
@@ -383,6 +421,8 @@ $EventLogsEventIDsToMonitorCheckbox = New-Object System.Windows.Forms.CheckBox -
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
     ForeColor = 'Blue'
     Add_Click = { 
+        Update-QueryCount
+        
         Update-TreeViewData -Commands -TreeView $script:CommandsTreeView.Nodes
         if ($this.checked){$this.ForeColor = 'Red'} else {$this.ForeColor = 'Blue'}
     }
@@ -401,7 +441,7 @@ $EventLogsEventIDsToMonitorClearButton = New-Object System.Windows.Forms.Button 
     Add_Click = $EventLogsEventIDsToMonitorClearButtonAdd_Click
 }
 $Section1EventLogsTab.Controls.Add($EventLogsEventIDsToMonitorClearButton)
-CommonButtonSettings -Button $EventLogsEventIDsToMonitorClearButton
+Apply-CommonButtonSettings -Button $EventLogsEventIDsToMonitorClearButton
 
 <#
 $EventLogsEventIDsToMonitorSelectAllButton = New-Object System.Windows.Forms.Button -Property @{
@@ -413,7 +453,7 @@ $EventLogsEventIDsToMonitorSelectAllButton = New-Object System.Windows.Forms.But
     Add_Click = { For ($i=0;$i -lt $EventLogsEventIDsToMonitorCheckListBox.Items.count;$i++) { $EventLogsEventIDsToMonitorCheckListBox.SetItemChecked($i,$true) } }
 }
 $Section1EventLogsTab.Controls.Add($EventLogsEventIDsToMonitorSelectAllButton)
-CommonButtonSettings -Button $EventLogsEventIDsToMonitorSelectAllButton
+Apply-CommonButtonSettings -Button $EventLogsEventIDsToMonitorSelectAllButton
 #>
 
 $EventLogsEventIDsToMonitorLabel = New-Object System.Windows.Forms.Label -Property @{

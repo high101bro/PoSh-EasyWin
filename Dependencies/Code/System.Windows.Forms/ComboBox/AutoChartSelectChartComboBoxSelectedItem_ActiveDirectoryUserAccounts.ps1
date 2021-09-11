@@ -230,7 +230,7 @@ $AutoChartPullNewDataButton = New-Object System.Windows.Forms.Button -Property @
     Height = $FormScale * 22
 }
  $script:AutoChartsIndividualTab01.Controls.Add($AutoChartPullNewDataButton)
-CommonButtonSettings -Button $AutoChartPullNewDataButton
+Apply-CommonButtonSettings -Button $AutoChartPullNewDataButton
 $AutoChartPullNewDataButton.Add_Click({
 
     if ($script:SelectedDomainController -ne $null) {
@@ -445,7 +445,7 @@ $script:AutoChart01ADUserAccountsOptionsButton = New-Object Windows.Forms.Button
     Size      = @{ Width  = $FormScale * 75
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart01ADUserAccountsOptionsButton
+Apply-CommonButtonSettings -Button $script:AutoChart01ADUserAccountsOptionsButton
 $script:AutoChart01ADUserAccountsOptionsButton.Add_Click({
     if ($script:AutoChart01ADUserAccountsOptionsButton.Text -eq 'Options v') {
         $script:AutoChart01ADUserAccountsOptionsButton.Text = 'Options ^'
@@ -570,7 +570,7 @@ $script:AutoChart01ADUserAccounts3DToggleButton = New-Object Windows.Forms.Butto
     Size      = @{ Width  = $FormScale * 65
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart01ADUserAccounts3DToggleButton
+Apply-CommonButtonSettings -Button $script:AutoChart01ADUserAccounts3DToggleButton
 $script:AutoChart01ADUserAccounts3DInclination = 0
 $script:AutoChart01ADUserAccounts3DToggleButton.Add_Click({
 
@@ -655,7 +655,7 @@ $script:AutoChart01ADUserAccountsCheckDiffButton = New-Object Windows.Forms.Butt
                    Height = $FormScale * 23 }
     Anchor    = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
 }
-CommonButtonSettings -Button $script:AutoChart01ADUserAccountsCheckDiffButton
+Apply-CommonButtonSettings -Button $script:AutoChart01ADUserAccountsCheckDiffButton
 $script:AutoChart01ADUserAccountsCheckDiffButton.Add_Click({
     $script:AutoChart01ADUserAccountsInvestDiffDropDownArraY = $script:AutoChartDataSourceCsv | Select-Object -Property 'Created' -ExpandProperty 'Created' | Sort-Object -Unique
 
@@ -700,7 +700,7 @@ $script:AutoChart01ADUserAccountsCheckDiffButton.Add_Click({
         Width    = $FormScale * 100
         Height   = $FormScale * 20
     }
-    CommonButtonSettings -Button $script:AutoChart01ADUserAccountsInvestDiffExecuteButton
+    Apply-CommonButtonSettings -Button $script:AutoChart01ADUserAccountsInvestDiffExecuteButton
     $script:AutoChart01ADUserAccountsInvestDiffExecuteButton.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart01ADUserAccounts }})
     $script:AutoChart01ADUserAccountsInvestDiffExecuteButton.Add_Click({ script:InvestigateDifference-AutoChart01ADUserAccounts })
 
@@ -766,7 +766,7 @@ $AutoChart01ADUserAccountsExpandChartButton = New-Object System.Windows.Forms.Bu
                 Height = $FormScale * 23 }
     Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Processes" -QueryTabName "Created" -PropertyX "Created" -PropertyY "Name" }
 }
-CommonButtonSettings -Button $AutoChart01ADUserAccountsExpandChartButton
+Apply-CommonButtonSettings -Button $AutoChart01ADUserAccountsExpandChartButton
 $script:AutoChart01ADUserAccountsManipulationPanel.Controls.Add($AutoChart01ADUserAccountsExpandChartButton)
 
 
@@ -777,7 +777,7 @@ $script:AutoChart01ADUserAccountsOpenInShell = New-Object Windows.Forms.Button -
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart01ADUserAccountsOpenInShell
+Apply-CommonButtonSettings -Button $script:AutoChart01ADUserAccountsOpenInShell
 $script:AutoChart01ADUserAccountsOpenInShell.Add_Click({ AutoChartOpenDataInShell })
 $script:AutoChart01ADUserAccountsManipulationPanel.controls.Add($script:AutoChart01ADUserAccountsOpenInShell)
 
@@ -789,7 +789,7 @@ $script:AutoChart01ADUserAccountsViewResults = New-Object Windows.Forms.Button -
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart01ADUserAccountsViewResults
+Apply-CommonButtonSettings -Button $script:AutoChart01ADUserAccountsViewResults
 $script:AutoChart01ADUserAccountsViewResults.Add_Click({ $script:AutoChartDataSourceCsv | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" })
 $script:AutoChart01ADUserAccountsManipulationPanel.controls.Add($script:AutoChart01ADUserAccountsViewResults)
 
@@ -802,7 +802,7 @@ $script:AutoChart01ADUserAccountsSaveButton = New-Object Windows.Forms.Button -P
     Size     = @{ Width  = $FormScale * 100 #205
                   Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart01ADUserAccountsSaveButton
+Apply-CommonButtonSettings -Button $script:AutoChart01ADUserAccountsSaveButton
 [enum]::GetNames('System.Windows.Forms.DataVisualization.Charting.ChartImageFormat')
 $script:AutoChart01ADUserAccountsSaveButton.Add_Click({
     Save-ChartImage -Chart $script:AutoChart01ADUserAccounts -Title $script:AutoChart01ADUserAccountsTitle
@@ -959,7 +959,7 @@ $script:AutoChart02ADUserAccountsOptionsButton = New-Object Windows.Forms.Button
     Size      = @{ Width  = $FormScale * 75
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart02ADUserAccountsOptionsButton
+Apply-CommonButtonSettings -Button $script:AutoChart02ADUserAccountsOptionsButton
 $script:AutoChart02ADUserAccountsOptionsButton.Add_Click({
     if ($script:AutoChart02ADUserAccountsOptionsButton.Text -eq 'Options v') {
         $script:AutoChart02ADUserAccountsOptionsButton.Text = 'Options ^'
@@ -1084,7 +1084,7 @@ $script:AutoChart02ADUserAccounts3DToggleButton = New-Object Windows.Forms.Butto
     Size      = @{ Width  = $FormScale * 65
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart02ADUserAccounts3DToggleButton
+Apply-CommonButtonSettings -Button $script:AutoChart02ADUserAccounts3DToggleButton
 $script:AutoChart02ADUserAccounts3DInclination = 0
 $script:AutoChart02ADUserAccounts3DToggleButton.Add_Click({
 
@@ -1169,7 +1169,7 @@ $script:AutoChart02ADUserAccountsCheckDiffButton = New-Object Windows.Forms.Butt
                    Height = $FormScale * 23 }
     Anchor    = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
 }
-CommonButtonSettings -Button $script:AutoChart02ADUserAccountsCheckDiffButton
+Apply-CommonButtonSettings -Button $script:AutoChart02ADUserAccountsCheckDiffButton
 $script:AutoChart02ADUserAccountsCheckDiffButton.Add_Click({
     $script:AutoChart02ADUserAccountsInvestDiffDropDownArraY = $script:AutoChartDataSourceCsv | Select-Object -Property 'Modified' -ExpandProperty 'Modified' | Sort-Object -Unique
 
@@ -1214,7 +1214,7 @@ $script:AutoChart02ADUserAccountsCheckDiffButton.Add_Click({
         Width    = $FormScale * 100
         Height   = $FormScale * 20
     }
-    CommonButtonSettings -Button $script:AutoChart02ADUserAccountsInvestDiffExecuteButton
+    Apply-CommonButtonSettings -Button $script:AutoChart02ADUserAccountsInvestDiffExecuteButton
     $script:AutoChart02ADUserAccountsInvestDiffExecuteButton.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart02ADUserAccounts }})
     $script:AutoChart02ADUserAccountsInvestDiffExecuteButton.Add_Click({ script:InvestigateDifference-AutoChart02ADUserAccounts })
 
@@ -1280,7 +1280,7 @@ $AutoChart02ADUserAccountsExpandChartButton = New-Object System.Windows.Forms.Bu
                 Height = $FormScale * 23 }
     Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Processes" -QueryTabName "Modified" -PropertyX "Modified" -PropertyY "Name" }
 }
-CommonButtonSettings -Button $AutoChart02ADUserAccountsExpandChartButton
+Apply-CommonButtonSettings -Button $AutoChart02ADUserAccountsExpandChartButton
 $script:AutoChart02ADUserAccountsManipulationPanel.Controls.Add($AutoChart02ADUserAccountsExpandChartButton)
 
 
@@ -1291,7 +1291,7 @@ $script:AutoChart02ADUserAccountsOpenInShell = New-Object Windows.Forms.Button -
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart02ADUserAccountsOpenInShell
+Apply-CommonButtonSettings -Button $script:AutoChart02ADUserAccountsOpenInShell
 $script:AutoChart02ADUserAccountsOpenInShell.Add_Click({ AutoChartOpenDataInShell })
 $script:AutoChart02ADUserAccountsManipulationPanel.controls.Add($script:AutoChart02ADUserAccountsOpenInShell)
 
@@ -1303,7 +1303,7 @@ $script:AutoChart02ADUserAccountsViewResults = New-Object Windows.Forms.Button -
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart02ADUserAccountsViewResults
+Apply-CommonButtonSettings -Button $script:AutoChart02ADUserAccountsViewResults
 $script:AutoChart02ADUserAccountsViewResults.Add_Click({ $script:AutoChartDataSourceCsv | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" })
 $script:AutoChart02ADUserAccountsManipulationPanel.controls.Add($script:AutoChart02ADUserAccountsViewResults)
 
@@ -1316,7 +1316,7 @@ $script:AutoChart02ADUserAccountsSaveButton = New-Object Windows.Forms.Button -P
     Size     = @{ Width  = $FormScale * 205
                   Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart02ADUserAccountsSaveButton
+Apply-CommonButtonSettings -Button $script:AutoChart02ADUserAccountsSaveButton
 [enum]::GetNames('System.Windows.Forms.DataVisualization.Charting.ChartImageFormat')
 $script:AutoChart02ADUserAccountsSaveButton.Add_Click({
     Save-ChartImage -Chart $script:AutoChart02ADUserAccounts -Title $script:AutoChart02ADUserAccountsTitle
@@ -1471,7 +1471,7 @@ $script:AutoChart03ADUserAccountsOptionsButton = New-Object Windows.Forms.Button
     Size      = @{ Width  = $FormScale * 75
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart03ADUserAccountsOptionsButton
+Apply-CommonButtonSettings -Button $script:AutoChart03ADUserAccountsOptionsButton
 $script:AutoChart03ADUserAccountsOptionsButton.Add_Click({
     if ($script:AutoChart03ADUserAccountsOptionsButton.Text -eq 'Options v') {
         $script:AutoChart03ADUserAccountsOptionsButton.Text = 'Options ^'
@@ -1594,7 +1594,7 @@ $script:AutoChart03ADUserAccounts3DToggleButton = New-Object Windows.Forms.Butto
     Size      = @{ Width  = $FormScale * 65
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart03ADUserAccounts3DToggleButton
+Apply-CommonButtonSettings -Button $script:AutoChart03ADUserAccounts3DToggleButton
 $script:AutoChart03ADUserAccounts3DInclination = 0
 $script:AutoChart03ADUserAccounts3DToggleButton.Add_Click({
     $script:AutoChart03ADUserAccounts3DInclination += 10
@@ -1677,7 +1677,7 @@ $script:AutoChart03ADUserAccountsCheckDiffButton = New-Object Windows.Forms.Butt
                    Height = $FormScale * 23 }
     Anchor    = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
 }
-CommonButtonSettings -Button $script:AutoChart03ADUserAccountsCheckDiffButton
+Apply-CommonButtonSettings -Button $script:AutoChart03ADUserAccountsCheckDiffButton
 $script:AutoChart03ADUserAccountsCheckDiffButton.Add_Click({
     $script:AutoChart03ADUserAccountsInvestDiffDropDownArraY = $script:AutoChartDataSourceCsv | Select-Object -Property 'LastLogonDate' -ExpandProperty 'LastLogonDate' | Sort-Object -Unique
 
@@ -1722,7 +1722,7 @@ $script:AutoChart03ADUserAccountsCheckDiffButton.Add_Click({
         Width    = $FormScale * 100
         Height   = $FormScale * 20
     }
-    CommonButtonSettings -Button $script:AutoChart03ADUserAccountsInvestDiffExecuteButton
+    Apply-CommonButtonSettings -Button $script:AutoChart03ADUserAccountsInvestDiffExecuteButton
     $script:AutoChart03ADUserAccountsInvestDiffExecuteButton.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart03ADUserAccounts }})
     $script:AutoChart03ADUserAccountsInvestDiffExecuteButton.Add_Click({ script:InvestigateDifference-AutoChart03ADUserAccounts })
 
@@ -1788,7 +1788,7 @@ $AutoChart03ADUserAccountsExpandChartButton = New-Object System.Windows.Forms.Bu
                 Height = $FormScale * 23 }
     Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Processes" -QueryTabName "Last Logon Date" -PropertyX "LastLogonDate" -PropertyY "Name" }
 }
-CommonButtonSettings -Button $AutoChart03ADUserAccountsExpandChartButton
+Apply-CommonButtonSettings -Button $AutoChart03ADUserAccountsExpandChartButton
 $script:AutoChart03ADUserAccountsManipulationPanel.Controls.Add($AutoChart03ADUserAccountsExpandChartButton)
 
 
@@ -1799,7 +1799,7 @@ $script:AutoChart03ADUserAccountsOpenInShell = New-Object Windows.Forms.Button -
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart03ADUserAccountsOpenInShell
+Apply-CommonButtonSettings -Button $script:AutoChart03ADUserAccountsOpenInShell
 $script:AutoChart03ADUserAccountsOpenInShell.Add_Click({ AutoChartOpenDataInShell })
 $script:AutoChart03ADUserAccountsManipulationPanel.controls.Add($script:AutoChart03ADUserAccountsOpenInShell)
 
@@ -1811,7 +1811,7 @@ $script:AutoChart03ADUserAccountsViewResults = New-Object Windows.Forms.Button -
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart03ADUserAccountsViewResults
+Apply-CommonButtonSettings -Button $script:AutoChart03ADUserAccountsViewResults
 $script:AutoChart03ADUserAccountsViewResults.Add_Click({ $script:AutoChartDataSourceCsv | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" })
 $script:AutoChart03ADUserAccountsManipulationPanel.controls.Add($script:AutoChart03ADUserAccountsViewResults)
 
@@ -1824,7 +1824,7 @@ $script:AutoChart03ADUserAccountsSaveButton = New-Object Windows.Forms.Button -P
     Size     = @{ Width  = $FormScale * 205
                   Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart03ADUserAccountsSaveButton
+Apply-CommonButtonSettings -Button $script:AutoChart03ADUserAccountsSaveButton
 [enum]::GetNames('System.Windows.Forms.DataVisualization.Charting.ChartImageFormat')
 $script:AutoChart03ADUserAccountsSaveButton.Add_Click({
     Save-ChartImage -Chart $script:AutoChart03ADUserAccounts -Title $script:AutoChart03ADUserAccountsTitle
@@ -1980,7 +1980,7 @@ $script:AutoChart04ADUserAccountsOptionsButton = New-Object Windows.Forms.Button
     Size      = @{ Width  = $FormScale * 75
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart04ADUserAccountsOptionsButton
+Apply-CommonButtonSettings -Button $script:AutoChart04ADUserAccountsOptionsButton
 $script:AutoChart04ADUserAccountsOptionsButton.Add_Click({
     if ($script:AutoChart04ADUserAccountsOptionsButton.Text -eq 'Options v') {
         $script:AutoChart04ADUserAccountsOptionsButton.Text = 'Options ^'
@@ -2103,7 +2103,7 @@ $script:AutoChart04ADUserAccounts3DToggleButton = New-Object Windows.Forms.Butto
     Size      = @{ Width  = $FormScale * 65
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart04ADUserAccounts3DToggleButton
+Apply-CommonButtonSettings -Button $script:AutoChart04ADUserAccounts3DToggleButton
 $script:AutoChart04ADUserAccounts3DInclination = 0
 $script:AutoChart04ADUserAccounts3DToggleButton.Add_Click({
     $script:AutoChart04ADUserAccounts3DInclination += 10
@@ -2186,7 +2186,7 @@ $script:AutoChart04ADUserAccountsCheckDiffButton = New-Object Windows.Forms.Butt
                    Height = $FormScale * 23 }
     Anchor    = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
 }
-CommonButtonSettings -Button $script:AutoChart04ADUserAccountsCheckDiffButton
+Apply-CommonButtonSettings -Button $script:AutoChart04ADUserAccountsCheckDiffButton
 $script:AutoChart04ADUserAccountsCheckDiffButton.Add_Click({
     $script:AutoChart04ADUserAccountsInvestDiffDropDownArraY = $script:AutoChartDataSourceCsv | Select-Object -Property 'LastBadPasswordAttempt' -ExpandProperty 'LastBadPasswordAttempt' | Sort-Object -Unique
 
@@ -2231,7 +2231,7 @@ $script:AutoChart04ADUserAccountsCheckDiffButton.Add_Click({
         Width    = $FormScale * 100
         Height   = $FormScale * 20
     }
-    CommonButtonSettings -Button $script:AutoChart04ADUserAccountsInvestDiffExecuteButton
+    Apply-CommonButtonSettings -Button $script:AutoChart04ADUserAccountsInvestDiffExecuteButton
     $script:AutoChart04ADUserAccountsInvestDiffExecuteButton.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart04ADUserAccounts }})
     $script:AutoChart04ADUserAccountsInvestDiffExecuteButton.Add_Click({ script:InvestigateDifference-AutoChart04ADUserAccounts })
 
@@ -2297,7 +2297,7 @@ $AutoChart04ADUserAccountsExpandChartButton = New-Object System.Windows.Forms.Bu
                 Height = $FormScale * 23 }
     Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Processes" -QueryTabName "Last Bad Password Attempt" -PropertyX "LastBadPasswordAttempt" -PropertyY "Name" }
 }
-CommonButtonSettings -Button $AutoChart04ADUserAccountsExpandChartButton
+Apply-CommonButtonSettings -Button $AutoChart04ADUserAccountsExpandChartButton
 $script:AutoChart04ADUserAccountsManipulationPanel.Controls.Add($AutoChart04ADUserAccountsExpandChartButton)
 
 
@@ -2308,7 +2308,7 @@ $script:AutoChart04ADUserAccountsOpenInShell = New-Object Windows.Forms.Button -
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart04ADUserAccountsOpenInShell
+Apply-CommonButtonSettings -Button $script:AutoChart04ADUserAccountsOpenInShell
 $script:AutoChart04ADUserAccountsOpenInShell.Add_Click({ AutoChartOpenDataInShell })
 $script:AutoChart04ADUserAccountsManipulationPanel.controls.Add($script:AutoChart04ADUserAccountsOpenInShell)
 
@@ -2320,7 +2320,7 @@ $script:AutoChart04ADUserAccountsViewResults = New-Object Windows.Forms.Button -
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart04ADUserAccountsViewResults
+Apply-CommonButtonSettings -Button $script:AutoChart04ADUserAccountsViewResults
 $script:AutoChart04ADUserAccountsViewResults.Add_Click({ $script:AutoChartDataSourceCsv | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" })
 $script:AutoChart04ADUserAccountsManipulationPanel.controls.Add($script:AutoChart04ADUserAccountsViewResults)
 
@@ -2333,7 +2333,7 @@ $script:AutoChart04ADUserAccountsSaveButton = New-Object Windows.Forms.Button -P
     Size     = @{ Width  = $FormScale * 205
                   Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart04ADUserAccountsSaveButton
+Apply-CommonButtonSettings -Button $script:AutoChart04ADUserAccountsSaveButton
 [enum]::GetNames('System.Windows.Forms.DataVisualization.Charting.ChartImageFormat')
 $script:AutoChart04ADUserAccountsSaveButton.Add_Click({
     Save-ChartImage -Chart $script:AutoChart04ADUserAccounts -Title $script:AutoChart04ADUserAccountsTitle
@@ -2485,7 +2485,7 @@ $script:AutoChart05ADUserAccountsOptionsButton = New-Object Windows.Forms.Button
     Size      = @{ Width  = $FormScale * 75
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart05ADUserAccountsOptionsButton
+Apply-CommonButtonSettings -Button $script:AutoChart05ADUserAccountsOptionsButton
 $script:AutoChart05ADUserAccountsOptionsButton.Add_Click({
     if ($script:AutoChart05ADUserAccountsOptionsButton.Text -eq 'Options v') {
         $script:AutoChart05ADUserAccountsOptionsButton.Text = 'Options ^'
@@ -2610,7 +2610,7 @@ $script:AutoChart05ADUserAccounts3DToggleButton = New-Object Windows.Forms.Butto
     Size      = @{ Width  = $FormScale * 65
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart05ADUserAccounts3DToggleButton
+Apply-CommonButtonSettings -Button $script:AutoChart05ADUserAccounts3DToggleButton
 $script:AutoChart05ADUserAccounts3DInclination = 0
 $script:AutoChart05ADUserAccounts3DToggleButton.Add_Click({
 
@@ -2695,7 +2695,7 @@ $script:AutoChart05ADUserAccountsCheckDiffButton = New-Object Windows.Forms.Butt
                    Height = $FormScale * 23 }
     Anchor    = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
 }
-CommonButtonSettings -Button $script:AutoChart05ADUserAccountsCheckDiffButton
+Apply-CommonButtonSettings -Button $script:AutoChart05ADUserAccountsCheckDiffButton
 $script:AutoChart05ADUserAccountsCheckDiffButton.Add_Click({
     $script:AutoChart05ADUserAccountsInvestDiffDropDownArraY = $script:AutoChartDataSourceCsv | Select-Object -Property 'PasswordLastSet' -ExpandProperty 'PasswordLastSet' | Sort-Object -Unique
 
@@ -2740,7 +2740,7 @@ $script:AutoChart05ADUserAccountsCheckDiffButton.Add_Click({
         Width    = $FormScale * 100
         Height   = $FormScale * 20
     }
-    CommonButtonSettings -Button $script:AutoChart05ADUserAccountsInvestDiffExecuteButton
+    Apply-CommonButtonSettings -Button $script:AutoChart05ADUserAccountsInvestDiffExecuteButton
     $script:AutoChart05ADUserAccountsInvestDiffExecuteButton.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart05ADUserAccounts }})
     $script:AutoChart05ADUserAccountsInvestDiffExecuteButton.Add_Click({ script:InvestigateDifference-AutoChart05ADUserAccounts })
 
@@ -2806,7 +2806,7 @@ $AutoChart05ADUserAccountsExpandChartButton = New-Object System.Windows.Forms.Bu
                 Height = $FormScale * 23 }
     Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Processes" -QueryTabName "Password Last Set" -PropertyX "PasswordLastSet" -PropertyY "Name" }
 }
-CommonButtonSettings -Button $AutoChart05ADUserAccountsExpandChartButton
+Apply-CommonButtonSettings -Button $AutoChart05ADUserAccountsExpandChartButton
 $script:AutoChart05ADUserAccountsManipulationPanel.Controls.Add($AutoChart05ADUserAccountsExpandChartButton)
 
 
@@ -2817,7 +2817,7 @@ $script:AutoChart05ADUserAccountsOpenInShell = New-Object Windows.Forms.Button -
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart05ADUserAccountsOpenInShell
+Apply-CommonButtonSettings -Button $script:AutoChart05ADUserAccountsOpenInShell
 $script:AutoChart05ADUserAccountsOpenInShell.Add_Click({ AutoChartOpenDataInShell })
 $script:AutoChart05ADUserAccountsManipulationPanel.controls.Add($script:AutoChart05ADUserAccountsOpenInShell)
 
@@ -2829,7 +2829,7 @@ $script:AutoChart05ADUserAccountsViewResults = New-Object Windows.Forms.Button -
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart05ADUserAccountsViewResults
+Apply-CommonButtonSettings -Button $script:AutoChart05ADUserAccountsViewResults
 $script:AutoChart05ADUserAccountsViewResults.Add_Click({ $script:AutoChartDataSourceCsv | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" })
 $script:AutoChart05ADUserAccountsManipulationPanel.controls.Add($script:AutoChart05ADUserAccountsViewResults)
 
@@ -2842,7 +2842,7 @@ $script:AutoChart05ADUserAccountsSaveButton = New-Object Windows.Forms.Button -P
     Size     = @{ Width  = $FormScale * 205
                   Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart05ADUserAccountsSaveButton
+Apply-CommonButtonSettings -Button $script:AutoChart05ADUserAccountsSaveButton
 [enum]::GetNames('System.Windows.Forms.DataVisualization.Charting.ChartImageFormat')
 $script:AutoChart05ADUserAccountsSaveButton.Add_Click({
     Save-ChartImage -Chart $script:AutoChart05ADUserAccounts -Title $script:AutoChart05ADUserAccountsTitle
@@ -2999,7 +2999,7 @@ $script:AutoChart06ADUserAccountsOptionsButton = New-Object Windows.Forms.Button
     Size      = @{ Width  = $FormScale * 75
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart06ADUserAccountsOptionsButton
+Apply-CommonButtonSettings -Button $script:AutoChart06ADUserAccountsOptionsButton
 $script:AutoChart06ADUserAccountsOptionsButton.Add_Click({
     if ($script:AutoChart06ADUserAccountsOptionsButton.Text -eq 'Options v') {
         $script:AutoChart06ADUserAccountsOptionsButton.Text = 'Options ^'
@@ -3122,7 +3122,7 @@ $script:AutoChart06ADUserAccounts3DToggleButton = New-Object Windows.Forms.Butto
     Size      = @{ Width  = $FormScale * 65
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart06ADUserAccounts3DToggleButton
+Apply-CommonButtonSettings -Button $script:AutoChart06ADUserAccounts3DToggleButton
 $script:AutoChart06ADUserAccounts3DInclination = 0
 $script:AutoChart06ADUserAccounts3DToggleButton.Add_Click({
     $script:AutoChart06ADUserAccounts3DInclination += 10
@@ -3205,7 +3205,7 @@ $script:AutoChart06ADUserAccountsCheckDiffButton = New-Object Windows.Forms.Butt
                    Height = $FormScale * 23 }
     Anchor    = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
 }
-CommonButtonSettings -Button $script:AutoChart06ADUserAccountsCheckDiffButton
+Apply-CommonButtonSettings -Button $script:AutoChart06ADUserAccountsCheckDiffButton
 $script:AutoChart06ADUserAccountsCheckDiffButton.Add_Click({
     $script:AutoChart06ADUserAccountsInvestDiffDropDownArraY = $script:AutoChartDataSourceCsv | Select-Object -Property 'AccountExpirationDate' -ExpandProperty 'AccountExpirationDate' | Sort-Object -Unique
 
@@ -3250,7 +3250,7 @@ $script:AutoChart06ADUserAccountsCheckDiffButton.Add_Click({
         Width    = $FormScale * 100
         Height   = $FormScale * 20
     }
-    CommonButtonSettings -Button $script:AutoChart06ADUserAccountsInvestDiffExecuteButton
+    Apply-CommonButtonSettings -Button $script:AutoChart06ADUserAccountsInvestDiffExecuteButton
     $script:AutoChart06ADUserAccountsInvestDiffExecuteButton.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart06ADUserAccounts }})
     $script:AutoChart06ADUserAccountsInvestDiffExecuteButton.Add_Click({ script:InvestigateDifference-AutoChart06ADUserAccounts })
 
@@ -3316,7 +3316,7 @@ $AutoChart06ADUserAccountsExpandChartButton = New-Object System.Windows.Forms.Bu
                 Height = $FormScale * 23 }
     Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Processes" -QueryTabName "AccountExpirationDatees" -PropertyX "AccountExpirationDate" -PropertyY "Name" }
 }
-CommonButtonSettings -Button $AutoChart06ADUserAccountsExpandChartButton
+Apply-CommonButtonSettings -Button $AutoChart06ADUserAccountsExpandChartButton
 $script:AutoChart06ADUserAccountsManipulationPanel.Controls.Add($AutoChart06ADUserAccountsExpandChartButton)
 
 
@@ -3327,7 +3327,7 @@ $script:AutoChart06ADUserAccountsOpenInShell = New-Object Windows.Forms.Button -
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart06ADUserAccountsOpenInShell
+Apply-CommonButtonSettings -Button $script:AutoChart06ADUserAccountsOpenInShell
 $script:AutoChart06ADUserAccountsOpenInShell.Add_Click({ AutoChartOpenDataInShell })
 $script:AutoChart06ADUserAccountsManipulationPanel.controls.Add($script:AutoChart06ADUserAccountsOpenInShell)
 
@@ -3339,7 +3339,7 @@ $script:AutoChart06ADUserAccountsViewResults = New-Object Windows.Forms.Button -
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart06ADUserAccountsViewResults
+Apply-CommonButtonSettings -Button $script:AutoChart06ADUserAccountsViewResults
 $script:AutoChart06ADUserAccountsViewResults.Add_Click({ $script:AutoChartDataSourceCsv | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" })
 $script:AutoChart06ADUserAccountsManipulationPanel.controls.Add($script:AutoChart06ADUserAccountsViewResults)
 
@@ -3352,7 +3352,7 @@ $script:AutoChart06ADUserAccountsSaveButton = New-Object Windows.Forms.Button -P
     Size     = @{ Width  = $FormScale * 205
                   Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart06ADUserAccountsSaveButton
+Apply-CommonButtonSettings -Button $script:AutoChart06ADUserAccountsSaveButton
 [enum]::GetNames('System.Windows.Forms.DataVisualization.Charting.ChartImageFormat')
 $script:AutoChart06ADUserAccountsSaveButton.Add_Click({
     Save-ChartImage -Chart $script:AutoChart06ADUserAccounts -Title $script:AutoChart06ADUserAccountsTitle
@@ -3510,7 +3510,7 @@ $script:AutoChart07ADUserAccountsOptionsButton = New-Object Windows.Forms.Button
     Size      = @{ Width  = $FormScale * 75
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart07ADUserAccountsOptionsButton
+Apply-CommonButtonSettings -Button $script:AutoChart07ADUserAccountsOptionsButton
 $script:AutoChart07ADUserAccountsOptionsButton.Add_Click({
     if ($script:AutoChart07ADUserAccountsOptionsButton.Text -eq 'Options v') {
         $script:AutoChart07ADUserAccountsOptionsButton.Text = 'Options ^'
@@ -3633,7 +3633,7 @@ $script:AutoChart07ADUserAccounts3DToggleButton = New-Object Windows.Forms.Butto
     Size      = @{ Width  = $FormScale * 65
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart07ADUserAccounts3DToggleButton
+Apply-CommonButtonSettings -Button $script:AutoChart07ADUserAccounts3DToggleButton
 $script:AutoChart07ADUserAccounts3DInclination = 0
 $script:AutoChart07ADUserAccounts3DToggleButton.Add_Click({
     $script:AutoChart07ADUserAccounts3DInclination += 10
@@ -3716,7 +3716,7 @@ $script:AutoChart07ADUserAccountsCheckDiffButton = New-Object Windows.Forms.Butt
                    Height = $FormScale * 23 }
     Anchor    = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
 }
-CommonButtonSettings -Button $script:AutoChart07ADUserAccountsCheckDiffButton
+Apply-CommonButtonSettings -Button $script:AutoChart07ADUserAccountsCheckDiffButton
 $script:AutoChart07ADUserAccountsCheckDiffButton.Add_Click({
     $script:AutoChart07ADUserAccountsInvestDiffDropDownArraY = $script:AutoChartDataSourceCsv | Select-Object -Property 'BadLogonCount' -ExpandProperty 'BadLogonCount' | Sort-Object -Unique
 
@@ -3761,7 +3761,7 @@ $script:AutoChart07ADUserAccountsCheckDiffButton.Add_Click({
         Width    = $FormScale * 100
         Height   = $FormScale * 20
     }
-    CommonButtonSettings -Button $script:AutoChart07ADUserAccountsInvestDiffExecuteButton
+    Apply-CommonButtonSettings -Button $script:AutoChart07ADUserAccountsInvestDiffExecuteButton
     $script:AutoChart07ADUserAccountsInvestDiffExecuteButton.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart07ADUserAccounts }})
     $script:AutoChart07ADUserAccountsInvestDiffExecuteButton.Add_Click({ script:InvestigateDifference-AutoChart07ADUserAccounts })
 
@@ -3827,7 +3827,7 @@ $AutoChart07ADUserAccountsExpandChartButton = New-Object System.Windows.Forms.Bu
                 Height = $FormScale * 23 }
     Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Processes" -QueryTabName "Process BadLogonCount" -PropertyX "BadLogonCount" -PropertyY "Name" }
 }
-CommonButtonSettings -Button $AutoChart07ADUserAccountsExpandChartButton
+Apply-CommonButtonSettings -Button $AutoChart07ADUserAccountsExpandChartButton
 $script:AutoChart07ADUserAccountsManipulationPanel.Controls.Add($AutoChart07ADUserAccountsExpandChartButton)
 
 
@@ -3838,7 +3838,7 @@ $script:AutoChart07ADUserAccountsOpenInShell = New-Object Windows.Forms.Button -
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart07ADUserAccountsOpenInShell
+Apply-CommonButtonSettings -Button $script:AutoChart07ADUserAccountsOpenInShell
 $script:AutoChart07ADUserAccountsOpenInShell.Add_Click({ AutoChartOpenDataInShell })
 $script:AutoChart07ADUserAccountsManipulationPanel.controls.Add($script:AutoChart07ADUserAccountsOpenInShell)
 
@@ -3850,7 +3850,7 @@ $script:AutoChart07ADUserAccountsViewResults = New-Object Windows.Forms.Button -
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart07ADUserAccountsViewResults
+Apply-CommonButtonSettings -Button $script:AutoChart07ADUserAccountsViewResults
 $script:AutoChart07ADUserAccountsViewResults.Add_Click({ $script:AutoChartDataSourceCsv | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" })
 $script:AutoChart07ADUserAccountsManipulationPanel.controls.Add($script:AutoChart07ADUserAccountsViewResults)
 
@@ -3863,7 +3863,7 @@ $script:AutoChart07ADUserAccountsSaveButton = New-Object Windows.Forms.Button -P
     Size     = @{ Width  = $FormScale * 205
                   Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart07ADUserAccountsSaveButton
+Apply-CommonButtonSettings -Button $script:AutoChart07ADUserAccountsSaveButton
 [enum]::GetNames('System.Windows.Forms.DataVisualization.Charting.ChartImageFormat')
 $script:AutoChart07ADUserAccountsSaveButton.Add_Click({
     Save-ChartImage -Chart $script:AutoChart07ADUserAccounts -Title $script:AutoChart07ADUserAccountsTitle
@@ -4016,7 +4016,7 @@ $script:AutoChart08ADUserAccountsOptionsButton = New-Object Windows.Forms.Button
     Size      = @{ Width  = $FormScale * 75
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart08ADUserAccountsOptionsButton
+Apply-CommonButtonSettings -Button $script:AutoChart08ADUserAccountsOptionsButton
 $script:AutoChart08ADUserAccountsOptionsButton.Add_Click({
     if ($script:AutoChart08ADUserAccountsOptionsButton.Text -eq 'Options v') {
         $script:AutoChart08ADUserAccountsOptionsButton.Text = 'Options ^'
@@ -4139,7 +4139,7 @@ $script:AutoChart08ADUserAccounts3DToggleButton = New-Object Windows.Forms.Butto
     Size      = @{ Width  = $FormScale * 65
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart08ADUserAccounts3DToggleButton
+Apply-CommonButtonSettings -Button $script:AutoChart08ADUserAccounts3DToggleButton
 $script:AutoChart08ADUserAccounts3DInclination = 0
 $script:AutoChart08ADUserAccounts3DToggleButton.Add_Click({
     $script:AutoChart08ADUserAccounts3DInclination += 10
@@ -4222,7 +4222,7 @@ $script:AutoChart08ADUserAccountsCheckDiffButton = New-Object Windows.Forms.Butt
                    Height = $FormScale * 23 }
     Anchor    = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
 }
-CommonButtonSettings -Button $script:AutoChart08ADUserAccountsCheckDiffButton
+Apply-CommonButtonSettings -Button $script:AutoChart08ADUserAccountsCheckDiffButton
 $script:AutoChart08ADUserAccountsCheckDiffButton.Add_Click({
     $script:AutoChart08ADUserAccountsInvestDiffDropDownArraY = $script:AutoChartDataSourceCsv | Select-Object -Property 'Enabled' -ExpandProperty 'Enabled' | Sort-Object -Unique
 
@@ -4267,7 +4267,7 @@ $script:AutoChart08ADUserAccountsCheckDiffButton.Add_Click({
         Width    = $FormScale * 100
         Height   = $FormScale * 20
     }
-    CommonButtonSettings -Button $script:AutoChart08ADUserAccountsInvestDiffExecuteButton
+    Apply-CommonButtonSettings -Button $script:AutoChart08ADUserAccountsInvestDiffExecuteButton
     $script:AutoChart08ADUserAccountsInvestDiffExecuteButton.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart08ADUserAccounts }})
     $script:AutoChart08ADUserAccountsInvestDiffExecuteButton.Add_Click({ script:InvestigateDifference-AutoChart08ADUserAccounts })
 
@@ -4333,7 +4333,7 @@ $AutoChart08ADUserAccountsExpandChartButton = New-Object System.Windows.Forms.Bu
                 Height = $FormScale * 23 }
     Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Processes" -QueryTabName "Enabled Accountses" -PropertyX "Enabled" -PropertyY "Name" }
 }
-CommonButtonSettings -Button $AutoChart08ADUserAccountsExpandChartButton
+Apply-CommonButtonSettings -Button $AutoChart08ADUserAccountsExpandChartButton
 $script:AutoChart08ADUserAccountsManipulationPanel.Controls.Add($AutoChart08ADUserAccountsExpandChartButton)
 
 
@@ -4344,7 +4344,7 @@ $script:AutoChart08ADUserAccountsOpenInShell = New-Object Windows.Forms.Button -
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart08ADUserAccountsOpenInShell
+Apply-CommonButtonSettings -Button $script:AutoChart08ADUserAccountsOpenInShell
 $script:AutoChart08ADUserAccountsOpenInShell.Add_Click({ AutoChartOpenDataInShell })
 $script:AutoChart08ADUserAccountsManipulationPanel.controls.Add($script:AutoChart08ADUserAccountsOpenInShell)
 
@@ -4356,7 +4356,7 @@ $script:AutoChart08ADUserAccountsViewResults = New-Object Windows.Forms.Button -
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart08ADUserAccountsViewResults
+Apply-CommonButtonSettings -Button $script:AutoChart08ADUserAccountsViewResults
 $script:AutoChart08ADUserAccountsViewResults.Add_Click({ $script:AutoChartDataSourceCsv | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" })
 $script:AutoChart08ADUserAccountsManipulationPanel.controls.Add($script:AutoChart08ADUserAccountsViewResults)
 
@@ -4369,7 +4369,7 @@ $script:AutoChart08ADUserAccountsSaveButton = New-Object Windows.Forms.Button -P
     Size     = @{ Width  = $FormScale * 205
                   Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart08ADUserAccountsSaveButton
+Apply-CommonButtonSettings -Button $script:AutoChart08ADUserAccountsSaveButton
 [enum]::GetNames('System.Windows.Forms.DataVisualization.Charting.ChartImageFormat')
 $script:AutoChart08ADUserAccountsSaveButton.Add_Click({
     Save-ChartImage -Chart $script:AutoChart08ADUserAccounts -Title $script:AutoChart08ADUserAccountsTitle
@@ -4522,7 +4522,7 @@ $script:AutoChart09ADUserAccountsOptionsButton = New-Object Windows.Forms.Button
     Size      = @{ Width  = $FormScale * 75
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart09ADUserAccountsOptionsButton
+Apply-CommonButtonSettings -Button $script:AutoChart09ADUserAccountsOptionsButton
 $script:AutoChart09ADUserAccountsOptionsButton.Add_Click({
     if ($script:AutoChart09ADUserAccountsOptionsButton.Text -eq 'Options v') {
         $script:AutoChart09ADUserAccountsOptionsButton.Text = 'Options ^'
@@ -4645,7 +4645,7 @@ $script:AutoChart09ADUserAccounts3DToggleButton = New-Object Windows.Forms.Butto
     Size      = @{ Width  = $FormScale * 65
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart09ADUserAccounts3DToggleButton
+Apply-CommonButtonSettings -Button $script:AutoChart09ADUserAccounts3DToggleButton
 $script:AutoChart09ADUserAccounts3DInclination = 0
 $script:AutoChart09ADUserAccounts3DToggleButton.Add_Click({
     $script:AutoChart09ADUserAccounts3DInclination += 10
@@ -4728,7 +4728,7 @@ $script:AutoChart09ADUserAccountsCheckDiffButton = New-Object Windows.Forms.Butt
                    Height = $FormScale * 23 }
     Anchor    = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
 }
-CommonButtonSettings -Button $script:AutoChart09ADUserAccountsCheckDiffButton
+Apply-CommonButtonSettings -Button $script:AutoChart09ADUserAccountsCheckDiffButton
 $script:AutoChart09ADUserAccountsCheckDiffButton.Add_Click({
     $script:AutoChart09ADUserAccountsInvestDiffDropDownArraY = $script:AutoChartDataSourceCsv | Select-Object -Property 'LockedOut' -ExpandProperty 'LockedOut' | Sort-Object -Unique
 
@@ -4773,7 +4773,7 @@ $script:AutoChart09ADUserAccountsCheckDiffButton.Add_Click({
         Width    = $FormScale * 100
         Height   = $FormScale * 20
     }
-    CommonButtonSettings -Button $script:AutoChart09ADUserAccountsInvestDiffExecuteButton
+    Apply-CommonButtonSettings -Button $script:AutoChart09ADUserAccountsInvestDiffExecuteButton
     $script:AutoChart09ADUserAccountsInvestDiffExecuteButton.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart09ADUserAccounts }})
     $script:AutoChart09ADUserAccountsInvestDiffExecuteButton.Add_Click({ script:InvestigateDifference-AutoChart09ADUserAccounts })
 
@@ -4839,7 +4839,7 @@ $AutoChart09ADUserAccountsExpandChartButton = New-Object System.Windows.Forms.Bu
                 Height = $FormScale * 23 }
     Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Processes" -QueryTabName "Locked Accountses" -PropertyX "LockedOut" -PropertyY "Name" }
 }
-CommonButtonSettings -Button $AutoChart09ADUserAccountsExpandChartButton
+Apply-CommonButtonSettings -Button $AutoChart09ADUserAccountsExpandChartButton
 $script:AutoChart09ADUserAccountsManipulationPanel.Controls.Add($AutoChart09ADUserAccountsExpandChartButton)
 
 
@@ -4850,7 +4850,7 @@ $script:AutoChart09ADUserAccountsOpenInShell = New-Object Windows.Forms.Button -
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart09ADUserAccountsOpenInShell
+Apply-CommonButtonSettings -Button $script:AutoChart09ADUserAccountsOpenInShell
 $script:AutoChart09ADUserAccountsOpenInShell.Add_Click({ AutoChartOpenDataInShell })
 $script:AutoChart09ADUserAccountsManipulationPanel.controls.Add($script:AutoChart09ADUserAccountsOpenInShell)
 
@@ -4862,7 +4862,7 @@ $script:AutoChart09ADUserAccountsViewResults = New-Object Windows.Forms.Button -
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart09ADUserAccountsViewResults
+Apply-CommonButtonSettings -Button $script:AutoChart09ADUserAccountsViewResults
 $script:AutoChart09ADUserAccountsViewResults.Add_Click({ $script:AutoChartDataSourceCsv | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" })
 $script:AutoChart09ADUserAccountsManipulationPanel.controls.Add($script:AutoChart09ADUserAccountsViewResults)
 
@@ -4875,7 +4875,7 @@ $script:AutoChart09ADUserAccountsSaveButton = New-Object Windows.Forms.Button -P
     Size     = @{ Width  = $FormScale * 205
                   Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart09ADUserAccountsSaveButton
+Apply-CommonButtonSettings -Button $script:AutoChart09ADUserAccountsSaveButton
 [enum]::GetNames('System.Windows.Forms.DataVisualization.Charting.ChartImageFormat')
 $script:AutoChart09ADUserAccountsSaveButton.Add_Click({
     Save-ChartImage -Chart $script:AutoChart09ADUserAccounts -Title $script:AutoChart09ADUserAccountsTitle
@@ -5038,7 +5038,7 @@ $script:AutoChart10ADUserAccountsOptionsButton = New-Object Windows.Forms.Button
     Size      = @{ Width  = $FormScale * 75
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart10ADUserAccountsOptionsButton
+Apply-CommonButtonSettings -Button $script:AutoChart10ADUserAccountsOptionsButton
 $script:AutoChart10ADUserAccountsOptionsButton.Add_Click({
     if ($script:AutoChart10ADUserAccountsOptionsButton.Text -eq 'Options v') {
         $script:AutoChart10ADUserAccountsOptionsButton.Text = 'Options ^'
@@ -5161,7 +5161,7 @@ $script:AutoChart10ADUserAccounts3DToggleButton = New-Object Windows.Forms.Butto
     Size      = @{ Width  = $FormScale * 65
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart10ADUserAccounts3DToggleButton
+Apply-CommonButtonSettings -Button $script:AutoChart10ADUserAccounts3DToggleButton
 $script:AutoChart10ADUserAccounts3DInclination = 0
 $script:AutoChart10ADUserAccounts3DToggleButton.Add_Click({
     $script:AutoChart10ADUserAccounts3DInclination += 10
@@ -5244,7 +5244,7 @@ $script:AutoChart10ADUserAccountsCheckDiffButton = New-Object Windows.Forms.Butt
                    Height = $FormScale * 23 }
     Anchor    = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
 }
-CommonButtonSettings -Button $script:AutoChart10ADUserAccountsCheckDiffButton
+Apply-CommonButtonSettings -Button $script:AutoChart10ADUserAccountsCheckDiffButton
 $script:AutoChart10ADUserAccountsCheckDiffButton.Add_Click({
     $script:AutoChart10ADUserAccountsInvestDiffDropDownArraY = $script:AutoChartDataSourceCsv | Select-Object -Property 'SmartcardLogonRequired' -ExpandProperty 'SmartcardLogonRequired' | Sort-Object -Unique
 
@@ -5289,7 +5289,7 @@ $script:AutoChart10ADUserAccountsCheckDiffButton.Add_Click({
         Width    = $FormScale * 100
         Height   = $FormScale * 20
     }
-    CommonButtonSettings -Button $script:AutoChart10ADUserAccountsInvestDiffExecuteButton
+    Apply-CommonButtonSettings -Button $script:AutoChart10ADUserAccountsInvestDiffExecuteButton
     $script:AutoChart10ADUserAccountsInvestDiffExecuteButton.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart10ADUserAccounts }})
     $script:AutoChart10ADUserAccountsInvestDiffExecuteButton.Add_Click({ script:InvestigateDifference-AutoChart10ADUserAccounts })
 
@@ -5355,7 +5355,7 @@ $AutoChart10ADUserAccountsExpandChartButton = New-Object System.Windows.Forms.Bu
                 Height = $FormScale * 23 }
     Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Processes" -QueryTabName "Smartcard Logon Requiredes" -PropertyX "SmartcardLogonRequired" -PropertyY "Name" }
 }
-CommonButtonSettings -Button $AutoChart10ADUserAccountsExpandChartButton
+Apply-CommonButtonSettings -Button $AutoChart10ADUserAccountsExpandChartButton
 $script:AutoChart10ADUserAccountsManipulationPanel.Controls.Add($AutoChart10ADUserAccountsExpandChartButton)
 
 
@@ -5366,7 +5366,7 @@ $script:AutoChart10ADUserAccountsOpenInShell = New-Object Windows.Forms.Button -
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart10ADUserAccountsOpenInShell
+Apply-CommonButtonSettings -Button $script:AutoChart10ADUserAccountsOpenInShell
 $script:AutoChart10ADUserAccountsOpenInShell.Add_Click({ AutoChartOpenDataInShell })
 $script:AutoChart10ADUserAccountsManipulationPanel.controls.Add($script:AutoChart10ADUserAccountsOpenInShell)
 
@@ -5378,7 +5378,7 @@ $script:AutoChart10ADUserAccountsViewResults = New-Object Windows.Forms.Button -
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart10ADUserAccountsViewResults
+Apply-CommonButtonSettings -Button $script:AutoChart10ADUserAccountsViewResults
 $script:AutoChart10ADUserAccountsViewResults.Add_Click({ $script:AutoChartDataSourceCsv | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" })
 $script:AutoChart10ADUserAccountsManipulationPanel.controls.Add($script:AutoChart10ADUserAccountsViewResults)
 
@@ -5391,7 +5391,7 @@ $script:AutoChart10ADUserAccountsSaveButton = New-Object Windows.Forms.Button -P
     Size     = @{ Width  = $FormScale * 205
                   Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart10ADUserAccountsSaveButton
+Apply-CommonButtonSettings -Button $script:AutoChart10ADUserAccountsSaveButton
 [enum]::GetNames('System.Windows.Forms.DataVisualization.Charting.ChartImageFormat')
 $script:AutoChart10ADUserAccountsSaveButton.Add_Click({
     Save-ChartImage -Chart $script:AutoChart10ADUserAccounts -Title $script:AutoChart10ADUserAccountsTitle
@@ -5549,7 +5549,7 @@ $script:AutoChart11ADUserAccountsOptionsButton = New-Object Windows.Forms.Button
     Size      = @{ Width  = $FormScale * 75
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart11ADUserAccountsOptionsButton
+Apply-CommonButtonSettings -Button $script:AutoChart11ADUserAccountsOptionsButton
 $script:AutoChart11ADUserAccountsOptionsButton.Add_Click({
     if ($script:AutoChart11ADUserAccountsOptionsButton.Text -eq 'Options v') {
         $script:AutoChart11ADUserAccountsOptionsButton.Text = 'Options ^'
@@ -5672,7 +5672,7 @@ $script:AutoChart11ADUserAccounts3DToggleButton = New-Object Windows.Forms.Butto
     Size      = @{ Width  = $FormScale * 65
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart11ADUserAccounts3DToggleButton
+Apply-CommonButtonSettings -Button $script:AutoChart11ADUserAccounts3DToggleButton
 $script:AutoChart11ADUserAccounts3DInclination = 0
 $script:AutoChart11ADUserAccounts3DToggleButton.Add_Click({
     $script:AutoChart11ADUserAccounts3DInclination += 10
@@ -5755,7 +5755,7 @@ $script:AutoChart11ADUserAccountsCheckDiffButton = New-Object Windows.Forms.Butt
                    Height = $FormScale * 23 }
     Anchor    = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
 }
-CommonButtonSettings -Button $script:AutoChart11ADUserAccountsCheckDiffButton
+Apply-CommonButtonSettings -Button $script:AutoChart11ADUserAccountsCheckDiffButton
 $script:AutoChart11ADUserAccountsCheckDiffButton.Add_Click({
     $script:AutoChart11ADUserAccountsInvestDiffDropDownArraY = $script:AutoChartDataSourceCsv | Select-Object -Property 'PasswordNeverExpires' -ExpandProperty 'PasswordNeverExpires' | Sort-Object -Unique
 
@@ -5800,7 +5800,7 @@ $script:AutoChart11ADUserAccountsCheckDiffButton.Add_Click({
         Width    = $FormScale * 100
         Height   = $FormScale * 20
     }
-    CommonButtonSettings -Button $script:AutoChart11ADUserAccountsInvestDiffExecuteButton
+    Apply-CommonButtonSettings -Button $script:AutoChart11ADUserAccountsInvestDiffExecuteButton
     $script:AutoChart11ADUserAccountsInvestDiffExecuteButton.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart11ADUserAccounts }})
     $script:AutoChart11ADUserAccountsInvestDiffExecuteButton.Add_Click({ script:InvestigateDifference-AutoChart11ADUserAccounts })
 
@@ -5866,7 +5866,7 @@ $AutoChart11ADUserAccountsExpandChartButton = New-Object System.Windows.Forms.Bu
                 Height = $FormScale * 23 }
     Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Processes" -QueryTabName "Password Never Expireses" -PropertyX "PasswordNeverExpires" -PropertyY "Name" }
 }
-CommonButtonSettings -Button $AutoChart11ADUserAccountsExpandChartButton
+Apply-CommonButtonSettings -Button $AutoChart11ADUserAccountsExpandChartButton
 $script:AutoChart11ADUserAccountsManipulationPanel.Controls.Add($AutoChart11ADUserAccountsExpandChartButton)
 
 
@@ -5877,7 +5877,7 @@ $script:AutoChart11ADUserAccountsOpenInShell = New-Object Windows.Forms.Button -
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart11ADUserAccountsOpenInShell
+Apply-CommonButtonSettings -Button $script:AutoChart11ADUserAccountsOpenInShell
 $script:AutoChart11ADUserAccountsOpenInShell.Add_Click({ AutoChartOpenDataInShell })
 $script:AutoChart11ADUserAccountsManipulationPanel.controls.Add($script:AutoChart11ADUserAccountsOpenInShell)
 
@@ -5889,7 +5889,7 @@ $script:AutoChart11ADUserAccountsViewResults = New-Object Windows.Forms.Button -
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart11ADUserAccountsViewResults
+Apply-CommonButtonSettings -Button $script:AutoChart11ADUserAccountsViewResults
 $script:AutoChart11ADUserAccountsViewResults.Add_Click({ $script:AutoChartDataSourceCsv | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" })
 $script:AutoChart11ADUserAccountsManipulationPanel.controls.Add($script:AutoChart11ADUserAccountsViewResults)
 
@@ -5902,7 +5902,7 @@ $script:AutoChart11ADUserAccountsSaveButton = New-Object Windows.Forms.Button -P
     Size     = @{ Width  = $FormScale * 205
                   Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart11ADUserAccountsSaveButton
+Apply-CommonButtonSettings -Button $script:AutoChart11ADUserAccountsSaveButton
 [enum]::GetNames('System.Windows.Forms.DataVisualization.Charting.ChartImageFormat')
 $script:AutoChart11ADUserAccountsSaveButton.Add_Click({
     Save-ChartImage -Chart $script:AutoChart11ADUserAccounts -Title $script:AutoChart11ADUserAccountsTitle
@@ -6058,7 +6058,7 @@ $script:AutoChart12ADUserAccountsOptionsButton = New-Object Windows.Forms.Button
     Size      = @{ Width  = $FormScale * 75
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart12ADUserAccountsOptionsButton
+Apply-CommonButtonSettings -Button $script:AutoChart12ADUserAccountsOptionsButton
 $script:AutoChart12ADUserAccountsOptionsButton.Add_Click({
     if ($script:AutoChart12ADUserAccountsOptionsButton.Text -eq 'Options v') {
         $script:AutoChart12ADUserAccountsOptionsButton.Text = 'Options ^'
@@ -6181,7 +6181,7 @@ $script:AutoChart12ADUserAccounts3DToggleButton = New-Object Windows.Forms.Butto
     Size      = @{ Width  = $FormScale * 65
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart12ADUserAccounts3DToggleButton
+Apply-CommonButtonSettings -Button $script:AutoChart12ADUserAccounts3DToggleButton
 $script:AutoChart12ADUserAccounts3DInclination = 0
 $script:AutoChart12ADUserAccounts3DToggleButton.Add_Click({
     $script:AutoChart12ADUserAccounts3DInclination += 10
@@ -6264,7 +6264,7 @@ $script:AutoChart12ADUserAccountsCheckDiffButton = New-Object Windows.Forms.Butt
                    Height = $FormScale * 23 }
     Anchor    = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
 }
-CommonButtonSettings -Button $script:AutoChart12ADUserAccountsCheckDiffButton
+Apply-CommonButtonSettings -Button $script:AutoChart12ADUserAccountsCheckDiffButton
 $script:AutoChart12ADUserAccountsCheckDiffButton.Add_Click({
     $script:AutoChart12ADUserAccountsInvestDiffDropDownArraY = $script:AutoChartDataSourceCsv | Select-Object -Property 'PasswordNotRequired' -ExpandProperty 'PasswordNotRequired' | Sort-Object -Unique
 
@@ -6309,7 +6309,7 @@ $script:AutoChart12ADUserAccountsCheckDiffButton.Add_Click({
         Width    = $FormScale * 100
         Height   = $FormScale * 20
     }
-    CommonButtonSettings -Button $script:AutoChart12ADUserAccountsInvestDiffExecuteButton
+    Apply-CommonButtonSettings -Button $script:AutoChart12ADUserAccountsInvestDiffExecuteButton
     $script:AutoChart12ADUserAccountsInvestDiffExecuteButton.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart12ADUserAccounts }})
     $script:AutoChart12ADUserAccountsInvestDiffExecuteButton.Add_Click({ script:InvestigateDifference-AutoChart12ADUserAccounts })
 
@@ -6375,7 +6375,7 @@ $AutoChart12ADUserAccountsExpandChartButton = New-Object System.Windows.Forms.Bu
                 Height = $FormScale * 23 }
     Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Processes" -QueryTabName "Password Not Requiredes" -PropertyX "PasswordNotRequired" -PropertyY "Name" }
 }
-CommonButtonSettings -Button $AutoChart12ADUserAccountsExpandChartButton
+Apply-CommonButtonSettings -Button $AutoChart12ADUserAccountsExpandChartButton
 $script:AutoChart12ADUserAccountsManipulationPanel.Controls.Add($AutoChart12ADUserAccountsExpandChartButton)
 
 
@@ -6386,7 +6386,7 @@ $script:AutoChart12ADUserAccountsOpenInShell = New-Object Windows.Forms.Button -
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart12ADUserAccountsOpenInShell
+Apply-CommonButtonSettings -Button $script:AutoChart12ADUserAccountsOpenInShell
 $script:AutoChart12ADUserAccountsOpenInShell.Add_Click({ AutoChartOpenDataInShell })
 $script:AutoChart12ADUserAccountsManipulationPanel.controls.Add($script:AutoChart12ADUserAccountsOpenInShell)
 
@@ -6398,7 +6398,7 @@ $script:AutoChart12ADUserAccountsViewResults = New-Object Windows.Forms.Button -
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart12ADUserAccountsViewResults
+Apply-CommonButtonSettings -Button $script:AutoChart12ADUserAccountsViewResults
 $script:AutoChart12ADUserAccountsViewResults.Add_Click({ $script:AutoChartDataSourceCsv | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" })
 $script:AutoChart12ADUserAccountsManipulationPanel.controls.Add($script:AutoChart12ADUserAccountsViewResults)
 
@@ -6411,7 +6411,7 @@ $script:AutoChart12ADUserAccountsSaveButton = New-Object Windows.Forms.Button -P
     Size     = @{ Width  = $FormScale * 205
                   Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart12ADUserAccountsSaveButton
+Apply-CommonButtonSettings -Button $script:AutoChart12ADUserAccountsSaveButton
 [enum]::GetNames('System.Windows.Forms.DataVisualization.Charting.ChartImageFormat')
 $script:AutoChart12ADUserAccountsSaveButton.Add_Click({
     Save-ChartImage -Chart $script:AutoChart12ADUserAccounts -Title $script:AutoChart12ADUserAccountsTitle

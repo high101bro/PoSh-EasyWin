@@ -95,7 +95,7 @@ $AutoCreateDashboardChartButtonAdd_Click = {
         Size     = @{ Width  = $AutoChartsProgressBar.Size.Width
                       Height = $FormScale * 22 }
     }
-    CommonButtonSettings -Button $AutoChartsExecuteButton
+    Apply-CommonButtonSettings -Button $AutoChartsExecuteButton
     $AutoChartsExecuteButton.Add_Click({
         if ($AutoChartSelectChartComboBox.text -eq 'Select A Chart') { $AutoChartSelectChartComboBox.ForeColor = 'Red' }
         else { $AutoChartSelectChartComboBox.ForeColor = 'Black' }
@@ -185,11 +185,11 @@ $AutoCreateDashboardChartButtonAdd_Click = {
     $AutoChartsSelectionForm.Controls.Add($AutoChartsExecuteButton)
     [void] $AutoChartsSelectionForm.ShowDialog()
 
-    CommonButtonSettings -Button $OpenXmlResultsButton
-    CommonButtonSettings -Button $OpenCsvResultsButton
+    Apply-CommonButtonSettings -Button $OpenXmlResultsButton
+    Apply-CommonButtonSettings -Button $OpenCsvResultsButton
 
-    CommonButtonSettings -Button $AutoCreateDashboardChartButton
-    CommonButtonSettings -Button $SendFilesButton
+    Apply-CommonButtonSettings -Button $AutoCreateDashboardChartButton
+    Apply-CommonButtonSettings -Button $SendFilesButton
 }
 
 $AutoCreateDashboardChartButtonAdd_MouseHover = {

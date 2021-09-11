@@ -17,7 +17,7 @@ $SysinternalsAutorunsButtonAdd_Click = {
         Start-Process "$ExternalPrograms\Autoruns.exe" -ArgumentList "`"$($SysinternalsAutorunsOpenFileDialog.filename)`""
     }
     #Returns button to default color if it was turned green after task completion
-    CommonButtonSettings -Button $SysinternalsAutorunsButton
+    Apply-CommonButtonSettings -Button $SysinternalsAutorunsButton
 }
 
 
