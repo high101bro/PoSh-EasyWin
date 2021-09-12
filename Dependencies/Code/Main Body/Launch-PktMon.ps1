@@ -23,7 +23,7 @@ Add-Type -AssemblyName System.Windows.Drawing
 $PktMonPacketCaptureForm = New-Object System.Windows.Forms.Form -Property @{
     Text   = "PoSh-EasyWin - Packet Monitor (PktMon.exe)"
     Width  = $FormScale * 750
-    Height = $FormScale * 650
+    Height = $FormScale * 625
     StartPosition = "CenterScreen"
     Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
     Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
@@ -36,31 +36,98 @@ $PktMonPacketCaptureForm = New-Object System.Windows.Forms.Form -Property @{
     TopMost       = $false
     Add_Shown     = $null
     Add_load = {
-        $script:PSSession = New-PSSession -ComputerName $script:ComputerList -Credential $script:Credential
+        $ScriptBlock = {
+            $script:ProgressBarMainLabel.text = "Attempting to establish PowerShell sessions with $($script:ComputerList.count) endpoints."
+            $script:ProgressBarMessageLabel.text = @"
+Open Sessions: $($session | Where-Object {$_.State -match 'Open'})
+"@
+            $script:ProgressBarFormProgressBar.Value = 0
+            $script:ProgressBarFormProgressBar.Maximum = $script:ComputerList.Count
+            
+            $script:PSSessionPktMon = New-PSSession -ComputerName $script:ComputerList -Credential $script:Credential
+
+            $script:ProgressBarMessageLabel.text = @"
+Open Sessions: $($session | Where-Object {$_.State -match 'Open'})
+"@
+            $script:ProgressBarFormProgressBar.Value = $script:ComputerList.Count
+            Start-Sleep -Seconds 1
+            $script:ProgressBarSelectionForm.Hide()            
+        }
+
+        Launch-ProgressBarForm -FormTitle "PoSh-EasyWin - Establishing Connection" -ScriptBlockProgressBarInput $ScriptBlock -Height $($FormScale * 155)
 
         $script:SupportsType = $null
-        $script:SupportsType = Invoke-Command -ScriptBlock {PktMon start help | Select-String -Pattern '--type'} -Session $script:PSSession
+        $script:SupportsType = Invoke-Command -ScriptBlock {PktMon start help | Select-String -Pattern '--type'} -Session $script:PSSessionPktMon
 
         $script:SupportsCountersOnly = $null
-        $script:SupportsCountersOnly = Invoke-Command -ScriptBlock {PktMon start help | Select-String -Pattern '--counters-only'} -Session $script:PSSession
+        $script:SupportsCountersOnly = Invoke-Command -ScriptBlock {PktMon start help | Select-String -Pattern '--counters-only'} -Session $script:PSSessionPktMon
 
         $script:SupportsPktSize = $null
-        $script:SupportsPktSize = Invoke-Command -ScriptBlock {PktMon start help | Select-String -Pattern '--pkt-size'} -Session $script:PSSession
+        $script:SupportsPktSize = Invoke-Command -ScriptBlock {PktMon start help | Select-String -Pattern '--pkt-size'} -Session $script:PSSessionPktMon
 
         $script:SupportsFlags = $null
-        $script:SupportsFlags = Invoke-Command -ScriptBlock {PktMon start help | Select-String -Pattern '--flags'} -Session $script:PSSession
+        $script:SupportsFlags = Invoke-Command -ScriptBlock {PktMon start help | Select-String -Pattern '--flags'} -Session $script:PSSessionPktMon
 
         $script:SupportsKeywords = $null
-        $script:SupportsKeywords = Invoke-Command -ScriptBlock {PktMon start help | Select-String -Pattern '--keywords'} -Session $script:PSSession
+        $script:SupportsKeywords = Invoke-Command -ScriptBlock {PktMon start help | Select-String -Pattern '--keywords'} -Session $script:PSSessionPktMon
 
         $script:SupportsCapture = $null
-        $script:SupportsCapture = Invoke-Command -ScriptBlock {PktMon start help | Select-String -Pattern '--capture'} -Session $script:PSSession
+        $script:SupportsCapture = Invoke-Command -ScriptBlock {PktMon start help | Select-String -Pattern '--capture'} -Session $script:PSSessionPktMon
 
-        function script:Update-PktMonFilterListBox {
-#            $DateTime = (Get-Date).ToString('yyyy-MM-dd HH.mm.ss')
-            
+        # Checks for pktmon.exe on endpoints
+        $script:PktMonCheckComputerList = @()
+        foreach ($Session in $script:PSSessionPktMon) {
+            if (-not (Invoke-Command -ScriptBlock { Get-Command PktMon.exe } -Session $Session)) {
+                $script:PktMonCheckComputerList += $Session.ComputerName
+            }
+        }
+
+        # Removed sessions that didn't have pktmon
+        foreach ($Session in $script:PSSessionPktMon) {
+            if ($Session.ComputerName -in $script:PktMonCheckComputerList) {
+                $Session | Remove-PSSession
+                $script:PSSessionPktMon = $script:PSSessionPktMon | Where-Object {$_.ComputerName -ne $session.ComputerName}
+            }
+        }
+
+        # Unchecks all endpoint nodes
+        [System.Windows.Forms.TreeNodeCollection]$AllTreeViewNodes = $script:ComputerTreeView.Nodes
+        foreach ($root in $AllTreeViewNodes) { 
+            $root.Checked = $false 
+            foreach ($Category in $root.Nodes) { 
+                $Category.Checked = $false 
+                foreach ($Entry in $Category.nodes) { 
+                    $Entry.Checked = $false 
+                } 
+            } 
+        }
+
+        # Removes endpoints that don't have pktmon.exe
+        $script:PktMonCheckComputerKeepList = @()
+        $PktMonComputerList = $($script:PSSessionPktMon | Where-Object {$_.State -match 'Open'}).ComputerName
+        Foreach ($Computer in $PktMonComputerList) {
+            if ($Computer -notin $script:PktMonCheckComputerList) {
+                $script:PktMonCheckComputerKeepList += $Computer
+            }
+        }
+
+        # Checks all the nodes that have sessions
+        foreach ($Computer in $script:PktMonCheckComputerKeepList) {
+            foreach ($root in $AllTreeViewNodes) { 
+                foreach ($Category in $root.Nodes) { 
+                    foreach ($Entry in $Category.nodes) { 
+                        if ($Entry.Text -eq $Computer){ 
+                            $Entry.Checked = $true 
+                        } 
+                    } 
+                } 
+            }
+        }
+        Update-TreeViewData -Endpoint -TreeView $script:ComputerTreeView.Nodes
+
+        function script:Update-PktMonFilterListBox {           
             $PktMonFilterListListBox.Items.Clear()
-            foreach ($Session in $script:PSSession) {
+            foreach ($Session in $script:PSSessionPktMon) {
                 $PktMonFilterListResults = Invoke-Command -ScriptBlock {
                     & PktMon filter list | Where-Object {$_ -notmatch '----'}
                 } -Session $Session
@@ -81,11 +148,10 @@ $PktMonPacketCaptureForm = New-Object System.Windows.Forms.Form -Property @{
             }
         }
 
-
         function Populate-EndpointFilterTabs {
             $PktMonFilterTabControl.TabPages.Clear()
     
-            foreach ($Session in $script:PSSession) {
+            foreach ($Session in $script:PSSessionPktMon) {
                 Invoke-Expression @"
                 `$PktMonRandomId = Get-Random
                 `$script:PktMonFilterTabPage$PktMonRandomId = New-Object System.Windows.Forms.TabPage -Property @{
@@ -122,15 +188,79 @@ $PktMonPacketCaptureForm = New-Object System.Windows.Forms.Form -Property @{
         Populate-EndpointFilterTabs
         script:Update-PktMonFilterListBox
     }
-    Add_Closing = { 
-        $script:PSSession | Remove-PSSession
-        $script:Timer.Stop()
-        $This.dispose() 
+    Add_Closing = {
+        param($sender,$Selection)
+        if ($script:PktMonCaptureStartButton.enabled -eq $false) {
+            [System.Windows.Forms.MessageBox]::Show("All existing PowerShell sessions will be removed.`n`nAny running packet captures will be continue on the endpoints.","PoSh-EasyWin",'Ok',"Warning")
+        }
+
+        $script:VerifyCloseForm = New-Object System.Windows.Forms.Form -Property @{
+            Text    = "Packet Capture"
+            Width   = $FormScale * 250
+            Height  = $FormScale * 109
+            TopMost = $true
+            Icon    = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
+            Font    = New-Object System.Drawing.Font("$Font",($FormScale * 11),0,0,0)
+            FormBorderStyle =  'Fixed3d'
+            StartPosition   = 'CenterScreen'
+            showintaskbar   = $true
+            ControlBox      = $true
+            MaximizeBox     = $false
+            MinimizeBox     = $false
+            Add_Closing = {
+                if     ($script:VerifyToCloseForm -eq $true) { $Selection.Cancel = $false }
+                elseif ($script:VerifyToCloseForm -eq $false){ $Selection.Cancel = $true }
+                else   { $Selection.Cancel = $true  }
+                $this.TopMost = $false
+                $this.dispose()
+                $this.close()
+            }
+        }
+        $VerifyCloseLabel = New-Object System.Windows.Forms.Label -Property @{
+            Text   = 'Do you want to close this form?'
+            Width  = $FormScale * 250
+            Height = $FormScale * 22
+            Left   = $FormScale * 10
+            Top    = $FormScale * 10
+        }
+        $script:VerifyCloseForm.Controls.Add($VerifyCloseLabel)
+    
+    
+        $VerifyYesButton = New-Object System.Windows.Forms.Button -Property @{
+            Text   = 'Yes'
+            Width  = $FormScale * 100
+            Height = $FormScale * 22
+            Left   = $FormScale * 10
+            Top    = $VerifyCloseLabel.Top + $VerifyCloseLabel.Height
+            BackColor = 'LightGray'
+            Add_Click = {
+                $script:PSSessionPktMon | Remove-PSSession
+                $script:Timer.Stop()
+                $This.dispose()
+
+                $script:VerifyToCloseForm = $True
+                $script:VerifyCloseForm.close()
+            }
+        }
+        $script:VerifyCloseForm.Controls.Add($VerifyYesButton)
+    
+        $VerifyNoButton = New-Object System.Windows.Forms.Button -Property @{
+            Text   = 'No'
+            Width  = $FormScale * 100
+            Height = $FormScale * 22
+            Left   = $VerifyYesButton.Left + $VerifyYesButton.Width + ($FormScale * 10)
+            Top    = $VerifyYesButton.Top
+            BackColor = 'LightGray'
+            Add_Click = {
+                $script:VerifyToCloseForm = $false
+                $script:VerifyCloseForm.close()
+            }
+        }
+        $script:VerifyCloseForm.Controls.Add($VerifyNoButton)
+    
+        $script:VerifyCloseForm.ShowDialog()
     }
 }
-
-
-
 
     $script:OnlyPacketCounters = $null
     $PktMonOnlyPacketCountersCheckbox = New-Object System.Windows.Forms.Checkbox -Property @{
@@ -681,17 +811,17 @@ Actual Command Example: pktmon filter add 'SMB SYN Packets' --IP 10.10.10.100  -
         Add_MouseEnter = { $PktMonFilterListSelectionComboBox.text = $PktMonFilterListSelectionComboBox.SelectedItem -replace '\s+',' ' }
         Add_MouseLeave = { $PktMonFilterListSelectionComboBox.text = $PktMonFilterListSelectionComboBox.SelectedItem -replace '\s+',' ' }
         Add_Click = {
-            if ($script:PSSession.state -notmatch 'Open') {
-                [System.Windows.Forms.MessageBox]::Show("There are no current open sessions.","PoSh-EasyWin",'Ok',"Warning")                
+            if ($script:PSSessionPktMon.state -notmatch 'Open') {
+                [System.Windows.Forms.MessageBox]::Show("There are no current open sessions.","PoSh-EasyWin",'Ok',"Warning")
             }
-            elseif (-not $script:PSSession) {
+            elseif (-not $script:PSSessionPktMon) {
                 [System.Windows.Forms.MessageBox]::Show("There are no current open sessions.","PoSh-EasyWin",'Ok',"Warning")                
             }
             elseif ($PktMonFilterListSelectionComboBox.text -eq $null -or $PktMonFilterListSelectionComboBox.text -eq '') {
                 [System.Windows.Forms.MessageBox]::Show("You need to select or enter a filter.","PoSh-EasyWin",'Ok',"Warning")
             }
             else {
-                Foreach ($Session in $script:PSSession) {
+                Foreach ($Session in $script:PSSessionPktMon) {
                     if ($Session.ComputerName -eq $PktMonFilterTabControl.SelectedTab.Name ) {
                         $PktMonFilterListSelectionComboBoxtext = $($PktMonFilterListSelectionComboBox.text).trim() -replace '\s+',' '
                         if (Verify-Action -Title 'PoSh-EasyWin - PktMon.exe' -Question "Do you want to add the filter to:`n`n$($Session.ComputerName)") {
@@ -727,10 +857,10 @@ Actual Command Example: pktmon filter add 'SMB SYN Packets' --IP 10.10.10.100  -
         Add_MouseEnter = { $PktMonFilterListSelectionComboBox.text = $PktMonFilterListSelectionComboBox.SelectedItem -replace '\s+',' ' }
         Add_MouseLeave = { $PktMonFilterListSelectionComboBox.text = $PktMonFilterListSelectionComboBox.SelectedItem -replace '\s+',' ' }
         Add_Click = {
-            if ($script:PSSession.state -notmatch 'Open') {
+            if ($script:PSSessionPktMon.state -notmatch 'Open') {
                 [System.Windows.Forms.MessageBox]::Show("There are no current open sessions.","PoSh-EasyWin",'Ok',"Warning")                
             }
-            elseif (-not $script:PSSession) {
+            elseif (-not $script:PSSessionPktMon) {
                 [System.Windows.Forms.MessageBox]::Show("There are no current open sessions.","PoSh-EasyWin",'Ok',"Warning")                
             }
             elseif ($PktMonFilterListSelectionComboBox.text -eq $null -or $PktMonFilterListSelectionComboBox.text -eq '') {
@@ -744,7 +874,7 @@ Actual Command Example: pktmon filter add 'SMB SYN Packets' --IP 10.10.10.100  -
                     $PktMonResults = Invoke-Command -ScriptBlock {
                         param($PktMonFilterListSelectionComboBoxtext)
                         Invoke-Expression "pktmon filter add $PktMonFilterListSelectionComboBoxtext"
-                    } -ArgumentList @($PktMonFilterListSelectionComboBoxtext,$null) -Session $script:PSSession -ErrorVariable PktMonFilterAddError
+                    } -ArgumentList @($PktMonFilterListSelectionComboBoxtext,$null) -Session $script:PSSessionPktMon -ErrorVariable PktMonFilterAddError
 
                     $PktMonStatusTextbox.text = "$((Get-Date).tostring()):  [$($Session.ComputerName.Count) Endpoints] $($PktMonResults.trim() -replace '\s+',' ')  [$($PktMonFilterListSelectionComboBoxtext)]`r`n" + $PktMonStatusTextbox.text
                     if ($PktMonFilterAddError){
@@ -770,14 +900,14 @@ Actual Command Example: pktmon filter add 'SMB SYN Packets' --IP 10.10.10.100  -
         Add_MouseEnter = { $PktMonFilterListSelectionComboBox.text = $PktMonFilterListSelectionComboBox.SelectedItem -replace '\s+',' ' }
         Add_MouseLeave = { $PktMonFilterListSelectionComboBox.text = $PktMonFilterListSelectionComboBox.SelectedItem -replace '\s+',' ' }
         Add_Click = {
-            if ($script:PSSession.state -notmatch 'Open') {
+            if ($script:PSSessionPktMon.state -notmatch 'Open') {
                 [System.Windows.Forms.MessageBox]::Show("There are no current open sessions.","PoSh-EasyWin",'Ok',"Warning")                
             }
-            elseif (-not $script:PSSession) {
+            elseif (-not $script:PSSessionPktMon) {
                 [System.Windows.Forms.MessageBox]::Show("There are no current open sessions.","PoSh-EasyWin",'Ok',"Warning")                
             }
             else {
-                Foreach ($Session in $($script:PSSession | Sort-Object -Property ComputerName)) {
+                Foreach ($Session in $($script:PSSessionPktMon | Sort-Object -Property ComputerName)) {
                     if ($Session.ComputerName -eq $PktMonFilterTabControl.SelectedTab.Name ) {
                         if (Verify-Action -Title 'PoSh-EasyWin - PktMon.exe' -Question "Do you want to clear the filters on:`n`n$($Session.ComputerName)") {
                             $PktMonFilterClearError = $null
@@ -811,10 +941,10 @@ Actual Command Example: pktmon filter add 'SMB SYN Packets' --IP 10.10.10.100  -
         Add_MouseEnter = { $PktMonFilterListSelectionComboBox.text = $PktMonFilterListSelectionComboBox.SelectedItem -replace '\s+',' ' }
         Add_MouseLeave = { $PktMonFilterListSelectionComboBox.text = $PktMonFilterListSelectionComboBox.SelectedItem -replace '\s+',' ' }
         Add_Click = {
-            if ($script:PSSession.state -notmatch 'Open') {
+            if ($script:PSSessionPktMon.state -notmatch 'Open') {
                 [System.Windows.Forms.MessageBox]::Show("There are no current open sessions.","PoSh-EasyWin",'Ok',"Warning")
             }
-            elseif (-not $script:PSSession) {
+            elseif (-not $script:PSSessionPktMon) {
                 [System.Windows.Forms.MessageBox]::Show("There are no current open sessions.","PoSh-EasyWin",'Ok',"Warning")
             }
             else {
@@ -822,7 +952,7 @@ Actual Command Example: pktmon filter add 'SMB SYN Packets' --IP 10.10.10.100  -
                     $PktMonFilterClearError = $null
                     $PktMonResults = Invoke-Command -ScriptBlock {
                         PktMon filter remove
-                    } -Session $script:PSSession -ErrorVariable PktMonFilterClearError
+                    } -Session $script:PSSessionPktMon -ErrorVariable PktMonFilterClearError
 
                     $PktMonStatusTextbox.text = "$((Get-Date).tostring()):  [$($Session.ComputerName.Count) Endpoints] $($PktMonResults.trim() -replace '\s+',' ')`r`n" + $PktMonStatusTextbox.text
                     if ($PktMonFilterClearError){
@@ -882,7 +1012,7 @@ Actual Command Example: pktmon filter add 'SMB SYN Packets' --IP 10.10.10.100  -
 
     
 
-    $PktMonCaptureStartButton = New-Object System.Windows.Forms.Button -Property @{
+    $script:PktMonCaptureStartButton = New-Object System.Windows.Forms.Button -Property @{
         Text   = 'Start Capture'
         Left   = $PktMonStatusTextbox.Left
         Top    = $PktMonStatusTextbox.Top + $PktMonStatusTextbox.Height + $($FormScale * 5)
@@ -894,11 +1024,10 @@ Actual Command Example: pktmon filter add 'SMB SYN Packets' --IP 10.10.10.100  -
         Add_MouseEnter = { $PktMonFilterListSelectionComboBox.text = $PktMonFilterListSelectionComboBox.SelectedItem -replace '\s+',' ' }
         Add_MouseLeave = { $PktMonFilterListSelectionComboBox.text = $PktMonFilterListSelectionComboBox.SelectedItem -replace '\s+',' ' }
         Add_Click = {
-
-            if ($script:PSSession.state -notmatch 'Open') {
+            if ($script:PSSessionPktMon.state -notmatch 'Open') {
                 [System.Windows.Forms.MessageBox]::Show("There are no current open sessions.","PoSh-EasyWin",'Ok',"Warning")                
             }
-            elseif (-not $script:PSSession) {
+            elseif (-not $script:PSSessionPktMon) {
                 [System.Windows.Forms.MessageBox]::Show("There are no current open sessions.","PoSh-EasyWin",'Ok',"Warning")                
             }
             else {
@@ -909,7 +1038,7 @@ Actual Command Example: pktmon filter add 'SMB SYN Packets' --IP 10.10.10.100  -
                     Update-PktMonFileNameDateTime
                     Update-PktMonCommand
 
-                    foreach ($session in $script:PSSession) {
+                    foreach ($session in $script:PSSessionPktMon) {
                         $PktMonResultsError = $null
                         $PktMonResults = Invoke-Command -ScriptBlock {
                             param($PktMonCommandTextboxText)
@@ -925,97 +1054,101 @@ Actual Command Example: pktmon filter add 'SMB SYN Packets' --IP 10.10.10.100  -
             }
         }
     }
-    $PktMonPacketCaptureForm.Controls.Add($PktMonCaptureStartButton)
-    Apply-CommonButtonSettings -Button $PktMonCaptureStartButton
+    $PktMonPacketCaptureForm.Controls.Add($script:PktMonCaptureStartButton)
+    Apply-CommonButtonSettings -Button $script:PktMonCaptureStartButton
 
+    $StopAndCollectCaptures = {
+        if (Verify-Action -Title 'PoSh-EasyWin - PktMon.exe' -Question "Do you want stop packet capturing on the following?`n`n$($script:ComputerList -join ', ')") {
+            Foreach ($Session in $script:PSSessionPktMon) {
+                $PktMonResultsError = $null
+                $PktMonResults = Invoke-Command -ScriptBlock {
+                    & PktMon stop
+                } -Session $Session -ErrorVariable PktMonResultsError
+
+                $PktMonStatusTextbox.text = "$((Get-Date).tostring()):  [$($Session.ComputerName)] $($PktMonResults.trim() -replace '\s+',' ')`r`n" + $PktMonStatusTextbox.text
+                if ($PktMonResultsError) {
+                    $PktMonStatusTextbox.text = "$((Get-Date).tostring()):  [$($Session.ComputerName)] Error $($PktMonResultsError.trim() -replace '\s+',' ')`r`n" + $PktMonStatusTextbox.text
+                }
+            }
+            $PacketCaptureDetails = @()
+            Foreach ($Session in $script:PSSessionPktMon) {
+                $PktMonDetailsError = $null
+                $PacketCaptureDetails += Invoke-Command -ScriptBlock {
+                    param($FileName)
+                    Get-ItemProperty "C:\Windows\Temp\$FileName" | Select-Object @{n='ComputerName';e={$env:ComputerName}}, Name, CreationTime, LastAccessTime, LastWriteTime, Length, @{n='KiloBytes';e={[math]::round($($_.Length / 1KB),2)}}, @{n='MegaBytes';e={[math]::round($($_.Length / 1MB),2)}}, @{n='GigaBytes';e={[math]::round($($_.Length / 1GB),2)}}, Directory
+                } -ArgumentList @($script:PktMonFileNameEtl,$null) -Session $Session -ErrorVariable PktMonDetailsError
+
+                $PktMonStatusTextbox.text = "$((Get-Date).tostring()):  [$($Session.ComputerName)] Removing file from [$($Session.ComputerName)]$('C:\Windows\Temp\$script:PktMonFileNameEtl')`r`n" + $PktMonStatusTextbox.text
+                if ($PktMonDetailsError) {
+                    $PktMonStatusTextbox.text = "$((Get-Date).tostring()):  [$($Session.ComputerName)] Error $($PktMonDetailsError.trim() -replace '\s+',' ')`r`n" + $PktMonStatusTextbox.text
+                }                        
+            }
+            $SelectedPacketCaptures = $PacketCaptureDetails | Out-GridView -Title "PoSh-EasyWin - Packet Capture Details" -PassThru
+
+            Foreach ($Session in $script:PSSessionPktMon) {
+                Foreach ($Capture in $SelectedPacketCaptures) {
+                    if ($Session.ComputerName -eq $Capture.ComputerName) {
+                        # Copies data back to localhost
+                        $PktMonCopyError = $null
+                        New-Item -Type Directory $script:CollectionSavedDirectoryTextBox.Text
+                        Copy-Item -Path "C:\Windows\Temp\$script:PktMonFileNameEtl" -Destination "$($script:CollectionSavedDirectoryTextBox.Text)\$($Session.ComputerName) $script:PktMonFileNameEtl" -FromSession $Session -ErrorVariable PktMonCopyError
+                        $PktMonStatusTextbox.text = "$((Get-Date).tostring()):  [$($Session.ComputerName)] Copying $('C:\Windows\Temp\$script:PktMonFileNameEtl') to localhost`r`n" + $PktMonStatusTextbox.text
+                        if ($PktMonCopyError) {
+                            $PktMonStatusTextbox.text = "$((Get-Date).tostring()):  [$($Session.ComputerName)] Error $($PktMonCopyError.trim() -replace '\s+',' ')`r`n" + $PktMonStatusTextbox.text
+                        }
+
+                        # Removes remote .etl file from endpoints
+                        $PktMonRemoveError = $null
+                        Invoke-Command -ScriptBlock {
+                            param($FileName)
+                            Remove-Item "C:\Windows\Temp\$FileName" -Force
+                        } -ArgumentList @($script:PktMonFileNameEtl,$null) -Session $Session -ErrorVariable PktMonRemoveError
+                        $PktMonStatusTextbox.text = "$((Get-Date).tostring()):  [$($Session.ComputerName)] Removing file from [$($Session.ComputerName)]$('C:\Windows\Temp\$script:PktMonFileNameEtl')`r`n" + $PktMonStatusTextbox.text
+                        if ($PktMonRemoveError) {
+                            $PktMonStatusTextbox.text = "$((Get-Date).tostring()):  [$($Session.ComputerName)] Error $($PktMonRemoveError.trim() -replace '\s+',' ')`r`n" + $PktMonStatusTextbox.text
+                        }
+
+                        # Converts local .etl file to .pcapng
+                        pktmon etl2pcap "$($script:CollectionSavedDirectoryTextBox.Text)\$($Session.ComputerName) $script:PktMonFileNameEtl" --out "$($script:CollectionSavedDirectoryTextBox.Text)\$($Session.ComputerName) $script:PktMonFileNamePcapng"
+
+                        # Removes local .etl file
+                        Remove-Item "$($script:CollectionSavedDirectoryTextBox.Text)\$($Session.ComputerName) $script:PktMonFileNameEtl"
+
+                        # Adds metadata / alternate data streams (ADS) to local .pcapng files
+                        $PktMonFilterListToADSResults = Invoke-Command -ScriptBlock {
+                            & PktMon filter list | Where-Object {$_ -notmatch '----'}
+                        } -Session $Session
+                        $PktMonFilterListToADSResults = $PktMonFilterListToADSResults.split("`r`n") -join '&&'
+                        Invoke-Expression "Set-Content '$($script:CollectionSavedDirectoryTextBox.Text)\$($Session.ComputerName) $($script:PktMonFileNamePcapng):PacketCaptureMetadata' -Value '$PktMonFilterListToADSResults'"
+
+                        # Opens selected local .pcapng file with system default application - typically Wireshark if installed
+                        Invoke-Item "$($script:CollectionSavedDirectoryTextBox.Text)\$($Session.ComputerName) $script:PktMonFileNamePcapng"
+                    }
+                }
+            }
+        }
+    }
 
     $PktMonCaptureStopButton = New-Object System.Windows.Forms.Button -Property @{
         Text   = 'Stop Capture'
-        Left   = $PktMonCaptureStartButton.Left + $PktMonCaptureStartButton.Width + $($FormScale * 5)
-        Top    = $PktMonCaptureStartButton.Top
+        Left   = $script:PktMonCaptureStartButton.Left + $script:PktMonCaptureStartButton.Width + $($FormScale * 5)
+        Top    = $script:PktMonCaptureStartButton.Top
         Width  = $FormScale * 110
         Height = $FormScale * 22
         Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         ForeColor = 'Black'
         Enabled = $false
         Add_Click = {
-            if ($script:PSSession.state -notmatch 'Open') {
+            if ($script:PSSessionPktMon.state -notmatch 'Open') {
                 [System.Windows.Forms.MessageBox]::Show("There are no current open sessions.","PoSh-EasyWin",'Ok',"Warning")                
             }
-            elseif (-not $script:PSSession) {
+            elseif (-not $script:PSSessionPktMon) {
                 [System.Windows.Forms.MessageBox]::Show("There are no current open sessions.","PoSh-EasyWin",'Ok',"Warning")                
             }
             else {
-                if (Verify-Action -Title 'PoSh-EasyWin - PktMon.exe' -Question "Do you want stop packet capturing on the following?`n`n$($script:ComputerList -join ', ')") {
-                    Foreach ($Session in $script:PSSession) {
-                        $PktMonResultsError = $null
-                        $PktMonResults = Invoke-Command -ScriptBlock {
-                            & PktMon stop
-                        } -Session $Session -ErrorVariable PktMonResultsError
+                & $StopAndCollectCaptures
 
-                        $PktMonStatusTextbox.text = "$((Get-Date).tostring()):  [$($Session.ComputerName)] $($PktMonResults.trim() -replace '\s+',' ')`r`n" + $PktMonStatusTextbox.text
-                        if ($PktMonResultsError) {
-                            $PktMonStatusTextbox.text = "$((Get-Date).tostring()):  [$($Session.ComputerName)] Error $($PktMonResultsError.trim() -replace '\s+',' ')`r`n" + $PktMonStatusTextbox.text
-                        }
-                    }
-                    $PacketCaptureDetails = @()
-                    Foreach ($Session in $script:PSSession) {
-                        $PktMonDetailsError = $null
-                        $PacketCaptureDetails += Invoke-Command -ScriptBlock {
-                            param($FileName)
-                            Get-ItemProperty "C:\Windows\Temp\$FileName" | Select-Object @{n='ComputerName';e={$env:ComputerName}}, Name, CreationTime, LastAccessTime, LastWriteTime, Length, @{n='KiloBytes';e={[math]::round($($_.Length / 1KB),2)}}, @{n='MegaBytes';e={[math]::round($($_.Length / 1MB),2)}}, @{n='GigaBytes';e={[math]::round($($_.Length / 1GB),2)}}, Directory
-                        } -ArgumentList @($script:PktMonFileNameEtl,$null) -Session $Session -ErrorVariable PktMonDetailsError
-
-                        $PktMonStatusTextbox.text = "$((Get-Date).tostring()):  [$($Session.ComputerName)] Removing file from [$($Session.ComputerName)]$('C:\Windows\Temp\$script:PktMonFileNameEtl')`r`n" + $PktMonStatusTextbox.text
-                        if ($PktMonDetailsError) {
-                            $PktMonStatusTextbox.text = "$((Get-Date).tostring()):  [$($Session.ComputerName)] Error $($PktMonDetailsError.trim() -replace '\s+',' ')`r`n" + $PktMonStatusTextbox.text
-                        }                        
-                    }
-                    $SelectedPacketCaptures = $PacketCaptureDetails | Out-GridView -Title "PoSh-EasyWin - Packet Capture Details" -PassThru
-
-                    Foreach ($Session in $script:PSSession) {
-                        Foreach ($Capture in $SelectedPacketCaptures) {
-                            if ($Session.ComputerName -eq $Capture.ComputerName) {
-                                # Copies data back to localhost
-                                $PktMonCopyError = $null
-                                New-Item -Type Directory $script:CollectionSavedDirectoryTextBox.Text
-                                Copy-Item -Path "C:\Windows\Temp\$script:PktMonFileNameEtl" -Destination "$($script:CollectionSavedDirectoryTextBox.Text)\$($Session.ComputerName) $script:PktMonFileNameEtl" -FromSession $Session -ErrorVariable PktMonCopyError
-                                $PktMonStatusTextbox.text = "$((Get-Date).tostring()):  [$($Session.ComputerName)] Copying $('C:\Windows\Temp\$script:PktMonFileNameEtl') to localhost`r`n" + $PktMonStatusTextbox.text
-                                if ($PktMonCopyError) {
-                                    $PktMonStatusTextbox.text = "$((Get-Date).tostring()):  [$($Session.ComputerName)] Error $($PktMonCopyError.trim() -replace '\s+',' ')`r`n" + $PktMonStatusTextbox.text
-                                }
-    
-                                # Removes remote .etl file from endpoints
-                                $PktMonRemoveError = $null
-                                Invoke-Command -ScriptBlock {
-                                    param($FileName)
-                                    Remove-Item "C:\Windows\Temp\$FileName" -Force
-                                } -ArgumentList @($script:PktMonFileNameEtl,$null) -Session $Session -ErrorVariable PktMonRemoveError
-                                $PktMonStatusTextbox.text = "$((Get-Date).tostring()):  [$($Session.ComputerName)] Removing file from [$($Session.ComputerName)]$('C:\Windows\Temp\$script:PktMonFileNameEtl')`r`n" + $PktMonStatusTextbox.text
-                                if ($PktMonRemoveError) {
-                                    $PktMonStatusTextbox.text = "$((Get-Date).tostring()):  [$($Session.ComputerName)] Error $($PktMonRemoveError.trim() -replace '\s+',' ')`r`n" + $PktMonStatusTextbox.text
-                                }
-    
-                                # Converts local .etl file to .pcapng
-                                pktmon etl2pcap "$($script:CollectionSavedDirectoryTextBox.Text)\$($Session.ComputerName) $script:PktMonFileNameEtl" --out "$($script:CollectionSavedDirectoryTextBox.Text)\$($Session.ComputerName) $script:PktMonFileNamePcapng"
-
-                                # Removes local .etl file
-                                Remove-Item "$($script:CollectionSavedDirectoryTextBox.Text)\$($Session.ComputerName) $script:PktMonFileNameEtl"
-
-                                # Adds metadata / alternate data streams (ADS) to local .pcapng files
-                                $PktMonFilterListToADSResults = Invoke-Command -ScriptBlock {
-                                    & PktMon filter list | Where-Object {$_ -notmatch '----'}
-                                } -Session $Session
-                                $PktMonFilterListToADSResults = $PktMonFilterListToADSResults.split("`r`n") -join '&&'
-                                Invoke-Expression "Set-Content '$($script:CollectionSavedDirectoryTextBox.Text)\$($Session.ComputerName) $($script:PktMonFileNamePcapng):PacketCaptureMetadata' -Value '$PktMonFilterListToADSResults'"
-
-                                # Opens selected local .pcapng file with system default application - typically Wireshark if installed
-                                Invoke-Item "$($script:CollectionSavedDirectoryTextBox.Text)\$($Session.ComputerName) $script:PktMonFileNamePcapng"
-                            }
-                        }
-                    }
-                }
-                $PktMonCaptureStartButton.enabled = $true
+                $script:PktMonCaptureStartButton.enabled = $true
                 $This.Enabled = $false
             }
         }
@@ -1038,8 +1171,8 @@ Actual Command Example: pktmon filter add 'SMB SYN Packets' --IP 10.10.10.100  -
             | Select-Object -Property `
                 @{n='ComputerName';e={$($_.BaseName.split(' ')[0])}}, `
                 Name, CreationTime, LastAccessTime, LastWriteTime, `
-                @{n='kaitybaby';e={$(Get-Content "$($_.Fullname):PacketCaptureMetadata") -replace "&&","`r`n"}}, `
-                Length, @{n='Filter';e={[math]::round($($_.Length / 1KB),2)}}, @{n='MegaBytes';e={[math]::round($($_.Length / 1MB),2)}}, @{n='GigaBytes';e={[math]::round($($_.Length / 1GB),2)}}, Directory, Fullname `
+                @{n='Filter';e={$(Get-Content "$($_.Fullname):PacketCaptureMetadata") -replace "&&","`r`n"}}, `
+                Length, @{n='KiloBytes';e={[math]::round($($_.Length / 1KB),2)}}, @{n='MegaBytes';e={[math]::round($($_.Length / 1MB),2)}}, @{n='GigaBytes';e={[math]::round($($_.Length / 1GB),2)}}, Directory, Fullname `
             | Sort-Object -Property @{e="CreationTime";Descending=$True}, @{e="Name";Descending=$False} `
             | Out-GridView -Title 'PoSh-EasyWin - Packet Captures' -PassThru `
             | ForEach-Object { Invoke-Item "$($_.Fullname)" }
@@ -1060,7 +1193,7 @@ Actual Command Example: pktmon filter add 'SMB SYN Packets' --IP 10.10.10.100  -
         Enabled = $false
         Add_Click = {
             if (Verify-Action -Title 'PoSh-EasyWin - New-PSSession' -Question "Do you want to start a new PSSession to the following?`n`n$($script:ComputerList -join ', ')") {
-                $script:PSSession = New-PSSession -ComputerName $script:ComputerList -Credential $script:Credential
+                $script:PSSessionPktMon = New-PSSession -ComputerName $script:ComputerList -Credential $script:Credential
                 $PktMonPSSessionRemoveButton.Enabled = $True
                 $This.Enabled = $false
                 $script:Timer.Start()
@@ -1082,7 +1215,7 @@ Actual Command Example: pktmon filter add 'SMB SYN Packets' --IP 10.10.10.100  -
         Enabled = $true
         Add_Click = {
             if (Verify-Action -Title 'PoSh-EasyWin - Remove-PSSession' -Question "Do you want to remove the current PSSession on the following?`n`n$($script:ComputerList -join ', ')") {
-                $script:PSSession | Remove-PSSession
+                $script:PSSessionPktMon | Remove-PSSession
                 $This.Enabled = $false
                 & $UpdateStatusBar
             }
@@ -1101,7 +1234,7 @@ Actual Command Example: pktmon filter add 'SMB SYN Packets' --IP 10.10.10.100  -
         Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         ForeColor = 'Black'
         Add_Click = {
-            $script:PSSession | Out-GridView -Title "PoSh-EasyWin - PSSession Status"
+            $script:PSSessionPktMon | Out-GridView -Title "PoSh-EasyWin - PSSession Status"
         }
     }
     $PktMonPacketCaptureForm.Controls.Add($PktMonPSSessionStatusButton)
@@ -1119,11 +1252,11 @@ Actual Command Example: pktmon filter add 'SMB SYN Packets' --IP 10.10.10.100  -
 
 
     $UpdateStatusBar = {
-        if ($script:PSSession) {
-            $PSSessionOpen   = ($script:PSSession | Where-Object {$_.State -match 'Opened'}).count
-            $PSSessionClosed = ($script:PSSession | Where-Object {$_.State -match 'Closed'}).count
-            $PSSessionDisconnected = ($script:PSSession | Where-Object {$_.State -match 'Disconnected'}).count
-            $PSSessionBroken = ($script:PSSession | Where-Object {$_.State -match 'Broken'}).count
+        if ($script:PSSessionPktMon) {
+            $PSSessionOpen   = ($script:PSSessionPktMon | Where-Object {$_.State -match 'Opened'}).count
+            $PSSessionClosed = ($script:PSSessionPktMon | Where-Object {$_.State -match 'Closed'}).count
+            $PSSessionDisconnected = ($script:PSSessionPktMon | Where-Object {$_.State -match 'Disconnected'}).count
+            $PSSessionBroken = ($script:PSSessionPktMon | Where-Object {$_.State -match 'Broken'}).count
 
             $script:ConnectionState = "$(Get-Date) - Connection Status: Open [$PSSessionOpen], Closed [$PSSessionClosed], Disconnected [$PSSessionDisconnected], Broken [$PSSessionBroken]"
         }
@@ -1131,9 +1264,9 @@ Actual Command Example: pktmon filter add 'SMB SYN Packets' --IP 10.10.10.100  -
             $script:ConnectionState = "$(Get-Date) - Connection Status with $($script:ComputerList):  Error"
         }
 
-        if ($script:PSSession.State -match 'Open') {
+        if ($script:PSSessionPktMon.State -match 'Open') {
             $script:FileTransferStatusBar.Text = $script:ConnectionState
-            if ($PktMonCaptureStartButton.enabled -eq $true){
+            if ($script:PktMonCaptureStartButton.enabled -eq $true){
                 Update-PktMonFileNameDateTime
                 Update-PktMonCommand
             }

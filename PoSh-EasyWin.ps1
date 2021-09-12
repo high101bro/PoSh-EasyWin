@@ -442,6 +442,7 @@ $ResolutionCheckForm.topmost = $false
 $PoShEasyWinAccountLaunch = [System.Security.Principal.WindowsIdentity]::GetCurrent().Name
 #[System.Windows.Forms.Application]::EnableVisualStyles()
 
+
 $PoShEasyWin = New-Object System.Windows.Forms.Form -Property @{
     Text    = "PoSh-EasyWin   ($PoShEasyWinAccountLaunch)  [$InitialScriptLoadTime]"
     Icon    = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
@@ -499,8 +500,8 @@ $PoShEasyWin = New-Object System.Windows.Forms.Form -Property @{
             Top    = $FormScale * 10
         }
         $script:VerifyCloseForm.Controls.Add($VerifyCloseLabel)
-
-
+    
+    
         $VerifyYesButton = New-Object System.Windows.Forms.Button -Property @{
             Text   = 'Yes'
             Width  = $FormScale * 100
@@ -515,9 +516,7 @@ $PoShEasyWin = New-Object System.Windows.Forms.Form -Property @{
             }
         }
         $script:VerifyCloseForm.Controls.Add($VerifyYesButton)
-        FormButtonSettings $VerifyYesButton
-
-
+    
         $VerifyNoButton = New-Object System.Windows.Forms.Button -Property @{
             Text   = 'No'
             Width  = $FormScale * 100
@@ -531,8 +530,7 @@ $PoShEasyWin = New-Object System.Windows.Forms.Form -Property @{
             }
         }
         $script:VerifyCloseForm.Controls.Add($VerifyNoButton)
-        FormButtonSettings $VerifyNoButton
-
+    
         $script:VerifyCloseForm.ShowDialog()
     }
     #backgroundimage =  [system.drawing.image]::FromFile("C:\Users\Administrator\Desktop\PoSh-EasyWin\Dependencies\Background Image 001.jpg")

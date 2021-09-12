@@ -21,7 +21,7 @@ $NetworkEndpointPacketCaptureNetshTraceGroupBox = New-Object System.Windows.Form
 }
 
         $NetworkEndpointPacketCaptureCheckBox = New-Object System.Windows.Forms.CheckBox -Property @{
-            Text     = "Endpoint Packet Capture Using netsh.exe (Windows XP+ & Server 2003+)"
+            Text     = "Packet Capture using netsh.exe (Windows XP+ / Server 2003+)"
             Left     = $FormScale * 7
             Top      = $FormScale * 3
             Autosize = $true
@@ -363,7 +363,7 @@ Update-FormProgress "$Dependencies\Code\Main Body\Launch-PktMon.ps1"
 . "$Dependencies\Code\Main Body\Launch-PktMon.ps1"
 
 $NetworkEndpointPacketCaptureGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
-    Text   = "Packet Capture Using PktMon.exe (Windows 10+ / Server 2019+)"
+    Text   = "Packet Capture using PktMon.exe (Windows 10+ / Server 2019+)"
     Left   = $FormScale * 3
     Top    = $NetworkEndpointPacketCaptureNetshTraceGroupBox.Top + $NetworkEndpointPacketCaptureNetshTraceGroupBox.Height + $($FormScale * 10)
     Width  = $FormScale * 435

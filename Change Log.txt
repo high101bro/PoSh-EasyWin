@@ -70,11 +70,22 @@ Added New Packet Capture Feature (Pktmon.exe)
 	- Added filter support
 		- Choose from dropdown filters to add or modify, or just write your own
 		- Able to view existing filters
-	- Added Start and Stop packet capture buttons
+	- Added status fields that provides status info on cmd executions
+	- Added start capture
+		- Checks if session exists before executing command
+	- Added stop capture`
 		- Checks if session exists before executing command
 		- Stop automatically copies etl file back, converts it to pcapng and opens it, then cleans up unneeded files
-	- Added status fields that provides status info on cmd executions
-	- Added start new session or remove session buttons
+		- provides option to immediately open selected files
+			- added fields that convert length to kb, mb, and gb
+	- Added open collection
+		- Searches you collected data directory recursively
+		- Filters to only show pcapng files sorted by creationtime
+		- shows 'filter' metadata to help determine which pcaps to open
+			- added fields that convert length to kb, mb, and gb
+	- Added start new session
+	- Added remove session button
+	- added get-pssession button
 	- Status bar at bottom shows status of PSSession
 
 Added chainsaw.exe support
