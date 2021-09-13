@@ -142,7 +142,7 @@ Command:
 
 
             $ComputerListEventViewerToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
-                Text        = "  - Event Viewer GUI (Connect)"
+                Text        = "  - Event Viewer (Connect)"
                 ForeColor   = 'Black'
                 Add_Click   = $EventViewerConnectionButtonAdd_Click
                 ToolTipText = "
@@ -163,7 +163,7 @@ Command:
             $script:ComputerListContextMenuStrip.Items.Add($ComputerListEventViewerToolStripButton)
 
             $ComputerListEventViewerToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
-                Text        = "  - Event Viewer GUI (Collect)"
+                Text        = "  - Event Viewer / ChainSaw (Collect)"
                 ForeColor   = 'Black'
                 Add_Click   = $EventViewerCollectionButtonAdd_Click
                 ToolTipText = "

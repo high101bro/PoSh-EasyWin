@@ -27,9 +27,8 @@ pivot scanning
 ==================================================
 v5.4.1 -
 ==================================================
-!!!!!!!!!!!!!!!!!!!!!!!! add button to re open previous packet captures
-!!!!!!!!!!!!!!!!!!!!!!!! give previous packet captures metadata somehow to help describe them.... when selecting them the second time you reopen or browse to them
 
+!!!!!!!!!!!!!!!!!!!!!!!!!!somehow I broke the saving of csv and xml files during monitor jobs........fml
 
 Taskbar PoSh-EasyWin Icon Menus
 	- Renamed 'Abort / Reload' to 'Restart Tool'
@@ -78,10 +77,13 @@ Added New Packet Capture Feature (Pktmon.exe)
 		- Stop automatically copies etl file back, converts it to pcapng and opens it, then cleans up unneeded files
 		- provides option to immediately open selected files
 			- added fields that convert length to kb, mb, and gb
+		- Files downloaded are saved with their associcated metadata
+			- an ADS is created on each pcapng file, which is later used to view the filter applied to obtain that packet capture  
 	- Added open collection
 		- Searches you collected data directory recursively
 		- Filters to only show pcapng files sorted by creationtime
 		- shows 'filter' metadata to help determine which pcaps to open
+			- the filter/metadata is retrieved from a ADS on the file
 			- added fields that convert length to kb, mb, and gb
 	- Added start new session
 	- Added remove session button
@@ -89,10 +91,16 @@ Added New Packet Capture Feature (Pktmon.exe)
 	- Status bar at bottom shows status of PSSession
 
 Added chainsaw.exe support
+	- Updated the computer treeview context menu
+		- Renamed 'Event Viewer (Collect)' to 'Event Viewer / Chainsaw (Collect)' 
+	- Chainsaw.exe currently runs one specific command to analysze files
+		- .\chainsaw.exe hunt $EventLogSaveName --rules .\sigma_rules\ --mapping .\mapping_files\sigma-mapping.yml --full --lateral-all --csv
+	    - The command is launched within a new powershell process/window
+			Start-Process 'PowerShell' -ArgumentList '-NoProfile', '-ExecutionPolicy ByPass', $CHAINSAW_COMMAND
 
 Computer treeview context menu
-	- Renamed Event Viewer GUI to Event Viewer GUI (Connect)
-	- Added Event Viewer GUI (Collect) 
+	- Renamed Event Viewer to Event Viewer (Connect)
+	- Added Event Viewer (Collect) 
 		Starts a sessions with an endpoint and allows you to download various types of logs to view locally with eventvwr
 
 Updated PSWriteHTML

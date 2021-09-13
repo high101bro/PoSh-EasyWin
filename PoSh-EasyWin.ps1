@@ -219,8 +219,8 @@ $PoShHome                            = $PSScriptRoot #Deprecated# Split-Path -pa
         # list of ports that can be updated for custom port scans
         $CustomPortsToScan                    = "$Dependencies\Custom Ports To Scan.txt"
 
-        # This PoSh-EasyWin Form Icon
         $EasyWinIcon                          = "$Dependencies\Images\favicon.ico"
+        $high101bro_image                     = "$Dependencies\Images\high101bro Logo Color Transparent.png"
 
         # Directory where auto saved chart images are saved
     $AutosavedChartsDirectory                 = "$PoShHome\Autosaved Charts"
@@ -231,7 +231,7 @@ $PoShHome                            = $PSScriptRoot #Deprecated# Split-Path -pa
         $script:SystemTrayOpenFolder         = $CollectedDataDirectory # = "$(Split-Path -parent $MyInvocation.MyCommand.Definition)\Collected Data"
 
         # Location of separate queries
-        $script:CollectedDataTimeStampDirectory = "$CollectedDataDirectory\$((Get-Date).ToString('yyyy-MM-dd @ HHmm ss'))"
+        $script:CollectedDataTimeStampDirectory = "$CollectedDataDirectory\$((Get-Date).ToString('yyyy-MM-dd HH.mm.ss'))"
 
         $SaveLocation = "$(Split-Path -parent $MyInvocation.MyCommand.Definition)\Collected Data\$((Get-Date).ToString('yyyy-MM-dd HH.mm.ss'))"
 
@@ -566,7 +566,7 @@ $QueryAndCollectionPanel = New-Object System.Windows.Forms.Panel -Property @{
                 Top    = $PoShEasyWinPictureBox.Top
                 Width  = $FormScale * 45
                 Height = $FormScale * 45
-                Image  = [System.Drawing.Image]::Fromfile("$Dependencies\Images\high101bro Logo Color Transparent.png")
+                Image  = [System.Drawing.Image]::Fromfile($high101bro_image)
                 SizeMode = 'StretchImage'
                 Add_Click = {
                     $Verify = [System.Windows.Forms.MessageBox]::Show(
@@ -1273,7 +1273,7 @@ $ExecuteScriptHandler = {
     [System.Windows.Forms.Application]::UseWaitCursor = $true
 
     if ($ResultsFolderAutoTimestampCheckbox.Checked) {
-        $script:CollectedDataTimeStampDirectory = "$CollectedDataDirectory\$((Get-Date).ToString('yyyy-MM-dd @ HHmm ss'))"
+        $script:CollectedDataTimeStampDirectory = "$CollectedDataDirectory\$((Get-Date).ToString('yyyy-MM-dd HH.mm.ss'))"
         $script:CollectionSavedDirectoryTextBox.Text = $script:CollectedDataTimeStampDirectory
     }
 

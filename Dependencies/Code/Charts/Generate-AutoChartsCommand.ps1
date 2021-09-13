@@ -15,7 +15,7 @@ function Generate-AutoChartsCommand {
     $CollectedDataDirectory                 = "$PoShHome\Collected Data"
 
     # Location of separate queries
-    $script:CollectedDataTimeStampDirectory = "$CollectedDataDirectory\$((Get-Date).ToString('yyyy-MM-dd @ HHmm ss'))"
+    $script:CollectedDataTimeStampDirectory = "$CollectedDataDirectory\$((Get-Date).ToString('yyyy-MM-dd HH.mm.ss'))"
 
     # Location of Uncompiled Results
     $script:IndividualHostResults           = "$script:CollectedDataTimeStampDirectory\Results By Endpoints"

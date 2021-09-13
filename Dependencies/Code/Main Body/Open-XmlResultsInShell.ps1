@@ -8,7 +8,7 @@ function script:Open-XmlResultsInShell {
     New-Item -Type Directory 'c:\Windows\Temp\PoSh-EasyWin' -Force -ErrorAction SilentlyContinue
 
     $Command = @"
-    Start-Process  'PowerShell' -ArgumentList '-NoExit',
+    Start-Process 'PowerShell' -ArgumentList '-NoExit',
     '-ExecutionPolicy Bypass',
         { `$ErrorActionPreference = 'SilentlyContinue'; },
         { Write-Host ' '; },

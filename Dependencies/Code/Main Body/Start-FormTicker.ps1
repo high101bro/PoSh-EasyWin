@@ -7,8 +7,10 @@ $script:PoShEasyWinFormTicker = New-Object System.Windows.Forms.Timer -Property 
 }
 $script:PoShEasyWinFormTicker.add_Tick({
     $script:PoShEasyWinStatusBar.Text = "$(Get-Date) - Computers Selected [$($script:ComputerList.Count)], Queries Selected [$($script:SectionQueryCount)]"
-    if ($ResultsFolderAutoTimestampCheckbox.checked) {
-        $script:CollectionSavedDirectoryTextBox.Text = "$CollectedDataDirectory\$((Get-Date).ToString('yyyy-MM-dd @ HHmm ss'))"
-    }
+    
+    # Not working, the monitor-jobs script needs to be updated first
+    #if ($ResultsFolderAutoTimestampCheckbox.checked) {
+    #    $script:CollectionSavedDirectoryTextBox.Text = "$CollectedDataDirectory\$((Get-Date).ToString('yyyy-MM-dd HH.mm.ss'))"
+    #}
 })
 $script:PoShEasyWinFormTicker.Start()

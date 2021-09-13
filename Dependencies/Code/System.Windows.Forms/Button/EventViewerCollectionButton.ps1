@@ -77,9 +77,8 @@ $EventViewerCollectionButtonAdd_Click = {
         } `
         -Session $Session `
         | Out-GridView -Title 'Event Log Selection' -OutputMode 'Single').Name
-        #| Out-GridView -Title 'Event Log Selection' -OutputMode 'Single').LogFileName
 
-        if ($EventLogSelectionLogFileName) {
+       if ($EventLogSelectionLogFileName) {
             $EventLogSelectionLogFileSaveName = $EventLogSelectionLogFileName.replace('/','-')
 
             # Clears localhost previously saved results... these results appear automatically when viewing saved .evtx logs
@@ -131,14 +130,24 @@ $EventViewerCollectionButtonAdd_Click = {
 
             # Prompts to open .evtx files with chainsaw.exe by F-Secure Countercept
             if (Verify-Action -Title 'Event Logs Post-Processing' -Question "Process the collected event logs with ChainSaw by F-Secure Countercept?") {
-                Invoke-Expression "'$Dependencies\Executables\chainsaw\chainsaw.exe' hunt '$EventLogSaveName' --rules '$Dependencies\Executables\chainsaw\sigma_rules\' --mapping '$Dependencies\Executables\chainsaw\mapping_files\sigma-mapping.yml' --full --lateral-all --csv"
-                $EvtxDirectory = Get-ChildItem "$Dependencies\Executables\chainsaw\chainsaw_*" | Select-Object -Last 1
-                $EvtxFile = $null
-                Foreach ($EvtxFile in $(Get-ChildItem $EvtxDirectory)) {
-                    Import-Csv "$($EvtxFile.FullPath)" | Out-GridView -Title "Chainsaw by F-Secure Countercept - $EvtxFile"
-                }
+                $SaveLocation = $script:CollectionSavedDirectoryTextBox.Text
+                $command = @"
+Start-Process 'PowerShell' -ArgumentList '-NoProfile',
+'-ExecutionPolicy ByPass',
+{ New-Item -Type Directory '$SaveLocation' -Force | Out-Null; },
+{ Set-Location '$SaveLocation' | Out-Null; },
+{ "& '$Dependencies\Executables\chainsaw\chainsaw.exe' hunt '$EventLogSaveName' --rules '$Dependencies\Executables\chainsaw\sigma_rules\' --mapping '$Dependencies\Executables\chainsaw\mapping_files\sigma-mapping.yml' --full --lateral-all --csv"; },
+{ Foreach ( `$EvtxFile in `$(Get-ChildItem '$SaveLocation\chainsaw_*' -Recurse | Where-Object {`$_.Name -like '*.csv'}) ) { `$FullName = iex '`$EvtxFile.FullName'; `$BaseName = iex '`$EvtxFile.BaseName'; `$BaseName = 'ChainSaw by F-Secure Countercept:  ' + '"'+ `$BaseName + '"'; Import-Csv "`$FullName" | Out-GridView -Title `$BaseName -Wait }; }
+"@
+#'-NoExit',
+#{ `$ErrorActionPreference = 'SilentlyContinue'; },
+# { Write-Host "Passing information from PoSh-EasyWin to ChainSaw"; },
+# { Write-Host ".\chainsaw.exe' hunt '$EventLogSaveName' --rules '.\sigma_rules\' --mapping '.\mapping_files\sigma-mapping.yml' --full --lateral-all --csv"; },
+# { Write-Host ""; },
+
+                Invoke-Expression $command
             }
-        }
+       }
         $Session | Remove-PSSession
 
         if ($script:RollCredentialsState -and $script:ComputerListProvideCredentialsCheckBox.checked) {

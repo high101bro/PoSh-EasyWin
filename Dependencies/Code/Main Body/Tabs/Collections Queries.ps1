@@ -143,7 +143,7 @@ function Update-CustomCommandGroup {
                     }
                 }
                 $GroupCommandsGroupNameTextBox = New-Object System.Windows.Forms.TextBox -Property @{
-                    Text   = "$((Get-Date).ToString('yyyy-MM-dd @ HH:mm:ss'))"
+                    Text   = "$((Get-Date).ToString('yyyy-MM-dd HH.mm.ss'))"
                     Left   = $FormScale * 10
                     Top    = $GroupCommandsGroupNameLabel.Top + $GroupCommandsGroupNameLabel.Height
                     Width  = $FormScale * 300
