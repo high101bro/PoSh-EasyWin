@@ -158,7 +158,7 @@ $AutoCreateMultiSeriesChartButtonAdd_Click = {
                     $script:AutoChartsForm.Width         = $PoShEasyWin.Size.Width  #1160
                     $script:AutoChartsForm.Height        = $PoShEasyWin.Size.Height #638
                     $script:AutoChartsForm.StartPosition = "CenterScreen"
-                    $script:AutoChartsForm.Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+                    $script:AutoChartsForm.Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 18),0,0,0)
                     $script:AutoChartsForm.Add_Closing = { $This.dispose() }
 
 

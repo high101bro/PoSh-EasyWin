@@ -6,7 +6,7 @@ Add-Type -AssemblyName System.Windows.Forms.DataVisualization
 
 ### Creates Tabs From Each File
 $script:AutoChartsIndividualTab01 = New-Object System.Windows.Forms.TabPage -Property @{
-    Text   = 'Hunt Dashboard'
+    Text   = 'Dashboard Overview'
     Anchor = $AnchorAll
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     UseVisualStyleBackColor = $True
@@ -52,7 +52,7 @@ function Close-AllOptions {
 
 ### Main Label at the top
 $script:AutoChartsMainLabel01 = New-Object System.Windows.Forms.Label -Property @{
-    Text   = 'Hunt Dashboard'
+    Text   = 'Dashboard Overview'
     Location = @{ X = $FormScale * 5
                   Y = $FormScale * 5 }
     Size   = @{ Width  = $FormScale * 1150
@@ -197,7 +197,7 @@ $script:AutoChart01.Series["Unique Processes"].Color             = 'Red'
             else {
                 $script:AutoChart01Title.ForeColor = 'Red'
                 $script:AutoChart01Title.Text = "Unique Processes`n
-[ No Data Available ]`n"
+[ No Unique Data Available ]`n"
             }
         }
         Generate-AutoChart01
@@ -727,7 +727,7 @@ $script:AutoChart02.Series["Processes Per Host"].Color             = 'Red'
                 $script:AutoChart02.Series["Processes Per Host"].Points.Clear()
                 $script:AutoChart02Title.ForeColor = 'Red'
                 $script:AutoChart02Title.Text = "Processes Per Host`n
-[ No Data Available ]`n"
+[ No Unique Data Available ]`n"
             }
         }
         Generate-AutoChart02
@@ -1248,7 +1248,7 @@ $script:AutoChart03.Series["Running Services"].Color             = 'Blue'
             else {
                 $script:AutoChart03Title.ForeColor = 'Red'
                 $script:AutoChart03Title.Text = "$Filter Services`n
-[ No Data Available ]`n"
+[ No Unique Data Available ]`n"
             }
         }
         Generate-AutoChart03 -Filter 'Running'
@@ -1800,7 +1800,7 @@ $script:AutoChart04.Series["Running Services Per Host"].Color             = 'Blu
                 $script:AutoChart04.Series["Running Services Per Host"].Points.Clear()
                 $script:AutoChart04Title.ForeColor = 'Red'
                 $script:AutoChart04Title.Text = "$Filter Services Per Host`n
-[ No Data Available ]`n"
+[ No Unique Data Available ]`n"
             }
         }
         Generate-AutoChart04 -Filter 'Running'
@@ -2341,7 +2341,7 @@ $script:AutoChart05.Series["Software Names"].Color             = 'Green'
             else {
                 $script:AutoChart05Title.ForeColor = 'Red'
                 $script:AutoChart05Title.Text = "Software Names`n
-[ No Data Available ]`n"
+[ No Unique Data Available ]`n"
             }
         }
         Generate-AutoChart05
@@ -2870,7 +2870,7 @@ $script:AutoChart06.Series["Software Count Per Host"].Color             = 'Green
                 $script:AutoChart06.Series["Software Count Per Host"].Points.Clear()
                 $script:AutoChart06Title.ForeColor = 'Red'
                 $script:AutoChart06Title.Text = "Software Count Per Host`n
-[ No Data Available ]`n"
+[ No Unique Data Available ]`n"
             }
         }
         Generate-AutoChart06
@@ -3388,7 +3388,7 @@ $script:AutoChart07.Series["Interface Alias"].Color             = 'Orange'
             else {
                 $script:AutoChart07Title.ForeColor = 'Red'
                 $script:AutoChart07Title.Text = "Interface Alias`n
-[ No Data Available ]`n"
+[ No Unique Data Available ]`n"
             }
         }
         Generate-AutoChart07
@@ -3917,7 +3917,7 @@ $script:AutoChart08.Series["Interfaces with IPs Per Host"].Color             = '
                 $script:AutoChart08.Series["Interfaces with IPs Per Host"].Points.Clear()
                 $script:AutoChart08Title.ForeColor = 'Red'
                 $script:AutoChart08Title.Text = "Interfaces with IPs Per Host`n
-[ No Data Available ]`n"
+[ No Unique Data Available ]`n"
             }
         }
         Generate-AutoChart08
@@ -4340,7 +4340,7 @@ $script:AutoChart08OverallDataResults | Sort-Object -Property ResultsCount | Sel
 $script:AutoChartStartupsCSVFileMatch = @()
 foreach ($CollectionDir in $script:ListOfCollectedDataDirectories) {
     $CSVFiles = (Get-ChildItem -Path $CollectionDir | Where-Object Extension -eq '.csv').FullName
-    foreach ($CSVFile in $CSVFiles) { if ($CSVFile -match 'StartupCommand') { $script:AutoChartStartupsCSVFileMatch += $CSVFile } }
+    foreach ($CSVFile in $CSVFiles) { if ($CSVFile -match 'Startup') { $script:AutoChartStartupsCSVFileMatch += $CSVFile } }
 }
 $script:AutoChartStartupsCSVFileMostRecentCollection = $script:AutoChartStartupsCSVFileMatch | Select-Object -Last 1
 $script:AutoChartStartupsDataSource = Import-Csv $script:AutoChartStartupsCSVFileMostRecentCollection
@@ -4436,7 +4436,7 @@ $script:AutoChart09.Series["Startups"].Color             = 'Brown'
             else {
                 $script:AutoChart09Title.ForeColor = 'Red'
                 $script:AutoChart09Title.Text = "Startups`n
-[ No Data Available ]`n"
+[ No Unique Data Available ]`n"
             }
         }
         Generate-AutoChart09
@@ -4965,7 +4965,7 @@ $script:AutoChart10.Series["Startups Per Host"].Color             = 'Brown'
                 $script:AutoChart10.Series["Startups Per Host"].Points.Clear()
                 $script:AutoChart10Title.ForeColor = 'Red'
                 $script:AutoChart10Title.Text = "Startups Per Host`n
-[ No Data Available ]`n"
+[ No Unique Data Available ]`n"
             }
         }
         Generate-AutoChart10
@@ -5479,7 +5479,7 @@ $script:AutoChart11.Series["Security Patches"].Color             = 'Gray'
             else {
                 $script:AutoChart11Title.ForeColor = 'Red'
                 $script:AutoChart11Title.Text = "Security Patches`n
-[ No Data Available ]`n"
+[ No Unique Data Available ]`n"
             }
         }
         Generate-AutoChart11
@@ -6006,7 +6006,7 @@ $script:AutoChart12.Series["Security Patches Per Host"].Color             = 'Gra
                 $script:AutoChart12.Series["Security Patches Per Host"].Points.Clear()
                 $script:AutoChart12Title.ForeColor = 'Red'
                 $script:AutoChart12Title.Text = "Security Patches Per Host`n
-[ No Data Available ]`n"
+[ No Unique Data Available ]`n"
             }
         }
         Generate-AutoChart12
@@ -6519,7 +6519,7 @@ $script:AutoChart13.Series["Share Names"].Color             = 'SlateBLue'
             else {
                 $script:AutoChart13Title.ForeColor = 'Red'
                 $script:AutoChart13Title.Text = "Share Names`n
-[ No Data Available ]`n"
+[ No Unique Data Available ]`n"
             }
         }
         Generate-AutoChart13
@@ -7040,7 +7040,7 @@ $script:AutoChart14.Series["Shares Per Host"].Color             = 'SlateBLue'
                 $script:AutoChart14.Series["Shares Per Host"].Points.Clear()
                 $script:AutoChart14Title.ForeColor = 'Red'
                 $script:AutoChart14Title.Text = "Shares Per Host`n
-[ No Data Available ]`n"
+[ No Unique Data Available ]`n"
             }
         }
         Generate-AutoChart14

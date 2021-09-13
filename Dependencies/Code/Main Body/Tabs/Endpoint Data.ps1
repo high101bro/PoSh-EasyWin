@@ -669,7 +669,7 @@ display, these results will need to be navigated to manually.
     
         $Section3HostDataSelectionDateTimeComboBox.DataSource = $null
         if (($script:CSVFileMatch).count -eq 0) {
-            $Section3HostDataSelectionDateTimeComboBox.DataSource = @('No Data Available')
+            $Section3HostDataSelectionDateTimeComboBox.DataSource = @('No Unique Data Available')
         }
         else {
             $Section3HostDataSelectionDateTimeComboBox.DataSource = $script:CSVFileMatch | Sort-Object -Descending
@@ -740,7 +740,7 @@ $Section3HostDataGridViewButton = New-Object System.Windows.Forms.Button -Proper
         }
         else {
             $StatusListBox.Items.Clear()
-            $StatusListBox.Items.Add("No Data Available:  $HostDataSection")
+            $StatusListBox.Items.Add("No Unique Data Available:  $HostDataSection")
             # Sounds a chime if there is not data
             [system.media.systemsounds]::Exclamation.play()
         }
@@ -776,7 +776,7 @@ if ((Test-Path -Path "$Dependencies\Modules\PSWriteHTML") -and (Get-Content "$Po
             }
             else {
                 $StatusListBox.Items.Clear()
-                $StatusListBox.Items.Add("No Data Available:  $HostDataSection")
+                $StatusListBox.Items.Add("No Unique Data Available:  $HostDataSection")
                 # Sounds a chime if there is not data
                 [system.media.systemsounds]::Exclamation.play()
             }

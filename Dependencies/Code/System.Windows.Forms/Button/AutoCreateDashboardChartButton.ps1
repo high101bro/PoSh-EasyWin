@@ -57,10 +57,8 @@ $AutoCreateDashboardChartButtonAdd_Click = {
         else { $AutoChartSelectChartComboBox.ForeColor = 'Black' }
     })
     $AutoChartsAvailable = @(
-        "Dashboard Quick View",
-        "Active Directory Computers",
-        "Active Directory Groups",
-        "Active Directory User Accounts",
+        "Dashboard Overview",
+        "Active Directory Computers, Users, and Groups",
         "Threat Hunting with Deep Blue (All)",
         "Threat Hunting with Deep Blue (Last 7 Days)",
         "Threat Hunting with Deep Blue (Last 24 Hours)"
@@ -144,23 +142,16 @@ $AutoCreateDashboardChartButtonAdd_Click = {
         $script:AutoChartsForm.Controls.Add($AutoChartsTabControl)
 
         # Dashboard with multiple charts
-        if ($AutoChartSelectChartComboBox.SelectedItem -eq "Dashboard Quick View") {
+        if ($AutoChartSelectChartComboBox.SelectedItem -eq "Dashboard Overview") {
             . "$Dependencies\Code\System.Windows.Forms\ComboBox\AutoChartSelectChartComboBoxSelectedItem_Hunt.ps1"
+            [System.Windows.Forms.MessageBox]::Show("These charts are populated with data from previous queries. If some of the charts are outdated or don't contain data, try running the associated queries. There is a command group with all the applicable queries needs for your convienience.","PoSh-EasyWin",'Ok',"Info")
             $script:AutoChartsForm.Add_Shown({$script:AutoChartsForm.Activate()})
             [void]$script:AutoChartsForm.ShowDialog()
         }
-        elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Active Directory Computers") {
+        elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Active Directory Computers, Users, and Groups") {
             . "$Dependencies\Code\System.Windows.Forms\ComboBox\AutoChartSelectChartComboBoxSelectedItem_ActiveDirectoryComputers.ps1"
-            $script:AutoChartsForm.Add_Shown({$script:AutoChartsForm.Activate()})
-            [void]$script:AutoChartsForm.ShowDialog()
-        }
-        elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Active Directory Groups") {
-            . "$Dependencies\Code\System.Windows.Forms\ComboBox\AutoChartSelectChartComboBoxSelectedItem_ActiveDirectoryGroups.ps1"
-            $script:AutoChartsForm.Add_Shown({$script:AutoChartsForm.Activate()})
-            [void]$script:AutoChartsForm.ShowDialog()
-        }
-        elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Active Directory User Accounts") {
             . "$Dependencies\Code\System.Windows.Forms\ComboBox\AutoChartSelectChartComboBoxSelectedItem_ActiveDirectoryUserAccounts.ps1"
+            . "$Dependencies\Code\System.Windows.Forms\ComboBox\AutoChartSelectChartComboBoxSelectedItem_ActiveDirectoryGroups.ps1"
             $script:AutoChartsForm.Add_Shown({$script:AutoChartsForm.Activate()})
             [void]$script:AutoChartsForm.ShowDialog()
         }

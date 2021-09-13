@@ -107,7 +107,7 @@ $AutoChartsUpdateChartsOptionsPanel = New-Object System.Windows.Forms.Panel -Pro
                         $AutoChartPullNewDataFromChartsRadioButton.text = "Update From Endpoint:  $script:SelectedDomainController"
                     }
                     else {
-                        [System.Windows.Forms.MessageBox]::Show('An endpoint, should be a AD Domain Controller, has not yet been established for use within this dashboard. Use the Update From CheckBoxed Domain Controller Radio Button first.','No Data Available','ok','Info')
+                        [System.Windows.Forms.MessageBox]::Show('An endpoint, should be a AD Domain Controller, has not yet been established for use within this dashboard. Use the Update From CheckBoxed Domain Controller Radio Button first.','No Unique Data Available','ok','Info')
                         $This.checked = $false
                         $script:SelectedDomainController = $null
                     }
@@ -240,7 +240,7 @@ $AutoChartPullNewDataButton.Add_Click({
         if ($AutoChartPullNewDataFromChartsRadioButton.checked){
 
             if ($script:SelectedDomainController -eq $null) {
-                [System.Windows.Forms.MessageBox]::Show('An endpoint, should be a AD Domain Controller, has not yet been established for use within this dashboard. Use the Update From CheckBoxed Domain Controller Radio Button first.','No Data Available','ok','Info')
+                [System.Windows.Forms.MessageBox]::Show('An endpoint, should be a AD Domain Controller, has not yet been established for use within this dashboard. Use the Update From CheckBoxed Domain Controller Radio Button first.','No Unique Data Available','ok','Info')
             }
             else {
                 $ScriptBlockProgressBarInput = { Update-AutoChartsActiveDirectoryGroups -ServerToQuery $script:SelectedDomainController }
@@ -432,7 +432,7 @@ $script:AutoChart01ADGroups.Series["Name"].Color             = 'Red'
             else {
                 $script:AutoChart01ADGroupsTitle.ForeColor = 'Red'
                 $script:AutoChart01ADGroupsTitle.Text = "Name`n
-[ No Data Available ]`n"
+[ No Unique Data Available ]`n"
             }
         }
         Generate-AutoChart01ADGroups
@@ -946,7 +946,7 @@ $script:AutoChart02ADGroups.Series["GroupScope"].Color             = 'Blue'
             else {
                 $script:AutoChart02ADGroupsTitle.ForeColor = 'Red'
                 $script:AutoChart02ADGroupsTitle.Text = "GroupScope`n
-[ No Data Available ]`n"
+[ No Unique Data Available ]`n"
             }
         }
         Generate-AutoChart02ADGroups
@@ -1458,7 +1458,7 @@ $script:AutoChart03ADGroups.Series["Created"].Color             = 'Green'
             else {
                 $script:AutoChart03ADGroupsTitle.ForeColor = 'Red'
                 $script:AutoChart03ADGroupsTitle.Text = "Created`n
-[ No Data Available ]`n"
+[ No Unique Data Available ]`n"
             }
         }
         Generate-AutoChart03ADGroups
@@ -1967,7 +1967,7 @@ $script:AutoChart04ADGroups.Series["Modified"].Color             = 'Orange'
             else {
                 $script:AutoChart04ADGroupsTitle.ForeColor = 'Red'
                 $script:AutoChart04ADGroupsTitle.Text = "Modified`n
-[ No Data Available ]`n"
+[ No Unique Data Available ]`n"
             }
         }
         Generate-AutoChart04ADGroups
@@ -2473,7 +2473,7 @@ $script:AutoChart05ADGroups.Series["Member Count"].Color             = 'Green'
             else {
                 $script:AutoChart05ADGroupsTitle.ForeColor = 'Brown'
                 $script:AutoChart05ADGroupsTitle.Text = "Members`n
-[ No Data Available ]`n"
+[ No Unique Data Available ]`n"
             }
         }
         Generate-AutoChart05ADGroups
@@ -2983,7 +2983,7 @@ $script:AutoChart06ADGroups.Series["MemberOf"].Color             = 'Gray'
             else {
                 $script:AutoChart06ADGroupsTitle.ForeColor = 'Red'
                 $script:AutoChart06ADGroupsTitle.Text = "MemberOf`n
-[ No Data Available ]`n"
+[ No Unique Data Available ]`n"
             }
         }
         Generate-AutoChart06ADGroups

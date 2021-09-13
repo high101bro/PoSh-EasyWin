@@ -28,7 +28,11 @@ pivot scanning
 v5.4.1 -
 ==================================================
 
-!!!!!!!!!!!!!!!!!!!!!!!!!!somehow I broke the saving of csv and xml files during monitor jobs........fml
+@@!!!!!!!!!!!!!!!!!!!!!!!!$OptionsAutoSaveChartsAsImages.checked
+
+Updated Receive Files button
+	- Added popup that informs user to conduct a recent files search or directory list on endpoints prior to retrieving files
+	- The collections / File Search tab now automatically is brought to the forefront to show users where its located
 
 Taskbar PoSh-EasyWin Icon Menus
 	- Renamed 'Abort / Reload' to 'Restart Tool'

@@ -18,7 +18,7 @@ function AddHost-ComputerTreeNode {
         $ComputerAndAccountTreeViewTabControl.SelectedTab = $ComputerTreeviewTab
         $script:ComputerTreeNodeComboBox.SelectedItem = 'CanonicalName'
 
-        AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:TreeNodeComputerList -Category $ComputerTreeNodePopupOUComboBox.SelectedItem -Entry $ComputerTreeNodePopupAddTextBox.Text #-ToolTip "No Data Available"
+        AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:TreeNodeComputerList -Category $ComputerTreeNodePopupOUComboBox.SelectedItem -Entry $ComputerTreeNodePopupAddTextBox.Text #-ToolTip "No Unique Data Available"
 
         $ResultsListBox.Items.Clear()
         $ResultsListBox.Items.Add("$($ComputerTreeNodePopupAddTextBox.Text) has been added to $($ComputerTreeNodePopupOUComboBox.Text)")

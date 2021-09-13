@@ -15,7 +15,7 @@ function Rename-ComputerTreeNodeSelected {
                 if ($Category.Checked) { $Category.Checked = $false }
                 foreach ($Entry in $Category.nodes) {
                     if ($Entry.IsSelected) {
-                        AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:TreeNodeComputerList -Category $Category.Text -Entry $script:ComputerTreeNodeRenamePopupTextBox.text #-ToolTip "No Data Available"
+                        AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:TreeNodeComputerList -Category $Category.Text -Entry $script:ComputerTreeNodeRenamePopupTextBox.text #-ToolTip "No Unique Data Available"
                         $ComputerTreeNodeToRename.Add($Entry.text)
 
                         $script:PreviousEndpointName = $script:EntrySelected.Text

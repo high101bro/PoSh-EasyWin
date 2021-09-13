@@ -103,7 +103,7 @@ $AutoChartsUpdateChartsOptionsPanel = New-Object System.Windows.Forms.Panel -Pro
                         $AutoChartPullNewDataFromChartsRadioButton.text = "Update From Endpoint:  $script:SelectedDomainController"
                     }
                     else {
-                        [System.Windows.Forms.MessageBox]::Show('An endpoint, should be a AD Domain Controller, has not yet been established for use within this dashboard. Use the Update From CheckBoxed Domain Controller Radio Button first.','No Data Available','ok','Info')
+                        [System.Windows.Forms.MessageBox]::Show('An endpoint, should be a AD Domain Controller, has not yet been established for use within this dashboard. Use the Update From CheckBoxed Domain Controller Radio Button first.','No Unique Data Available','ok','Info')
                         $This.checked = $false
                         $script:SelectedDomainController = $null
                     }
@@ -236,7 +236,7 @@ $AutoChartPullNewDataButton.Add_Click({
         if ($AutoChartPullNewDataFromChartsRadioButton.checked){
 
             if ($script:SelectedDomainController -eq $null) {
-                [System.Windows.Forms.MessageBox]::Show('An endpoint, should be a AD Domain Controller, has not yet been established for use within this dashboard. Use the Update From CheckBoxed Domain Controller Radio Button first.','No Data Available','ok','Info')
+                [System.Windows.Forms.MessageBox]::Show('An endpoint, should be a AD Domain Controller, has not yet been established for use within this dashboard. Use the Update From CheckBoxed Domain Controller Radio Button first.','No Unique Data Available','ok','Info')
             }
             else {
                 $ScriptBlockProgressBarInput = { Update-AutoChartsActiveDirectoryComputers -ServerToQuery $script:SelectedDomainController }
@@ -442,7 +442,7 @@ $script:AutoChart01ADComputers.Series["OperatingSystem"].Color             = 'Re
             else {
                 $script:AutoChart01ADComputersTitle.ForeColor = 'Red'
                 $script:AutoChart01ADComputersTitle.Text = "OperatingSystem`n
-[ No Data Available ]`n"
+[ No Unique Data Available ]`n"
             }
         }
         Generate-AutoChart01ADComputers
@@ -955,7 +955,7 @@ $script:AutoChart02ADComputers.Series["OperatingSystemVersion"].Color           
             else {
                 $script:AutoChart02ADComputersTitle.ForeColor = 'Red'
                 $script:AutoChart02ADComputersTitle.Text = "OperatingSystemVersion`n
-[ No Data Available ]`n"
+[ No Unique Data Available ]`n"
             }
         }
         Generate-AutoChart02ADComputers
@@ -1467,7 +1467,7 @@ $script:AutoChart03ADComputers.Series["OperatingSystemServicePack"].Color       
             else {
                 $script:AutoChart03ADComputersTitle.ForeColor = 'Red'
                 $script:AutoChart03ADComputersTitle.Text = "OperatingSystemServicePack`n
-[ No Data Available ]`n"
+[ No Unique Data Available ]`n"
             }
         }
         Generate-AutoChart03ADComputers
@@ -1973,8 +1973,8 @@ $script:AutoChart04ADComputers.Series["OperatingSystemHotfix"].Color            
             }
             else {
                 $script:AutoChart04ADComputersTitle.ForeColor = 'Red'
-                $script:AutoChart04ADComputersTitle.Text = "OperatingSystemHotfix`n
-[ No Data Available ]`n"
+                $script:AutoChart04ADComputersTitle.Text = "Operating System Hotfix`n
+[ No Unique Data Available ]`n"
             }
         }
         Generate-AutoChart04ADComputers
@@ -2486,7 +2486,7 @@ $script:AutoChart05ADComputers.Series["IPv4Address"].Color             = 'Brown'
             else {
                 $script:AutoChart05ADComputersTitle.ForeColor = 'Red'
                 $script:AutoChart05ADComputersTitle.Text = "IPv4Address`n
-[ No Data Available ]`n"
+[ No Unique Data Available ]`n"
             }
         }
         Generate-AutoChart05ADComputers
@@ -2991,7 +2991,7 @@ $script:AutoChart06ADComputers.Series["Enabled"].Color             = 'Gray'
             else {
                 $script:AutoChart06ADComputersTitle.ForeColor = 'Red'
                 $script:AutoChart06ADComputersTitle.Text = "Enabled`n
-[ No Data Available ]`n"
+[ No Unique Data Available ]`n"
             }
         }
         Generate-AutoChart06ADComputers
@@ -3497,7 +3497,7 @@ $script:AutoChart07ADComputers.Series["Created"].Color             = 'SlateBLue'
             else {
                 $script:AutoChart07ADComputersTitle.ForeColor = 'Red'
                 $script:AutoChart07ADComputersTitle.Text = "Created`n
-[ No Data Available ]`n"
+[ No Unique Data Available ]`n"
             }
         }
         Generate-AutoChart07ADComputers
@@ -4004,7 +4004,7 @@ $script:AutoChart08ADComputers.Series["Modified"].Color             = 'Purple'
             else {
                 $script:AutoChart08ADComputersTitle.ForeColor = 'Red'
                 $script:AutoChart08ADComputersTitle.Text = "Modified`n
-[ No Data Available ]`n"
+[ No Unique Data Available ]`n"
             }
         }
         Generate-AutoChart08ADComputers
@@ -4512,7 +4512,7 @@ $script:AutoChart09ADComputers.Series["LastLogonDate"].Color             = 'Yell
             else {
                 $script:AutoChart09ADComputersTitle.ForeColor = 'Red'
                 $script:AutoChart09ADComputersTitle.Text = "LastLogonDate`n
-[ No Data Available ]`n"
+[ No Unique Data Available ]`n"
             }
         }
         Generate-AutoChart09ADComputers
@@ -5020,7 +5020,7 @@ $script:AutoChart10ADComputers.Series["PasswordLastSet"].Color             = 'Re
             else {
                 $script:AutoChart10ADComputersTitle.ForeColor = 'Red'
                 $script:AutoChart10ADComputersTitle.Text = "PasswordLastSet`n
-[ No Data Available ]`n"
+[ No Unique Data Available ]`n"
             }
         }
         Generate-AutoChart10ADComputers
@@ -5417,30 +5417,4 @@ $script:AutoChart10ADComputersManipulationPanel.Controls.Add($script:AutoChart10
 
 $script:AutoChart10ADComputers.Series["PasswordLastSet"].Points.Clear()
 $script:AutoChart10ADComputersOverallDataResults | Sort-Object { $_.DataField.PasswordLastSet -as [datetime] } | Select-Object -skip $script:AutoChart10ADComputersTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart10ADComputersTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart10ADComputers.Series["PasswordLastSet"].Points.AddXY($_.DataField.PasswordLastSet,$_.UniqueCount)}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

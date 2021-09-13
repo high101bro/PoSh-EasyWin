@@ -107,7 +107,7 @@ $AutoChartsUpdateChartsOptionsPanel = New-Object System.Windows.Forms.Panel -Pro
                         $AutoChartPullNewDataFromChartsRadioButton.text = "Update From Endpoint:  $script:SelectedDomainController"
                     }
                     else {
-                        [System.Windows.Forms.MessageBox]::Show('An endpoint, should be a AD Domain Controller, has not yet been established for use within this dashboard. Use the Update From CheckBoxed Domain Controller Radio Button first.','No Data Available','ok','Info')
+                        [System.Windows.Forms.MessageBox]::Show('An endpoint, should be a AD Domain Controller, has not yet been established for use within this dashboard. Use the Update From CheckBoxed Domain Controller Radio Button first.','No Unique Data Available','ok','Info')
                         $This.checked = $false
                         $script:SelectedDomainController = $null
                     }
@@ -240,7 +240,7 @@ $AutoChartPullNewDataButton.Add_Click({
         if ($AutoChartPullNewDataFromChartsRadioButton.checked){
 
             if ($script:SelectedDomainController -eq $null) {
-                [System.Windows.Forms.MessageBox]::Show('An endpoint, should be a AD Domain Controller, has not yet been established for use within this dashboard. Use the Update From CheckBoxed Domain Controller Radio Button first.','No Data Available','ok','Info')
+                [System.Windows.Forms.MessageBox]::Show('An endpoint, should be a AD Domain Controller, has not yet been established for use within this dashboard. Use the Update From CheckBoxed Domain Controller Radio Button first.','No Unique Data Available','ok','Info')
             }
             else {
                 $ScriptBlockProgressBarInput = { Update-AutoChartsActiveDirectoryUserAccounts -ServerToQuery $script:SelectedDomainController }
@@ -432,7 +432,7 @@ $script:AutoChart01ADUserAccounts.Series["Created"].Color             = 'Red'
             else {
                 $script:AutoChart01ADUserAccountsTitle.ForeColor = 'Red'
                 $script:AutoChart01ADUserAccountsTitle.Text = "Created`n
-[ No Data Available ]`n"
+[ No Unique Data Available ]`n"
             }
         }
         Generate-AutoChart01ADUserAccounts
@@ -946,7 +946,7 @@ $script:AutoChart02ADUserAccounts.Series["Modified"].Color             = 'Blue'
             else {
                 $script:AutoChart02ADUserAccountsTitle.ForeColor = 'Red'
                 $script:AutoChart02ADUserAccountsTitle.Text = "Modified`n
-[ No Data Available ]`n"
+[ No Unique Data Available ]`n"
             }
         }
         Generate-AutoChart02ADUserAccounts
@@ -1458,7 +1458,7 @@ $script:AutoChart03ADUserAccounts.Series["Last Logon Date"].Color             = 
             else {
                 $script:AutoChart03ADUserAccountsTitle.ForeColor = 'Red'
                 $script:AutoChart03ADUserAccountsTitle.Text = "Last Logon Date`n
-[ No Data Available ]`n"
+[ No Unique Data Available ]`n"
             }
         }
         Generate-AutoChart03ADUserAccounts
@@ -1967,7 +1967,7 @@ $script:AutoChart04ADUserAccounts.Series["Last Bad Password Attempt"].Color     
             else {
                 $script:AutoChart04ADUserAccountsTitle.ForeColor = 'Red'
                 $script:AutoChart04ADUserAccountsTitle.Text = "Last Bad Password Attempt`n
-[ No Data Available ]`n"
+[ No Unique Data Available ]`n"
             }
         }
         Generate-AutoChart04ADUserAccounts
@@ -2472,7 +2472,7 @@ $script:AutoChart05ADUserAccounts.Series["Password Last Set"].Color             
             else {
                 $script:AutoChart05ADUserAccountsTitle.ForeColor = 'Red'
                 $script:AutoChart05ADUserAccountsTitle.Text = "Password Last Set`n
-[ No Data Available ]`n"
+[ No Unique Data Available ]`n"
             }
         }
         Generate-AutoChart05ADUserAccounts
@@ -2986,7 +2986,7 @@ $script:AutoChart06ADUserAccounts.Series["AccountExpirationDate"].Color         
             else {
                 $script:AutoChart06ADUserAccountsTitle.ForeColor = 'Red'
                 $script:AutoChart06ADUserAccountsTitle.Text = "AccountExpirationDate`n
-[ No Data Available ]`n"
+[ No Unique Data Available ]`n"
             }
         }
         Generate-AutoChart06ADUserAccounts
@@ -3497,7 +3497,7 @@ function Generate-AutoChart07ADUserAccounts {
             else {
                 $script:AutoChart07ADUserAccountsTitle.ForeColor = 'Red'
                 $script:AutoChart07ADUserAccountsTitle.Text = "BadLogonCount`n
-[ No Data Available ]`n"
+[ No Unique Data Available ]`n"
             }
         }
         Generate-AutoChart07ADUserAccounts
@@ -4003,7 +4003,7 @@ $script:AutoChart08ADUserAccounts.Series["Enabled Accounts"].Color             =
             else {
                 $script:AutoChart08ADUserAccountsTitle.ForeColor = 'Red'
                 $script:AutoChart08ADUserAccountsTitle.Text = "Enabled Accounts`n
-[ No Data Available ]`n"
+[ No Unique Data Available ]`n"
             }
         }
         Generate-AutoChart08ADUserAccounts
@@ -4509,7 +4509,7 @@ $script:AutoChart09ADUserAccounts.Series["Locked Accounts"].Color             = 
             else {
                 $script:AutoChart09ADUserAccountsTitle.ForeColor = 'Red'
                 $script:AutoChart09ADUserAccountsTitle.Text = "Locked Accounts`n
-[ No Data Available ]`n"
+[ No Unique Data Available ]`n"
             }
         }
         Generate-AutoChart09ADUserAccounts
@@ -5025,7 +5025,7 @@ $script:AutoChart10ADUserAccounts.Series["Smartcard Logon Required"].Color      
             else {
                 $script:AutoChart10ADUserAccountsTitle.ForeColor = 'Red'
                 $script:AutoChart10ADUserAccountsTitle.Text = "Smartcard Logon Required`n
-[ No Data Available ]`n"
+[ No Unique Data Available ]`n"
             }
         }
         Generate-AutoChart10ADUserAccounts
@@ -5536,7 +5536,7 @@ $script:AutoChart11ADUserAccounts.Series["Password Never Expires"].Color        
             else {
                 $script:AutoChart11ADUserAccountsTitle.ForeColor = 'Red'
                 $script:AutoChart11ADUserAccountsTitle.Text = "Password Never Expires`n
-[ No Data Available ]`n"
+[ No Unique Data Available ]`n"
             }
         }
         Generate-AutoChart11ADUserAccounts
@@ -6045,7 +6045,7 @@ $script:AutoChart12ADUserAccounts.Series["Password Not Required"].Color         
             else {
                 $script:AutoChart12ADUserAccountsTitle.ForeColor = 'Red'
                 $script:AutoChart12ADUserAccountsTitle.Text = "Password Not Required`n
-[ No Data Available ]`n"
+[ No Unique Data Available ]`n"
             }
         }
         Generate-AutoChart12ADUserAccounts

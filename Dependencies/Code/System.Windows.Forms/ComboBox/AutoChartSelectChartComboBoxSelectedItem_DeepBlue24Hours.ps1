@@ -397,7 +397,7 @@ $script:AutoChart01DeepBlue.Series["Application Name"].Color             = 'Red'
                 else {
                     $script:AutoChart01DeepBlueTitle.ForeColor = 'Red'
                     $script:AutoChart01DeepBlueTitle.Text = "Potentials Findings By Event Type`n
-            [ No Data Available ]`n"
+            [ No Unique Data Available ]`n"
                 }
             }
             Generate-AutoChart01DeepBlue
@@ -950,7 +950,7 @@ $script:AutoChart02DeepBlue.Series["Findings Per Endpoint"].Color             = 
             else {
                 $script:AutoChart02DeepBlueTitle.ForeColor = 'Blue'
                 $script:AutoChart02DeepBlueTitle.Text = "Findings Per Endpoint`n
-[ No Data Available ]`n"
+[ No Unique Data Available ]`n"
             }
         }
         Generate-AutoChart02DeepBlue

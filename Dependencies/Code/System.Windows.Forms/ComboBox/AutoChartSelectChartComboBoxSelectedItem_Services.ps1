@@ -385,7 +385,7 @@ $script:AutoChart01Services.Series["Running Services"].Color             = 'Red'
             else {
                 $script:AutoChart01ServicesTitle.ForeColor = 'Red'
                 $script:AutoChart01ServicesTitle.Text = "$Filter Services`n
-[ No Data Available ]`n"
+[ No Unique Data Available ]`n"
             }
         }
         Generate-AutoChart01 -Filter 'Running'
@@ -942,7 +942,7 @@ $script:AutoChart02Services.Series["Running Services Per Host"].Color           
                 $script:AutoChart02Services.Series["Running Services Per Host"].Points.Clear()
                 $script:AutoChart02ServicesTitle.ForeColor = 'Red'
                 $script:AutoChart02ServicesTitle.Text = "$Filter Services Per Host`n
-[ No Data Available ]`n"
+[ No Unique Data Available ]`n"
             }
         }
         Generate-AutoChart02 -Filter 'Running'
@@ -1476,7 +1476,7 @@ $script:AutoChart03Services.Series["Automatic Startup Services"].Color          
             else {
                 $script:AutoChart03ServicesTitle.ForeColor = 'Red'
                 $script:AutoChart03ServicesTitle.Text = "$Filter Startup Services`n
-[ No Data Available ]`n"
+[ No Unique Data Available ]`n"
             }
         }
         Generate-AutoChart03 -Filter 'Auto'
@@ -2018,7 +2018,7 @@ $script:AutoChart04Services.Series["Services Started By LocalSystem"].Color     
             else {
                 $script:AutoChart04ServicesTitle.ForeColor = 'Red'
                 $script:AutoChart04ServicesTitle.Text = "Services Started By $Filter`n
-[ No Data Available ]`n"
+[ No Unique Data Available ]`n"
             }
         }
         Generate-AutoChart04 -Filter 'LocalSystem'
@@ -2557,7 +2557,7 @@ $script:AutoChart05Services.Series["Processes That Started Services "].Color    
             else {
                 $script:AutoChart05ServicesTitle.ForeColor = 'Red'
                 $script:AutoChart05ServicesTitle.Text = "Processes That Started Services `n
-[ No Data Available ]`n"
+[ No Unique Data Available ]`n"
             }
         }
         Generate-AutoChart05
@@ -3069,7 +3069,7 @@ $script:AutoChart06Services.Series["Accounts That Started Services"].Color      
             else {
                 $script:AutoChart06ServicesTitle.ForeColor = 'Red'
                 $script:AutoChart06ServicesTitle.Text = "Accounts That Started Services`n
-[ No Data Available ]`n"
+[ No Unique Data Available ]`n"
             }
         }
         Generate-AutoChart06
