@@ -55,7 +55,7 @@ Default ports, protocols, and services:
     SSL/TLS Encryption: Windows Vista + / Server 2003 +
 
 Command:
-    mstsc /v:<target>:3389 /user:USERNAME /pass:PASSWORD /NoConsentPrompt
+    mstsc /v:<endpoints>:3389 /user:USERNAME /pass:PASSWORD /NoConsentPrompt
 "
             }
             $script:ComputerListContextMenuStrip.Items.Add($ComputerListRemoteDesktopToolStripButton)
@@ -82,7 +82,7 @@ Default ports, protocols, and services:
     Regardless of the transport protocol used (HTTP or HTTPS), WinRM always encrypts all PowerShell remoting communication after initial authentication
 
 Command:
-    Enter-PSSession -ComputerName <target> -Credential <`$creds>
+    Enter-PSSession -ComputerName <endpoint> -Credential <`$creds>
 "
             }
             $script:ComputerListContextMenuStrip.Items.Add($ComputerListEnterPSSessionToolStripButton)
@@ -109,7 +109,7 @@ Default ports, protocols, and services:
     PSExec version 2.1+ (released 7 March 2014), encrypts all communication between local and remote systems
 
 Command:
-    PsExec.exe -AcceptEULA -NoBanner \\<target> -u <domain\username> -p <password> cmd
+    PsExec.exe -AcceptEULA -NoBanner \\<endpoint> -u <domain\username> -p <password> cmd
 "
             }
             $script:ComputerListContextMenuStrip.Items.Add($ComputerListPSExecToolStripButton)
@@ -184,42 +184,6 @@ Command Ex:
 "
             }
             $script:ComputerListContextMenuStrip.Items.Add($ComputerListEventViewerToolStripButton)
-
-            # $ComputerListEndpointInteractionToolStripComboBox = New-Object System.Windows.Forms.ToolStripComboBox -Property @{
-            #     Size = @{ Width  = $FormScale * 150 }
-            #     Text = '  - Make a selection'
-            #     ForeColor = 'Black'
-            #     ToolTipText = 'Interact with endpoints in various way if they are configured to do so.'
-            #     Add_SelectedIndexChanged = {
-            #         $script:ComputerListContextMenuStrip.Close()
-            #         if ($This.selectedItem -eq ' - Remote Desktop') { 
-            #             $script:ComputerListContextMenuStrip.Close()
-            #             & $ComputerListRDPButtonAdd_Click
-            #         }
-            #         if ($This.selectedItem -eq ' - PSSession')  { 
-            #             $script:ComputerListContextMenuStrip.Close()
-            #             & $ComputerListPSSessionButtonAdd_Click
-            #         }
-            #         if ($This.selectedItem -eq ' - PSExec')  { 
-            #             $script:ComputerListContextMenuStrip.Close()
-            #             & $ComputerListPsExecButtonAdd_Click
-            #         }
-            #         if ($This.selectedItem -eq ' - SSH')  { 
-            #             $script:ComputerListContextMenuStrip.Close()
-            #             & $ComputerListSSHButtonAdd_Click
-            #         }
-            #         if ($This.selectedItem -eq ' - Event Viewer')  { 
-            #             $script:ComputerListContextMenuStrip.Close()
-            #             & $EventViewerConnectionButtonAdd_Click
-            #         }
-            #     }
-            # }
-            # $ComputerListEndpointInteractionToolStripComboBox.Items.Add(' - Remote Desktop')
-            # $ComputerListEndpointInteractionToolStripComboBox.Items.Add(' - PSSession')
-            # $ComputerListEndpointInteractionToolStripComboBox.Items.Add(' - PSExec')
-            # $ComputerListEndpointInteractionToolStripComboBox.Items.Add(' - SSH')
-            # $ComputerListEndpointInteractionToolStripComboBox.Items.Add(' - Event Viewer')
-            # $script:ComputerListContextMenuStrip.Items.Add($ComputerListEndpointInteractionToolStripComboBox)    
         }
         elseif ($script:ComputerListPivotExecutionCheckbox.checked -eq $true) {
             $ComputerListPSSessionPivotToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
@@ -522,6 +486,91 @@ Command Ex:
 
     $script:ComputerListContextMenuStrip.Items.Add('-')
 
+
+    $ComputerListMultiEndpointPSSessionToolStripLabel = New-Object System.Windows.Forms.ToolStripLabel -Property @{
+        Text      = "Interact with Endpoints"
+        Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),1,2,1)
+        ForeColor = 'Black'
+    }
+    $script:ComputerListContextMenuStrip.Items.Add($ComputerListMultiEndpointPSSessionToolStripLabel)
+
+    
+    $ComputerListMultiEndpointPSSessionToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
+        Text        = "  - MultiEndpoint-PSSession"
+        ForeColor   = 'Black'
+        Add_Click   = {
+            Create-TreeViewCheckBoxArray -Endpoint
+
+            if ($script:ComputerTreeViewSelected.count -gt 0){
+                $InformationTabControl.SelectedTab = $Section3ResultsTab
+            
+                if ($script:ComputerListProvideCredentialsCheckBox.Checked) { $Username = $script:Credential.UserName}
+                else {$Username = $PoShEasyWinAccountLaunch }
+            
+                if (Verify-Action -Title "Verification: PowerShell Session" -Question "Connecting Account:  $Username`n`nEnter into PowerShell Sessions to the following $($script:ComputerTreeViewSelected.Count) endpoints?" -Computer $($script:ComputerTreeViewSelected)) {
+                    # This brings specific tabs to the forefront/front view
+                    $InformationTabControl.SelectedTab = $Section3ResultsTab
+            
+                    $StatusListBox.Items.Clear()
+                    $StatusListBox.Items.Add("MultiEndpoint-PSSession:  $($script:ComputerTreeViewSelected)")
+                    #Removed For Testing#$ResultsListBox.Items.Clear()
+                    if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
+                        if (-not $script:Credential) { Create-NewCredentials }
+                        
+                        Invoke-Expression @"
+Start-Process 'PowerShell' -ArgumentList '-NoExit', '-NoProfile', '-ExecutionPolicy Bypass',
+{ & '$Dependencies\Code\Main Body\MultiEndpoint-PSSession.ps1' -ComputerList "$($script:ComputerTreeViewSelected -split ' ' -join ',')" -CredentialXML '$script:SelectedCredentialPath'; }
+"@
+                        Start-Sleep -Seconds 3
+                    }
+                    else {
+                        Invoke-Expression @"
+Start-Process 'PowerShell' -ArgumentList '-NoExit', '-NoProfile', '-ExecutionPolicy Bypass',
+{ & '$Dependencies\Code\Main Body\MultiEndpoint-PSSession.ps1' -ComputerList "$($script:ComputerTreeViewSelected -split ' ' -join ',')"; }
+"@
+                        
+                        Start-Sleep -Seconds 3
+                    }
+                    Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "MultiEndpoint-PSSession -ComputerName $($script:ComputerTreeViewSelected)"
+            
+                    if ($script:RollCredentialsState -and $script:ComputerListProvideCredentialsCheckBox.checked) {
+                        Start-Sleep -Seconds 3
+                        Generate-NewRollingPassword
+                    }
+                }
+                else {
+                    [system.media.systemsounds]::Exclamation.play()
+                    $StatusListBox.Items.Clear()
+                    $StatusListBox.Items.Add("MultiEndpoint-PowerShell Session:  Cancelled")
+                }        
+            }
+            else {
+                [System.Windows.Forms.Messagebox]::Show('Checkbox one or more endpoints to establish a session with.','PowerShell Session')
+            }
+        }
+        ToolTipText = "
+Establishes interactive Powershell Sessions with one or endpoints.
+
+Not compatible with 'Pivot Thru (WinRM)'.
+
+Normally, conntections with endpoints are authenticated with Active Directory and the hostname.
+
+To use with an IP address, rather than a hostname, the Credential parameter must be used. Also, the endpoint must have the remote computer's IP must be in the local TrustedHosts or be configured for HTTPS transport.
+
+Default ports, protocols, and services: 
+TCP / 47001 - Endpoint Listener
+TCP / 5985 [HTTP]  Windows 7+
+TCP / 5986 [HTTPS] Windows 7+
+TCP / 80   [HTTP]  Windows Vista-
+TCP / 443  [HTTPS] Windows Vista-
+Windows Remote Management (WinRM)
+Regardless of the transport protocol used (HTTP or HTTPS), WinRM always encrypts all PowerShell remoting communication after initial authentication
+
+Command:
+function:MultiEndpoint-PSSession -ComputerName <endpoints(s)> -Credential <`$creds>
+"
+    }
+    $script:ComputerListContextMenuStrip.Items.Add($ComputerListMultiEndpointPSSessionToolStripButton)
 
 
     $ComputerListRenameToolStripLabel = New-Object System.Windows.Forms.ToolStripLabel -Property @{

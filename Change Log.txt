@@ -29,6 +29,25 @@ v5.4.1 -
 ==================================================
 
 @@!!!!!!!!!!!!!!!!!!!!!!!!$OptionsAutoSaveChartsAsImages.checked
+!!!!!!!!!!!!!!!!!!!!reintegrate other dashboards like            . "$Dependencies\Code\System.Windows.Forms\ComboBox\AutoChartSelectChartComboBoxSelectedItem_Services.ps1"
+!!!!!!!!!!!!!add get-help (comment based help) support for each script so they populate a description
+!!!!! reference Pivot-PSSession.ps1 for alternative method to import creds
+!!!!!! Create-TreeViewCheckBoxArray -Endpoint    ----vs---- generate-computerlist
+ 
+Updatd the integration of Treat Hunting with Deep Blue
+	- Removed the following Dashboard Views
+		- Threat Hunting wth Deep Blue (All)
+		- Threat Hunting wth Deep Blue (7 Days)
+		- Threat Hunting wth Deep Blue (24 Hours)
+	- Essentiall combined them into a single option 
+		- Threat Hunting wth Deep Blue
+		- This chart is now updated only by queries selected within the commmands treeview by selecting the appropriate script
+			- Invoke-DeepBlueAll
+			- Invoke-DeepBlue1Month
+			- Invoke-DeepBlue7Days
+			- Invoke-DeepBlue24Hours
+	- Updated the Invoke-DeepBlue cmdlet parameter default data
+		- $regexes & $whitelists now default to looking for the files in the same directory
 
 Updated Receive Files button
 	- Added popup that informs user to conduct a recent files search or directory list on endpoints prior to retrieving files

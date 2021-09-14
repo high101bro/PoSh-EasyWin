@@ -28,6 +28,9 @@ Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\ComputerList
 Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\ComputerListPSSessionButton.ps1"
 . "$Dependencies\Code\System.Windows.Forms\Button\ComputerListPSSessionButton.ps1"
 
+Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\ComputerListPSSessionMultipleEndpointsButton.ps1"
+. "$Dependencies\Code\System.Windows.Forms\Button\ComputerListPSSessionMultipleEndpointsButton.ps1"
+
 Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\ComputerListPSSessionPivotButton.ps1"
 . "$Dependencies\Code\System.Windows.Forms\Button\ComputerListPSSessionPivotButton.ps1"
 

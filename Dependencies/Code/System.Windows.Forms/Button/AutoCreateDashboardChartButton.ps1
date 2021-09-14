@@ -59,9 +59,7 @@ $AutoCreateDashboardChartButtonAdd_Click = {
     $AutoChartsAvailable = @(
         "Dashboard Overview",
         "Active Directory Computers, Users, and Groups",
-        "Threat Hunting with Deep Blue (All)",
-        "Threat Hunting with Deep Blue (Last 7 Days)",
-        "Threat Hunting with Deep Blue (Last 24 Hours)"
+        "Threat Hunting with Deep Blue"
     )
     ForEach ($Item in $AutoChartsAvailable) { [void] $AutoChartSelectChartComboBox.Items.Add($Item) }
     $AutoChartsSelectionForm.Controls.Add($AutoChartSelectChartComboBox)
@@ -144,6 +142,7 @@ $AutoCreateDashboardChartButtonAdd_Click = {
         # Dashboard with multiple charts
         if ($AutoChartSelectChartComboBox.SelectedItem -eq "Dashboard Overview") {
             . "$Dependencies\Code\System.Windows.Forms\ComboBox\AutoChartSelectChartComboBoxSelectedItem_Hunt.ps1"
+            . "$Dependencies\Code\System.Windows.Forms\ComboBox\AutoChartSelectChartComboBoxSelectedItem_Services.ps1"
             [System.Windows.Forms.MessageBox]::Show("These charts are populated with data from previous queries. If some of the charts are outdated or don't contain data, try running the associated queries. There is a command group with all the applicable queries needs for your convienience.","PoSh-EasyWin",'Ok',"Info")
             $script:AutoChartsForm.Add_Shown({$script:AutoChartsForm.Activate()})
             [void]$script:AutoChartsForm.ShowDialog()
@@ -152,21 +151,12 @@ $AutoCreateDashboardChartButtonAdd_Click = {
             . "$Dependencies\Code\System.Windows.Forms\ComboBox\AutoChartSelectChartComboBoxSelectedItem_ActiveDirectoryComputers.ps1"
             . "$Dependencies\Code\System.Windows.Forms\ComboBox\AutoChartSelectChartComboBoxSelectedItem_ActiveDirectoryUserAccounts.ps1"
             . "$Dependencies\Code\System.Windows.Forms\ComboBox\AutoChartSelectChartComboBoxSelectedItem_ActiveDirectoryGroups.ps1"
+            
             $script:AutoChartsForm.Add_Shown({$script:AutoChartsForm.Activate()})
             [void]$script:AutoChartsForm.ShowDialog()
         }
-        elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Threat Hunting with Deep Blue (All)") {
-            . "$Dependencies\Code\System.Windows.Forms\ComboBox\AutoChartSelectChartComboBoxSelectedItem_DeepBlueAll.ps1"
-            $script:AutoChartsForm.Add_Shown({$script:AutoChartsForm.Activate()})
-            [void]$script:AutoChartsForm.ShowDialog()
-        }
-        elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Threat Hunting with Deep Blue (Last 7 Days)") {
-            . "$Dependencies\Code\System.Windows.Forms\ComboBox\AutoChartSelectChartComboBoxSelectedItem_DeepBlue7Days.ps1"
-            $script:AutoChartsForm.Add_Shown({$script:AutoChartsForm.Activate()})
-            [void]$script:AutoChartsForm.ShowDialog()
-        }
-        elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Threat Hunting with Deep Blue (Last 24 Hours)") {
-            . "$Dependencies\Code\System.Windows.Forms\ComboBox\AutoChartSelectChartComboBoxSelectedItem_DeepBlue24Hours.ps1"
+        elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Threat Hunting with Deep Blue") {
+            . "$Dependencies\Code\System.Windows.Forms\ComboBox\AutoChartSelectChartComboBoxSelectedItem_DeepBlue.ps1"
             $script:AutoChartsForm.Add_Shown({$script:AutoChartsForm.Activate()})
             [void]$script:AutoChartsForm.ShowDialog()
         }

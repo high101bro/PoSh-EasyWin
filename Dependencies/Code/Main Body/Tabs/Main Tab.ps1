@@ -147,21 +147,6 @@ if ((Test-Path -Path "$Dependencies\Modules\PSWriteHTML") -and (Get-Content "$Po
 Update-FormProgress "$Dependencies\Code\Main Body\script:Open-XmlResultsInShell.ps1"
 . "$Dependencies\Code\Main Body\script:Open-XmlResultsInShell.ps1"
 
-# Code to allow the dashboards to update upon request
-Update-FormProgress "$Dependencies\Code\Charts\Update-AutoChartsActiveDirectoryComputers.ps1"
-. "$Dependencies\Code\Charts\Update-AutoChartsActiveDirectoryComputers.ps1"
-Update-FormProgress "$Dependencies\Code\Charts\Update-AutoChartsActiveDirectoryGroups.ps1"
-. "$Dependencies\Code\Charts\Update-AutoChartsActiveDirectoryGroups.ps1"
-Update-FormProgress "$Dependencies\Code\Charts\Update-AutoChartsActiveDirectoryUserAccounts.ps1"
-. "$Dependencies\Code\Charts\Update-AutoChartsActiveDirectoryUserAccounts.ps1"
-Update-FormProgress "$Dependencies\Code\Charts\Update-AutoChartsDeepBlueAll.ps1"
-. "$Dependencies\Code\Charts\Update-AutoChartsDeepBlueAll.ps1"
-Update-FormProgress "$Dependencies\Code\Charts\Update-AutoChartsDeepBlue7Days.ps1"
-. "$Dependencies\Code\Charts\Update-AutoChartsDeepBlue7Days.ps1"
-Update-FormProgress "$Dependencies\Code\Charts\Update-AutoChartsDeepBlue24Hours.ps1"
-. "$Dependencies\Code\Charts\Update-AutoChartsDeepBlue24Hours.ps1"
-
-
 Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\AutoChartSelectChartComboBoxSelectedItem_Monitor-Jobs.ps1"
 . "$Dependencies\Code\System.Windows.Forms\Button\AutoChartSelectChartComboBoxSelectedItem_Monitor-Jobs.ps1"
 

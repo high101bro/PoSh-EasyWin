@@ -1,3 +1,22 @@
+<#
+    .SYNOPSIS
+    Obtains and enriches process data
+
+    .DESCRIPTION
+    -This script queries for process data and enriches it with a lot of associated information such as:
+        Additional Process data
+        Network Connections
+        Service Information
+        Signer Certificate Information
+        File Hashes
+
+    .EXAMPLE
+    None
+    .LINK
+    https://github.com/high101bro/PoSh-EasyWin
+    .NOTES
+    None
+#>
 $ErrorActionPreference = 'SilentlyContinue'
 $CollectionTime     = Get-Date
 $Processes          = Get-WmiObject Win32_Process
