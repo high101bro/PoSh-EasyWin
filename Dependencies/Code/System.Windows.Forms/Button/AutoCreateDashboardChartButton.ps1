@@ -139,24 +139,35 @@ $AutoCreateDashboardChartButtonAdd_Click = {
         $AutoChartsTabControl.Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         $script:AutoChartsForm.Controls.Add($AutoChartsTabControl)
 
+
+
         # Dashboard with multiple charts
         if ($AutoChartSelectChartComboBox.SelectedItem -eq "Dashboard Overview") {
-            . "$Dependencies\Code\System.Windows.Forms\ComboBox\AutoChartSelectChartComboBoxSelectedItem_Hunt.ps1"
-            . "$Dependencies\Code\System.Windows.Forms\ComboBox\AutoChartSelectChartComboBoxSelectedItem_Services.ps1"
+            . "$Dependencies\Code\Charts\DashboardChart_Hunt.ps1"
+            #. "$Dependencies\Code\Charts\DashboardChart_Processes.ps1"
+            # . "$Dependencies\Code\Charts\DashboardChart_Services.ps1"
+            # . "$Dependencies\Code\Charts\DashboardChart_NetworkConnections.ps1"
+            # . "$Dependencies\Code\Charts\DashboardChart_NetworkInterfaces.ps1"
+            # . "$Dependencies\Code\Charts\DashboardChart_LogonActivity.ps1"
+            # . "$Dependencies\Code\Charts\DashboardChart_SecurityPatches.ps1"
+            # . "$Dependencies\Code\Charts\DashboardChart_SmbShare.ps1"
+            # . "$Dependencies\Code\Charts\DashboardChart_Software.ps1"
+            # . "$Dependencies\Code\Charts\DashboardChart_Startups.ps1"
+            
             [System.Windows.Forms.MessageBox]::Show("These charts are populated with data from previous queries. If some of the charts are outdated or don't contain data, try running the associated queries. There is a command group with all the applicable queries needs for your convienience.","PoSh-EasyWin",'Ok',"Info")
             $script:AutoChartsForm.Add_Shown({$script:AutoChartsForm.Activate()})
             [void]$script:AutoChartsForm.ShowDialog()
         }
         elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Active Directory Computers, Users, and Groups") {
-            . "$Dependencies\Code\System.Windows.Forms\ComboBox\AutoChartSelectChartComboBoxSelectedItem_ActiveDirectoryComputers.ps1"
-            . "$Dependencies\Code\System.Windows.Forms\ComboBox\AutoChartSelectChartComboBoxSelectedItem_ActiveDirectoryUserAccounts.ps1"
-            . "$Dependencies\Code\System.Windows.Forms\ComboBox\AutoChartSelectChartComboBoxSelectedItem_ActiveDirectoryGroups.ps1"
+            . "$Dependencies\Code\Charts\DashboardChart_ActiveDirectoryComputers.ps1"
+            . "$Dependencies\Code\Charts\DashboardChart_ActiveDirectoryUserAccounts.ps1"
+            . "$Dependencies\Code\Charts\DashboardChart_ActiveDirectoryGroups.ps1"
             
             $script:AutoChartsForm.Add_Shown({$script:AutoChartsForm.Activate()})
             [void]$script:AutoChartsForm.ShowDialog()
         }
         elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Threat Hunting with Deep Blue") {
-            . "$Dependencies\Code\System.Windows.Forms\ComboBox\AutoChartSelectChartComboBoxSelectedItem_DeepBlue.ps1"
+            . "$Dependencies\Code\Charts\DashboardChart_DeepBlue.ps1"
             $script:AutoChartsForm.Add_Shown({$script:AutoChartsForm.Activate()})
             [void]$script:AutoChartsForm.ShowDialog()
         }

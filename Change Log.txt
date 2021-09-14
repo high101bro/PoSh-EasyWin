@@ -34,6 +34,8 @@ v5.4.1 -
 !!!!! reference Pivot-PSSession.ps1 for alternative method to import creds
 !!!!!! Create-TreeViewCheckBoxArray -Endpoint    ----vs---- generate-computerlist
  
+4624,4625,4634,4647,4648
+
 Updatd the integration of Treat Hunting with Deep Blue
 	- Removed the following Dashboard Views
 		- Threat Hunting wth Deep Blue (All)
@@ -114,6 +116,7 @@ Added New Packet Capture Feature (Pktmon.exe)
 	- Status bar at bottom shows status of PSSession
 
 Added chainsaw.exe support
+	- Updated to chainsaw 1.0.2
 	- Updated the computer treeview context menu
 		- Renamed 'Event Viewer (Collect)' to 'Event Viewer / Chainsaw (Collect)' 
 	- Chainsaw.exe currently runs one specific command to analysze files
