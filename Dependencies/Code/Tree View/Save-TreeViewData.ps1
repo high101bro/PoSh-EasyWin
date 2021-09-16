@@ -66,6 +66,7 @@ Function Save-TreeViewData {
                 $AccountsTreeNodeSaveDataTemp | Add-Member -MemberType NoteProperty -Name ScriptPath             -Value $Account.ScriptPath -Force
                 $AccountsTreeNodeSaveDataTemp | Add-Member -MemberType NoteProperty -Name HomeDrive              -Value $Account.HomeDrive -Force
                 $AccountsTreeNodeSaveDataTemp | Add-Member -MemberType NoteProperty -Name Notes                  -Value $Account.Notes -Force
+                $AccountsTreeNodeSaveDataTemp | Add-Member -MemberType NoteProperty -Name ImageIcon              -Value $Account.ImageIcon -Force
             }
             $AccountsTreeNodeSaveData += $AccountsTreeNodeSaveDataTemp
         }
@@ -103,6 +104,7 @@ Function Save-TreeViewData {
             $ComputerTreeNodeSaveDataTemp | Add-Member -MemberType NoteProperty -Name SID                             -Value $Computer.SID -Force
             $ComputerTreeNodeSaveDataTemp | Add-Member -MemberType NoteProperty -Name PortScan                        -Value $Computer.PortScan -Force
             $ComputerTreeNodeSaveDataTemp | Add-Member -MemberType NoteProperty -Name Notes                           -Value $Computer.Notes -Force
+            $ComputerTreeNodeSaveDataTemp | Add-Member -MemberType NoteProperty -Name ImageIcon                       -Value $Computer.ImageIcon -Force
 
             if ($SaveScan){
                 # If the node is selected, it will save the values you enter

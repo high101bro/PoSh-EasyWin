@@ -12,6 +12,20 @@ TODO:
 [ ] Checking custom group box makes user add commands turn blue... wierd? Check inside Update-Treeivew function
 
 ==================================================
+v6.1.0 - Whenever I push
+==================================================
+
+Added Icons to Endpoint and Account Treeview
+	- Lots of colors variations
+
+Completely purged deprecated 'Compiled Script' features
+	- Hasn't been used in over a year, couldn't think of another useful implementation
+	- Once awesome, but chose other implementations over it
+
+Added 'Beta Testing' to execution mode
+	- Intent is use to run test code for the implementation of the new session feature
+
+==================================================
 v6.0.0 - 15 SEP 2021
 ==================================================
 

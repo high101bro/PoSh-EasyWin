@@ -7,7 +7,6 @@ Function View-CommandTreeNodeMethod {
 
         Related Function:
             View-CommandTreeNodeQuery
-            Compile-SelectedCommandTreeNode
             MonitorJobScriptBlock
     #>
 

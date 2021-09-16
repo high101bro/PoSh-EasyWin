@@ -100,7 +100,12 @@ function Normalize-TreeViewData {
             else {
                 $AccountsTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name Notes -Value $null -Force }
     
+            if ($Account.ImageIcon) {
+                $AccountsTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name ImageIcon -Value $Account.ImageIcon -Force }
+            else {
+                $AccountsTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name ImageIcon -Value 5 -Force }
             $script:AccountsTreeViewDataTemp += $AccountsTreeNodeInsertDefaultData
+
             ###write-host $($AccountsTreeNodeInsertDefaultData | Select Name, OperatingSystem, CanonicalName, IPv4Address, Notes)
         }
         $script:AccountsTreeViewData       = $script:AccountsTreeViewDataTemp
@@ -237,6 +242,10 @@ function Normalize-TreeViewData {
             else {
                 $ComputerTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name SID -Value "No SID" -Force }
 
+            if ($Computer.ImageIcon) {
+                $ComputerTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name ImageIcon -Value $Computer.ImageIcon -Force }
+            else {
+                $ComputerTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name ImageIcon -Value 5 -Force }
 
             $script:ComputerTreeViewDataTemp += $ComputerTreeNodeInsertDefaultData
             ###write-host $($ComputerTreeNodeInsertDefaultData | Select Name, OperatingSystem, CanonicalName, IPv4Address, Notes)

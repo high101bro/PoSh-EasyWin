@@ -361,6 +361,7 @@ function Update-TreeViewData {
 
                 if ($Endpoint) {
                     if ($Entry.isselected) {
+                        #$Entry.ImageIndex = 8
                         $script:rootSelected     = $null
                         $script:CategorySelected = $Category
                         $script:EntrySelected    = $Entry
