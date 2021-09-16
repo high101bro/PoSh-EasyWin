@@ -409,7 +409,7 @@ Command Ex:
                     $script:ComputerTreeNodeComboBox.SelectedItem = 'CanonicalName'
             
                     Foreach($Computer in $script:ComputerTreeViewData) {
-                        AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:TreeNodeComputerList -Category $Computer.CanonicalName -Entry $Computer.Name -ToolTip $ComputerData.IPv4Address -IPv4Address $Computer.IPv4Address  -Metadata $Computer
+                        AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:TreeNodeComputerList -Category $Computer.CanonicalName -Entry $Computer.Name -ToolTip $ComputerData.IPv4Address -IPv4Address $Computer.IPv4Address -Metadata $Computer
                     }
             
                     Remove-EmptyCategory -Endpoint
@@ -839,7 +839,7 @@ function:MultiEndpoint-PSSession -ComputerName <endpoints(s)> -Credential <`$cre
                         $script:ComputerTreeNodeComboBox.SelectedItem = 'CanonicalName'
             
                         Foreach($Computer in $script:ComputerTreeViewData) {
-                            AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:TreeNodeComputerList -Category $Computer.CanonicalName -Entry $Computer.Name -ToolTip $ComputerData.IPv4Address -IPv4Address $Computer.IPv4Address  -Metadata $Computer
+                            AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:TreeNodeComputerList -Category $Computer.CanonicalName -Entry $Computer.Name -ToolTip $ComputerData.IPv4Address -IPv4Address $Computer.IPv4Address -Metadata $Computer
                         }
             
                         Remove-EmptyCategory -Endpoint

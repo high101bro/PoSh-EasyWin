@@ -15,7 +15,6 @@ function Display-ContextMenuForAccountsTreeNode {
         ForeColor = 'Black'
     }
 
-    #$script:AccountsListContextMenuStrip.Items.Add("$($Entry.Text)")
     $script:AccountsListAccountNameToolStripLabel = New-Object System.Windows.Forms.ToolStripLabel -Property @{
         Text      = "$($Entry.Text)"
         Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),1,2,1)
@@ -138,7 +137,6 @@ function Display-ContextMenuForAccountsTreeNode {
                 if ($script:EntrySelected) {
                     Show-TagForm -Accounts
                     if ($script:AccountsListMassTagValue) {
-                        #batman
                         $script:Section3AccountDataNameTextBox.Text = $($script:AccountsTreeViewData | Where-Object {$_.Name -eq $script:EntrySelected.Text}).Name
                         $Section3AccountDataOSTextBox.Text          = $($script:AccountsTreeViewData | Where-Object {$_.Name -eq $script:EntrySelected.Text}).OperatingSystem
                         $Section3AccountDataOUTextBox.Text          = $($script:AccountsTreeViewData | Where-Object {$_.Name -eq $script:EntrySelected.Text}).CanonicalName

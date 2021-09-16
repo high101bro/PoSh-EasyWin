@@ -261,77 +261,82 @@ function Update-TreeViewData {
                         $script:EntrySelected    = $Entry
 
                         if ($root.text -match 'Endpoint Commands') {
-                            $Section3QueryExplorationNameTextBox.Text            = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Name
-                            $Section3QueryExplorationTagWordsTextBox.Text        = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Type
-                            $Section3QueryExplorationWinRMPoShTextBox.Text       = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_WinRM_PoSh
-                            $Section3QueryExplorationWinRMWMITextBox.Text        = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_WinRM_WMI
-                            $Section3QueryExplorationWinRMCmdTextBox.Text        = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_WinRM_Cmd
-                            $Section3QueryExplorationRPCPoShTextBox.Text         = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_RPC_PoSh
-                            $Section3QueryExplorationRPCWMITextBox.Text          = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_RPC_WMI
-                            $Section3QueryExplorationPropertiesPoshTextBox.Text  = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Properties_PoSh
-                            $Section3QueryExplorationPropertiesWMITextBox.Text   = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Properties_WMI
-                            $Section3QueryExplorationWinRSWmicTextBox.Text       = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_WinRS_WMIC
-                            $Section3QueryExplorationWinRSCmdTextBox.Text        = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_WinRS_CMD                       
-                            $Section3QueryExplorationSmbPoshTextBox.Text         = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_SMB_PoSh
-                            $Section3QueryExplorationSmbWmiTextBox.Text          = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_SMB_WMI
-                            $Section3QueryExplorationSmbCmdTextBox.Text          = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_SMB_Cmd
-                            $Section3QueryExplorationSshLinuxTextBox.Text        = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_Linux
-                            $Section3QueryExplorationDescriptionRichTextbox.Text = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Description
+                            $NodeCommand = $script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }
+                            $Section3QueryExplorationNameTextBox.Text            = $NodeCommand.Name
+                            $Section3QueryExplorationTagWordsTextBox.Text        = $NodeCommand.Type
+                            $Section3QueryExplorationWinRMPoShTextBox.Text       = $NodeCommand.Command_WinRM_PoSh
+                            $Section3QueryExplorationWinRMWMITextBox.Text        = $NodeCommand.Command_WinRM_WMI
+                            $Section3QueryExplorationWinRMCmdTextBox.Text        = $NodeCommand.Command_WinRM_Cmd
+                            $Section3QueryExplorationRPCPoShTextBox.Text         = $NodeCommand.Command_RPC_PoSh
+                            $Section3QueryExplorationRPCWMITextBox.Text          = $NodeCommand.Command_RPC_WMI
+                            $Section3QueryExplorationPropertiesPoshTextBox.Text  = $NodeCommand.Properties_PoSh
+                            $Section3QueryExplorationPropertiesWMITextBox.Text   = $NodeCommand.Properties_WMI
+                            $Section3QueryExplorationWinRSWmicTextBox.Text       = $NodeCommand.Command_WinRS_WMIC
+                            $Section3QueryExplorationWinRSCmdTextBox.Text        = $NodeCommand.Command_WinRS_CMD                       
+                            $Section3QueryExplorationSmbPoshTextBox.Text         = $NodeCommand.Command_SMB_PoSh
+                            $Section3QueryExplorationSmbWmiTextBox.Text          = $NodeCommand.Command_SMB_WMI
+                            $Section3QueryExplorationSmbCmdTextBox.Text          = $NodeCommand.Command_SMB_Cmd
+                            $Section3QueryExplorationSshLinuxTextBox.Text        = $NodeCommand.Command_Linux
+                            $Section3QueryExplorationDescriptionRichTextbox.Text = $NodeCommand.Description
                         }
                         elseif ($root.text -match 'Active Directory Commands') {
-                            $Section3QueryExplorationNameTextBox.Text            = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Name
-                            $Section3QueryExplorationTagWordsTextBox.Text        = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Type
-                            $Section3QueryExplorationWinRMPoShTextBox.Text       = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_WinRM_PoSh
-                            $Section3QueryExplorationWinRMWMITextBox.Text        = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_WinRM_WMI
-                            $Section3QueryExplorationWinRMCmdTextBox.Text        = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_WinRM_Cmd
-                            $Section3QueryExplorationRPCPoShTextBox.Text         = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_RPC_PoSh
-                            $Section3QueryExplorationRPCWMITextBox.Text          = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_RPC_WMI
-                            $Section3QueryExplorationPropertiesPoshTextBox.Text  = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Properties_PoSh
-                            $Section3QueryExplorationPropertiesWMITextBox.Text   = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Properties_WMI
-                            $Section3QueryExplorationWinRSWmicTextBox.Text       = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_WinRS_WMIC
-                            $Section3QueryExplorationWinRSCmdTextBox.Text        = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_WinRS_CMD
-                            $Section3QueryExplorationSmbPoshTextBox.Text         = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_SMB_PoSh
-                            $Section3QueryExplorationSmbWmiTextBox.Text          = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_SMB_WMI
-                            $Section3QueryExplorationSmbCmdTextBox.Text          = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_SMB_Cmd
-                            $Section3QueryExplorationSshLinuxTextBox.Text        = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_Linux
-                            $Section3QueryExplorationDescriptionRichTextbox.Text = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Description
+                            $NodeCommand = $script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }
+                            $Section3QueryExplorationNameTextBox.Text            = $NodeCommand.Name
+                            $Section3QueryExplorationTagWordsTextBox.Text        = $NodeCommand.Type
+                            $Section3QueryExplorationWinRMPoShTextBox.Text       = $NodeCommand.Command_WinRM_PoSh
+                            $Section3QueryExplorationWinRMWMITextBox.Text        = $NodeCommand.Command_WinRM_WMI
+                            $Section3QueryExplorationWinRMCmdTextBox.Text        = $NodeCommand.Command_WinRM_Cmd
+                            $Section3QueryExplorationRPCPoShTextBox.Text         = $NodeCommand.Command_RPC_PoSh
+                            $Section3QueryExplorationRPCWMITextBox.Text          = $NodeCommand.Command_RPC_WMI
+                            $Section3QueryExplorationPropertiesPoshTextBox.Text  = $NodeCommand.Properties_PoSh
+                            $Section3QueryExplorationPropertiesWMITextBox.Text   = $NodeCommand.Properties_WMI
+                            $Section3QueryExplorationWinRSWmicTextBox.Text       = $NodeCommand.Command_WinRS_WMIC
+                            $Section3QueryExplorationWinRSCmdTextBox.Text        = $NodeCommand.Command_WinRS_CMD
+                            $Section3QueryExplorationSmbPoshTextBox.Text         = $NodeCommand.Command_SMB_PoSh
+                            $Section3QueryExplorationSmbWmiTextBox.Text          = $NodeCommand.Command_SMB_WMI
+                            $Section3QueryExplorationSmbCmdTextBox.Text          = $NodeCommand.Command_SMB_Cmd
+                            $Section3QueryExplorationSshLinuxTextBox.Text        = $NodeCommand.Command_Linux
+                            $Section3QueryExplorationDescriptionRichTextbox.Text = $NodeCommand.Description
                         }
                         elseif ($root.text -match 'Search Results'){
-                            if ($($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Name) {
-                                $Section3QueryExplorationNameTextBox.Text            = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Name
-                                $Section3QueryExplorationTagWordsTextBox.Text        = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Type
-                                $Section3QueryExplorationWinRMPoShTextBox.Text       = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_WinRM_PoSh
-                                $Section3QueryExplorationWinRMWMITextBox.Text        = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_WinRM_WMI
-                                $Section3QueryExplorationWinRMCmdTextBox.Text        = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_WinRM_Cmd
-                                $Section3QueryExplorationRPCPoShTextBox.Text         = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_RPC_PoSh
-                                $Section3QueryExplorationRPCWMITextBox.Text          = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_RPC_WMI
-                                $Section3QueryExplorationPropertiesPoshTextBox.Text  = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Properties_PoSh
-                                $Section3QueryExplorationPropertiesWMITextBox.Text   = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Properties_WMI
-                                $Section3QueryExplorationWinRSWmicTextBox.Text       = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_WinRS_WMIC
-                                $Section3QueryExplorationWinRSCmdTextBox.Text        = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_WinRS_CMD
-                                $Section3QueryExplorationSmbPoshTextBox.Text         = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_SMB_PoSh
-                                $Section3QueryExplorationSmbWmiTextBox.Text          = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_SMB_WMI
-                                $Section3QueryExplorationSmbCmdTextBox.Text          = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_SMB_Cmd
-                                $Section3QueryExplorationSshLinuxTextBox.Text        = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_Linux
-                                $Section3QueryExplorationDescriptionRichTextbox.Text = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Description    
+                            $NodeCommand = $script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }
+
+                            if ($NodeCommand.Name) {
+                                $Section3QueryExplorationNameTextBox.Text            = $NodeCommand.Name
+                                $Section3QueryExplorationTagWordsTextBox.Text        = $NodeCommand.Type
+                                $Section3QueryExplorationWinRMPoShTextBox.Text       = $NodeCommand.Command_WinRM_PoSh
+                                $Section3QueryExplorationWinRMWMITextBox.Text        = $NodeCommand.Command_WinRM_WMI
+                                $Section3QueryExplorationWinRMCmdTextBox.Text        = $NodeCommand.Command_WinRM_Cmd
+                                $Section3QueryExplorationRPCPoShTextBox.Text         = $NodeCommand.Command_RPC_PoSh
+                                $Section3QueryExplorationRPCWMITextBox.Text          = $NodeCommand.Command_RPC_WMI
+                                $Section3QueryExplorationPropertiesPoshTextBox.Text  = $NodeCommand.Properties_PoSh
+                                $Section3QueryExplorationPropertiesWMITextBox.Text   = $NodeCommand.Properties_WMI
+                                $Section3QueryExplorationWinRSWmicTextBox.Text       = $NodeCommand.Command_WinRS_WMIC
+                                $Section3QueryExplorationWinRSCmdTextBox.Text        = $NodeCommand.Command_WinRS_CMD
+                                $Section3QueryExplorationSmbPoshTextBox.Text         = $NodeCommand.Command_SMB_PoSh
+                                $Section3QueryExplorationSmbWmiTextBox.Text          = $NodeCommand.Command_SMB_WMI
+                                $Section3QueryExplorationSmbCmdTextBox.Text          = $NodeCommand.Command_SMB_Cmd
+                                $Section3QueryExplorationSshLinuxTextBox.Text        = $NodeCommand.Command_Linux
+                                $Section3QueryExplorationDescriptionRichTextbox.Text = $NodeCommand.Description    
                             }
                             else {
-                                $Section3QueryExplorationNameTextBox.Text            = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Name
-                                $Section3QueryExplorationTagWordsTextBox.Text        = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Type
-                                $Section3QueryExplorationWinRMPoShTextBox.Text       = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_WinRM_PoSh
-                                $Section3QueryExplorationWinRMWMITextBox.Text        = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_WinRM_WMI
-                                $Section3QueryExplorationWinRMCmdTextBox.Text        = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_WinRM_Cmd
-                                $Section3QueryExplorationRPCPoShTextBox.Text         = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_RPC_PoSh
-                                $Section3QueryExplorationRPCWMITextBox.Text          = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_RPC_WMI
-                                $Section3QueryExplorationPropertiesPoshTextBox.Text  = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Properties_PoSh
-                                $Section3QueryExplorationPropertiesWMITextBox.Text   = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Properties_WMI
-                                $Section3QueryExplorationWinRSWmicTextBox.Text       = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_WinRS_WMIC
-                                $Section3QueryExplorationWinRSCmdTextBox.Text        = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_WinRS_CMD
-                                $Section3QueryExplorationSmbPoshTextBox.Text         = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_SMB_PoSh
-                                $Section3QueryExplorationSmbWmiTextBox.Text          = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_SMB_WMI
-                                $Section3QueryExplorationSmbCmdTextBox.Text          = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_SMB_Cmd
-                                $Section3QueryExplorationSshLinuxTextBox.Text        = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_Linux
-                                $Section3QueryExplorationDescriptionRichTextbox.Text = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Description
+                                $NodeCommand = $script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }
+                                $Section3QueryExplorationNameTextBox.Text            = $NodeCommand.Name
+                                $Section3QueryExplorationTagWordsTextBox.Text        = $NodeCommand.Type
+                                $Section3QueryExplorationWinRMPoShTextBox.Text       = $NodeCommand.Command_WinRM_PoSh
+                                $Section3QueryExplorationWinRMWMITextBox.Text        = $NodeCommand.Command_WinRM_WMI
+                                $Section3QueryExplorationWinRMCmdTextBox.Text        = $NodeCommand.Command_WinRM_Cmd
+                                $Section3QueryExplorationRPCPoShTextBox.Text         = $NodeCommand.Command_RPC_PoSh
+                                $Section3QueryExplorationRPCWMITextBox.Text          = $NodeCommand.Command_RPC_WMI
+                                $Section3QueryExplorationPropertiesPoshTextBox.Text  = $NodeCommand.Properties_PoSh
+                                $Section3QueryExplorationPropertiesWMITextBox.Text   = $NodeCommand.Properties_WMI
+                                $Section3QueryExplorationWinRSWmicTextBox.Text       = $NodeCommand.Command_WinRS_WMIC
+                                $Section3QueryExplorationWinRSCmdTextBox.Text        = $NodeCommand.Command_WinRS_CMD
+                                $Section3QueryExplorationSmbPoshTextBox.Text         = $NodeCommand.Command_SMB_PoSh
+                                $Section3QueryExplorationSmbWmiTextBox.Text          = $NodeCommand.Command_SMB_WMI
+                                $Section3QueryExplorationSmbCmdTextBox.Text          = $NodeCommand.Command_SMB_Cmd
+                                $Section3QueryExplorationSshLinuxTextBox.Text        = $NodeCommand.Command_Linux
+                                $Section3QueryExplorationDescriptionRichTextbox.Text = $NodeCommand.Description
                             }
                         }
 
@@ -371,17 +376,20 @@ function Update-TreeViewData {
                         $script:HostQueryTreeViewSelected = $Entry.Text
 
                         if ($root.text -match 'All Endpoints') {
-                            $script:Section3HostDataNameTextBox.Text                = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).Name
-                            $Section3HostDataOUTextBox.Text                         = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).CanonicalName
-                            $Section3EndpointDataCreatedTextBox.Text                = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).Created
-                            $Section3EndpointDataModifiedTextBox.Text               = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).Modified
-                            $Section3EndpointDataLastLogonDateTextBox.Text          = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).LastLogonDate
-                            $Section3HostDataIPTextBox.Text                         = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).IPv4Address
-                            $Section3HostDataMACTextBox.Text                        = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).MACAddress
-                            $Section3EndpointDataEnabledTextBox.Text                = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).Enabled
-                            $Section3EndpointDataisCriticalSystemObjectTextBox.Text = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).isCriticalSystemObject
-                            $Section3EndpointDataSIDTextBox.Text                    = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).SID
-                            $Section3EndpointDataOperatingSystemTextBox.Text        = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).OperatingSystem
+                            $script:NodeEndpoint = $script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}
+                            
+                            $script:Section3EndpointDataIconPictureBox.Image        = [System.Drawing.Image]::FromFile($($EndpointTreeviewImageHashTable["$($script:NodeEndpoint.ImageIndex)"]))
+                            $script:Section3HostDataNameTextBox.Text                = $script:NodeEndpoint.Name
+                            $Section3HostDataOUTextBox.Text                         = $script:NodeEndpoint.CanonicalName
+                            $Section3EndpointDataCreatedTextBox.Text                = $script:NodeEndpoint.Created
+                            $Section3EndpointDataModifiedTextBox.Text               = $script:NodeEndpoint.Modified
+                            $Section3EndpointDataLastLogonDateTextBox.Text          = $script:NodeEndpoint.LastLogonDate
+                            $Section3HostDataIPTextBox.Text                         = $script:NodeEndpoint.IPv4Address
+                            $Section3HostDataMACTextBox.Text                        = $script:NodeEndpoint.MACAddress
+                            $Section3EndpointDataEnabledTextBox.Text                = $script:NodeEndpoint.Enabled
+                            $Section3EndpointDataisCriticalSystemObjectTextBox.Text = $script:NodeEndpoint.isCriticalSystemObject
+                            $Section3EndpointDataSIDTextBox.Text                    = $script:NodeEndpoint.SID
+                            $Section3EndpointDataOperatingSystemTextBox.Text        = $script:NodeEndpoint.OperatingSystem
 
                             $Section3EndpointDataOperatingSystemHotfixComboBox.ForeColor = "Black"
                                 $Section3EndpointDataOperatingSystemHotfixComboBox.Items.Clear()
@@ -409,8 +417,8 @@ function Update-TreeViewData {
                                     $Section3EndpointDataMemberOfComboBox.Items.Add($Group) 
                                 }
                             $Section3EndpointDataMemberOfComboBox.Text              = "- Select Dropdown [$(if ($MemberOfList -ne $null) {$MemberOfList.count} else {0})] Groups"
-                            $Section3EndpointDataLockedOutTextBox.Text              = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).LockedOut
-                            $Section3EndpointDataLogonCountTextBox.Text             = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).LogonCount
+                            $Section3EndpointDataLockedOutTextBox.Text              = $script:NodeEndpoint.LockedOut
+                            $Section3EndpointDataLogonCountTextBox.Text             = $script:NodeEndpoint.LogonCount
 
                             $Section3EndpointDataPortScanComboBox.ForeColor = "Black"
                                 $Section3EndpointDataPortScanComboBox.Items.Clear()
@@ -424,7 +432,7 @@ function Update-TreeViewData {
                             $Section3HostDataSelectionComboBox.Text                 = "Host Data - Selection"
                             $Section3HostDataSelectionDateTimeComboBox.Text         = "Host Data - Date & Time"
 
-                            $script:Section3HostDataNotesSaveCheck = $Section3HostDataNotesRichTextBox.Text = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).Notes
+                            $script:Section3HostDataNotesSaveCheck = $Section3HostDataNotesRichTextBox.Text = $script:NodeEndpoint.Notes
                         }
                     }
                 }
@@ -440,19 +448,22 @@ function Update-TreeViewData {
                         # $script:HostQueryTreeViewSelected = $Entry.Text
 
                         if ($root.text -match 'All Accounts') {
-                            $script:Section3AccountDataNameTextBox.Text             = $($script:AccountsTreeViewData | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Name
-                            $Section3AccountDataEnabledTextBox.Text                 = $($script:AccountsTreeViewData | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Enabled
-                            $Section3AccountDataOUTextBox.Text                      = $($script:AccountsTreeViewData | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).CanonicalName
-                            $Section3AccountDataLockedOutTextBox.Text               = $($script:AccountsTreeViewData | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).LockedOut
-                            $Section3AccountDataSmartCardLogonRequiredTextBox.Text  = $($script:AccountsTreeViewData | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).SmartCardLogonRequired
-                            $Section3AccountDataCreatedTextBox.Text                 = $($script:AccountsTreeViewData | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Created
-                            $Section3AccountDataModifiedTextBox.Text                = $($script:AccountsTreeViewData | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Modified
-                            $Section3AccountDataLastLogonDateTextBox.Text           = $($script:AccountsTreeViewData | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).LastLogonDate
-                            $Section3AccountDataLastBadPasswordAttemptTextBox.Text  = $($script:AccountsTreeViewData | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).LastBadPasswordAttempt
-                            $Section3AccountDataBadLogonCountTextBox.Text           = $($script:AccountsTreeViewData | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).BadLogonCount
-                            $Section3AccountDataPasswordExpiredTextBox.Text         = $($script:AccountsTreeViewData | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).PasswordExpired
-                            $Section3AccountDataPasswordNeverExpiresTextBox.Text    = $($script:AccountsTreeViewData | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).PasswordNeverExpires
-                            $Section3AccountDataPasswordNotRequiredTextBox.Text     = $($script:AccountsTreeViewData | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).PasswordNotRequired
+                            $script:NodeAccount = $script:AccountsTreeViewData | Where-Object {$($Entry.Text) -like "*$($_.Name)" }
+
+                            $script:Section3AccountDataIconPictureBox.Image         = [System.Drawing.Image]::FromFile($($AccountsTreeviewImageHashTable["$($script:NodeAccount.ImageIndex)"]))
+                            $script:Section3AccountDataNameTextBox.Text             = $script:NodeAccount.Name
+                            $Section3AccountDataEnabledTextBox.Text                 = $script:NodeAccount.Enabled
+                            $Section3AccountDataOUTextBox.Text                      = $script:NodeAccount.CanonicalName
+                            $Section3AccountDataLockedOutTextBox.Text               = $script:NodeAccount.LockedOut
+                            $Section3AccountDataSmartCardLogonRequiredTextBox.Text  = $script:NodeAccount.SmartCardLogonRequired
+                            $Section3AccountDataCreatedTextBox.Text                 = $script:NodeAccount.Created
+                            $Section3AccountDataModifiedTextBox.Text                = $script:NodeAccount.Modified
+                            $Section3AccountDataLastLogonDateTextBox.Text           = $script:NodeAccount.LastLogonDate
+                            $Section3AccountDataLastBadPasswordAttemptTextBox.Text  = $script:NodeAccount.LastBadPasswordAttempt
+                            $Section3AccountDataBadLogonCountTextBox.Text           = $script:NodeAccount.BadLogonCount
+                            $Section3AccountDataPasswordExpiredTextBox.Text         = $script:NodeAccount.PasswordExpired
+                            $Section3AccountDataPasswordNeverExpiresTextBox.Text    = $script:NodeAccount.PasswordNeverExpires
+                            $Section3AccountDataPasswordNotRequiredTextBox.Text     = $script:NodeAccount.PasswordNotRequired
                             $Section3AccountDataMemberOfComboBox.ForeColor          = "Black"
                                 $Section3AccountDataMemberOfComboBox.Items.Clear()
                                 $MemberOfList = $null
@@ -461,10 +472,10 @@ function Update-TreeViewData {
                                     $Section3AccountDataMemberOfComboBox.Items.Add($Group) 
                                 }
                             $Section3AccountDataMemberOfComboBox.Text               = "- Select Dropdown [$(if ($MemberOfList -ne $null) {$MemberOfList.count} else {0})] Groups"
-                            $Section3AccountDataSIDTextBox.Text                     = $($script:AccountsTreeViewData | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).SID
-                            $Section3AccountDataScriptPathTextBox.Text              = $($script:AccountsTreeViewData | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).ScriptPath
-                            $Section3AccountDataHomeDriveTextBox.Text               = $($script:AccountsTreeViewData | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).HomeDrive
-                            $script:Section3AccountDataNotesRichTextBox.Text        = $($script:AccountsTreeViewData | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Notes
+                            $Section3AccountDataSIDTextBox.Text                     = $script:NodeAccount.SID
+                            $Section3AccountDataScriptPathTextBox.Text              = $script:NodeAccount.ScriptPath
+                            $Section3AccountDataHomeDriveTextBox.Text               = $script:NodeAccount.HomeDrive
+                            $script:Section3AccountDataNotesRichTextBox.Text        = $script:NodeAccount.Notes
                         }
                     }
                 }

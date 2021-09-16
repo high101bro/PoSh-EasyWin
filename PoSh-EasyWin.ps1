@@ -742,6 +742,35 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel
             }
             $ComputerAndAccountTreeViewTabControl.Controls.Add($ComputerTreeviewTab)
 
+                    $script:UpdateComputerTreeViewScriptBlock = {
+                        # This variable stores data on checked checkboxes, so boxes checked remain among different views
+                        $script:ComputerTreeViewSelected = @()
+
+                        [System.Windows.Forms.TreeNodeCollection]$AllTreeViewNodes = $script:ComputerTreeView.Nodes
+                        foreach ($root in $AllTreeViewNodes) {
+                            foreach ($Category in $root.Nodes) {
+                                foreach ($Entry in $Category.nodes) {
+                                    if ($Entry.Checked) {
+                                        $script:ComputerTreeViewSelected += $Entry.Text
+                                    }
+                                }
+                            }
+                        }
+                        $script:ComputerTreeView.Nodes.Clear()
+                        Initialize-TreeViewData -Endpoint
+                        Normalize-TreeViewData -Endpoint
+                        Save-TreeViewData -Endpoint
+
+                        $script:ComputerTreeView.Nodes.Add($script:TreeNodeComputerList)
+                        Foreach($Computer in $script:ComputerTreeViewData) {
+                            AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:TreeNodeComputerList -Category $Computer.$($This.SelectedItem) -Entry $Computer.Name -ToolTip $Computer.IPv4Address -Metadata $Computer
+                        }
+                        UpdateState-TreeViewData -Endpoint
+
+                        Update-TreeViewData -Endpoint -TreeView $script:ComputerTreeView.Nodes
+                    }
+
+
                     $script:ComputerTreeNodeComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
                         Text    = 'CanonicalName'
                         Left    = 0
@@ -751,33 +780,7 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel
                         Font    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
                         AutoCompleteSource = "ListItems"
                         AutoCompleteMode   = "SuggestAppend"    
-                        add_SelectedIndexChanged = {
-                            # This variable stores data on checked checkboxes, so boxes checked remain among different views
-                            $script:ComputerTreeViewSelected = @()
-
-                            [System.Windows.Forms.TreeNodeCollection]$AllTreeViewNodes = $script:ComputerTreeView.Nodes
-                            foreach ($root in $AllTreeViewNodes) {
-                                foreach ($Category in $root.Nodes) {
-                                    foreach ($Entry in $Category.nodes) {
-                                        if ($Entry.Checked) {
-                                            $script:ComputerTreeViewSelected += $Entry.Text
-                                        }
-                                    }
-                                }
-                            }
-                            $script:ComputerTreeView.Nodes.Clear()
-                            Initialize-TreeViewData -Endpoint
-                            Normalize-TreeViewData -Endpoint
-                            Save-TreeViewData -Endpoint
-
-                            Foreach($ComputerData in $script:ComputerTreeViewData) {
-                                AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:TreeNodeComputerList -Category $ComputerData.$($This.SelectedItem) -Entry $ComputerData.Name -ToolTip $ComputerData.IPv4Address -Metadata $ComputerData -Image $ComputerData.ImageIcon
-                            }
-                            $script:ComputerTreeView.Nodes.Add($script:TreeNodeComputerList)
-                            UpdateState-TreeViewData -Endpoint
-
-                            Update-TreeViewData -Endpoint -TreeView $script:ComputerTreeView.Nodes
-                        }
+                        add_SelectedIndexChanged = $script:UpdateComputerTreeViewScriptBlock
                         #Add_MouseHover = $ComputerTreeNodeEnabledRadioButtonAdd_MouseHover
                     }
                     $ComputerTreeNodeComboBoxList = @('CanonicalName', 'OperatingSystem', 'OperatingSystemHotfix', 'OperatingSystemServicePack', 'Enabled', 'LockedOut', 'LogonCount', 'Created', 'Modified', 'LastLogonDate', 'MemberOf', 'isCriticalSystemObject', 'HomedirRequired', 'Location', 'ProtectedFromAccidentalDeletion', 'TrustedForDelegation')
@@ -888,22 +891,33 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel
                     }
                     $EndpointImageList = Get-ChildItem "$Dependencies\Images\Icons\Endpoint" | Select-Object -ExpandProperty FullName
 
+                    # This hashtable is used to maintain a relationship between the imageindex number and the image filepath, it is used when populating the Endpoint Data tab
+                    $EndpointTreeviewImageHashTable = [ordered]@{}
+
                     # Position 0 = Default Image, this one is often seen when clicking on a treenode
                     $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$EasyWinIcon"))
+                    $EndpointTreeviewImageHashTable['0'] = "$EasyWinIcon"
 
                     # Position 1 = used as the default image that is loaded against the .treeview itself, thus shown at the top level for the Organizational Units, It gets overwritten by each node that is added
                     $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Icon OU LightYellow.png"))
+                    $EndpointTreeviewImageHashTable['1'] = "$Dependencies\Images\Icons\Icon OU LightYellow.png"
                     
                     # Position 2 = used as the default image for the computer/account/entry node. Normalize-TreeViewData.ps1 populates it by default if an imageindex number doesn't exist for it already
                     $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Endpoint Default.png"))
+                    $EndpointTreeviewImageHashTable['2'] = "$Dependencies\Images\Icons\Endpoint Default.png"
                     
+                    $EndpointTreeviewImageHashTableCount = 2
                     foreach ($Image in $EndpointImageList) {
                         $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Image"))
+                        $EndpointTreeviewImageHashTableCount++
+                        $EndpointTreeviewImageHashTable["$EndpointTreeviewImageHashTableCount"] = "$Image"
                     }
 
                     # Position -1 = currently unused
                     $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$high101bro_image"))
-                    
+                    $EndpointTreeviewImageHashTableCount++
+                    $EndpointTreeviewImageHashTable["$EndpointTreeviewImageHashTableCount"] = "$Dependencies\Images\Icons\Endpoint Default.png"
+
 
                     Update-FormProgress "$Dependencies\Code\System.Windows.Forms\TreeView\ComputerTreeView.ps1"
                     . "$Dependencies\Code\System.Windows.Forms\TreeView\ComputerTreeView.ps1"
@@ -934,7 +948,7 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel
                         ShowPlusMinus     = $true
                         HideSelection     = $false
                         #not working #AfterSelect       = {}
-                        ImageList         = $ComputerTreeViewImageList
+                        ImageList         = $ComputerTreeviewImageList
                         ImageIndex        = 1 # the default image 
                     }
                     $script:ComputerTreeView.Sort()
@@ -945,7 +959,7 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel
    
                     # This will load data that is located in the saved file
                     Foreach($Computer in $script:ComputerTreeViewData) {
-                        AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:TreeNodeComputerList -Category $Computer.CanonicalName -Entry $Computer.Name -ToolTip $ComputerData.IPv4Address -IPv4Address $Computer.IPv4Address -Metadata $Computer -Image $Computer.ImageIcon
+                        AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:TreeNodeComputerList -Category $Computer.CanonicalName -Entry $Computer.Name -ToolTip $Computer.IPv4Address -IPv4Address $Computer.IPv4Address -Metadata $Computer 
                     }
                     $script:ComputerTreeView.Nodes.Add($script:TreeNodeComputerList)
 
@@ -995,7 +1009,7 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel
                             Save-TreeViewData -Accounts
 
                             Foreach($Account in $script:AccountsTreeViewData) {
-                                AddTreeNodeTo-TreeViewData -Accounts -RootNode $script:TreeNodeAccountsList -Category $Account.$($This.SelectedItem) -Entry $Account.Name -ToolTip $Account.SID -Metadata $Account -Image $Account.ImageIcon
+                                AddTreeNodeTo-TreeViewData -Accounts -RootNode $script:TreeNodeAccountsList -Category $Account.$($This.SelectedItem) -Entry $Account.Name -ToolTip $Account.SID -Metadata $Account
                             }
                             $script:AccountsTreeView.Nodes.Add($script:TreeNodeAccountsList)
                             UpdateState-TreeViewData -Accounts
@@ -1077,22 +1091,33 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel
                     }
                     $EndpointImageList = Get-ChildItem "$Dependencies\Images\Icons\Account" | Select-Object -ExpandProperty FullName
 
+                    # This hashtable is used to maintain a relationship between the imageindex number and the image filepath, it is used when populating the Account Data tab
+                    $AccountsTreeviewImageHashTable = [ordered]@{}
+
                     # Position 0 = Default Image, this one is often seen when clicking on a treenode
                     $AccountsTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$EasyWinIcon"))
+                    $AccountsTreeviewImageHashTable['0'] = "$EasyWinIcon"
 
                     # Position 1 = used as the default image that is loaded against the .treeview itself, thus shown at the top level for the Organizational Units, It gets overwritten by each node that is added
                     $AccountsTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Icon OU LightYellow.png"))
+                    $AccountsTreeviewImageHashTable['1'] = "$Dependencies\Images\Icons\Icon OU LightYellow.png"
                     
                     # Position 2 = used as the default image for the computer/account/entry node. Normalize-TreeViewData.ps1 populates it by default if an imageindex number doesn't exist for it already
                     $AccountsTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Account Default.png"))
+                    $AccountsTreeviewImageHashTable['2'] = "$Dependencies\Images\Icons\Account Default.png"
                     
+                    $AccountsTreeviewImageHashTableCount = 2
                     foreach ($Image in $EndpointImageList) {
                         $AccountsTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Image"))
+                        $AccountsTreeviewImageHashTableCount++
+                        $AccountsTreeviewImageHashTable["$AccountsTreeviewImageHashTableCount"] = "$Image"
                     }
 
                     # Position -1 = currently unused
                     $AccountsTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$high101bro_image"))
-                    
+                    $AccountsTreeviewImageHashTableCount++
+                    $AccountsTreeviewImageHashTable["$AccountsTreeviewImageHashTableCount"] = "$Dependencies\Images\Icons\Account Default.png"
+
 
                     Update-FormProgress "$Dependencies\Code\System.Windows.Forms\TreeView\AccountsTreeView.ps1"
                     . "$Dependencies\Code\System.Windows.Forms\TreeView\AccountsTreeView.ps1"
@@ -1137,7 +1162,7 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel
                     
                     # This will load data that is located in the saved file
                     Foreach($Account in $script:AccountsTreeViewData) {
-                        AddTreeNodeTo-TreeViewData -Accounts -RootNode $script:TreeNodeAccountsList -Category $Account.CanonicalName -Entry $Account.Name -ToolTip $Account.SID -Metadata $Account -Image $Account.ImageIcon
+                        AddTreeNodeTo-TreeViewData -Accounts -RootNode $script:TreeNodeAccountsList -Category $Account.CanonicalName -Entry $Account.Name -ToolTip $Account.SID -Metadata $Account
                     }
                     $script:AccountsTreeView.Nodes.Add($script:TreeNodeAccountsList)
 
