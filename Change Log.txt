@@ -4,22 +4,135 @@ v{Major}.{Minor}.{HotFix} - {Day} {Month} {Year}
 ==================================================
 To Do List:
 ==================================================
-Update Sysinternal tools
-Add sysmon event id 3 to pswritehtml charts
-check sysmon config name... update if necessary
-
-Commands Select All Button isn't working...
-
-Accounts Treeview
-	- update Set-GuiLayout.ps1
-
-Check if Move feature is working properly
-
 TODO:
-winrm get winrm/config/winrs
+[ ] Some users show up with 1 group when they have none
+[ ] Reintegrate other dashboards like . "$Dependencies\Code\System.Windows.Forms\ComboBox\AutoChartSelectChartComboBoxSelectedItem_Services.ps1"
+[ ] Add Get-Help (comment based help) support for each script so they populate a description
+[ ] Cosolidate code... Create-TreeViewCheckBoxArray -Endpoint --vs-- Generate-Computerlist
+[ ] Checking custom group box makes user add commands turn blue... wierd? Check inside Update-Treeivew function
 
 ==================================================
-v5.4.1 -
+v6.0.0 - 15 SEP 2021
+==================================================
+
+Added MultiEndpoint-PSSession
+	- Need to checkbox one or more endpoints
+	- Allows you to interactively query multiple endpoints the persistent PSSession and retrieve results
+
+Removed Generate-AutoChartsCommand
+	- This was used for multi-series charts, with the current, previous, and base collection comparison 
+
+Updated Account Logon Activity collections
+	- Increated it to collect all the following: 4624,4625,4634,4647,4648
+
+Updatd the integration of Treat Hunting with Deep Blue
+	- Removed the following Dashboard Views
+		- Threat Hunting wth Deep Blue (All)
+		- Threat Hunting wth Deep Blue (7 Days)
+		- Threat Hunting wth Deep Blue (24 Hours)
+	- Essentiall combined them into a single option 
+		- Threat Hunting wth Deep Blue
+		- This chart is now updated only by queries selected within the commmands treeview by selecting the appropriate script
+			- Invoke-DeepBlueAll
+			- Invoke-DeepBlue1Month
+			- Invoke-DeepBlue7Days
+			- Invoke-DeepBlue24Hours
+	- Updated the Invoke-DeepBlue cmdlet parameter default data
+		- $regexes & $whitelists now default to looking for the files in the same directory
+
+Updated Receive Files button
+	- Added popup that informs user to conduct a recent files search or directory list on endpoints prior to retrieving files
+	- The collections / File Search tab now automatically is brought to the forefront to show users where its located
+
+Taskbar PoSh-EasyWin Icon Menus
+	- Renamed 'Abort / Reload' to 'Restart Tool'
+
+Updated Computer and Accounts Treeview Context Menu
+	- moved the 'Uncheck All nodes' Button outside of the combobox as it's used frequently
+
+PoSh-EasyWin parameters
+	- Removed -Credential, it wasn't working properly and with the advent of stored credentials was superceeded
+	- Updated message for -SkipElevationCheck code and messages
+	- The CLI version of this tool has been deprecated/removed for awhile now
+		- Removed -ComputerName
+		- Removed -FilterOutComputer
+		- Removed -FilterInComputer
+		- Removed -Protocol
+	- Removed -SaveDirectory, too complicated and unnecessary
+	- Removed -JobTimeOutSeconds, opted for better implementation with saved/autoloading
+	- Removed -AudibleCompletionMessage, opted for better implementation with saved/autoloading
+
+Remove function Count-SectionQueries.ps1
+	- simplied function and placed at beginning of main script
+	- added code to each relavant checkbox to update query count
+
+Added Status Bar to main PoSh-EasyWin window
+	- much overdue... sigh
+	- Shows datetime, number of endpoints and queries selected
+
+Documenting Word Art / Character Art
+	- Why I haven't done this before is beyond me... 
+	- https://flamingtext.com/logo/Design-Style
+	- https://www11.flamingtext.com/net-fu/dynamic.cgi?script=style-logo&text=PoSh-EasyWin&fontname=Black+Ops+One&fillTextColor=%23006fff&fillOutlineColor=%2320d
+		Font: Display --> Black Ops One
+	- https://onlinepngtools.com/create-transparent-png
+
+Added New Packet Capture Feature (Pktmon.exe)
+	- Supports Windows 10+, Server 2019+
+	- Dynmically builds command as options are selected
+	- Added filter support
+		- Choose from dropdown filters to add or modify, or just write your own
+		- Able to view existing filters
+	- Added status fields that provides status info on cmd executions
+	- Added start capture
+		- Checks if session exists before executing command
+	- Added stop capture`
+		- Checks if session exists before executing command
+		- Stop automatically copies etl file back, converts it to pcapng and opens it, then cleans up unneeded files
+		- provides option to immediately open selected files
+			- added fields that convert length to kb, mb, and gb
+		- Files downloaded are saved with their associcated metadata
+			- an ADS is created on each pcapng file, which is later used to view the filter applied to obtain that packet capture  
+	- Added open collection
+		- Searches you collected data directory recursively
+		- Filters to only show pcapng files sorted by creationtime
+		- shows 'filter' metadata to help determine which pcaps to open
+			- the filter/metadata is retrieved from a ADS on the file
+			- added fields that convert length to kb, mb, and gb
+	- Added start new session
+	- Added remove session button
+	- added get-pssession button
+	- Status bar at bottom shows status of PSSession
+
+Added chainsaw.exe support
+	- Updated to chainsaw 1.0.2
+	- Updated the computer treeview context menu
+		- Renamed 'Event Viewer (Collect)' to 'Event Viewer / Chainsaw (Collect)' 
+	- Chainsaw.exe currently runs one specific command to analysze files
+		- .\chainsaw.exe hunt $EventLogSaveName --rules .\sigma_rules\ --mapping .\mapping_files\sigma-mapping.yml --full --lateral-all --csv
+	    - The command is launched within a new powershell process/window
+			Start-Process 'PowerShell' -ArgumentList '-NoProfile', '-ExecutionPolicy ByPass', $CHAINSAW_COMMAND
+
+Computer treeview context menu
+	- Renamed Event Viewer to Event Viewer (Connect)
+	- Added Event Viewer (Collect) 
+		Starts a sessions with an endpoint and allows you to download various types of logs to view locally with eventvwr
+
+Updated PSWriteHTML
+	- Fixed Network Connection Filter, preventing the need to rerun the collection if you want to filter the results again
+	- Added new Endpoint Deep Dive Section.
+
+Removed all code and files in regards to winpmem
+
+Fixed bug with computer treeview data import from AD where the treenodes weren't populating correctly
+
+Updated Custom User Added Query/commands
+	- removed restrictions with Get-*
+	- added button to 'verify syntax'
+	- added button to 'disable syntax verification'
+
+==================================================
+v5.4.1 - 13 Aug 2021
 ==================================================
 Added 'User Added Commands' node group to command treeview
 	- able to use the bottom [WinRM] Query section to add user added commands

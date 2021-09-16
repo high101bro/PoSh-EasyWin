@@ -3,7 +3,9 @@ function Launch-ProgressBarForm {
         $FormTitle,
         $ProgressBarImage = "$Dependencies\Images\PoSh-EasyWin Image 01.png",
         $ScriptBlockProgressBarInput,
-        [switch]$ShowImage
+        [switch]$ShowImage, 
+        $Width = $FormScale * 350,
+        $Height = $FormScale * 180
     )
     <#
     https://flamingtext.com/logo/Design-Style
@@ -12,8 +14,8 @@ function Launch-ProgressBarForm {
     #>
     $script:ProgressBarSelectionForm = New-Object System.Windows.Forms.Form -Property @{
         Text   = $FormTitle
-        Width  = $FormScale * 350
-        Height = $FormScale * 180
+        Width  = $Width
+        Height = $Height
         StartPosition = "CenterScreen"
         Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
         Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)

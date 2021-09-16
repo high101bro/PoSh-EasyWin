@@ -494,7 +494,7 @@ $ManageWindowsPortProxyButtonAdd_Click = {
                     }
                 }
                 $ManagePortProxyForm.Controls.Add($RelayActionExecutionButton)
-                CommonButtonSettings -Button $RelayActionExecutionButton
+                Apply-CommonButtonSettings -Button $RelayActionExecutionButton
 
 
                 $ManagePortProxyStatusBar = New-Object System.Windows.Forms.StatusBar

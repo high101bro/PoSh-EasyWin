@@ -9,7 +9,7 @@ $PoShEasyWin.Refresh()
 $script:ProgressBarEndpointsProgressBar.Value = 0
 
 $AccountsStartTimePickerValue = $AccountsStartTimePicker.Value
-$AccountsStopTimePickerValue  = $AccountsStopTimePicker.Value
+$AccountsStopTimePickerValue = $AccountsStopTimePicker.Value
 $AccountActivityTextboxtext = $AccountActivityTextbox.lines | Where-Object {$_ -ne ''}
 
 function MonitorJobScriptBlock {
@@ -101,7 +101,3 @@ $CollectionCommandEndTime  = Get-Date
 $CollectionCommandDiffTime = New-TimeSpan -Start $ExecutionStartTime -End $CollectionCommandEndTime
 $ResultsListBox.Items.RemoveAt(0)
 $ResultsListBox.Items.Insert(0,"$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss')) [$CollectionCommandDiffTime]  $CollectionName")
-
-
-
-

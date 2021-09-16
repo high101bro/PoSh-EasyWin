@@ -44,7 +44,7 @@ function Display-ContextMenuForAccountsTreeNode {
 
 
     $AccountsListSelectedNodeActionsToolStripLabel = New-Object System.Windows.Forms.ToolStripLabel -Property @{
-        Text      = "Node Actions"
+        Text      = "Node Actions: Selected"
         Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),1,2,1)
         ForeColor = 'Black'
     }
@@ -121,7 +121,7 @@ function Display-ContextMenuForAccountsTreeNode {
                     Add_Click = { AddAccount-AccountsTreeNode }
                     Add_KeyDown = { if ($_.KeyCode -eq "Enter") { AddAccount-AccountsTreeNode } }    
                 }
-                CommonButtonSettings -Button $AccountsTreeNodePopupAddAccountButton
+                Apply-CommonButtonSettings -Button $AccountsTreeNodePopupAddAccountButton
                 $AccountsTreeNodePopup.Controls.Add($AccountsTreeNodePopupAddAccountButton)
             
                 # $script:AccountsTreeView.ExpandAll()
@@ -263,7 +263,7 @@ function Display-ContextMenuForAccountsTreeNode {
                         Size     = @{ Width  = $FormScale * 100
                                     Height = $FormScale * 22 }
                     }
-                    CommonButtonSettings -Button $AccountsTreeNodeRenamePopupButton
+                    Apply-CommonButtonSettings -Button $AccountsTreeNodeRenamePopupButton
                     $AccountsTreeNodeRenamePopupButton.Add_Click({ Rename-AccountsTreeNodeSelected })
                     $AccountsTreeNodeRenamePopup.Controls.Add($AccountsTreeNodeRenamePopupButton)
 
@@ -300,11 +300,22 @@ function Display-ContextMenuForAccountsTreeNode {
 
 
     $AccountsListCheckedNodeActionsToolStripLabel = New-Object System.Windows.Forms.ToolStripLabel -Property @{
-        Text      = "Node Actions"
+        Text      = "Node Actions: All"
         Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),1,2,1)
         ForeColor = 'Black'
     }
     $script:AccountsListContextMenuStrip.Items.Add($AccountsListCheckedNodeActionsToolStripLabel)
+
+
+    $AccountsListCheckedNodeActionsDeselectAllButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
+        Text        = "  - Uncheck All Nodes"
+        ForeColor   = 'Black'
+        Add_Click   = {
+            $script:AccountsListContextMenuStrip.Close()
+            Deselect-AllAccounts
+        }
+    }
+    $script:AccountsListContextMenuStrip.Items.Add($AccountsListCheckedNodeActionsDeselectAllButton)
 
 
     $AccountsListCheckeddNodeActionsToolStripComboBox = New-Object System.Windows.Forms.ToolStripComboBox -Property @{
@@ -315,17 +326,6 @@ function Display-ContextMenuForAccountsTreeNode {
         Add_SelectedIndexChanged = {
             $script:AccountsListContextMenuStrip.Close()
 
-            if ($This.selectedItem -eq " - Uncheck All Nodes") { 
-                $script:AccountsListContextMenuStrip.Close()
-
-                ### ... I didn't feel the need to error on unchecking... becuase it's not conducting any actions on the network
-                #if ($script:AccountsTreeViewSelected.count -eq 0){
-                #    [System.Windows.MessageBox]::Show('Error: You need to check at least one Account.','Uncheck All')
-                #}
-                #else {
-                    Deselect-AllAccounts
-                #}
-            }
             if ($This.selectedItem -eq " - Tag Nodes With Metadata") { 
                 $script:AccountsListContextMenuStrip.Close()
 
@@ -495,7 +495,6 @@ function Display-ContextMenuForAccountsTreeNode {
             }
         }
     }
-    $AccountsListCheckeddNodeActionsToolStripComboBox.Items.Add(" - Uncheck All Nodes")
     $AccountsListCheckeddNodeActionsToolStripComboBox.Items.Add(" - Tag Nodes With Metadata")
     $AccountsListCheckeddNodeActionsToolStripComboBox.Items.Add(" - Move Nodes To New OU/CN")
     $AccountsListCheckeddNodeActionsToolStripComboBox.Items.Add(" - Delete Checked Nodes")

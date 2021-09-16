@@ -143,7 +143,7 @@ $AutoCreateMultiSeriesChartButtonAdd_Click = {
                     Size     = @{ Width  = $FormScale * 101
                                 Height = $FormScale * 59 }
                 }
-                CommonButtonSettings -Button $AutoChartsExecuteButton
+                Apply-CommonButtonSettings -Button $AutoChartsExecuteButton
                 $AutoChartsExecuteButton.Add_Click({
                     if ($AutoChartSelectChartComboBox.text -eq 'Select A Chart') { $AutoChartSelectChartComboBox.ForeColor = 'Red' }
                     else { $AutoChartSelectChartComboBox.ForeColor = 'Black' }
@@ -158,7 +158,7 @@ $AutoCreateMultiSeriesChartButtonAdd_Click = {
                     $script:AutoChartsForm.Width         = $PoShEasyWin.Size.Width  #1160
                     $script:AutoChartsForm.Height        = $PoShEasyWin.Size.Height #638
                     $script:AutoChartsForm.StartPosition = "CenterScreen"
-                    $script:AutoChartsForm.Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+                    $script:AutoChartsForm.Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 18),0,0,0)
                     $script:AutoChartsForm.Add_Closing = { $This.dispose() }
 
 
@@ -230,11 +230,11 @@ $AutoCreateMultiSeriesChartButtonAdd_Click = {
                 $AutoChartsSelectionForm.Controls.Add($AutoChartsExecuteButton)
     [void] $AutoChartsSelectionForm.ShowDialog()
 
-    CommonButtonSettings -Button $OpenXmlResultsButton
-    CommonButtonSettings -Button $OpenCsvResultsButton
+    Apply-CommonButtonSettings -Button $OpenXmlResultsButton
+    Apply-CommonButtonSettings -Button $OpenCsvResultsButton
 
-    CommonButtonSettings -Button $AutoCreateDashboardChartButton
-    CommonButtonSettings -Button $SendFilesButton
+    Apply-CommonButtonSettings -Button $AutoCreateDashboardChartButton
+    Apply-CommonButtonSettings -Button $SendFilesButton
 }
 
 $SendFilesButtonAdd_MouseHover = {

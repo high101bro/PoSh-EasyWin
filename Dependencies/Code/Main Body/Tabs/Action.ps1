@@ -22,40 +22,14 @@ $Section3ActionTab = New-Object System.Windows.Forms.TabPage -Property @{
 $MainRightTabControl.Controls.Add($Section3ActionTab)
 
 
-<# TODO: Needs more testing
-batman
-# Used to verify settings before capturing memory as this can be quite resource exhaustive
-# Contains various checks to ensure that adequate resources are available on the remote and local hosts
-Update-FormProgress "$Dependencies\Code\Execution\Action\Launch-RekallWinPmemForm.ps1"
-. "$Dependencies\Code\Execution\Action\Launch-RekallWinPmemForm.ps1"
-
-
-Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\RekallWinPmemMemoryCaptureButton.ps1"
-. "$Dependencies\Code\System.Windows.Forms\Button\RekallWinPmemMemoryCaptureButton.ps1"
-$RekallWinPmemMemoryCaptureButton = New-Object System.Windows.Forms.Button -Property @{
-    Text   = "Memory Capture"
-    Left   = $FormScale * 3
-    Top    = $FormScale * 5
-    Width  = $FormScale * 124
-    Height = $FormScale * 22
-    Add_MouseHover = $RekallWinPmemMemoryCaptureButtonAdd_MouseHover
-    Add_Click      = $RekallWinPmemMemoryCaptureButtonAdd_Click
-}
-CommonButtonSettings -Button $RekallWinPmemMemoryCaptureButton
-
-
-# Test if the External Programs directory is present; if it's there load the tab
-if (Test-Path "$ExternalPrograms\WinPmem\WinPmem.exe") { $Section3ActionTab.Controls.Add($RekallWinPmemMemoryCaptureButton) }
-
-#>
-
-
-
 Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\ComputerListRDPButton.ps1"
 . "$Dependencies\Code\System.Windows.Forms\Button\ComputerListRDPButton.ps1"
 
 Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\ComputerListPSSessionButton.ps1"
 . "$Dependencies\Code\System.Windows.Forms\Button\ComputerListPSSessionButton.ps1"
+
+Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\ComputerListPSSessionMultipleEndpointsButton.ps1"
+. "$Dependencies\Code\System.Windows.Forms\Button\ComputerListPSSessionMultipleEndpointsButton.ps1"
 
 Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\ComputerListPSSessionPivotButton.ps1"
 . "$Dependencies\Code\System.Windows.Forms\Button\ComputerListPSSessionPivotButton.ps1"
@@ -66,8 +40,11 @@ Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\ComputerList
 Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\ComputerListPsExecButton.ps1"
 . "$Dependencies\Code\System.Windows.Forms\Button\ComputerListPsExecButton.ps1"
 
-Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\EventViewerButton.ps1"
-. "$Dependencies\Code\System.Windows.Forms\Button\EventViewerButton.ps1"
+Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\EventViewerConnectionButton.ps1"
+. "$Dependencies\Code\System.Windows.Forms\Button\EventViewerConnectionButton.ps1"
+
+Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\EventViewerCollectionButton.ps1"
+. "$Dependencies\Code\System.Windows.Forms\Button\EventViewerCollectionButton.ps1"
 
 # Rolls the credenaisl: 250 characters of random: abcdefghiklmnoprstuvwxyzABCDEFGHKLMNOPRSTUVWXYZ1234567890
 Update-FormProgress "$Dependencies\Code\Credential Management\Generate-NewRollingPassword.ps1"
@@ -106,7 +83,7 @@ $ManageCredentialsGroupBox = New-Object System.Windows.Forms.GroupBox -Property 
                 Add_MouseHover = $ProvideCredentialsButtonAdd_MouseHover
             }
             $ManageCredentialsGroupBox.Controls.Add($ProvideCredentialsButton)
-            CommonButtonSettings -Button $ProvideCredentialsButton
+            Apply-CommonButtonSettings -Button $ProvideCredentialsButton
 
 
             Update-FormProgress "$Dependencies\Code\System.Windows.Forms\CheckBox\ComputerListProvideCredentialsCheckBox.ps1"
@@ -146,7 +123,7 @@ $PivotExecutionGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
                 #Add_MouseHover = $ManageWindowsPortProxyButtonAdd_MouseHover
             }
             $PivotExecutionGroupBox.Controls.Add($ManageWindowsPortProxyButton)
-            CommonButtonSettings -Button $ManageWindowsPortProxyButton            
+            Apply-CommonButtonSettings -Button $ManageWindowsPortProxyButton            
 
 
             $script:ComputerListPivotExecutionCheckbox = New-Object System.Windows.Forms.Checkbox -Property @{
@@ -329,7 +306,7 @@ $ExecutionModeGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
             Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ComboBox\OptionJobTimeoutSelectionComboBox.ps1"
             . "$Dependencies\Code\System.Windows.Forms\ComboBox\OptionJobTimeoutSelectionComboBox.ps1"
             $script:OptionJobTimeoutSelectionComboBox = New-Object -TypeName System.Windows.Forms.Combobox -Property @{
-                Text   = $JobTimeOutSeconds
+                Text   = '180'
                 Left   = $script:OptionJobTimeoutSelectionLabel.Left + $script:OptionJobTimeoutSelectionLabel.Width + $($FormScale * 5)
                 Top    = $script:OptionJobTimeoutSelectionLabel.Top - $($FormScale * 3)
                 Width  = $FormScale * 50
@@ -358,7 +335,7 @@ $ExecutionModeGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
             }
             ### $script:ComputerListExecuteButton.Add_Click($ExecuteScriptHandler) ### Is located lower in the script
             $ExecutionModeGroupBox.Controls.Add($script:ComputerListExecuteButton)
-            CommonButtonSettings -Button $script:ComputerListExecuteButton
+            Apply-CommonButtonSettings -Button $script:ComputerListExecuteButton
             
 $Section3ActionTab.Controls.Add($ExecutionModeGroupBox)
 

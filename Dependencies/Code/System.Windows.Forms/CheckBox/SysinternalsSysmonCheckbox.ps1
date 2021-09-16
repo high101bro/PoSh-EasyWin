@@ -1,4 +1,6 @@
 $SysinternalsSysmonCheckBoxAdd_Click = {
+    Update-QueryCount
+    
     $StatusListBox.Items.Clear()
     $StatusListBox.Items.Add("Sysinternals - Sysmon")
 

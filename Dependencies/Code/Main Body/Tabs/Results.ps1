@@ -22,7 +22,7 @@ $ResultsTabOpNotesAddButton = New-Object System.Windows.Forms.Button -Property @
     Font      = New-Object System.Drawing.Font("Courier New",$($FormScale * 11),0,0,0)
 }
 $Section3ResultsTab.Controls.Add($ResultsTabOpNotesAddButton)
-CommonButtonSettings -Button $ResultsTabOpNotesAddButton
+Apply-CommonButtonSettings -Button $ResultsTabOpNotesAddButton
 
 
 $ResultsListBox = New-Object System.Windows.Forms.ListBox -Property @{

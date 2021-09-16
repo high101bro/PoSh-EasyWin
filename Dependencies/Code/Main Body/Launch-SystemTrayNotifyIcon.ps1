@@ -65,10 +65,10 @@ $SystemTrayNotifyIcon = {
 
 
         $SystemTrayAbortReloadMenuItem = New-Object System.Windows.Forms.MenuItem -Property @{
-            Text      = 'Abort / Reload'
+            Text      = 'Restart Tool'
             Add_Click = {
                 $script:VerifyCloseForm = New-Object System.Windows.Forms.Form -Property @{
-                    Text    = 'Abort / Reload'
+                    Text    = 'Restart Tool'
                     Width   = 280
                     Height  = 109
                     TopMost = $true
@@ -83,7 +83,7 @@ $SystemTrayNotifyIcon = {
                     Add_Closing = { $This.dispose() }
                 }
                 $VerifyCloseLabel = New-Object System.Windows.Forms.Label -Property @{
-                    Text   = 'Do you want to Abort / Reload PoSh-EasyWin?'
+                    Text   = 'Do you want to restart PoSh-EasyWin?'
                     Width  = 280
                     Height = 22
                     Left   = 10

@@ -112,10 +112,6 @@ function Generate-ComputerList {
         # This will dedup the ComputerList, though there is unlikely multiple computers of the same name
         $script:ComputerList = $script:ComputerList | Sort-Object -Unique            
     }
-
-#    #Removed For Testing#$ResultsListBox.Items.Clear()
-#    $ResultsListBox.Items.Add("Computers to be queried:  $($script:ComputerList.Count)")
-#    $ResultsListBox.Items.Add("$script:ComputerList")
 }
 
 

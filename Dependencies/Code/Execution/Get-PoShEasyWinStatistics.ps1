@@ -1,5 +1,4 @@
 function Get-PoShEasyWinStatistics {
-    Count-SectionQueries
     Compile-SelectedCommandTreeNode
     $QueryCount = $script:SectionQueryCount + $script:CommandsCheckedBoxesSelected.count
 

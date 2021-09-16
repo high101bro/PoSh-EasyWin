@@ -1,5 +1,5 @@
 $DirectoryUpdateButtonAdd_Click = {
-    $script:CollectedDataTimeStampDirectory = "$CollectedDataDirectory\$((Get-Date).ToString('yyyy-MM-dd @ HHmm ss'))"
+    $script:CollectedDataTimeStampDirectory = "$CollectedDataDirectory\$((Get-Date).ToString('yyyy-MM-dd HH.mm.ss'))"
     $script:CollectionSavedDirectoryTextBox.Text = $script:CollectedDataTimeStampDirectory
 }
 

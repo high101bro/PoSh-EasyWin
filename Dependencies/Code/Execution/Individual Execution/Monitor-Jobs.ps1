@@ -2,7 +2,9 @@
 function Monitor-Jobs {
     param(
         $CollectionName,
+        $ComputerName,
         [switch]$txt,
+        [switch]$xml,
         [String]$SaveProperties,
         [switch]$NotExportFiles,
         [string]$JobsExportFiles = 'true',
@@ -18,14 +20,21 @@ function Monitor-Jobs {
         [switch]$PcapSwitch,
         [switch]$PSWriteHTMLSwitch,
         $PSWriteHTML,
-        $PSWriteHTMLFilePath
+        $PSWriteHTMLFilePath,
+        [string[]]$PSWriteHTMLOptions
     )
-
-    $JobId = Get-Random -Minimum 100009 -Maximum 999999
+    
+    $JobId = Get-Random
     if ($txt) {
         $SaveResultsCmd = 'Out-File'
         $ImportDataCmd  = 'Get-Content'
         $FileExtension  = 'txt'
+        $NoTypeInfo     = $null
+    }
+    elseif ($xml) {
+        $SaveResultsCmd = 'Select-Object * | Export-CliXml'
+        $ImportDataCmd  = 'Import-CliXml'
+        $FileExtension  = 'xml'
         $NoTypeInfo     = $null
     }
     else {
@@ -265,7 +274,7 @@ function Monitor-Jobs {
             Width  = `$FormScale * 75
             Height = `$FormScale * 20
         }
-        CommonButtonSettings -Button `$script:GeneratedAutoChartOptionsButton$ChartNumber
+        Apply-CommonButtonSettings -Button `$script:GeneratedAutoChartOptionsButton$ChartNumber
         `$script:GeneratedAutoChartOptionsButton$ChartNumber.Add_Click({
             if (`$script:GeneratedAutoChartOptionsButton$ChartNumber.Text -eq 'Options v') {
                 `$script:GeneratedAutoChartOptionsButton$ChartNumber.Text = 'Options ^'
@@ -386,7 +395,7 @@ function Monitor-Jobs {
             Width  = `$FormScale * 65
             Height = `$FormScale * 20
         }
-        CommonButtonSettings -Button `$script:GeneratedAutoChart3DToggleButton$ChartNumber
+        Apply-CommonButtonSettings -Button `$script:GeneratedAutoChart3DToggleButton$ChartNumber
         `$script:GeneratedAutoChart3DInclination$ChartNumber = 0
         `$script:GeneratedAutoChart3DToggleButton$ChartNumber.Add_Click({
 
@@ -459,7 +468,7 @@ function Monitor-Jobs {
             Height = `$FormScale * 23
             Anchor = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
         }
-        CommonButtonSettings -Button `$script:GeneratedAutoChartCheckDiffButton$ChartNumber
+        Apply-CommonButtonSettings -Button `$script:GeneratedAutoChartCheckDiffButton$ChartNumber
         `$script:GeneratedAutoChartCheckDiffButton$ChartNumber.Add_Click({
             `$script:GeneratedAutoChartInvestDiffDropDownArray$ChartNumber = `$script:SourceCSVData$ChartNumber | Select-Object -Property `$script:PropertyX$ChartNumber -ExpandProperty `$script:PropertyX$ChartNumber | Sort-Object -Unique
 
@@ -507,7 +516,7 @@ function Monitor-Jobs {
                 Add_KeyDown = { if (`$_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart$ChartNumber } }
                 Add_Click   = { script:InvestigateDifference-AutoChart$ChartNumber }
             }
-            CommonButtonSettings -Button `$script:GeneratedAutoChartInvestDiffExecuteButton$ChartNumber
+            Apply-CommonButtonSettings -Button `$script:GeneratedAutoChartInvestDiffExecuteButton$ChartNumber
             
 
             `$script:GeneratedAutoChartInvestDiffPosResultsLabel$ChartNumber = New-Object System.Windows.Forms.Label -Property @{
@@ -573,7 +582,7 @@ function Monitor-Jobs {
                 Generate-AutoChartsCommand -FilePath `$script:AutoChartDataSourceCsv$JobId -QueryName "Processes" -QueryTabName `$script:SeriesName$ChartNumber -PropertyX `$script:PropertyX$ChartNumber -PropertyY `$script:PropertyY$ChartNumber 
             }
         }
-        CommonButtonSettings -Button `$AutoChart01ExpandChartButton
+        Apply-CommonButtonSettings -Button `$AutoChart01ExpandChartButton
         `$script:GeneratedAutoChartManipulationPanel$ChartNumber.Controls.Add(`$AutoChart01ExpandChartButton)
 
 
@@ -593,7 +602,7 @@ function Monitor-Jobs {
                 else { [System.Windows.MessageBox]::Show("Error: Cannot Import Data!`nThe associated .xml file was not located.","PoSh-EasyWin") }
             }
         }
-        CommonButtonSettings -Button `$script:GeneratedAutoChartOpenInShell$ChartNumber
+        Apply-CommonButtonSettings -Button `$script:GeneratedAutoChartOpenInShell$ChartNumber
         `$script:GeneratedAutoChartManipulationPanel$ChartNumber.controls.Add(`$script:GeneratedAutoChartOpenInShell$ChartNumber)
 
 
@@ -610,7 +619,7 @@ function Monitor-Jobs {
                 else { [System.Windows.MessageBox]::Show("No CSV data available.","PoSh-EasyWin") }
             }
         }
-        CommonButtonSettings -Button `$script:GeneratedAutoChartGridView$ChartNumber
+        Apply-CommonButtonSettings -Button `$script:GeneratedAutoChartGridView$ChartNumber
         `$script:GeneratedAutoChartManipulationPanel$ChartNumber.controls.Add(`$script:GeneratedAutoChartGridView$ChartNumber)
 
 
@@ -621,7 +630,7 @@ function Monitor-Jobs {
             Width  = `$FormScale * 205
             Height = `$FormScale * 23
         }
-        CommonButtonSettings -Button `$script:GeneratedAutoChartSaveButton$ChartNumber
+        Apply-CommonButtonSettings -Button `$script:GeneratedAutoChartSaveButton$ChartNumber
         [enum]::GetNames('System.Windows.Forms.DataVisualization.Charting.ChartImageFormat')
         `$script:GeneratedAutoChartSaveButton$ChartNumber.Add_Click({
             Save-ChartImage -Chart `$script:GeneratedAutoChart$ChartNumber -Title `$script:GeneratedAutoChartTitle$ChartNumber
@@ -692,7 +701,8 @@ if ($MonitorMode) {
             Remove-Item "`$(`$script:CollectionSavedDirectoryTextBox.Text)\`$script:JobName$JobId (`$(`$JobStartTimeFileFriendly$JobId)).xml" -Force     
         }
 
-        `$script:CurrentJobs$JobId | Remove-Job -Force
+        `$script:CurrentJobs$JobId | Stop-Job -ErrorAction SilentlyContinue
+        `$script:CurrentJobs$JobId | Remove-Job -Force -ErrorAction SilentlyContinue
 
         # Moves all form items higher up that are not created before this one
         Get-Variable | Where-Object {`$_.Name -match 'Section3MonitorJobPanel'} | Foreach-Object {
@@ -765,16 +775,57 @@ if ($MonitorMode) {
     `$script:InputValues$JobId         = `$InputValues
     `$script:ArgumentList$JobId        = `$ArgumentList 
     `$script:PSWriteHTMLFilePath$JobId = `$PSWriteHTMLFilePath
+    `$script:PSWriteHTMLOptions$JobId  = `$PSWriteHTMLOptions
+    `$script:CollectionName$JobId      = `$ComputerName
 
 "@
-#    if ($SMITH) {
-#        Invoke-Expression @"
-#        `$script:SmithScript$JobId  = `$SmithScript
-#        `$script:RestartTime$JobId  = `$RestartTime
-#        `$script:InputValues$JobId  = `$InputValues
-#        `$script:ArgumentList$JobId = `$ArgumentList 
-#"@
-#    }
+
+    if ($SMITH) {
+       Invoke-Expression @"
+       `$script:SmithScript$JobId  = `$SmithScript
+       `$script:RestartTime$JobId  = `$RestartTime
+       `$script:InputValues$JobId  = `$InputValues
+       `$script:ArgumentList$JobId = `$ArgumentList 
+"@
+   }
+
+    if ($PSWriteHTMLSwitch) {
+        Invoke-Expression @"
+        if ("$PSWriteHTML" -eq 'EndpointDataSystemSnapshot') {
+            `$script:JobName$JobId = "Endpoint Analysis `$(`$(`$script:PSWriteHTMLOptions$JobId).count) `$(`$script:CollectionName$JobId) (Browser)"
+        }
+        elseif ("$PSWriteHTML" -eq 'PSWriteHTMLProcesses') {
+            `$script:JobName$JobId = 'Process Data (Browser)'
+        }
+        elseif ("$PSWriteHTML" -eq 'EndpointDataNetworkConnections') {
+            `$script:JobName$JobId = 'Network Connections (Browser)'
+        }
+        elseif ("$PSWriteHTML" -eq 'EndpointDataConsoleLogons') {
+            `$script:JobName$JobId = 'Console Logons (Browser)'
+        }
+        elseif ("$PSWriteHTML" -eq 'PowerShellSessionsData') {
+            `$script:JobName$JobId = 'PowerShell Sessions (Browser)'
+        }
+        elseif ("$PSWriteHTML" -eq 'EndpointApplicationCrashes') {
+            `$script:JobName$JobId = 'Application Crashes (Browser)'
+        }
+        elseif ("$PSWriteHTML" -eq 'EndpointLogonActivity') {
+            `$script:JobName$JobId = 'Logon Activity (Browser)'
+        }
+        elseif ("$PSWriteHTML" -eq 'PSWriteHTMLADUsers') {
+            `$script:JobName$JobId = 'Active Directory Users (Browser)'
+        }
+        elseif ("$PSWriteHTML" -eq 'PSWriteHTMLADComputers') {
+            `$script:JobName$JobId = 'Active Directory Computers (Browser)'
+        }
+"@
+    }
+    else {
+        Invoke-Expression @"
+        `$script:JobName$JobId = `$CollectionName
+"@
+    }
+
 
     Invoke-Expression @"
             
@@ -794,36 +845,6 @@ if ($MonitorMode) {
             }
         }
 
-
-        if (`$PSWriteHTMLSwitch) {
-            if ("$PSWriteHTML" -eq 'PSWriteHTMLProcesses') {
-                `$script:JobName$JobId = 'Process Data (Browser)'
-            }
-            elseif ("$PSWriteHTML" -eq 'EndpointDataNetworkConnections') {
-                `$script:JobName$JobId = 'Network Connections (Browser)'
-            }
-            elseif ("$PSWriteHTML" -eq 'EndpointDataConsoleLogons') {
-                `$script:JobName$JobId = 'Console Logons (Browser)'
-            }
-            elseif ("$PSWriteHTML" -eq 'PowerShellSessionsData') {
-                `$script:JobName$JobId = 'PowerShell Sessions (Browser)'
-            }
-            elseif ("$PSWriteHTML" -eq 'EndpointApplicationCrashes') {
-                `$script:JobName$JobId = 'Application Crashes (Browser)'
-            }
-            elseif ("$PSWriteHTML" -eq 'EndpointLogonActivity') {
-                `$script:JobName$JobId = 'Logon Activity (Browser)'
-            }
-            elseif ("$PSWriteHTML" -eq 'PSWriteHTMLADUsers') {
-                `$script:JobName$JobId = 'Active Directory Users (Browser)'
-            }
-            elseif ("$PSWriteHTML" -eq 'PSWriteHTMLADComputers') {
-                `$script:JobName$JobId = 'Active Directory Computers (Browser)'
-            }
-        }
-        else {
-            `$script:JobName$JobId = `$CollectionName
-        }
 
         # Sets the job timeout value, so they don't run forever
         `$script:JobsTimer$JobId  = [int]`$(`$script:OptionJobTimeoutSelectionComboBox.Text)
@@ -1114,6 +1135,10 @@ if ($MonitorMode) {
                             [System.Windows.Forms.MessageBox]::Show("It is recommended to use the Text button to view flat text results. The following results have been parsed from flat text into a csv format.`n`nText with two or more spaces between them normally indicate separate fields. That said, linux systems are not very consistent with their CLI output. Results returned sometimes don't have headers or some fields are separated by as little as a single space which result in frequent formatting issues.`n`nThis section should only be used for reference and is useful for column searching/filtering, but should be verified against accompanied flat text results.","PoSh-EasyWin - `$(`$script:JobName$JobId)")
                             Import-Csv "`$(`$script:CollectionSavedDirectoryTextBox.Text)\`$script:JobName$JobId (`$(`$JobStartTimeFileFriendly$JobId)).csv" | Out-GridView -Title "PoSh-EasyWin: `$(`$script:JobName$JobId) (`$(`$JobStartTimeFileFriendly$JobId))"
                         }
+                        elseif ("$FileExtension" -like 'xml') {
+                            `$script:PSWriteHTMLResults$JobId = `$script:CurrentJobs$JobId | Receive-Job -Keep
+                            (`$script:PSWriteHTMLResults$JobId | Out-GridView -Title "`$script:JobName$JobId (`$(`$JobStartTimeFileFriendly$JobId))" -PassThru).Value | Out-GridView -Title "`$script:JobName$JobId (`$(`$JobStartTimeFileFriendly$JobId))"
+                        }
                         else {
                             if (`$script:JobCSVResults$JobId) {
                                 `$script:JobCSVResults$JobId  | Out-GridView -Title "PoSh-EasyWin: `$(`$script:JobName$JobId) (`$(`$JobStartTimeFileFriendly$JobId))"
@@ -1157,8 +1182,21 @@ if ($MonitorMode) {
                     if (`$This.BackColor -ne 'LightGray') {
                         `$This.BackColor = 'LightGray'
                     }
-                    if ((Test-Path "`$script:PSWriteHTMLFilePath$JobId")) {
+                    `$script:PSWriteHTMLResults$JobId = `$script:CurrentJobs$JobId | Receive-Job -Keep
+                    if (`$script:PSWriteHTMLResults$JobId) {
+                        if ("$PSWriteHTML" -eq 'EndpointDataSystemSnapshot') {                            
+                            script:Individual-PSWriteHTML -Title 'Endpoint Snapshot' -Data { script:Invoke-PSWriteHTMLEndpointSnapshot -InputData `$script:PSWriteHTMLResults$JobId -CheckedItems `$script:PSWriteHTMLOptions$JobId -MenuPrompt }
+                        }
+                        elseif ("$PSWriteHTML" -eq 'EndpointDataNetworkConnections') {
+                            `$script:PSWriteHTMLResults$JobId = `$script:CurrentJobs$JobId | Receive-Job -Keep
+                            script:Individual-PSWriteHTML -Title 'Network Connections' -Data {                         
+                                script:Invoke-PSWriteHTMLNetworkConnections -InputData `$script:PSWriteHTMLResults$JobId -MenuPrompt
+                            }
+                        }
                         Invoke-Item `$script:PSWriteHTMLFilePath$JobId
+                    }
+                    elseif ((Test-Path "`$script:PSWriteHTMLFilePath$JobId")) {
+                        Invoke-Item `$script:PSWriteHTMLFilePath$JobId                    
                     }
                     else {
                         [System.Windows.Forms.MessageBox]::Show("There is currently on data available.",'PoSh-EasyWin - Console')
@@ -1357,7 +1395,7 @@ if ($MonitorMode) {
                                                                                                 }
                                                                                             }
                                                                                             `$ChartGenerationOptionsForm.Controls.Add(`$ChartGenerationPropertyList1Button)
-                                                                                            CommonButtonSettings -Button `$ChartGenerationPropertyList1Button
+                                                                                            Apply-CommonButtonSettings -Button `$ChartGenerationPropertyList1Button
                                                                 
                                                                                 foreach ( `$Property in `$ChartProperties ) { `$script:ChartGenerationPropertyList1ListBox.Items.Add(`$Property) }
                                                                 
@@ -1407,7 +1445,7 @@ if ($MonitorMode) {
                                                                                     }
                                                                                 }
                                                                                 `$ChartGenerationOptionsForm.Controls.Add(`$ChartGenerationPropertyList3Button)
-                                                                                CommonButtonSettings -Button `$ChartGenerationPropertyList3Button
+                                                                                Apply-CommonButtonSettings -Button `$ChartGenerationPropertyList3Button
                                                                 
                                                                     `$ChartGenerationOptionsForm.ShowDialog()
                                                             }
@@ -1513,7 +1551,7 @@ if ($MonitorMode) {
                                                 }
                                             }
                                             `$script:MonitorJobsDetailsRunningGroupBox$JobId.Controls.Add(`$script:MonitorJobsDetailsRunningSelectAllButton$JobId)
-                                            CommonButtonSettings -Button `$script:MonitorJobsDetailsRunningSelectAllButton$JobId
+                                            Apply-CommonButtonSettings -Button `$script:MonitorJobsDetailsRunningSelectAllButton$JobId
                                     
                                     
                                             `$script:MonitorJobsDetailsRunningSelectedForTreeNodeButton$JobId = New-Object System.Windows.Forms.Button -Property @{
@@ -1551,7 +1589,7 @@ if ($MonitorMode) {
                                                 }
                                             }
                                             `$script:MonitorJobsDetailsRunningGroupBox$JobId.Controls.Add(`$script:MonitorJobsDetailsRunningSelectedForTreeNodeButton$JobId)
-                                            CommonButtonSettings -Button `$script:MonitorJobsDetailsRunningSelectedForTreeNodeButton$JobId        
+                                            Apply-CommonButtonSettings -Button `$script:MonitorJobsDetailsRunningSelectedForTreeNodeButton$JobId        
     
     
                                             `$script:MonitorJobsDetailsCompletedGroupBox$JobId = New-Object System.Windows.Forms.GroupBox -Property @{
@@ -1594,7 +1632,7 @@ if ($MonitorMode) {
                                                     }
                                                 }
                                                 `$script:MonitorJobsDetailsCompletedGroupBox$JobId.Controls.Add(`$script:MonitorJobsDetailsCompletedSelectAllButton$JobId)
-                                                CommonButtonSettings -Button `$script:MonitorJobsDetailsCompletedSelectAllButton$JobId
+                                                Apply-CommonButtonSettings -Button `$script:MonitorJobsDetailsCompletedSelectAllButton$JobId
         
                                         
                                                 `$script:MonitorJobsDetailsCompletedSelectedForTreeNodeLButton$JobId = New-Object System.Windows.Forms.Button -Property @{
@@ -1632,7 +1670,7 @@ if ($MonitorMode) {
                                                     }
                                                 }
                                                 `$script:MonitorJobsDetailsCompletedGroupBox$JobId.Controls.Add(`$script:MonitorJobsDetailsCompletedSelectedForTreeNodeLButton$JobId)
-                                                CommonButtonSettings -Button `$script:MonitorJobsDetailsCompletedSelectedForTreeNodeLButton$JobId
+                                                Apply-CommonButtonSettings -Button `$script:MonitorJobsDetailsCompletedSelectedForTreeNodeLButton$JobId
                                                                                
     
                                         `$script:MonitorJobsDetailsStoppedGroupBox$JobId = New-Object System.Windows.Forms.GroupBox -Property @{
@@ -1676,7 +1714,7 @@ if ($MonitorMode) {
                                                 }
                                             }
                                             `$script:MonitorJobsDetailsStoppedGroupBox$JobId.Controls.Add(`$script:MonitorJobsDetailsStoppedSelectAllButton$JobId)
-                                            CommonButtonSettings -Button `$script:MonitorJobsDetailsStoppedSelectAllButton$JobId
+                                            Apply-CommonButtonSettings -Button `$script:MonitorJobsDetailsStoppedSelectAllButton$JobId
     
                                             
                                             `$script:MonitorJobsDetailsStoppedSelectedForTreeNodeButton$JobId = New-Object System.Windows.Forms.Button -Property @{
@@ -1714,7 +1752,7 @@ if ($MonitorMode) {
                                                 }
                                             }
                                             `$script:MonitorJobsDetailsStoppedGroupBox$JobId.Controls.Add(`$script:MonitorJobsDetailsStoppedSelectedForTreeNodeButton$JobId)
-                                            CommonButtonSettings -Button `$script:MonitorJobsDetailsStoppedSelectedForTreeNodeButton$JobId
+                                            Apply-CommonButtonSettings -Button `$script:MonitorJobsDetailsStoppedSelectedForTreeNodeButton$JobId
     
     
                                             `$script:MonitorJobsDetailsFailedGroupBox$JobId = New-Object System.Windows.Forms.GroupBox -Property @{
@@ -1758,7 +1796,7 @@ if ($MonitorMode) {
                                                     }
                                                 }
                                                 `$script:MonitorJobsDetailsFailedGroupBox$JobId.Controls.Add(`$script:MonitorJobsDetailsFailedSelectAllButton$JobId)
-                                                CommonButtonSettings -Button `$script:MonitorJobsDetailsFailedSelectAllButton$JobId
+                                                Apply-CommonButtonSettings -Button `$script:MonitorJobsDetailsFailedSelectAllButton$JobId
     
                                         
                                                 `$script:MonitorJobsDetailsFailedSelectedForTreeNodeButton$JobId = New-Object System.Windows.Forms.Button -Property @{
@@ -1795,7 +1833,7 @@ if ($MonitorMode) {
                                                     }
                                                 }
                                                 `$script:MonitorJobsDetailsFailedGroupBox$JobId.Controls.Add(`$script:MonitorJobsDetailsFailedSelectedForTreeNodeButton$JobId)
-                                                CommonButtonSettings -Button `$script:MonitorJobsDetailsFailedSelectedForTreeNodeButton$JobId
+                                                Apply-CommonButtonSettings -Button `$script:MonitorJobsDetailsFailedSelectedForTreeNodeButton$JobId
     
                                                 
                                         `$script:MonitorJobsDetailsStatusGroupBox$JobId = New-Object System.Windows.Forms.GroupBox -Property @{
@@ -2162,13 +2200,13 @@ if ($DisableReRun) {
         ))
 
         
-        CommonButtonSettings -Button `$script:Section3MonitorJobDetailsButton$JobId
-        CommonButtonSettings -Button `$script:Section3MonitorJobCommandButton$JobId
-        CommonButtonSettings -Button `$script:Section3MonitorJobViewButton$JobId
-        CommonButtonSettings -Button `$script:Section3MonitorJobShellButton$JobId
-        CommonButtonSettings -Button `$script:Section3MonitorJobChartsButton$JobId
-        CommonButtonSettings -Button `$script:Section3MonitorJobRemoveButton$JobId
-        CommonButtonSettings -Button `$script:Section3MonitorJobOptionsButton$JobId
+        Apply-CommonButtonSettings -Button `$script:Section3MonitorJobDetailsButton$JobId
+        Apply-CommonButtonSettings -Button `$script:Section3MonitorJobCommandButton$JobId
+        Apply-CommonButtonSettings -Button `$script:Section3MonitorJobViewButton$JobId
+        Apply-CommonButtonSettings -Button `$script:Section3MonitorJobShellButton$JobId
+        Apply-CommonButtonSettings -Button `$script:Section3MonitorJobChartsButton$JobId
+        Apply-CommonButtonSettings -Button `$script:Section3MonitorJobRemoveButton$JobId
+        Apply-CommonButtonSettings -Button `$script:Section3MonitorJobOptionsButton$JobId
         
         `$script:Section3MonitorJobRemoveButton$JobId.ForeColor = 'Red'
 
@@ -2278,36 +2316,38 @@ if ($DisableReRun) {
                     `$script:CurrentJobs$JobId | Receive-Job -Keep | Export-CliXml "`$(`$script:CollectionSavedDirectoryTextBox.Text)\`$script:JobName$JobId (`$(`$JobStartTimeFileFriendly$JobId)).xml"
                 }
 
-                if ("$PSWriteHTML" -eq 'PSWriteHTMLProcesses') {
-                    `$script:$PSWriteHTML = `$script:CurrentJobs$JobId | Receive-Job
-                    script:Individual-PSWriteHTML -Title 'Process Data' -Data { script:Start-PSWriteHTMLProcessData }
+                if ("$PSWriteHTML" -eq 'EndpointDataSystemSnapshot') {
+                    `$script:PSWriteHTMLResults$JobId = `$script:CurrentJobs$JobId | Receive-Job -Keep
+                    script:Individual-PSWriteHTML -Title 'Endpoint Snapshot' -Data { script:Invoke-PSWriteHTMLEndpointSnapshot -InputData `$script:PSWriteHTMLResults$JobId -CheckedItems `$script:PSWriteHTMLOptions$JobId }
+                }
+                elseif ("$PSWriteHTML" -eq 'PSWriteHTMLProcesses') {
+                    `$script:PSWriteHTMLResults$JobId = `$script:CurrentJobs$JobId | Receive-Job -Keep
+                    script:Individual-PSWriteHTML -Title 'Process Data' -Data { script:Invoke-PSWriteHTMLProcess -InputData `$script:PSWriteHTMLResults$JobId }
                 }
                 elseif ("$PSWriteHTML" -eq 'EndpointDataNetworkConnections') {
-                    `$script:$PSWriteHTML = `$script:CurrentJobs$JobId | Receive-Job
-                    script:Individual-PSWriteHTML -Title 'Network Connections' -Data { script:Start-PSWriteHTMLNetworkConnections }
+                    `$script:PSWriteHTMLResults$JobId = `$script:CurrentJobs$JobId | Receive-Job -Keep
+                    script:Individual-PSWriteHTML -Title 'Network Connections' -Data {                         
+                        script:Invoke-PSWriteHTMLNetworkConnections -InputData `$script:PSWriteHTMLResults$JobId 
+                    }
                 }
                 elseif ("$PSWriteHTML" -eq 'EndpointDataConsoleLogons') {
-                    `$script:$PSWriteHTML = `$script:CurrentJobs$JobId | Receive-Job
-                    script:Individual-PSWriteHTML -Title 'Console Logons' -Data { script:Start-PSWriteHTMLConsoleLogons }
+                    `$script:PSWriteHTMLResults$JobId = `$script:CurrentJobs$JobId | Receive-Job -Keep
+                    script:Individual-PSWriteHTML -Title 'Console Logons' -Data { script:Invoke-PSWriteHTMLConsoleLogons -InputData `$script:PSWriteHTMLResults$JobId }
                 }
                 elseif ("$PSWriteHTML" -eq 'PowerShellSessionsData') {
-                    `$script:$PSWriteHTML = `$script:CurrentJobs$JobId | Receive-Job
-                    script:Individual-PSWriteHTML -Title 'PowerShell Sessions' -Data { script:Start-PSWriteHTMLPowerShellSessions }
-                }
-                elseif ("$PSWriteHTML" -eq 'EndpointApplicationCrashes') {
-                    `$script:$PSWriteHTML = `$script:CurrentJobs$JobId | Receive-Job
-                    script:Individual-PSWriteHTML -Title 'Application Crashes' -Data { script:Start-PSWriteHTMLApplicationCrashes }
+                    `$script:PSWriteHTMLResults$JobId = `$script:CurrentJobs$JobId | Receive-Job -Keep
+                    script:Individual-PSWriteHTML -Title 'PowerShell Sessions' -Data { script:Invoke-PSWriteHTMLPowerShellSessions -InputData `$script:PSWriteHTMLResults$JobId }
                 }
                 elseif ("$PSWriteHTML" -eq 'EndpointLogonActivity') {
-                    `$script:$PSWriteHTML = `$script:CurrentJobs$JobId | Receive-Job
-                    script:Individual-PSWriteHTML -Title 'Logon Activity' -Data { script:Start-PSWriteHTMLLogonActivity }
+                    `$script:PSWriteHTMLResults$JobId = `$script:CurrentJobs$JobId | Receive-Job -Keep
+                    script:Individual-PSWriteHTML -Title 'Logon Activity' -Data { script:Invoke-PSWriteHTMLLogonActivity -InputData `$script:PSWriteHTMLResults$JobId }
                 }
                 elseif ("$PSWriteHTML" -eq 'PSWriteHTMLADUsers') {
-                    `$script:$PSWriteHTML = `$script:CurrentJobs$JobId | Receive-Job
+                    `$script:PSWriteHTMLResults$JobId = `$script:CurrentJobs$JobId | Receive-Job -Keep
                     script:Individual-PSWriteHTML -Title 'AD Users' -Data { script:Start-PSWriteHTMLActiveDirectoryUsers }
                 }
                 elseif ("$PSWriteHTML" -eq 'PSWriteHTMLADComputers') {
-                    `$script:$PSWriteHTML = `$script:CurrentJobs$JobId | Receive-Job
+                    `$script:PSWriteHTMLResults$JobId = `$script:CurrentJobs$JobId | Receive-Job -Keep
                     script:Individual-PSWriteHTML -Title 'AD Computers' -Data { script:Start-PSWriteHTMLActiveDirectoryComputers }
                 }
 
@@ -2363,7 +2403,7 @@ if ($DisableReRun) {
                             }
                         }    
                         `$script:Section3MonitorJobPanel$JobId.Controls.Add(`$script:Section3MonitorJobViewHTMLorTextButton$JobId)
-                        CommonButtonSettings -Button `$script:Section3MonitorJobViewHTMLorTextButton$JobId    
+                        Apply-CommonButtonSettings -Button `$script:Section3MonitorJobViewHTMLorTextButton$JobId    
                     }
                     elseif ((Test-Path -Path "`$Dependencies\Modules\PSWriteHTML") -and (Get-Content "`$PoShHome\Settings\PSWriteHTML Module Install.txt") -match 'Yes') {
                         `$script:Section3MonitorJobViewHTMLorTextButton$JobId = New-Object System.Windows.Forms.Button -Property @{
@@ -2404,7 +2444,7 @@ if ($DisableReRun) {
                             }
                         }
                         `$script:Section3MonitorJobPanel$JobId.Controls.Add(`$script:Section3MonitorJobViewHTMLorTextButton$JobId)
-                        CommonButtonSettings -Button `$script:Section3MonitorJobViewHTMLorTextButton$JobId    
+                        Apply-CommonButtonSettings -Button `$script:Section3MonitorJobViewHTMLorTextButton$JobId    
                     }
 
                     

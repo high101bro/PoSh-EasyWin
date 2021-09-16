@@ -28,10 +28,8 @@ $OptionTextToSpeachButton = New-Object System.Windows.Forms.Button -Property @{
         }
     }
 }
-# Cmdlet Parameter Option
-if ($AudibleCompletionMessage) {$OptionTextToSpeachCheckBox.Checked = $True}
 $Section2OptionsTab.Controls.Add($OptionTextToSpeachButton)
-CommonButtonSettings -Button $OptionTextToSpeachButton
+Apply-CommonButtonSettings -Button $OptionTextToSpeachButton
 
 
 $OptionViewReadMeButton = New-Object System.Windows.Forms.Button -Property @{
@@ -44,7 +42,7 @@ $OptionViewReadMeButton = New-Object System.Windows.Forms.Button -Property @{
     Add_Click = { Launch-ReadMe -ReadMe }
 }
 $Section2OptionsTab.Controls.Add($OptionViewReadMeButton)
-CommonButtonSettings -Button $OptionViewReadMeButton
+Apply-CommonButtonSettings -Button $OptionViewReadMeButton
 
 
 Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\PoShEasyWinLicenseAndAboutButton.ps1"
@@ -60,7 +58,7 @@ $PoShEasyWinLicenseAndAboutButton = New-Object Windows.Forms.Button -Property @{
     Add_MouseHover = $PoShEasyWinLicenseAndAboutButtonAdd_MouseHover
 }
 $Section2OptionsTab.Controls.Add($PoShEasyWinLicenseAndAboutButton)
-CommonButtonSettings -Button $PoShEasyWinLicenseAndAboutButton
+Apply-CommonButtonSettings -Button $PoShEasyWinLicenseAndAboutButton
 
 
 $OptionSearchComputersForPreviouslyCollectedDataProcessesGroupBox = New-Object System.Windows.Forms.Groupbox -Property @{
@@ -213,37 +211,10 @@ $script:ExtendedViewRadioButton = New-Object System.Windows.Forms.RadioButton -P
 $Section2OptionsTab.Controls.Add($script:ExtendedViewRadioButton)
 
 
-Load-Code "$Dependencies\Code\System.Windows.Forms\Checkbox\OptionsAutoSaveChartsAsImages.ps1"
-. "$Dependencies\Code\System.Windows.Forms\Checkbox\OptionsAutoSaveChartsAsImages.ps1"
-$OptionsAutoSaveChartsAsImages = New-Object System.Windows.Forms.Checkbox -Property @{
-    Text    = "Autosave Charts As Images"
-    Left    = $script:CompactViewRadioButton.Left
-    Top     = $script:CompactViewRadioButton.Top + $script:CompactViewRadioButton.Height
-    Width   = $FormScale * 225
-    Height  = $FormScale * 22
-    Enabled = $true
-    Checked = $false
-    Font    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    Add_Click = {
-        $This.Checked | Set-Content "$PoShHome\Settings\Auto Save Charts As Images.txt" -Force
-
-        if (-not $(Test-Path -Path $AutosavedChartsDirectory)) {
-            New-Item -Type Directory -Path $AutosavedChartsDirectory -Force
-        }
-    }
-    Add_MouseHover = $OptionsAutoSaveChartsAsImagesAdd_MouseHover
-}
-if (Test-Path "$PoShHome\Settings\Auto Save Charts As Images.txt") { 
-    if ((Get-Content "$PoShHome\Settings\Auto Save Charts As Images.txt") -eq 'True'){$OptionsAutoSaveChartsAsImages.checked = $true}
-    else {$OptionsAutoSaveChartsAsImages.checked = $false}
-}
-$Section2OptionsTab.Controls.Add( $OptionsAutoSaveChartsAsImages )
-
-
                 $OptionGUITopWindowCheckBox = New-Object System.Windows.Forms.Checkbox -Property @{
                     Text    = "GUI always on top"
-                    Left    = $OptionsAutoSaveChartsAsImages.Left + $OptionsAutoSaveChartsAsImages.Width
-                    Top     = $OptionsAutoSaveChartsAsImages.Top
+                    Left    = $script:ExtendedViewRadioButton.Left + $script:ExtendedViewRadioButton.Width
+                    Top     = $script:ExtendedViewRadioButton.Top
                     Width   = $FormScale * 200
                     Height  = $FormScale * 22
                     Enabled = $true
@@ -277,7 +248,7 @@ $Section2OptionsTab.Controls.Add( $OptionsAutoSaveChartsAsImages )
 $OptionTextToSpeachCheckBox = New-Object System.Windows.Forms.Checkbox -Property @{
     Text    = "Audible Completion Message"
     Left    = $FormScale * 3
-    Top     = $OptionsAutoSaveChartsAsImages.Top + $OptionsAutoSaveChartsAsImages.Height
+    Top     = $script:CompactViewRadioButton.Top + $script:CompactViewRadioButton.Height
     Width   = $FormScale * 225
     Height  = $FormScale * 22
     Enabled = $true
@@ -289,7 +260,6 @@ if (Test-Path "$PoShHome\Settings\Audible Completion Message.txt") {
     if ((Get-Content "$PoShHome\Settings\Audible Completion Message.txt") -eq 'True'){$OptionTextToSpeachCheckBox.checked = $true}
     else {$OptionTextToSpeachCheckBox.checked = $false}
 }
-if ($AudibleCompletionMessage) {$OptionTextToSpeachCheckBox.Checked = $True}
 $Section2OptionsTab.Controls.Add($OptionTextToSpeachCheckBox)
 
 
@@ -355,7 +325,7 @@ $OptionSaveCliXmlDataCheckBox = New-Object System.Windows.Forms.Checkbox -Proper
     Width   = $FormScale * 300
     Height  = $FormScale * 22
     Enabled = $true
-    Checked = $false
+    Checked = $true
     Font    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     Add_Click = { $This.Checked | Set-Content "$PoShHome\Settings\Save XML Data - Object Data Used For Terminals.txt" -Force }
 }

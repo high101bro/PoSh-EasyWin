@@ -19,13 +19,13 @@ $OpenCsvResultsButtonAdd_Click = {
     }
     Save-OpNotes
 
-    CommonButtonSettings -Button $RetrieveFilesButton
+    Apply-CommonButtonSettings -Button $RetrieveFilesButton
 
-    CommonButtonSettings -Button $OpenXmlResultsButton
-    CommonButtonSettings -Button $OpenCsvResultsButton
+    Apply-CommonButtonSettings -Button $OpenXmlResultsButton
+    Apply-CommonButtonSettings -Button $OpenCsvResultsButton
 
-    CommonButtonSettings -Button $AutoCreateDashboardChartButton
-    CommonButtonSettings -Button $SendFilesButton
+    Apply-CommonButtonSettings -Button $AutoCreateDashboardChartButton
+    Apply-CommonButtonSettings -Button $SendFilesButton
 }
 
 $OpenCsvResultsButtonAdd_MouseHover = {

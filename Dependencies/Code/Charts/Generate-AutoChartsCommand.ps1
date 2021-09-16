@@ -15,7 +15,7 @@ function Generate-AutoChartsCommand {
     $CollectedDataDirectory                 = "$PoShHome\Collected Data"
 
     # Location of separate queries
-    $script:CollectedDataTimeStampDirectory = "$CollectedDataDirectory\$((Get-Date).ToString('yyyy-MM-dd @ HHmm ss'))"
+    $script:CollectedDataTimeStampDirectory = "$CollectedDataDirectory\$((Get-Date).ToString('yyyy-MM-dd HH.mm.ss'))"
 
     # Location of Uncompiled Results
     $script:IndividualHostResults           = "$script:CollectedDataTimeStampDirectory\Results By Endpoints"
@@ -808,7 +808,7 @@ script:Update-MultiSeriesChart
                     Height = $FormScale * 20 }
         Anchor    = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Left;
     }
-    CommonButtonSettings -Button $script:AutoChartsOptionsButton
+    Apply-CommonButtonSettings -Button $script:AutoChartsOptionsButton
     $script:AutoChartsOptionsButton.Add_Click({
         if ($script:AutoChartsOptionsButton.Text -eq 'Options v') {
             $script:AutoChartsOptionsButton.Text = 'Options ^'
@@ -830,7 +830,7 @@ script:Update-MultiSeriesChart
                         Height = $FormScale * 20 }
         Anchor    = [System.Windows.Forms.AnchorStyles]::Top -bor [System.Windows.Forms.AnchorStyles]::Right
     }
-    CommonButtonSettings -Button $script:AutoChartsCloseTabButton
+    Apply-CommonButtonSettings -Button $script:AutoChartsCloseTabButton
     $script:AutoChartsCloseTabButton.Add_Click({
         $AutoChartsTabControl.Controls.Remove($script:AutoChartsIndividualTabPage)
     })
@@ -1059,7 +1059,7 @@ script:Update-MultiSeriesChart
             Width    = $FormScale * 100
             Height   = $FormScale * 20
         }
-        CommonButtonSettings -Button $AutoChartsInvestigateDifferenceExecuteButton
+        Apply-CommonButtonSettings -Button $AutoChartsInvestigateDifferenceExecuteButton
         $AutoChartsInvestigateDifferenceExecuteButton.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { InvestigateDifference-AutoChart }})
         $AutoChartsInvestigateDifferenceExecuteButton.Add_Click({ InvestigateDifference-AutoChart })
         $AutoChartsInvestigateDifferenceForm.Controls.Add($AutoChartsInvestigateDifferenceExecuteButton)
@@ -1151,7 +1151,7 @@ script:Update-MultiSeriesChart
                        Height = $FormScale * 22 }
         Anchor    = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
     }
-    CommonButtonSettings -Button $script:AutoChartsSaveChartImageButton
+    Apply-CommonButtonSettings -Button $script:AutoChartsSaveChartImageButton
     $script:AutoChartsSaveChartImageButton.Add_Click({
         Save-ChartImage -Chart $script:AutoChartCharting  -Title $script:AutoChartTitle
     })
@@ -1295,7 +1295,7 @@ script:Update-MultiSeriesChart
                        Height = $FormScale * 22 }
         Anchor    = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
     }
-    CommonButtonSettings -Button $script:AutoChartsResultsMostRecentButton
+    Apply-CommonButtonSettings -Button $script:AutoChartsResultsMostRecentButton
     $script:AutoChartsResultsMostRecentButton.Add_Click({ Import-CSV $script:CSVFilePathMostRecent | Out-GridView -Title "$script:CSVFilePathMostRecent" })
     $script:AutoChartsManipulationPanel.controls.Add($script:AutoChartsResultsMostRecentButton)
 
@@ -1316,7 +1316,7 @@ script:Update-MultiSeriesChart
                        Height = $FormScale * 22 }
         Anchor    = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
     }
-    CommonButtonSettings -Button $script:AutoChartsInvestigateMostRecentButton
+    Apply-CommonButtonSettings -Button $script:AutoChartsInvestigateMostRecentButton
     $script:AutoChartsInvestigateMostRecentButton.Add_Click({
         script:Investigate-CsvFileData -ImportCsvFileData $script:CSVFilePathMostRecent
     })
@@ -1420,7 +1420,7 @@ script:Update-MultiSeriesChart
                       Height = $FormScale * 22 }
         Anchor    = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
     }
-    CommonButtonSettings -Button $script:AutoChartsResultsPreviousButton
+    Apply-CommonButtonSettings -Button $script:AutoChartsResultsPreviousButton
     $script:AutoChartsResultsPreviousButton.Add_Click({ Import-CSV $script:CSVFilePathPrevious | Out-GridView -Title "$script:CSVFilePathPrevious" })
     $script:AutoChartsManipulationPanel.controls.Add($script:AutoChartsResultsPreviousButton)
 
@@ -1441,7 +1441,7 @@ script:Update-MultiSeriesChart
                        Height = $FormScale * 22 }
         Anchor    = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
     }
-    CommonButtonSettings -Button $script:AutoChartsInvestigatePreviousButton
+    Apply-CommonButtonSettings -Button $script:AutoChartsInvestigatePreviousButton
     $script:AutoChartsInvestigatePreviousButton.Add_Click({
         script:Investigate-CsvFileData -ImportCsvFileData $script:CSVFilePathPrevious
     })
@@ -1545,7 +1545,7 @@ script:Update-MultiSeriesChart
                       Height = $FormScale * 22 }
         Anchor    = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
     }
-    CommonButtonSettings -Button $script:AutoChartsResultsBaselineButton
+    Apply-CommonButtonSettings -Button $script:AutoChartsResultsBaselineButton
     $script:AutoChartsResultsBaselineButton.Add_Click({ Import-CSV $script:CSVFilePathBaseline | Out-GridView -Title "$script:CSVFilePathBaseline" })
     $script:AutoChartsManipulationPanel.controls.Add($script:AutoChartsResultsBaselineButton)
 
@@ -1566,7 +1566,7 @@ script:Update-MultiSeriesChart
                        Height = $FormScale * 22 }
         Anchor    = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
     }
-    CommonButtonSettings -Button $script:AutoChartsInvestigateBaselineButton
+    Apply-CommonButtonSettings -Button $script:AutoChartsInvestigateBaselineButton
     $script:AutoChartsInvestigateBaselineButton.Add_Click({
         script:Investigate-CsvFileData -ImportCsvFileData $script:CSVFilePathBaseline
     })
@@ -1712,7 +1712,7 @@ script:Update-MultiSeriesChart
         Size      = @{ Width  = $script:AutoChartsResultsBaselineButton.Size.Width
                         Height = $FormScale * 22 }
     }
-    CommonButtonSettings -Button $script:AutoCharts3DToggleButton
+    Apply-CommonButtonSettings -Button $script:AutoCharts3DToggleButton
     $script:AutoCharts3DInclination = 0
     $script:AutoCharts3DToggleButton.Add_Click({
         $script:AutoCharts3DInclination += 10

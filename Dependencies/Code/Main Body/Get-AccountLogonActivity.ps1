@@ -42,7 +42,7 @@ Function Get-AccountLogonActivity {
 
     $FilterHashTable = @{
         LogName   = 'Security'
-        ID        = 4624
+        ID        = 4624,4625,4634,4647,4648
     }
     if ($PSBoundParameters.ContainsKey('StartTime')){
         $FilterHashTable['StartTime'] = $StartTime

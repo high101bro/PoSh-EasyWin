@@ -349,7 +349,7 @@ $EnumerationPortScanGroupBox = New-Object System.Windows.Forms.GroupBox -Propert
                 Add_MouseEnter = {Check-IfScanExecutionReady}
             }
             $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanPortsSelectionButton)
-            CommonButtonSettings -Button $EnumerationPortScanPortsSelectionButton
+            Apply-CommonButtonSettings -Button $EnumerationPortScanPortsSelectionButton
 
 
             $EnumerationPortScanPortRangeNetworkLabel = New-Object System.Windows.Forms.Label -Property @{
@@ -488,7 +488,7 @@ Show-ToolTip -Title "Execute Scan" -Icon "Info" -Message @"
                 }
             }
             $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanExecutionButton)
-            CommonButtonSettings -Button $EnumerationPortScanExecutionButton
+            Apply-CommonButtonSettings -Button $EnumerationPortScanExecutionButton
 
 $Section1EnumerationTab.Controls.Add($EnumerationPortScanGroupBox)
 
@@ -555,7 +555,7 @@ $EnumerationPingSweepGroupBox = New-Object System.Windows.Forms.GroupBox -Proper
                 Add_Click = $EnumerationPingSweepExecutionButtonAdd_Click
             }
             $EnumerationPingSweepGroupBox.Controls.Add($EnumerationPingSweepExecutionButton)
-            CommonButtonSettings -Button $EnumerationPingSweepExecutionButton
+            Apply-CommonButtonSettings -Button $EnumerationPingSweepExecutionButton
 $Section1EnumerationTab.Controls.Add($EnumerationPingSweepGroupBox)
 
 
@@ -570,7 +570,7 @@ $EnumerationResolveDNSNameButton = New-Object System.Windows.Forms.Button -Prope
     Add_Click = $EnumerationResolveDNSNameButtonAdd_Click
 }
 $Section1EnumerationTab.Controls.Add($EnumerationResolveDNSNameButton)
-CommonButtonSettings -Button $EnumerationResolveDNSNameButton
+Apply-CommonButtonSettings -Button $EnumerationResolveDNSNameButton
 
 
 $EnumerationComputerListBox = New-Object System.Windows.Forms.ListBox -Property @{
@@ -627,7 +627,7 @@ $EnumerationComputerListBoxAddToListButton = New-Object System.Windows.Forms.But
     }
 }
 $Section1EnumerationTab.Controls.Add($EnumerationComputerListBoxAddToListButton)
-CommonButtonSettings -Button $EnumerationComputerListBoxAddToListButton
+Apply-CommonButtonSettings -Button $EnumerationComputerListBoxAddToListButton
 
 
 $EnumerationComputerListBoxSelectAllButton = New-Object System.Windows.Forms.Button -Property @{
@@ -641,7 +641,7 @@ $EnumerationComputerListBoxSelectAllButton = New-Object System.Windows.Forms.But
     }
 }
 $Section1EnumerationTab.Controls.Add($EnumerationComputerListBoxSelectAllButton)
-CommonButtonSettings -Button $EnumerationComputerListBoxSelectAllButton
+Apply-CommonButtonSettings -Button $EnumerationComputerListBoxSelectAllButton
 
 
 Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\EnumerationComputerListBoxClearButton.ps1"
@@ -655,4 +655,4 @@ $EnumerationComputerListBoxClearButton = New-Object System.Windows.Forms.Button 
     Add_Click = $EnumerationComputerListBoxClearButtonAdd_Click
 }
 $Section1EnumerationTab.Controls.Add($EnumerationComputerListBoxClearButton)
-CommonButtonSettings -Button $EnumerationComputerListBoxClearButton
+Apply-CommonButtonSettings -Button $EnumerationComputerListBoxClearButton

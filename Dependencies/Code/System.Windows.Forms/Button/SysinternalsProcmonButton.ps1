@@ -17,7 +17,7 @@ $SysinternalsProcmonButtonAdd_Click = {
         Start-Process "$ExternalPrograms\Procmon.exe" -ArgumentList "`"$($SysinternalsProcmonOpenFileDialog.filename)`""
     }
     #Returns button to default color if it was turned green after task completion
-    CommonButtonSettings -Button $SysinternalsProcmonButton
+    Apply-CommonButtonSettings -Button $SysinternalsProcmonButton
 }
 
 

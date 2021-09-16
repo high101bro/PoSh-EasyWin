@@ -32,7 +32,6 @@ function Create-TreeViewCheckBoxArray {
             }
         }
         $script:AccountsTreeViewSelected = $script:AccountsTreeViewSelected | Select-Object -Unique
-        #return $script:AccountsTreeViewSelected
     }
     if ($Endpoint) {
         # This array stores checkboxes that are check; a minimum of at least one checkbox will be needed later in the script
@@ -62,7 +61,6 @@ function Create-TreeViewCheckBoxArray {
             }
         }
         $script:ComputerTreeViewSelected = $script:ComputerTreeViewSelected | Select-Object -Unique
-        #return $script:ComputerTreeViewSelected
     }
 }
 

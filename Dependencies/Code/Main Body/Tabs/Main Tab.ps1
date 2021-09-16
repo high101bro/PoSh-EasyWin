@@ -25,7 +25,7 @@ Update-FormProgress "$Dependencies\Code\System.Windows.Forms\TextBox\CollectionS
 . "$Dependencies\Code\System.Windows.Forms\TextBox\CollectionSavedDirectoryTextBox.ps1"
 $script:CollectionSavedDirectoryTextBox = New-Object System.Windows.Forms.TextBox -Property @{
     Name   = "Saved Directory List Box"
-    Text   = $SaveDirectory
+    Text   = $SaveLocation
     Left   = $DirectoryListLabel.Left
     Top    = $DirectoryListLabel.Top + $DirectoryListLabel.Height + ($FormScale * 1)
     Width  = $FormScale * 354
@@ -64,7 +64,7 @@ $DirectoryUpdateButton = New-Object System.Windows.Forms.Button -Property @{
     Add_MouseHover = $DirectoryUpdateButtonAdd_MouseHover
 }
 $MainCenterMainTab.Controls.Add($DirectoryUpdateButton)
-CommonButtonSettings -Button $DirectoryUpdateButton
+Apply-CommonButtonSettings -Button $DirectoryUpdateButton
 
 
 Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\DirectoryOpenButton.ps1"
@@ -78,7 +78,7 @@ $DirectoryOpenButton = New-Object System.Windows.Forms.Button -Property @{
     Add_MouseHover = $DirectoryOpenButtonAdd_MouseHover
 }
 $MainCenterMainTab.Controls.Add($DirectoryOpenButton)
-CommonButtonSettings -Button $DirectoryOpenButton
+Apply-CommonButtonSettings -Button $DirectoryOpenButton
 
 
 $ResultsSectionLabel = New-Object System.Windows.Forms.Label -Property @{
@@ -104,7 +104,7 @@ $SendFilesButton = New-Object System.Windows.Forms.Button -Property @{
     Add_Click = $SendFilesButtonAdd_Click
 }
 $MainCenterMainTab.Controls.Add($SendFilesButton)
-CommonButtonSettings -Button $SendFilesButton
+Apply-CommonButtonSettings -Button $SendFilesButton
 
 
 # batman
@@ -122,7 +122,7 @@ CommonButtonSettings -Button $SendFilesButton
 #     Add_MouseHover = $AutoCreateMultiSeriesChartButtonAdd_MouseHover
 # }
 # $MainCenterMainTab.Controls.Add($AutoCreateMultiSeriesChartButton)
-# CommonButtonSettings -Button $AutoCreateMultiSeriesChartButton
+# Apply-CommonButtonSettings -Button $AutoCreateMultiSeriesChartButton
 
 
 Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\PSWriteHTMLButton.ps1"
@@ -137,7 +137,7 @@ $PSWriteHTMLButton = New-Object System.Windows.Forms.Button -Property @{
     Enabled = $false
 }
 $MainCenterMainTab.Controls.Add($PSWriteHTMLButton)
-CommonButtonSettings -Button $PSWriteHTMLButton
+Apply-CommonButtonSettings -Button $PSWriteHTMLButton
 if ((Test-Path -Path "$Dependencies\Modules\PSWriteHTML") -and (Get-Content "$PoShHome\Settings\PSWriteHTML Module Install.txt") -match 'Yes') {
     $PSWriteHTMLButton.enabled = $true
     $PSWriteHTMLButton.Text    = "Graph Data [Beta]"
@@ -146,21 +146,6 @@ if ((Test-Path -Path "$Dependencies\Modules\PSWriteHTML") -and (Get-Content "$Po
 # This is placed here as the code is used with the "Open Data In Shell" button in the main form as well as within the dashboards
 Update-FormProgress "$Dependencies\Code\Main Body\script:Open-XmlResultsInShell.ps1"
 . "$Dependencies\Code\Main Body\script:Open-XmlResultsInShell.ps1"
-
-# Code to allow the dashboards to update upon request
-Update-FormProgress "$Dependencies\Code\Charts\Update-AutoChartsActiveDirectoryComputers.ps1"
-. "$Dependencies\Code\Charts\Update-AutoChartsActiveDirectoryComputers.ps1"
-Update-FormProgress "$Dependencies\Code\Charts\Update-AutoChartsActiveDirectoryGroups.ps1"
-. "$Dependencies\Code\Charts\Update-AutoChartsActiveDirectoryGroups.ps1"
-Update-FormProgress "$Dependencies\Code\Charts\Update-AutoChartsActiveDirectoryUserAccounts.ps1"
-. "$Dependencies\Code\Charts\Update-AutoChartsActiveDirectoryUserAccounts.ps1"
-Update-FormProgress "$Dependencies\Code\Charts\Update-AutoChartsDeepBlueAll.ps1"
-. "$Dependencies\Code\Charts\Update-AutoChartsDeepBlueAll.ps1"
-Update-FormProgress "$Dependencies\Code\Charts\Update-AutoChartsDeepBlue7Days.ps1"
-. "$Dependencies\Code\Charts\Update-AutoChartsDeepBlue7Days.ps1"
-Update-FormProgress "$Dependencies\Code\Charts\Update-AutoChartsDeepBlue24Hours.ps1"
-. "$Dependencies\Code\Charts\Update-AutoChartsDeepBlue24Hours.ps1"
-
 
 Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\AutoChartSelectChartComboBoxSelectedItem_Monitor-Jobs.ps1"
 . "$Dependencies\Code\System.Windows.Forms\Button\AutoChartSelectChartComboBoxSelectedItem_Monitor-Jobs.ps1"
@@ -180,7 +165,7 @@ $AutoCreateDashboardChartButton = New-Object System.Windows.Forms.Button -Proper
     Enabled        = $true
 }
 $MainCenterMainTab.Controls.Add($AutoCreateDashboardChartButton)
-CommonButtonSettings -Button $AutoCreateDashboardChartButton
+Apply-CommonButtonSettings -Button $AutoCreateDashboardChartButton
 
 
 $PowerShellTerminalButton = New-Object System.Windows.Forms.Button -Property @{
@@ -194,7 +179,7 @@ $PowerShellTerminalButton = New-Object System.Windows.Forms.Button -Property @{
     }
 }
 #$MainCenterMainTab.Controls.Add($PowerShellTerminalButton)
-CommonButtonSettings -Button $PowerShellTerminalButton
+Apply-CommonButtonSettings -Button $PowerShellTerminalButton
 
 
 Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\RetrieveFilesButton.ps1"
@@ -211,7 +196,7 @@ $RetrieveFilesButton = New-Object System.Windows.Forms.Button -Property @{
     Add_MouseHover = $RetrieveFilesButtonAdd_MouseHover
 }
 $MainCenterMainTab.Controls.Add($RetrieveFilesButton)
-CommonButtonSettings -Button $RetrieveFilesButton
+Apply-CommonButtonSettings -Button $RetrieveFilesButton
 
 
 Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\OpenXmlResultsButton.ps1"
@@ -226,7 +211,7 @@ $OpenXmlResultsButton = New-Object System.Windows.Forms.Button -Property @{
     Add_MouseHover = $OpenXmlResultsButtonAdd_MouseHover
 }
 $MainCenterMainTab.Controls.Add($OpenXmlResultsButton)
-CommonButtonSettings -Button $OpenXmlResultsButton
+Apply-CommonButtonSettings -Button $OpenXmlResultsButton
 
 
 Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\OpenCsvResultsButton.ps1"
@@ -241,7 +226,7 @@ $OpenCsvResultsButton = New-Object System.Windows.Forms.Button -Property @{
     Add_MouseHover = $OpenCsvResultsButtonAdd_MouseHover
 }
 $MainCenterMainTab.Controls.Add($OpenCsvResultsButton)
-CommonButtonSettings -Button $OpenCsvResultsButton
+Apply-CommonButtonSettings -Button $OpenCsvResultsButton
 
 
 # The Launch-ChartImageSaveFileDialog function is use by 'build charts and autocharts'

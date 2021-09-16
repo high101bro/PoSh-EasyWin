@@ -3,17 +3,25 @@
 |                |                                                                 |
 |:---------------|:----------------------------------------------------------------|
 |  File Name     |  PoSh-EasyWin.ps1                                               |
-|  Version       |  v5.3.2                                                         |
-|  Updated       |  07 May 2021                                                    |
+|  Version       |  v6.0.0                                                         |
+|  Updated       |  15 Sep 2021                                                    |
 |  Created       |  21 Aug 2018                                                    |
 |                |                                                                 |
 |  Author        |  Daniel Komnick (high101bro)                                    |
 |  Email         |  high101bro@gmail.com                                           |
 |  Website       |  https://github.com/high101bro/PoSh-EasyWin                     |
-|  Requirements  |  PowerShell v3 (Ideally v5)                                     |
-|                |  WinRM and/or DCOM/RPC                                          |
+|  Requirements  |    PowerShell v6.0+ - PowerShell Core is NOT supported          |
+|                |                     - GUI requires Windows.System.Forms         |
+|                |               v5.1  - PSWriteHTML Module support                |
+|                |                     - Fully tested                              |
+|                |               v4.0  - The use of Copy-Item -Session             |
+|                |                     - Partially Tested                          |
+|                |               v3.0  - Splatting Arguments                       |
+|                |                     - PowerShell Charts support                 |
+|                |                     - Limited testing                           |
+|                |               v2.0  - Not supported, requires splatting         |
 |  Optional      |  PsExec.exe, Procmon.exe, Autoruns.exe, Sysmon.exe,             |
-|                |  etl2pcapng.exe, WinPmem.exe, kitty.exe, plink.exe              |
+|                |  etl2pcapng.exe, kitty.exe, plink.exe, chainsaw.exe             |
 |                |                                                                 |
 
 ***

@@ -1,4 +1,6 @@
 $ExeScriptUserSpecifiedExecutableAndScriptCheckboxAdd_Click = {
+    Update-QueryCount
+    
     $StatusListBox.Items.Clear()
     $StatusListBox.Items.Add("User Specified Executable and Script")
 

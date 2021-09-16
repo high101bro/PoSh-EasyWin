@@ -6,7 +6,6 @@ $ProgressBarPanel.Controls.Add($ProgressBarEndpointsLabel)
 $ProgressBarPanel.Controls.Add($script:ProgressBarEndpointsProgressBar)
 $ProgressBarPanel.Controls.Remove($ProgressBarQueriesLabel)
 $ProgressBarPanel.Controls.Remove($script:ProgressBarQueriesProgressBar)
-Count-SectionQueries
 
 if ($script:SectionQueryCount -gt 0) {
     # This brings specific tabs to the forefront/front view
@@ -108,7 +107,7 @@ else {
                 Buffer-CommandReviewString
             }
         }
-        CommonButtonSettings -Button $CommandReviewReloadNormalRawButton
+        Apply-CommonButtonSettings -Button $CommandReviewReloadNormalRawButton
         $CommandReviewEditForm.Controls.Add($CommandReviewReloadNormalRawButton)
 
 
@@ -171,7 +170,7 @@ else {
 +  Use caustion if editing, charts use the hashtable name field.
 "@                      }
         }
-        CommonButtonSettings -Button $CommandReviewEditExecuteButton
+        Apply-CommonButtonSettings -Button $CommandReviewEditExecuteButton
         $CommandReviewEditForm.Controls.Add($CommandReviewEditExecuteButton)
 
 

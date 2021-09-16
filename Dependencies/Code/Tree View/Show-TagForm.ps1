@@ -55,7 +55,7 @@ function Show-TagForm {
                 }
             }
         }
-        CommonButtonSettings -Button $ComputerListMassTagNewTagNameButton
+        Apply-CommonButtonSettings -Button $ComputerListMassTagNewTagNameButton
         $ComputerListMassTagForm.Controls.AddRange(@($ComputerListMassTagNewTagNameLabel,$ComputerListMassTagNewTagNameComboBox,$ComputerListMassTagNewTagNameButton))
         $ComputerListMassTagForm.Add_Shown({$ComputerListMassTagForm.Activate()})
         $ComputerListMassTagForm.ShowDialog()
@@ -112,7 +112,7 @@ function Show-TagForm {
                 }
             }
         }
-        CommonButtonSettings -Button $AccountsListMassTagNewTagNameButton
+        Apply-CommonButtonSettings -Button $AccountsListMassTagNewTagNameButton
         $AccountsListMassTagForm.Controls.AddRange(@($AccountsListMassTagNewTagNameLabel,$AccountsListMassTagNewTagNameComboBox,$AccountsListMassTagNewTagNameButton))
         $AccountsListMassTagForm.Add_Shown({$AccountsListMassTagForm.Activate()})
         $AccountsListMassTagForm.ShowDialog()

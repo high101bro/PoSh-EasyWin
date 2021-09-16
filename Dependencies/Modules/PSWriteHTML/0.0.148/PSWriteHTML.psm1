@@ -15898,7 +15898,7 @@ function New-HTMLTable {
         [ValidateSet('Top', 'Bottom', 'Both')][string]$FilteringLocation = 'Bottom',
         [string[]][ValidateSet('display', 'cell-border', 'compact', 'hover', 'nowrap', 'order-column', 'row-border', 'stripe')] $Style = @('display', 'compact'),
         [switch]$Simplify,
-        [string]$TextWhenNoData = 'No data available to display.',
+        [string]$TextWhenNoData = 'No Unique Data Available to display.',
         [int] $ScreenSizePercent = 0,
         [string[]] $DefaultSortColumn,
         [int[]] $DefaultSortIndex,
@@ -19574,7 +19574,7 @@ function Out-HtmlView {
         [ValidateSet('Top', 'Bottom', 'Both')][string]$FilteringLocation = 'Bottom',
         [string[]][ValidateSet('display', 'cell-border', 'compact', 'hover', 'nowrap', 'order-column', 'row-border', 'stripe')] $Style = @('display', 'compact'),
         [switch]$Simplify,
-        [string]$TextWhenNoData = 'No data available to display.',
+        [string]$TextWhenNoData = 'No Unique Data Available to display.',
         [int] $ScreenSizePercent = 0,
         [string[]] $DefaultSortColumn,
         [int[]] $DefaultSortIndex,
@@ -19728,7 +19728,7 @@ function Out-HtmlView {
                 $DataTable
             }
         } else {
-            Write-Warning 'Out-HtmlView - No data available.'
+            Write-Warning 'Out-HtmlView - No Unique Data Available.'
         }
     }
 }

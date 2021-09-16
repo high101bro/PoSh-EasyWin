@@ -154,7 +154,7 @@ $ExternalProgramsSysmonGroupBox = New-Object System.Windows.Forms.GroupBox -Prop
                 Add_Click = { Select-SysinternalsSysmonXmlConfig }
             }
             $ExternalProgramsSysmonGroupBox.Controls.Add($SysinternalsSysmonSelectConfigButton)
-            CommonButtonSettings -Button $SysinternalsSysmonSelectConfigButton
+            Apply-CommonButtonSettings -Button $SysinternalsSysmonSelectConfigButton
 
 
             Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\SysinternalsSysmonEventIdsButton.ps1"
@@ -169,7 +169,7 @@ $ExternalProgramsSysmonGroupBox = New-Object System.Windows.Forms.GroupBox -Prop
                 Add_MouseHover = $SysinternalsSysmonEventIdsButtonAdd_MouseHover
             }
             $ExternalProgramsSysmonGroupBox.Controls.Add($SysinternalsSysmonEventIdsButton)
-            CommonButtonSettings -Button $SysinternalsSysmonEventIdsButton
+            Apply-CommonButtonSettings -Button $SysinternalsSysmonEventIdsButton
 
 
             $SysinternalsSysmonConfigTextBox = New-Object System.Windows.Forms.Textbox -Property @{
@@ -254,7 +254,10 @@ $SysinternalsAutorunsCheckbox = New-Object System.Windows.Forms.CheckBox -Proper
     AutoSize  = $true
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
     ForeColor = "Blue"
-    Add_Click = { Update-TreeViewData -Commands -TreeView $script:CommandsTreeView.Nodes }
+    Add_Click = {
+        Update-QueryCount
+        Update-TreeViewData -Commands -TreeView $script:CommandsTreeView.Nodes
+    }
     Add_MouseHover = $SysinternalsAutorunsCheckboxAdd_MouseHover
 }
 $Section1ExecutablesTab.Controls.Add($SysinternalsAutorunsCheckbox)
@@ -292,7 +295,7 @@ $ExternalProgramsAutorunsGroupBox = New-Object System.Windows.Forms.GroupBox -Pr
                 Add_Click = $SysinternalsAutorunsButtonAdd_Click
             }
             $ExternalProgramsAutorunsGroupBox.Controls.Add($SysinternalsAutorunsButton)
-            CommonButtonSettings -Button $SysinternalsAutorunsButton
+            Apply-CommonButtonSettings -Button $SysinternalsAutorunsButton
 
 
             $SysinternalsAutorunsRenameProcessLabel = New-Object System.Windows.Forms.Label -Property @{
@@ -335,7 +338,10 @@ $SysinternalsProcessMonitorCheckbox = New-Object System.Windows.Forms.CheckBox -
     AutoSize  = $true
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
     ForeColor = "Blue"
-    Add_Click = { Update-TreeViewData -Commands -TreeView $script:CommandsTreeView.Nodes }
+    Add_Click = {
+        Update-QueryCount
+        Update-TreeViewData -Commands -TreeView $script:CommandsTreeView.Nodes
+    }
     Add_MouseHover = $SysinternalsProcessMonitorCheckboxAdd_MouseHover
 }
 $Section1ExecutablesTab.Controls.Add($SysinternalsProcessMonitorCheckbox)
@@ -374,7 +380,7 @@ $ExternalProgramsProcmonGroupBox = New-Object System.Windows.Forms.GroupBox -Pro
                 Add_Click = $SysinternalsProcmonButtonAdd_Click
             }
             $ExternalProgramsProcmonGroupBox.Controls.Add($SysinternalsProcmonButton)
-            CommonButtonSettings -Button $SysinternalsProcmonButton
+            Apply-CommonButtonSettings -Button $SysinternalsProcmonButton
 
 
             $SysinternalsProcmonCaptureTimeLabel = New-Object System.Windows.Forms.Label -Property @{
@@ -482,7 +488,7 @@ $ExeScriptProgramGroupBox = New-Object System.Windows.Forms.GroupBox -Property @
                 Add_MouseHover = $ExeScriptSelectExecutableButtonAdd_MouseHover
             }
             $ExeScriptProgramGroupBox.Controls.Add($ExeScriptSelectExecutableButton)
-            CommonButtonSettings -Button $ExeScriptSelectExecutableButton
+            Apply-CommonButtonSettings -Button $ExeScriptSelectExecutableButton
 
 
             $ExeScriptSelectExecutableTextBox = New-Object System.Windows.Forms.Textbox -Property @{
@@ -548,7 +554,7 @@ $ExeScriptProgramGroupBox = New-Object System.Windows.Forms.GroupBox -Property @
                 Add_MouseHover = $ExeScriptSelectScriptButtonAdd_MouseHover
             }
             $ExeScriptProgramGroupBox.Controls.Add($ExeScriptSelectScriptButton)
-            CommonButtonSettings -Button $ExeScriptSelectScriptButton
+            Apply-CommonButtonSettings -Button $ExeScriptSelectScriptButton
 
 
             $ExeScriptSelectScriptTextBox = New-Object System.Windows.Forms.Textbox -Property @{

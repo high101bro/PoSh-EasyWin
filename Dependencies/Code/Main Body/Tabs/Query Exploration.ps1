@@ -466,7 +466,7 @@ $Section3QueryExplorationSaveButton = New-Object System.Windows.Forms.Button -Pr
     Height = $FormScale * 22
     Add_Click = $Section3QueryExplorationSaveButtonAdd_Click
 }
-CommonButtonSettings -Button $Section3QueryExplorationSaveButton
+Apply-CommonButtonSettings -Button $Section3QueryExplorationSaveButton
 # Note: The button is added/removed in other parts of the code
 
 
@@ -480,4 +480,4 @@ $Section3QueryExplorationViewScriptButton = New-Object System.Windows.Forms.Butt
     Height = $FormScale * $Column5BoxHeight
     Add_Click = $Section3QueryExplorationViewScriptButtonAdd_Click
 }
-CommonButtonSettings -Button $Section3QueryExplorationViewScriptButton
+Apply-CommonButtonSettings -Button $Section3QueryExplorationViewScriptButton

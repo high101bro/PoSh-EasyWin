@@ -1,16 +1,31 @@
 <#
 .Description
-    Gets the system's last boot up time, installation date, and local date time in a easy to read format.
+    Compiles various time related data into one easy to read results
 #>
 
+$os = $null
+$GetTimeZone = $null
 $os = Get-WmiObject win32_operatingsystem
-$DateTimes = [PSCustomObject]@{
-    LastBootUpTime  = $os.ConvertToDateTime($os.LastBootUpTime)
-    InstallDate     = $os.ConvertToDateTime($os.InstallDate)
-    LocalDateTime   = $os.ConvertToDateTime($os.LocalDateTime)
-    CurrentTimeZone = $os.CurrentTimeZone
+$GetTimeZone = Get-Timezone
+if ($GetTimeZone) {
+    $DateTimes = [PSCustomObject]@{
+        LastBootUpTime             = $os.ConvertToDateTime($os.LastBootUpTime)
+        InstallDate                = $os.ConvertToDateTime($os.InstallDate)
+        LocalDateTime              = $os.ConvertToDateTime($os.LocalDateTime)
+        TimeZone                   = $GetTimeZone.StandardName
+        BaseUtcOffset              = $GetTimeZone.BaseUtcOffset
+        SupportsDaylightSavingTime = $GetTimeZone.SupportsDaylightSavingTime
+    }
+    $DateTimes | Select-Object @{n='ComputerName';E={$env:COMPUTERNAME}}, LocalDateTime, LastBootUpTime, InstallDate, TimeZone, BaseUtcOffset, SupportsDaylightSavingTime
 }
-$DateTimes | Select-Object PSComputerName, LocalDateTime, LastBootUpTime, InstallDate, CurrentTimeZone
-
+else {
+    $DateTimes = [PSCustomObject]@{
+        LastBootUpTime  = $os.ConvertToDateTime($os.LastBootUpTime)
+        InstallDate     = $os.ConvertToDateTime($os.InstallDate)
+        LocalDateTime   = $os.ConvertToDateTime($os.LocalDateTime)
+        CurrentTimeZone = $os.CurrentTimeZone
+    }
+    $DateTimes | Select-Object @{n='ComputerName';E={$env:COMPUTERNAME}}, LocalDateTime, LastBootUpTime, InstallDate, CurrentTimeZone
+}
 
 

@@ -13,9 +13,9 @@ if ([bool]((Get-Command Get-NetTCPConnection).ParameterSets | Select-Object -Exp
                 $Conn | Add-Member -MemberType NoteProperty 'ProcessName'     $Proc.Name
                 $Conn | Add-Member -MemberType NoteProperty 'CommandLine'     $Proc.CommandLine
                 $Conn | Add-Member -MemberType NoteProperty 'ExecutablePath'  $proc.ExecutablePath
-                $Conn | Add-Member -MemberType NoteProperty 'ScriptNote'       'Get-NetTCPConnection Enhanced'
+                $Conn | Add-Member -MemberType NoteProperty 'ScriptNote'      'Get-NetTCPConnection Enhanced'
 
-                if ($Conn.ExecutablePath -ne $null -AND -NOT $NoHash) {
+                if ($Conn.ExecutablePath -ne $null) {
                     $MD5Hash = New-Object -TypeName System.Security.Cryptography.MD5CryptoServiceProvider
                     $Hash    = [System.BitConverter]::ToString($MD5Hash.ComputeHash([System.IO.File]::ReadAllBytes($proc.ExecutablePath)))
                     $Conn | Add-Member -MemberType NoteProperty MD5Hash $($Hash -replace "-","")
@@ -54,7 +54,7 @@ else {
             $Connection | Add-Member -MemberType NoteProperty 'Duration'        ((New-TimeSpan -Start ([WMI] '').ConvertToDateTime($proc.CreationDate)).ToString())
             $Connection | Add-Member -MemberType NoteProperty 'ScriptNote'      'NetStat.exe Enhanced'
 
-            if ($Connection.ExecutablePath -ne $null -AND -NOT $NoHash) {
+            if ($Connection.ExecutablePath -ne $null) {
                 $MD5Hash = New-Object -TypeName System.Security.Cryptography.MD5CryptoServiceProvider
                 $Hash    = [System.BitConverter]::ToString($MD5Hash.ComputeHash([System.IO.File]::ReadAllBytes($proc.ExecutablePath)))
                 $Connection | Add-Member -MemberType NoteProperty MD5Hash $($Hash -replace "-","")

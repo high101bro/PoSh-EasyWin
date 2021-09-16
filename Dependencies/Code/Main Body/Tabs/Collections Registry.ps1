@@ -22,6 +22,8 @@ $RegistrySearchCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
     Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
     ForeColor = 'Blue'
     Add_Click = {
+        Update-QueryCount
+        
         if ($this.Checked -eq $true){
             $RegistrySearchCheckbox.checked = $true
             if     ($script:RegistrySelected -eq 'RegistryKeyNameCheckBox') {
@@ -98,7 +100,7 @@ $RegistrySearchReferenceButton = New-Object System.Windows.Forms.Button -Propert
     }
 }
 $Section1RegistryTab.Controls.Add($RegistrySearchReferenceButton)
-CommonButtonSettings -Button $RegistrySearchReferenceButton
+Apply-CommonButtonSettings -Button $RegistrySearchReferenceButton
 
 
 Update-FormProgress "$Dependencies\Code\System.Windows.Forms\RichTextBox\RegistrySearchDirectoryRichTextbox.ps1"
@@ -153,7 +155,7 @@ $SupportsRegexButton = New-Object System.Windows.Forms.Button -Property @{
     Add_Click = { Import-Csv "$Dependencies\Reference RegEx Examples.csv" | Out-GridView }
 }
 $Section1RegistryTab.Controls.Add($SupportsRegexButton)
-CommonButtonSettings -Button $SupportsRegexButton
+Apply-CommonButtonSettings -Button $SupportsRegexButton
 
 
 Update-FormProgress "$Dependencies\Code\System.Windows.Forms\RichTextBox\RegistryKeyNameSearchRichTextbox.ps1"
@@ -209,7 +211,7 @@ $SupportsRegexButton = New-Object System.Windows.Forms.Button -Property @{
 }
 $SupportsRegexButton.Add_Click({ Import-Csv "$Dependencies\Reference RegEx Examples.csv" | Out-GridView })
 $Section1RegistryTab.Controls.Add($SupportsRegexButton)
-CommonButtonSettings -Button $SupportsRegexButton
+Apply-CommonButtonSettings -Button $SupportsRegexButton
 
 
 Update-FormProgress "$Dependencies\Code\System.Windows.Forms\RichTextBox\RegistryValueNameSearchRichTextbox.ps1"
@@ -265,7 +267,7 @@ $SupportsRegexButton = New-Object System.Windows.Forms.Button -Property @{
     Add_Click = { Import-Csv "$Dependencies\Reference RegEx Examples.csv" | Out-GridView }
 }
 $Section1RegistryTab.Controls.Add($SupportsRegexButton)
-CommonButtonSettings -Button $SupportsRegexButton
+Apply-CommonButtonSettings -Button $SupportsRegexButton
 
 
 Update-FormProgress "$Dependencies\Code\System.Windows.Forms\RichTextBox\RegistryValueDataSearchRichTextbox.ps1"

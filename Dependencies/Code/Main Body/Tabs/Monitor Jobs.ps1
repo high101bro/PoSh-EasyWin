@@ -47,7 +47,7 @@ $script:Section3MonitorJobsResizeButton = New-Object System.Windows.Forms.Button
     }
 }
 $script:Section3MonitorJobsGroupBox.Controls.Add($script:Section3MonitorJobsResizeButton)
-CommonButtonSettings -Button $script:Section3MonitorJobsResizeButton
+Apply-CommonButtonSettings -Button $script:Section3MonitorJobsResizeButton
 
 
 $script:Section3MonitorJobsResizeCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
@@ -94,7 +94,7 @@ $script:Section3MonitorJobShowAllJobsButton = New-Object System.Windows.Forms.Bu
     }
 }
 $script:Section3MonitorJobsGroupBox.Controls.Add($script:Section3MonitorJobShowAllJobsButton)
-CommonButtonSettings -Button $script:Section3MonitorJobShowAllJobsButton
+Apply-CommonButtonSettings -Button $script:Section3MonitorJobShowAllJobsButton
 
 
 $script:Section3MonitorJobRemoveButton = New-Object System.Windows.Forms.Button -Property @{
@@ -141,7 +141,7 @@ $script:Section3MonitorJobRemoveButton = New-Object System.Windows.Forms.Button 
     }
 }
 $script:Section3MonitorJobsGroupBox.Controls.Add($script:Section3MonitorJobRemoveButton)
-CommonButtonSettings -Button $script:Section3MonitorJobRemoveButton
+Apply-CommonButtonSettings -Button $script:Section3MonitorJobRemoveButton
 $script:Section3MonitorJobRemoveButton.ForeColor = 'Red'
 
 

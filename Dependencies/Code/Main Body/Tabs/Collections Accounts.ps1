@@ -173,7 +173,9 @@ $AccountsCurrentlyLoggedInConsoleCheckbox  = New-Object System.Windows.Forms.Che
     Height = $FormScale * 22
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
     ForeColor = 'Blue'
-    Add_Click = { 
+    Add_Click = {
+        Update-QueryCount
+        
         Update-TreeViewData -Commands -TreeView $script:CommandsTreeView.Nodes 
         if ($this.checked){$this.ForeColor = 'Red'} else {$this.ForeColor = 'Blue'}
     }
@@ -195,7 +197,7 @@ $AccountsCurrentlyLoggedInInfoButton = New-Object System.Windows.Forms.Button -P
      }
 }
 $Section1AccountsTab.Controls.Add($AccountsCurrentlyLoggedInInfoButton)
-CommonButtonSettings -Button $AccountsCurrentlyLoggedInInfoButton
+Apply-CommonButtonSettings -Button $AccountsCurrentlyLoggedInInfoButton
 
 
 
@@ -207,7 +209,9 @@ $AccountsCurrentlyLoggedInPSSessionCheckbox  = New-Object System.Windows.Forms.C
     Height = $FormScale * 22
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
     ForeColor = 'Blue'
-    Add_Click = { 
+    Add_Click = {
+        Update-QueryCount
+        
         Update-TreeViewData -Commands -TreeView $script:CommandsTreeView.Nodes
         if ($this.checked){$this.ForeColor = 'Red'} else {$this.ForeColor = 'Blue'}
     }
@@ -238,7 +242,9 @@ $AccountActivityCheckbox  = New-Object System.Windows.Forms.CheckBox -Property @
     Height = $FormScale * 22
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
     ForeColor = 'Blue'
-    Add_Click = { 
+    Add_Click = {
+        Update-QueryCount
+        
         Update-TreeViewData -Commands -TreeView $script:CommandsTreeView.Nodes
         if ($this.checked){$this.ForeColor = 'Red'} else {$this.ForeColor = 'Blue'}
     }
@@ -276,7 +282,7 @@ $AccountActivitySelectionButton = New-Object System.Windows.Forms.Button -Proper
     }
 }
 $Section1AccountsTab.Controls.Add($AccountActivitySelectionButton)
-CommonButtonSettings -Button $AccountActivitySelectionButton
+Apply-CommonButtonSettings -Button $AccountActivitySelectionButton
 
 
 $AccountActivityClearButton = New-Object System.Windows.Forms.Button -Property @{
@@ -288,7 +294,7 @@ $AccountActivityClearButton = New-Object System.Windows.Forms.Button -Property @
     Add_Click = { $AccountActivityTextbox.Text = "" }
 }
 $Section1AccountsTab.Controls.Add($AccountActivityClearButton)
-CommonButtonSettings -Button $AccountActivityClearButton
+Apply-CommonButtonSettings -Button $AccountActivityClearButton
 
 
 $AccountActivityTextbox = New-Object System.Windows.Forms.TextBox -Property @{

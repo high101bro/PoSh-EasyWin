@@ -21,13 +21,15 @@ $NetworkEndpointPacketCaptureNetshTraceGroupBox = New-Object System.Windows.Form
 }
 
         $NetworkEndpointPacketCaptureCheckBox = New-Object System.Windows.Forms.CheckBox -Property @{
-            Text     = "Endpoint Packet Capture Using netsh.exe"
+            Text     = "Packet Capture using netsh.exe (Windows XP+ / Server 2003+)"
             Left     = $FormScale * 7
             Top      = $FormScale * 3
             Autosize = $true
             Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
             ForeColor = 'Blue'
-            Add_Click = { 
+            Add_Click = {
+                Update-QueryCount
+                
                 Update-TreeViewData -Commands -TreeView $script:CommandsTreeView.Nodes 
                 if ($this.checked){$this.ForeColor = 'Red'} else {$this.ForeColor = 'Blue'}
             }
@@ -285,7 +287,7 @@ $NetworkEndpointPacketCaptureNetshTraceGroupBox = New-Object System.Windows.Form
                 }
             }
             $NetworkEndpointPacketCaptureNetshTraceGroupBox.Controls.Add($NetworkEndpointPcapCaptureProtocolButton)
-            CommonButtonSettings -Button $NetworkEndpointPcapCaptureProtocolButton
+            Apply-CommonButtonSettings -Button $NetworkEndpointPcapCaptureProtocolButton
 
 
             $NetworkEndpointPcapCaptureProtocolLabel = New-Object System.Windows.Forms.Label -Property @{
@@ -356,48 +358,53 @@ $Section1PacketCaptureTab.Controls.Add($NetworkEndpointPacketCaptureNetshTraceGr
 
 
 
-
-
-
-
-
-
-
+# Provides messages when hovering over various areas in the GUI
+Update-FormProgress "$Dependencies\Code\Main Body\Launch-PktMon.ps1"
+. "$Dependencies\Code\Main Body\Launch-PktMon.ps1"
 
 $NetworkEndpointPacketCaptureGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
-    Text   = "Packet Capture Using PktMon.exe (Windows 10)"
+    Text   = "Packet Capture using PktMon.exe (Windows 10+ / Server 2019+)"
     Left   = $FormScale * 3
     Top    = $NetworkEndpointPacketCaptureNetshTraceGroupBox.Top + $NetworkEndpointPacketCaptureNetshTraceGroupBox.Height + $($FormScale * 10)
     Width  = $FormScale * 435
-    Height = $FormScale * 50
+    Height = $FormScale * 125
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
     ForeColor = "Blue"
 }
 
             $PacketCapturePktMonTextbox = New-Object System.Windows.Forms.Label -Property @{
-                Text   = "Future Feature: Will be built soon."
+                Text   = "Packet Monitor (Pktmon) is an in-box, cross-component network diagnostics tool for Windows. It can be used for packet capture, packet drop detection, packet filtering and counting. In addtion to traditionaly hardware based systems, this tool is especially helpful in virtualization scenarios, like container networking and SDN, because it provides visibility within the networking stack."
                 Left   = $FormScale * 7
                 Top    = $FormScale * 18
-                Width  = $FormScale * 280 #430
-                Height = $FormScale * 25
+                Width  = $FormScale * 430
+                Height = $FormScale * 75
                 Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
                 ForeColor = "Black"
             }
             $NetworkEndpointPacketCaptureGroupBox.Controls.Add($PacketCapturePktMonTextbox)
 
-
-<#
-            $PacketCapturePktMonButton = New-Object System.Windows.Forms.Button -Property @{
-                Text   = "Regex Examples"
-                Left   = $PacketCapturePktMonTextbox.Left + $PacketCapturePktMonTextbox.Width + $($FormScale * 28)
-                Top    = $PacketCapturePktMonTextbox.Top
-                Width  = $FormScale * 115
+                    
+            $PacketCapturePktMonLaunchButton = New-Object System.Windows.Forms.Button -Property @{
+                Text   = 'Launch PktMon GUI'
+                Left   = $PacketCapturePktMonTextbox.Left
+                Top    = $PacketCapturePktMonTextbox.Top + $PacketCapturePktMonTextbox.Height + $($FormScale * 5) 
+                Width  = $FormScale * 125
                 Height = $FormScale * 22
-                Add_Click = { Import-Csv "$Dependencies\Reference RegEx Examples.csv" | Out-GridView }
+                Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+                ForeColor = 'Black'
+                Add_Click = {
+                    if ($script:ComputerList.Count -gt 0) {
+                        Launch-PktMon
+                    }
+                    else {
+                        [System.Windows.Forms.MessageBox]::Show("You need to select one or more endpoints first.","PoSh-EasyWin",'Ok',"Info")
+                    }
+                }
             }
-            $NetworkEndpointPacketCaptureGroupBox.Controls.Add($PacketCapturePktMonButton)
-            CommonButtonSettings -Button $PacketCapturePktMonButton
-#>
+            $NetworkEndpointPacketCaptureGroupBox.Controls.Add($PacketCapturePktMonLaunchButton)
+            Apply-CommonButtonSettings -Button $PacketCapturePktMonLaunchButton
+
+
 $Section1PacketCaptureTab.Controls.Add($NetworkEndpointPacketCaptureGroupBox)
 
 
