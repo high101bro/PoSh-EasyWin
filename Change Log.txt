@@ -4,37 +4,26 @@ v{Major}.{Minor}.{HotFix} - {Day} {Month} {Year}
 ==================================================
 To Do List:
 ==================================================
-Update Sysinternal tools
-Add sysmon event id 3 to pswritehtml charts
-check sysmon config name... update if necessary
-
-Commands Select All Button isn't working...
-
-Accounts Treeview
-	- update Set-GuiLayout.ps1
-
-Check if Move feature is working properly
-
 TODO:
-pivot commands not showing destination endpoint
-pivot scanning
-
-
-!!!!!!!! checking custom group box makes user add commands turn blue... wierd?
-!!!!!!!! add refresh to treeviews
-!!!!!!!! some users show up with 1 group when they have none
+[ ] Some users show up with 1 group when they have none
+[ ] Reintegrate other dashboards like . "$Dependencies\Code\System.Windows.Forms\ComboBox\AutoChartSelectChartComboBoxSelectedItem_Services.ps1"
+[ ] Add Get-Help (comment based help) support for each script so they populate a description
+[ ] Cosolidate code... Create-TreeViewCheckBoxArray -Endpoint --vs-- Generate-Computerlist
+[ ] Checking custom group box makes user add commands turn blue... wierd? Check inside Update-Treeivew function
 
 ==================================================
-v5.4.1 -
+v6.0.0 - 15 SEP 2021
 ==================================================
 
-@@!!!!!!!!!!!!!!!!!!!!!!!!$OptionsAutoSaveChartsAsImages.checked
-!!!!!!!!!!!!!!!!!!!!reintegrate other dashboards like            . "$Dependencies\Code\System.Windows.Forms\ComboBox\AutoChartSelectChartComboBoxSelectedItem_Services.ps1"
-!!!!!!!!!!!!!add get-help (comment based help) support for each script so they populate a description
-!!!!! reference Pivot-PSSession.ps1 for alternative method to import creds
-!!!!!! Create-TreeViewCheckBoxArray -Endpoint    ----vs---- generate-computerlist
- 
-4624,4625,4634,4647,4648
+Added MultiEndpoint-PSSession
+	- Need to checkbox one or more endpoints
+	- Allows you to interactively query multiple endpoints the persistent PSSession and retrieve results
+
+Removed Generate-AutoChartsCommand
+	- This was used for multi-series charts, with the current, previous, and base collection comparison 
+
+Updated Account Logon Activity collections
+	- Increated it to collect all the following: 4624,4625,4634,4647,4648
 
 Updatd the integration of Treat Hunting with Deep Blue
 	- Removed the following Dashboard Views

@@ -222,9 +222,6 @@ $PoShHome                            = $PSScriptRoot #Deprecated# Split-Path -pa
         $EasyWinIcon                          = "$Dependencies\Images\favicon.ico"
         $high101bro_image                     = "$Dependencies\Images\high101bro Logo Color Transparent.png"
 
-        # Directory where auto saved chart images are saved
-    $AutosavedChartsDirectory                 = "$PoShHome\Autosaved Charts"
-
     # Name of Collected Data Directory
     $CollectedDataDirectory                   = "$PoShHome\Collected Data"
         if (-not (Test-Path $CollectedDataDirectory )) {New-Item -ItemType Directory -Path $CollectedDataDirectory -Force}

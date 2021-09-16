@@ -144,7 +144,7 @@ $AutoCreateDashboardChartButtonAdd_Click = {
         # Dashboard with multiple charts
         if ($AutoChartSelectChartComboBox.SelectedItem -eq "Dashboard Overview") {
             . "$Dependencies\Code\Charts\DashboardChart_Hunt.ps1"
-            #. "$Dependencies\Code\Charts\DashboardChart_Processes.ps1"
+            . "$Dependencies\Code\Charts\DashboardChart_Processes.ps1"
             # . "$Dependencies\Code\Charts\DashboardChart_Services.ps1"
             # . "$Dependencies\Code\Charts\DashboardChart_NetworkConnections.ps1"
             # . "$Dependencies\Code\Charts\DashboardChart_NetworkInterfaces.ps1"
