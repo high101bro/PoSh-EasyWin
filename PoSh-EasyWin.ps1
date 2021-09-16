@@ -16,20 +16,20 @@
     ==================================================================================
 
     File Name      : PoSh-EasyWin.ps1
-    Version        : v5.3.2
-    Updated        : 07 May 2021
+    Version        : v6.0.0
+    Updated        : 15 Sep 2021
     Created        : 21 Aug 2018
 
     Requirements   : PowerShell v6.0+ - PowerShell Core is not supported
-                                      - The GUI requires access to Windows.System.Forms
+                                      - GUI Windows.System.Forms
                                 v5.1  - PSWriteHTML Module support
-                                      - Fully tested, the majority of users will have this version
+                                      - Fully tested
                                 v4.0  - The use of Copy-Item -Session
                                       - Partially Tested
                                 v3.0  - Splatting Arguments
                                       - PowerShell Charts support
                                       - Limited testing
-                                v2.0  - Not supported, code makes heavy use of splatting
+                                v2.0  - Not supported, requres splatting
                                                                       
                    : WinRM   HTTP    - TCP/5985 Windows 7+ ( 80 Vista-)
                              HTTPS   - TCP/5986 Windows 7+ (443 Vista-)
