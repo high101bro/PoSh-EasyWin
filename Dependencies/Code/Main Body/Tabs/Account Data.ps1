@@ -13,9 +13,20 @@ $InformationTabControl.Controls.Add($Section3AccountDataTab)
 #############
 
 
+$script:Section3AccountDataIconPictureBox = New-Object Windows.Forms.PictureBox -Property @{
+    Left   = 0
+    Top    = $FormScale * 3
+    Width  = $FormScale * 44
+    Height = $FormScale * 44
+    Image  = [System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Account Default.png")
+    SizeMode = 'StretchImage'
+}
+$Section3AccountDataTab.Controls.Add($script:Section3AccountDataIconPictureBox)
+
+
 $Section3AccountDataNameLabel = New-Object System.Windows.Forms.Label -Property @{
     Text      = 'Name:'
-    Left      = 0
+    Left      = $script:Section3AccountDataIconPictureBox.Left + $script:Section3AccountDataIconPictureBox.Width + $($FormScale * 5)
     Top       = $FormScale * 3
     Width     = $FormScale * 50
     Height    = $FormScale * 22
@@ -29,7 +40,7 @@ $Section3AccountDataNameLabel.bringtofront()
 $script:Section3AccountDataNameTextBox = New-Object System.Windows.Forms.TextBox -Property @{
     Left      = $Section3AccountDataNameLabel.Left + $Section3AccountDataNameLabel.Width
     Top       = $FormScale * 3
-    Width     = $FormScale * 200
+    Width     = $($FormScale * 200) - $($script:Section3EndpointDataIconPictureBox.Width + $($FormScale * 5))
     Height    = $FormScale * 22
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     BackColor = 'White'
@@ -54,7 +65,7 @@ $Section3AccountDataTab.Controls.Add($script:Section3AccountDataNameTextBox)
 
 $Section3AccountDataOULabel = New-Object System.Windows.Forms.Label -Property @{
     Text      = 'OU/CN:'
-    Left      = $Section3AccountDataNameLabel.Left
+    Left      = $script:Section3AccountDataIconPictureBox.Left + $script:Section3AccountDataIconPictureBox.Width + $($FormScale * 5)
     Top       = $Section3AccountDataNameLabel.Top + $Section3AccountDataNameLabel.Height
     Width     = $FormScale * 50
     Height    = $FormScale * 22
@@ -66,9 +77,9 @@ $Section3AccountDataOULabel.bringtofront()
 
 
 $Section3AccountDataOUTextBox = New-Object System.Windows.Forms.TextBox -Property @{
-    Left      = $script:Section3AccountDataNameTextBox.Left
+    Left      = $script:Section3HostDataNameTextBox.Left
     Top       = $Section3AccountDataOULabel.Top
-    Width     = $FormScale * 200
+    Width     = $($FormScale * 200) - $($script:Section3AccountDataIconPictureBox.Width + $($FormScale * 5))
     Height    = $FormScale * 22
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     BackColor = 'White'

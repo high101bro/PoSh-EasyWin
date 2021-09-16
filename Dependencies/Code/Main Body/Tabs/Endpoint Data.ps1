@@ -12,10 +12,35 @@ $InformationTabControl.Controls.Add($Section3HostDataTab)
 ### Row 1 ###
 #############
 
+$script:Section3EndpointDataIconPictureBox = New-Object Windows.Forms.PictureBox -Property @{
+    Left   = 0
+    Top    = $FormScale * 3
+    Width  = $FormScale * 44
+    Height = $FormScale * 44
+    Image  = [System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Endpoint Default.png")
+    SizeMode = 'StretchImage'
+    Add_Click = {
+        # $IconFound = $false
+        # $IconPath  = $null
+        # $EndpointTreeviewImageHashTable.GetEnumerator() | ForEach-Object {
+        #     If ("$($_.Key)" -eq "$($script:NodeEndpoint.ImageIndex)" -and $IconFound -eq $false){
+        #         $IconFound = $true
+        #     }
+        #     elseif ($IconFound -eq $true) {
+        #         $This.Image = [System.Drawing.Image]::FromFile($_.Value)
+        #         $IconFound  = $false
+        #     }
+        # }
+
+        # & $script:UpdateTreeViewScriptBlock
+    }
+}
+$Section3HostDataTab.Controls.Add($script:Section3EndpointDataIconPictureBox)
+
 
 $Section3EndpointDataNameLabel = New-Object System.Windows.Forms.Label -Property @{
     Text      = 'Name:'
-    Left      = 0
+    Left      = $script:Section3EndpointDataIconPictureBox.Left + $script:Section3EndpointDataIconPictureBox.Width + $($FormScale * 5)
     Top       = $FormScale * 3
     Width     = $FormScale * 50
     Height    = $FormScale * 22
@@ -29,7 +54,7 @@ $Section3EndpointDataNameLabel.bringtofront()
 $script:Section3HostDataNameTextBox = New-Object System.Windows.Forms.TextBox -Property @{
     Left      = $Section3EndpointDataNameLabel.Left + $Section3EndpointDataNameLabel.Width
     Top       = $FormScale * 3
-    Width     = $FormScale * 200
+    Width     = $($FormScale * 200) - $($script:Section3EndpointDataIconPictureBox.Width + $($FormScale * 5))
     Height    = $FormScale * 22
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     BackColor = 'White'
@@ -54,7 +79,7 @@ $Section3HostDataTab.Controls.Add($script:Section3HostDataNameTextBox)
 
 $Section3EndpointDataOULabel = New-Object System.Windows.Forms.Label -Property @{
     Text      = 'OU/CN:'
-    Left      = $Section3EndpointDataNameLabel.Left
+    Left      = $script:Section3EndpointDataIconPictureBox.Left + $script:Section3EndpointDataIconPictureBox.Width + $($FormScale * 5)
     Top       = $Section3EndpointDataNameLabel.Top + $Section3EndpointDataNameLabel.Height
     Width     = $FormScale * 50
     Height    = $FormScale * 22
@@ -68,7 +93,7 @@ $Section3EndpointDataOULabel.bringtofront()
 $Section3HostDataOUTextBox = New-Object System.Windows.Forms.TextBox -Property @{
     Left      = $script:Section3HostDataNameTextBox.Left
     Top       = $Section3EndpointDataOULabel.Top
-    Width     = $FormScale * 200
+    Width     = $($FormScale * 200) - $($script:Section3EndpointDataIconPictureBox.Width + $($FormScale * 5))
     Height    = $FormScale * 22
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     BackColor = 'White'

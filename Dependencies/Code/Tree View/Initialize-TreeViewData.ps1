@@ -1,4 +1,7 @@
 function Initialize-TreeViewData {
+    <#
+        .Description
+    #>
     param(
         [switch]$Accounts,
         [switch]$Endpoint
