@@ -16,8 +16,8 @@
     ==================================================================================
 
     File Name      : PoSh-EasyWin.ps1
-    Version        : v6.0.0
-    Updated        : 15 Sep 2021
+    Version        : v6.1.0
+    Updated        : 16 Sep 2021
     Created        : 21 Aug 2018
 
     Requirements   : PowerShell v6.0+ - PowerShell Core is not supported
@@ -219,7 +219,7 @@ $PoShHome                            = $PSScriptRoot #Deprecated# Split-Path -pa
         # list of ports that can be updated for custom port scans
         $CustomPortsToScan                    = "$Dependencies\Custom Ports To Scan.txt"
 
-        $EasyWinIcon                          = "$Dependencies\Images\favicon.ico"
+        $EasyWinIcon                          = "$Dependencies\Images\Icons\favicon.ico"
         $high101bro_image                     = "$Dependencies\Images\high101bro Logo Color Transparent.png"
 
     # Name of Collected Data Directory
@@ -541,7 +541,6 @@ Update-FormProgress "$Dependencies\Code\Execution\Enumeration\Import-HostsFromDo
 Update-FormProgress "$Dependencies\Code\Main Body\Show-ToolTip.ps1"
 . "$Dependencies\Code\Main Body\Show-ToolTip.ps1"
 
-
 $QueryAndCollectionPanel = New-Object System.Windows.Forms.Panel -Property @{
     Left   = $FormScale * 5
     Top    = $FormScale * 5
@@ -772,7 +771,7 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel
                             Save-TreeViewData -Endpoint
 
                             Foreach($ComputerData in $script:ComputerTreeViewData) {
-                                AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:TreeNodeComputerList -Category $ComputerData.$($This.SelectedItem) -Entry $ComputerData.Name -ToolTip $ComputerData.IPv4Address -Metadata $ComputerData
+                                AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:TreeNodeComputerList -Category $ComputerData.$($This.SelectedItem) -Entry $ComputerData.Name -ToolTip $ComputerData.IPv4Address -Metadata $ComputerData -Image $ComputerData.ImageIcon
                             }
                             $script:ComputerTreeView.Nodes.Add($script:TreeNodeComputerList)
                             UpdateState-TreeViewData -Endpoint
@@ -879,6 +878,33 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel
                     . "$Dependencies\Code\Context Menu Strip\Display-ContextMenuForComputerTreeNode.ps1"
                     Display-ContextMenuForComputerTreeNode -ClickedOnArea
 
+
+                    # The .ImageList allows for the images to be loaded from disk to memory only once, then referenced using their index number
+                    $ComputerTreeviewImageList = New-Object System.Windows.Forms.ImageList -Property @{
+                        ImageSize = @{
+                            Width  = $FormScale * 16
+                            Height = $FormScale * 16
+                        }
+                    }
+                    $EndpointImageList = Get-ChildItem "$Dependencies\Images\Icons\Endpoint" | Select-Object -ExpandProperty FullName
+
+                    # Position 0 = Default Image, this one is often seen when clicking on a treenode
+                    $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$EasyWinIcon"))
+
+                    # Position 1 = used as the default image that is loaded against the .treeview itself, thus shown at the top level for the Organizational Units, It gets overwritten by each node that is added
+                    $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Icon OU LightYellow.png"))
+                    
+                    # Position 2 = used as the default image for the computer/account/entry node. Normalize-TreeViewData.ps1 populates it by default if an imageindex number doesn't exist for it already
+                    $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Endpoint Default.png"))
+                    
+                    foreach ($Image in $EndpointImageList) {
+                        $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Image"))
+                    }
+
+                    # Position -1 = currently unused
+                    $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$high101bro_image"))
+                    
+
                     Update-FormProgress "$Dependencies\Code\System.Windows.Forms\TreeView\ComputerTreeView.ps1"
                     . "$Dependencies\Code\System.Windows.Forms\TreeView\ComputerTreeView.ps1"
                     $script:ComputerTreeView = New-Object System.Windows.Forms.TreeView -Property @{
@@ -909,21 +935,17 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel
                         HideSelection     = $false
                         #not working #AfterSelect       = {}
                         ImageList         = $ComputerTreeViewImageList
-                        ImageIndex        = 1
+                        ImageIndex        = 1 # the default image 
                     }
                     $script:ComputerTreeView.Sort()
                     $ComputerTreeviewTab.Controls.Add($script:ComputerTreeView)
 
                     Initialize-TreeViewData -Endpoint
                     Normalize-TreeViewData -Endpoint
-
-                    # Yes, save initially during the load because it will save any poulated default data
-                    #Save-TreeViewData -Endpoint
-    
+   
                     # This will load data that is located in the saved file
                     Foreach($Computer in $script:ComputerTreeViewData) {
-                        #AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:TreeNodeComputerList -Category $Computer.OperatingSystem -Entry $Computer.Name -ToolTip $ComputerData.IPv4Address -IPv4Address $Computer.IPv4Address -Metadata $Computer
-                        AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:TreeNodeComputerList -Category $Computer.CanonicalName -Entry $Computer.Name -ToolTip $ComputerData.IPv4Address -IPv4Address $Computer.IPv4Address -Metadata $Computer
+                        AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:TreeNodeComputerList -Category $Computer.CanonicalName -Entry $Computer.Name -ToolTip $ComputerData.IPv4Address -IPv4Address $Computer.IPv4Address -Metadata $Computer -Image $Computer.ImageIcon
                     }
                     $script:ComputerTreeView.Nodes.Add($script:TreeNodeComputerList)
 
@@ -973,7 +995,7 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel
                             Save-TreeViewData -Accounts
 
                             Foreach($Account in $script:AccountsTreeViewData) {
-                                AddTreeNodeTo-TreeViewData -Accounts -RootNode $script:TreeNodeAccountsList -Category $Account.$($This.SelectedItem) -Entry $Account.Name -ToolTip $Account.SID -Metadata $Account
+                                AddTreeNodeTo-TreeViewData -Accounts -RootNode $script:TreeNodeAccountsList -Category $Account.$($This.SelectedItem) -Entry $Account.Name -ToolTip $Account.SID -Metadata $Account -Image $Account.ImageIcon
                             }
                             $script:AccountsTreeView.Nodes.Add($script:TreeNodeAccountsList)
                             UpdateState-TreeViewData -Accounts
@@ -1045,6 +1067,33 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel
                     Update-FormProgress "$Dependencies\Code\Tree View\Accounts\AddAccount-AccountsTreeNode.ps1"
                     . "$Dependencies\Code\Tree View\Accounts\AddAccount-AccountsTreeNode.ps1"
 
+
+                    # The .ImageList allows for the images to be loaded from disk to memory only once, then referenced using their index number
+                    $AccountsTreeviewImageList = New-Object System.Windows.Forms.ImageList -Property @{
+                        ImageSize = @{
+                            Width  = $FormScale * 16
+                            Height = $FormScale * 16
+                        }
+                    }
+                    $EndpointImageList = Get-ChildItem "$Dependencies\Images\Icons\Account" | Select-Object -ExpandProperty FullName
+
+                    # Position 0 = Default Image, this one is often seen when clicking on a treenode
+                    $AccountsTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$EasyWinIcon"))
+
+                    # Position 1 = used as the default image that is loaded against the .treeview itself, thus shown at the top level for the Organizational Units, It gets overwritten by each node that is added
+                    $AccountsTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Icon OU LightYellow.png"))
+                    
+                    # Position 2 = used as the default image for the computer/account/entry node. Normalize-TreeViewData.ps1 populates it by default if an imageindex number doesn't exist for it already
+                    $AccountsTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Account Default.png"))
+                    
+                    foreach ($Image in $EndpointImageList) {
+                        $AccountsTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Image"))
+                    }
+
+                    # Position -1 = currently unused
+                    $AccountsTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$high101bro_image"))
+                    
+
                     Update-FormProgress "$Dependencies\Code\System.Windows.Forms\TreeView\AccountsTreeView.ps1"
                     . "$Dependencies\Code\System.Windows.Forms\TreeView\AccountsTreeView.ps1"
                     $script:AccountsTreeView = New-Object System.Windows.Forms.TreeView -Property @{
@@ -1074,7 +1123,7 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel
                         ShowPlusMinus     = $true
                         HideSelection     = $false
                         #not working #AfterSelect       = {}
-                        ImageList         = $AccountsTreeViewImageList
+                        ImageList         = $AccountsTreeviewImageList
                         ImageIndex        = 1
                     }
                     $script:AccountsTreeView.Sort()
@@ -1088,9 +1137,7 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel
                     
                     # This will load data that is located in the saved file
                     Foreach($Account in $script:AccountsTreeViewData) {
-                        #AddTreeNodeTo-TreeViewData -Accounts -RootNode $script:TreeNodeAccountsList -Category $Account.Enabled -Entry $Account.Name -ToolTip $Account.SID -Metadata $Account 
-                        #AddTreeNodeTo-TreeViewData -Accounts -RootNode $script:TreeNodeAccountsList -Category 'Alphabetical' -Entry $Account.Name -ToolTip $Account.SID -Metadata $Account
-                        AddTreeNodeTo-TreeViewData -Accounts -RootNode $script:TreeNodeAccountsList -Category $Account.CanonicalName -Entry $Account.Name -ToolTip $Account.SID -Metadata $Account
+                        AddTreeNodeTo-TreeViewData -Accounts -RootNode $script:TreeNodeAccountsList -Category $Account.CanonicalName -Entry $Account.Name -ToolTip $Account.SID -Metadata $Account -Image $Account.ImageIcon
                     }
                     $script:AccountsTreeView.Nodes.Add($script:TreeNodeAccountsList)
 
@@ -1594,26 +1641,6 @@ $ExecuteScriptHandler = {
             }
         }
 
-
-        #=======================================================================================================================================================================
-        #    ____                          _  _            _     ____               _         _       _____                          _    _
-        #   / ___| ___   _ __ ___   _ __  (_)| |  ___   __| |   / ___|   ___  _ __ (_) _ __  | |_    | ____|__  __ ___   ___  _   _ | |_ (_)  ___   _ __
-        #  | |    / _ \ | '_ ` _ \ | '_ \ | || | / _ \ / _` |   \___ \  / __|| '__|| || '_ \ | __|   |  _|  \ \/ // _ \ / __|| | | || __|| | / _ \ | '_ \
-        #  | |___| (_) || | | | | || |_) || || ||  __/| (_| |    ___) || (__ | |   | || |_) || |_    | |___  >  <|  __/| (__ | |_| || |_ | || (_) || | | |
-        #   \____|\___/ |_| |_| |_|| .__/ |_||_| \___| \__,_|   |____/  \___||_|   |_|| .__/  \__|   |_____|/_/\_\\___| \___| \__,_| \__||_| \___/ |_| |_|
-        #                          |_|                                                |_|
-        #=======================================================================================================================================================================
-        # Code that compiles individual command treenodes into one to execute
-        # A single compiled query for command nodes is sent to the hosts and when results are returned are automatcially
-        # saved to their own local csv files
-        # This is faster when collecting data as only a single job per remote host is started locally for command treenode queries
-        # The secondary progress bar is removed as it cannnot track compile queries
-
-        elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Compiled Script' ) {
-            # Compiled Script Execution
-            . "$Dependencies\Code\Main Body\Execution\Compiled Script.ps1"
-        }
-
         #=======================================================================================================================================================================
         #   ____                   _                   ____                         _     _____                          _    _
         #  / ___|   ___  ___  ___ (_)  ___   _ __     | __ )   __ _  ___   ___   __| |   | ____|__  __ ___   ___  _   _ | |_ (_)  ___   _ __
@@ -1786,6 +1813,11 @@ $ExecuteScriptHandler = {
                 Completed-QueryExecution
             }
         }
+        elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Beta Testing' -and $script:RpcCommandCount -eq 0 -and $script:SmbCommandCount -eq 0 ) {
+            if (Verify-Action -Title "Beta Testing" -Question "You are about to use PoSh-EasyWin in the beta testing execution mode. This feature is testing new concepts for querying and and data management.`n`Do not use in production and please report any bugs if you're testing it out." -Computer $($script:ComputerTreeViewSelected -join ', ')) {
+
+            }
+        }
     }
 
     $InformationTabControl.SelectedTab = $script:Section3MonitorJobsTab
@@ -1802,6 +1834,11 @@ Update-FormProgress "$Dependencies\Code\Execution\Command Line\Select-ComputersA
 # This needs to be here to execute the script
 # Note the Execution button itself is located in the Select Computer section
 $script:ComputerListExecuteButton.Add_Click($ExecuteScriptHandler)
+
+
+$script:PoShEasyWinStatusBar = New-Object System.Windows.Forms.StatusBar
+$PoShEasyWin.Controls.Add($script:PoShEasyWinStatusBar)
+
 
 # Starts the ticker for the GUI and adds the status bar
 Update-FormProgress "$Dependencies\Code\Main Body\Start-FormTicker.ps1"

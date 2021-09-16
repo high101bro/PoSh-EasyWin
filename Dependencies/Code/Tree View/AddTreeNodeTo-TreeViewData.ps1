@@ -8,7 +8,8 @@ function AddTreeNodeTo-TreeViewData {
         [switch]$DoNotPopulateMetadata,
         $Metadata,
         $IPv4Address,
-        $ToolTip
+        $ToolTip,
+        $Image
     )
     # checks if data is in date/datetime format, if so, it trims off the time
     if ($Category -match ".{1,2}/.{1,2}/.{4}") {
@@ -20,6 +21,7 @@ function AddTreeNodeTo-TreeViewData {
         $newNode = New-Object System.Windows.Forms.TreeNode -Property @{
             Name = "$Entry"
             Text = "$Entry"
+            ImageIndex = $Image
         }
         
         if (-not $DoNotPopulateMetadata) {
@@ -91,8 +93,9 @@ function AddTreeNodeTo-TreeViewData {
         $newNode = New-Object System.Windows.Forms.TreeNode -Property @{
             Name = "$Entry"
             Text = "$Entry"
+            ImageIndex = $Image
         }
-    
+
         #batman #TODO work on this
         # $MetadataOperatingSystem = New-Object System.Windows.Forms.TreeNode -Property @{
         #     Name = "OperatingSystem"

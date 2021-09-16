@@ -283,8 +283,8 @@ $ExecutionModeGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
             $QueryMethodSelectionList = @(
                 'Monitor Jobs',
                 'Individual Execution',
-                'Session Based'
-                #'Compiled Script'
+                'Session Based',
+                'Beta Testing'
             )
             Foreach ($QueryMethod in $QueryMethodSelectionList) { $script:CommandTreeViewQueryMethodSelectionComboBox.Items.Add($QueryMethod) }
             if (Test-Path "$PoShHome\Settings\Script Execution Mode.txt") { $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem = Get-Content "$PoShHome\Settings\Script Execution Mode.txt" }

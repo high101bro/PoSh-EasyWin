@@ -438,7 +438,7 @@ $script:AutoChart01LogonActivityCheckDiffButton.Add_Click({
         Text   = 'Investigate Difference'
         Size   = @{ Width  = $FormScale * 330
                     Height = $FormScale * 360 }
-        Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$Dependencies\Images\favicon.ico")
+        Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon($EasyWinIcon)
         StartPosition = "CenterScreen"
         ControlBox = $true
         Add_Closing = { $This.dispose() }
@@ -965,7 +965,7 @@ $script:AutoChart02LogonActivityCheckDiffButton.Add_Click({
         Text   = 'Investigate Difference'
         Size   = @{ Width  = $FormScale * 330
                     Height = $FormScale * 360 }
-        Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$Dependencies\Images\favicon.ico")
+        Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon($EasyWinIcon)
         StartPosition = "CenterScreen"
         ControlBox = $true
         Add_Closing = { $This.dispose() }
@@ -1473,7 +1473,7 @@ $script:AutoChart03LogonActivityCheckDiffButton.Add_Click({
         Text   = 'Investigate Difference'
         Size   = @{ Width  = $FormScale * 330
                     Height = $FormScale * 360 }
-        Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$Dependencies\Images\favicon.ico")
+        Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon($EasyWinIcon)
         StartPosition = "CenterScreen"
         ControlBox = $true
         Add_Closing = { $This.dispose() }
@@ -1982,7 +1982,7 @@ $script:AutoChart04LogonActivityCheckDiffButton.Add_Click({
         Text   = 'Investigate Difference'
         Size   = @{ Width  = $FormScale * 330
                     Height = $FormScale * 360 }
-        Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$Dependencies\Images\favicon.ico")
+        Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon($EasyWinIcon)
         StartPosition = "CenterScreen"
         ControlBox = $true
         Add_Closing = { $This.dispose() }
@@ -2490,7 +2490,7 @@ $script:AutoChart05LogonActivityCheckDiffButton.Add_Click({
         Text   = 'Investigate Difference'
         Size   = @{ Width  = $FormScale * 330
                     Height = $FormScale * 360 }
-        Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$Dependencies\Images\favicon.ico")
+        Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon($EasyWinIcon)
         StartPosition = "CenterScreen"
         ControlBox = $true
         Add_Closing = { $This.dispose() }
@@ -2998,7 +2998,7 @@ $script:AutoChart06LogonActivityCheckDiffButton.Add_Click({
         Text   = 'Investigate Difference'
         Size   = @{ Width  = $FormScale * 330
                     Height = $FormScale * 360 }
-        Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$Dependencies\Images\favicon.ico")
+        Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon($EasyWinIcon)
         StartPosition = "CenterScreen"
         ControlBox = $true
         Add_Closing = { $This.dispose() }
@@ -3507,7 +3507,7 @@ $script:AutoChart07LogonActivityCheckDiffButton.Add_Click({
         Text   = 'Investigate Difference'
         Size   = @{ Width  = $FormScale * 330
                     Height = $FormScale * 360 }
-        Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$Dependencies\Images\favicon.ico")
+        Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon($EasyWinIcon)
         StartPosition = "CenterScreen"
         ControlBox = $true
         Add_Closing = { $This.dispose() }
@@ -4018,7 +4018,7 @@ $script:AutoChart08LogonActivityCheckDiffButton.Add_Click({
         Text   = 'Investigate Difference'
         Size   = @{ Width  = $FormScale * 330
                     Height = $FormScale * 360 }
-        Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$Dependencies\Images\favicon.ico")
+        Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon($EasyWinIcon)
         StartPosition = "CenterScreen"
         ControlBox = $true
         Add_Closing = { $This.dispose() }
@@ -4529,7 +4529,7 @@ $script:AutoChart09LogonActivityCheckDiffButton.Add_Click({
         Text   = 'Investigate Difference'
         Size   = @{ Width  = $FormScale * 330
                     Height = $FormScale * 360 }
-        Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$Dependencies\Images\favicon.ico")
+        Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon($EasyWinIcon)
         StartPosition = "CenterScreen"
         ControlBox = $true
         Add_Closing = { $This.dispose() }
@@ -5040,7 +5040,7 @@ $script:AutoChart10LogonActivityCheckDiffButton.Add_Click({
         Text   = 'Investigate Difference'
         Size   = @{ Width  = $FormScale * 330
                     Height = $FormScale * 360 }
-        Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$Dependencies\Images\favicon.ico")
+        Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon($EasyWinIcon)
         StartPosition = "CenterScreen"
         ControlBox = $true
         Add_Closing = { $This.dispose() }
