@@ -13,13 +13,151 @@ $InformationTabControl.Controls.Add($Section3AccountDataTab)
 #############
 
 
-$script:Section3AccountDataIconPictureBox = New-Object Windows.Forms.PictureBox -Property @{
+$script:Section3AccountDataIconPictureBox= New-Object Windows.Forms.PictureBox -Property @{
     Left   = 0
     Top    = $FormScale * 3
     Width  = $FormScale * 44
     Height = $FormScale * 44
     Image  = [System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Account Default.png")
     SizeMode = 'StretchImage'
+    Add_Click = {
+        if (-not $script:NodeAccount){
+            [System.Windows.Forms.MessageBox]::Show("You need to select the account in the treeview to change the icon.","PoSh-EasyWin",'Ok',"Info")
+        }
+        else {            
+            $AccountsTreeViewChangeIconForm = New-Object system.Windows.Forms.Form -Property @{
+                Text   = "PoSh-EasyWin - Change Icon"
+                Width  = $FormScale * 335
+                Height = $FormScale * 500
+                Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+                Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
+                StartPosition = "CenterScreen"
+                Add_Closing = { $This.dispose() }
+            }
+        
+            
+            $AccountsTreeViewChangeIconLabel = New-Object System.Windows.Forms.Label -Property @{
+                Text   = "Select another icon to represent this account."
+                Left   = $FormScale * 10
+                Top    = $FormScale * 10
+                Width  = $FormScale * 300
+                Height = $FormScale * 25
+                Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+            }
+            $AccountsTreeViewChangeIconForm.Controls.Add($AccountsTreeViewChangeIconLabel)
+        
+
+            $AccountsTreeViewChangeIconTreeView = New-Object System.Windows.Forms.TreeView -Property @{
+                Left   = $FormScale * 10
+                Top    = $AccountsTreeViewChangeIconLabel.Top + $AccountsTreeViewChangeIconLabel.Height + $($FormScale * 10)
+                Width  = $FormScale * 300
+                Height = $FormScale * 375
+                Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+                CheckBoxes       = $false
+                ShowLines        = $True
+                ShowNodeToolTips = $True
+                Add_Click        = $null
+                Add_AfterSelect  = {
+                    $script:AccountsTreeViewChangeIconTreeViewSelected = $null
+                    foreach ($Node in $This.Nodes) {
+                        if ($Node.isSelected){
+                            $AccountsTreeViewChangeIconPreviewPictureBox.Image = [System.Drawing.Image]::FromFile($Node.ToolTipText)
+                            $script:AccountsTreeViewChangeIconTreeViewSelected = $Node.ToolTipText
+                        }
+                    }
+                }
+                Add_KeyDown = { 
+                    if ($_.KeyCode -eq "Enter") { & $AccountsTreeViewChangeIconScriptBlock }
+                }
+                Add_MouseHover   = $null
+                Add_MouseLeave   = $null
+                ContextMenuStrip = $null
+                ShowPlusMinus    = $true
+                HideSelection    = $false
+                ImageList        = $AccountsTreeViewImageList
+                ImageIndex       = 1
+            }
+            $AccountsTreeViewChangeIconTreeView.Sort()
+            $AccountsTreeViewChangeIconForm.Controls.Add($AccountsTreeViewChangeIconTreeView)
+        
+
+            $AccountsTreeViewChangeIconRootTreeNodeCount = 2
+            foreach ($Icon in $script:AccountsTreeViewIconList) {
+                $AccountsTreeViewChangeIconRootTreeNodeCount++
+                $newNode = New-Object System.Windows.Forms.TreeNode -Property @{
+                    Text = $Icon.BaseName
+                    ImageIndex  = $AccountsTreeViewChangeIconRootTreeNodeCount
+                    #NodeFont  = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,1,1)
+                    ForeColor = [System.Drawing.Color]::FromArgb(0,0,0,0)
+                    ToolTipText = "$($Icon.FullName)"
+                }
+                $AccountsTreeViewChangeIconTreeView.Nodes.Add($newNode)
+            }
+        
+
+            $AccountsTreeViewChangeIconScriptBlock = {
+                $script:Section3AccountDataIconPictureBox.Image = [System.Drawing.Image]::FromFile("$script:AccountsTreeViewChangeIconTreeViewSelected")
+
+                $AccountsTreeviewImageHashTable.GetEnumerator() | ForEach-Object {
+                    If ("$($_.Value)" -eq "$script:AccountsTreeViewChangeIconTreeViewSelected"){
+                        $script:NodeAccount.ImageIndex = $_.Key
+                    }
+                }
+
+                Foreach($Account in $script:AccountsTreeViewData) {
+                    if ($Account.Name -eq $script:NodeAccount.Text) {
+                        $Account.ImageIndex = $script:NodeAccount.ImageIndex
+                    }
+                }
+
+                $script:AccountsTreeView.Nodes.Clear()
+                Initialize-TreeViewData -Accounts
+                
+                $script:AccountsTreeView.Nodes.Add($script:TreeNodeAccountsList)
+                Foreach($Account in $script:AccountsTreeViewData) {
+                    AddTreeNodeTo-TreeViewData -Accounts -RootNode $script:TreeNodeAccountsList -Category $Account.CanonicalName -Entry $Account.Name -ToolTip $Account.IPv4Address -Metadata $Account
+                }
+
+                Save-TreeViewData -Accounts
+                $script:AccountsTreeView.ExpandAll()
+
+                $AccountsTreeViewChangeIconForm.Close()                
+            }
+
+
+            $AccountsTreeViewChangeIconButton = New-Object System.Windows.Forms.Button -Property @{
+                Text   = "Change Icon"
+                Left   = $FormScale * 210
+                Top    = $AccountsTreeViewChangeIconTreeView.Top + $AccountsTreeViewChangeIconTreeView.Height + $($FormScale * 10)
+                Width  = $FormScale * 100
+                Height = $FormScale * 25
+                Add_Click = $AccountsTreeViewChangeIconScriptBlock
+            }
+            Apply-CommonButtonSettings -Button $AccountsTreeViewChangeIconButton
+            $AccountsTreeViewChangeIconForm.Controls.Add($AccountsTreeViewChangeIconButton)
+        
+
+            $script:AccountsTreeViewSelectedIconPath = $null
+            $AccountsTreeviewImageHashTable.GetEnumerator() | ForEach-Object {
+                If ("$($_.Key)" -eq "$($script:NodeAccount.ImageIndex)"){
+                    $script:AccountsTreeViewSelectedIconPath = $_.Value
+                }
+            }
+
+            $AccountsTreeViewChangeIconPreviewPictureBox = New-Object Windows.Forms.PictureBox -Property @{
+                Left     = $FormScale * (210 - 44 - 10)
+                Top      = $AccountsTreeViewChangeIconTreeView.Top + $AccountsTreeViewChangeIconTreeView.Height
+                Width    = $FormScale * 44
+                Height   = $FormScale * 44
+                Image    = [System.Drawing.Image]::FromFile($script:AccountsTreeViewSelectedIconPath)
+                SizeMode = 'StretchImage'
+            }
+            $AccountsTreeViewChangeIconForm.Controls.Add($AccountsTreeViewChangeIconPreviewPictureBox)
+            $AccountsTreeViewChangeIconPreviewPictureBox.BringToFront()
+
+            $AccountsTreeViewChangeIconForm.ShowDialog()
+        }
+    }
 }
 $Section3AccountDataTab.Controls.Add($script:Section3AccountDataIconPictureBox)
 
@@ -40,7 +178,7 @@ $Section3AccountDataNameLabel.bringtofront()
 $script:Section3AccountDataNameTextBox = New-Object System.Windows.Forms.TextBox -Property @{
     Left      = $Section3AccountDataNameLabel.Left + $Section3AccountDataNameLabel.Width
     Top       = $FormScale * 3
-    Width     = $($FormScale * 200) - $($script:Section3EndpointDataIconPictureBox.Width + $($FormScale * 5))
+    Width     = $($FormScale * 200) - $($script:Section3AccountDataIconPictureBox.Width + $($FormScale * 5))
     Height    = $FormScale * 22
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     BackColor = 'White'
