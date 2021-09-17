@@ -10,6 +10,7 @@ TODO:
 [ ] Add Get-Help (comment based help) support for each script so they populate a description
 [ ] Cosolidate code... Create-TreeViewCheckBoxArray -Endpoint --vs-- Generate-Computerlist
 [ ] Checking custom group box makes user add commands turn blue... wierd? Check inside Update-Treeivew function
+[ ] Add to add_closing ... This.dispose() gc-clearnup
 
 ==================================================
 v6.1.0 - Whenever I push
