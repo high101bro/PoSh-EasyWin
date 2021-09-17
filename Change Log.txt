@@ -14,7 +14,7 @@ TODO:
 [ ] Streamline the updaing of data picture box associate with endpoint/account nodes, remove requirement of needing to click on node over and over...
 
 ==================================================
-v6.1.1 - 16 SEP 2021
+v6.2.1 - 16 SEP 2021
 ==================================================
 
 Added Icons to Endpoint and Account Treeview

@@ -3,8 +3,8 @@
 |                |                                                                 |
 |:---------------|:----------------------------------------------------------------|
 |  File Name     |  PoSh-EasyWin.ps1                                               |
-|  Version       |  v6.1.0                                                         |
-|  Updated       |  16 Sep 2021                                                    |
+|  Version       |  v6.2.1                                                         |
+|  Updated       |  17 Sep 2021                                                    |
 |  Created       |  21 Aug 2018                                                    |
 |                |                                                                 |
 |  Author        |  Daniel Komnick (high101bro)                                    |
