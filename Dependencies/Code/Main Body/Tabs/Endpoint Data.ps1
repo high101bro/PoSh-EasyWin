@@ -20,33 +20,10 @@ $script:Section3EndpointDataIconPictureBox = New-Object Windows.Forms.PictureBox
     Image  = [System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Endpoint Default.png")
     SizeMode = 'StretchImage'
     Add_Click = {
-        $IconFound = $false
-        $IconPath  = $null
         if (-not $script:NodeEndpoint){
             [System.Windows.Forms.MessageBox]::Show("You need to select the endpoint in the treeview to change the icon.","PoSh-EasyWin",'Ok',"Info")
         }
-        else {
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            
+        else {            
             $ComputerTreeViewChangeIconForm = New-Object system.Windows.Forms.Form -Property @{
                 Text   = "PoSh-EasyWin - Change Icon"
                 Width  = $FormScale * 335
@@ -66,11 +43,8 @@ $script:Section3EndpointDataIconPictureBox = New-Object Windows.Forms.PictureBox
                 Height = $FormScale * 25
                 Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
             }
-            $ComputerTreeViewChangeIconLabel.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { AddHost-ComputerTreeNode } })
             $ComputerTreeViewChangeIconForm.Controls.Add($ComputerTreeViewChangeIconLabel)
         
-                
-            #batman
 
             $ComputerTreeViewChangeIconTreeView = New-Object System.Windows.Forms.TreeView -Property @{
                 Left   = $FormScale * 10
@@ -90,6 +64,9 @@ $script:Section3EndpointDataIconPictureBox = New-Object Windows.Forms.PictureBox
                             $script:ComputerTreeViewChangeIconTreeViewSelected = $Node.ToolTipText
                         }
                     }
+                }
+                Add_KeyDown = { 
+                    if ($_.KeyCode -eq "Enter") { & $ComputerTreeViewChangeIconScriptBlock }
                 }
                 Add_MouseHover   = $null
                 Add_MouseLeave   = $null
@@ -116,50 +93,50 @@ $script:Section3EndpointDataIconPictureBox = New-Object Windows.Forms.PictureBox
                 $ComputerTreeViewChangeIconTreeView.Nodes.Add($newNode)
             }
         
+            $ComputerTreeViewChangeIconScriptBlock = {
+                $script:Section3EndpointDataIconPictureBox.Image = [System.Drawing.Image]::FromFile($script:ComputerTreeViewChangeIconTreeViewSelected)
+                    
+                $EndpointTreeviewImageHashTable.GetEnumerator() | ForEach-Object {
+                    If ("$($_.Value)" -eq "$script:ComputerTreeViewChangeIconTreeViewSelected"){
+                        $script:NodeEndpoint.ImageIndex = $_.Key
+                    }
+                }
 
-            $ComputerTreeViewChangeIconFormAddHostButton = New-Object System.Windows.Forms.Button -Property @{
+                Foreach($Computer in $script:ComputerTreeViewData) {
+                    if ($Computer.Name -eq $script:NodeEndpoint.Text) {
+                        $Computer.ImageIndex = $script:NodeEndpoint.ImageIndex
+                    }
+                }
+
+                $script:ComputerTreeView.Nodes.Clear()
+                Initialize-TreeViewData -Endpoint
+             
+                $script:ComputerTreeView.Nodes.Add($script:TreeNodeComputerList)
+                Foreach($Computer in $script:ComputerTreeViewData) {
+                    AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:TreeNodeComputerList -Category $Computer.CanonicalName -Entry $Computer.Name -ToolTip $Computer.IPv4Address -Metadata $Computer
+                }
+                Save-TreeViewData -Endpoint
+                $script:ComputerTreeView.ExpandAll()
+
+                $ComputerTreeViewChangeIconForm.Close()
+            }
+
+
+            $ComputerTreeViewChangeIconButton = New-Object System.Windows.Forms.Button -Property @{
                 Text   = "Change Icon"
                 Left   = $FormScale * 210
                 Top    = $ComputerTreeViewChangeIconTreeView.Top + $ComputerTreeViewChangeIconTreeView.Height + $($FormScale * 10)
                 Width  = $FormScale * 100
                 Height = $FormScale * 25
-                Add_Click = {
-                    $script:Section3EndpointDataIconPictureBox.Image = [System.Drawing.Image]::FromFile($script:ComputerTreeViewChangeIconTreeViewSelected)
-                    $script:NodeEndpoint.ImageIndex
-                    $EndpointTreeviewImageHashTable.GetEnumerator() | ForEach-Object {
-                        If ("$($_.Value)" -eq "$script:ComputerTreeViewChangeIconTreeViewSelected"){
-                            $script:NodeEndpoint.ImageIndex = $_.Key
-                        }
-                    }
-
-                    Foreach($Computer in $script:ComputerTreeViewData) {
-                        if ($Computer.Name -eq $script:NodeEndpoint.Text) {
-                            $Computer.ImageIndex = $script:NodeEndpoint.ImageIndex
-                        }
-                    }
-
-                    $script:ComputerTreeView.Nodes.Clear()
-                    Initialize-TreeViewData -Endpoint
-                 
-                    $script:ComputerTreeView.Nodes.Add($script:TreeNodeComputerList)
-                    Foreach($Computer in $script:ComputerTreeViewData) {
-                        AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:TreeNodeComputerList -Category $Computer.OperatingSystem -Entry $Computer.Name -ToolTip $Computer.IPv4Address -Metadata $Computer
-                    }
-                    $script:ComputerTreeView.ExpandAll()
-
-                    Save-TreeViewData -Endpoint
-                    $script:ComputerTreeView.ExpandAll()
-
-                    $ComputerTreeViewChangeIconForm.Close()
-                }
+                Add_Click = $ComputerTreeViewChangeIconScriptBlock
             }
-            Apply-CommonButtonSettings -Button $ComputerTreeViewChangeIconFormAddHostButton
-            $ComputerTreeViewChangeIconForm.Controls.Add($ComputerTreeViewChangeIconFormAddHostButton)
+            Apply-CommonButtonSettings -Button $ComputerTreeViewChangeIconButton
+            $ComputerTreeViewChangeIconForm.Controls.Add($ComputerTreeViewChangeIconButton)
         
 
             $script:EndpointTreeViewSelectedIconPath = $null
             $EndpointTreeviewImageHashTable.GetEnumerator() | ForEach-Object {
-                If ("$($_.Key)" -eq "$($script:NodeEndpoint.ImageIndex)" -and $IconFound -eq $false){
+                If ("$($_.Key)" -eq "$($script:NodeEndpoint.ImageIndex)"){
                     $script:EndpointTreeViewSelectedIconPath = $_.Value
                 }
             }
@@ -176,8 +153,6 @@ $script:Section3EndpointDataIconPictureBox = New-Object Windows.Forms.PictureBox
             $ComputerTreeViewChangeIconPreviewPictureBox.BringToFront()
 
             $ComputerTreeViewChangeIconForm.ShowDialog()
-                
-            $script:AutoChart01ADComputersInvestDiffForm.ShowDialog()
         }
     }
 }

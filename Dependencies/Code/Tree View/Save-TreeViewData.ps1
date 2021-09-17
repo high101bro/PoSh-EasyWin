@@ -32,6 +32,7 @@ Function Save-TreeViewData {
                 $AccountsTreeNodeSaveDataTemp | Add-Member -MemberType NoteProperty -Name ScriptPath             -Value $Section3AccountDataScriptPathTextBox.text -Force
                 $AccountsTreeNodeSaveDataTemp | Add-Member -MemberType NoteProperty -Name HomeDrive              -Value $Section3AccountDataHomeDriveTextBox.text -Force
                 $AccountsTreeNodeSaveDataTemp | Add-Member -MemberType NoteProperty -Name Notes                  -Value $script:Section3AccountDataNotesRichTextBox.text -Force
+                $AccountsTreeNodeSaveDataTemp | Add-Member -MemberType NoteProperty -Name ImageIndex             -Value $Account.ImageIndex -Force
 
                 # $AccountsTreeNodeSaveDataTemp | Add-Member -MemberType NoteProperty -Name LockedOut              -Value $Account.LockedOut -Force
                 # $AccountsTreeNodeSaveDataTemp | Add-Member -MemberType NoteProperty -Name SmartCardLogonRequired -Value $Account.SmartCardLogonRequired -Force

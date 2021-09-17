@@ -11,9 +11,36 @@ TODO:
 [ ] Cosolidate code... Create-TreeViewCheckBoxArray -Endpoint --vs-- Generate-Computerlist
 [ ] Checking custom group box makes user add commands turn blue... wierd? Check inside Update-Treeivew function
 [ ] Add to add_closing ... This.dispose() gc-clearnup
+[ ] Streamline the updaing of data picture box associate with endpoint/account nodes, remove requirement of needing to click on node over and over...
 
 ==================================================
-v6.1.0 - Whenever I push
+v6.1.1 - 16 SEP 2021
+==================================================
+
+Added Icons to Endpoint and Account Treeview
+	- Added numerous icons for Endpoints and Accounts
+		- $Dependencies\Images\Icon\Endpoint\
+		- $Dependencies\Images\Icon\Account\
+	- https://icons8.com/
+
+Added Ability to assign each endpoint or account icon a unique icon
+	- Click on the endpoint/account node, then click on the image in the associate data pane
+		- Another treeview appears, allowing you to select an icon
+			- Each icon is dynamically loaded from:
+				- $Dependencies\Images\Icon\Endpoint\
+				- $Dependencies\Images\Icon\Account\
+			- When each icon is selected, a picture box is updated to provide you a bigger view of it
+		- The selected icon is automatically saved
+			- The icons are associated inside within each respective Treeview .csv file using the indice
+			- THe indicies are assigned based on the order their are read into PoSh-EasyWin, which is alphabetically
+	- Endpoint Data and Account Data Tab Pages
+		- Added picturebox to for easier visual association 
+		- WHen the associated node is clcked, it auto updates the picturebox
+		- Click on the Picture box to change the image
+			- note: you currently first have to click on the associated node first.
+
+==================================================
+v6.1.1 - 16 SEP 2021
 ==================================================
 
 Added Icons to Endpoint and Account Treeview

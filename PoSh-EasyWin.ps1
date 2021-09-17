@@ -1089,7 +1089,7 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel
                             Height = $FormScale * 16
                         }
                     }
-                    $script:AccountTreeViewIconList = Get-ChildItem "$Dependencies\Images\Icons\Account"
+                    $script:AccountsTreeViewIconList = Get-ChildItem "$Dependencies\Images\Icons\Account"
 
                     # This hashtable is used to maintain a relationship between the imageindex number and the image filepath, it is used when populating the Account Data tab
                     $AccountsTreeviewImageHashTable = [ordered]@{}
@@ -1107,7 +1107,7 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel
                     $AccountsTreeviewImageHashTable['2'] = "$Dependencies\Images\Icons\Account Default.png"
                     
                     $AccountsTreeviewImageHashTableCount = 2
-                    foreach ($Image in $script:AccountTreeViewIconList.FullName) {
+                    foreach ($Image in $script:AccountsTreeViewIconList.FullName) {
                         $AccountsTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Image"))
                         $AccountsTreeviewImageHashTableCount++
                         $AccountsTreeviewImageHashTable["$AccountsTreeviewImageHashTableCount"] = "$Image"
