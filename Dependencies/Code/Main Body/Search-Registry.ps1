@@ -50,6 +50,7 @@ $script:QueryRegistryFunction = {
                                     Key        = $Key
                                     KeyName    = $Key.PSChildName
                                     Reason     = "KeyName"
+                                    ItemProperty = $(Get-ItemProperty $CurrentPath | Out-String)
                                 }
                             }
                         }
