@@ -80,7 +80,7 @@ $script:Section3EndpointDataIconPictureBox = New-Object Windows.Forms.PictureBox
             $ComputerTreeViewChangeIconForm.Controls.Add($ComputerTreeViewChangeIconTreeView)
         
 
-            $ComputerTreeViewChangeIconRootTreeNodeCount = 12 #$script:EndpointTreeviewImageHashTableCount
+            $ComputerTreeViewChangeIconRootTreeNodeCount = 16 #$script:EndpointTreeviewImageHashTableCount
             foreach ($Icon in $script:ComputerTreeViewIconList) {
                 $ComputerTreeViewChangeIconRootTreeNodeCount++
                 $newNode = New-Object System.Windows.Forms.TreeNode -Property @{

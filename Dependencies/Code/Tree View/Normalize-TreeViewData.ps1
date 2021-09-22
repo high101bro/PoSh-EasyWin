@@ -269,6 +269,18 @@ function Normalize-TreeViewData {
                 elseif ($Computer.OperatingSystem -match 'Win' -and $Computer.OperatingSystem -match '11' -and $Computer.OperatingSystem -notmatch 'Server' ) {
                     $ComputerTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name ImageIndex -Value 12 -Force
                 }
+                elseif ($Computer.OperatingSystem -match 'ubuntu' ) {
+                    $ComputerTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name ImageIndex -Value 13 -Force
+                }
+                elseif ($Computer.OperatingSystem -match 'debian' ) {
+                    $ComputerTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name ImageIndex -Value 14 -Force
+                }
+                elseif ($Computer.OperatingSystem -match 'redhat' -or $Computer.OperatingSystem -match 'rhel' ) {
+                    $ComputerTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name ImageIndex -Value 15 -Force
+                }
+                elseif ($Computer.OperatingSystem -match 'centos' ) {
+                    $ComputerTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name ImageIndex -Value 16 -Force
+                }
                 else {
                     $ComputerTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name ImageIndex -Value 3 -Force
                 }

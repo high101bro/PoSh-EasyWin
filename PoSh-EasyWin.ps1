@@ -941,9 +941,25 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel
                     $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Endpoint\Windows-Desktop-11.png"))
                     $EndpointTreeviewImageHashTable['12'] = "$Dependencies\Images\Icons\Endpoint\Windows-Desktop-11.png"
                     
+                    # Position 13 = Linux Ubuntu
+                    $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Endpoint\Linux-OS-Ubuntu.png"))
+                    $EndpointTreeviewImageHashTable['13'] = "$Dependencies\Images\Icons\Endpoint\Linux-OS-Ubuntu.png"
 
+                    # Position 14 = Linux Debian
+                    $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Endpoint\Linux-OS-Debian.png"))
+                    $EndpointTreeviewImageHashTable['14'] = "$Dependencies\Images\Icons\Endpoint\Linux-OS-Debian.png"
+
+                    # Position 15 = Linux Red Hat
+                    $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Endpoint\Linux-OS-Red-Hat.png"))
+                    $EndpointTreeviewImageHashTable['15'] = "$Dependencies\Images\Icons\Endpoint\Linux-OS-Red-Hat.png"
+
+                    # Position 16 = Linux CentOS
+                    $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Endpoint\Linux-OS-CentOS.png"))
+                    $EndpointTreeviewImageHashTable['16'] = "$Dependencies\Images\Icons\Endpoint\Linux-OS-CentOS.png"
+ 
+                    
                     # note, if you update this variable, update this one too... $ComputerTreeViewChangeIconRootTreeNodeCount
-                    $script:EndpointTreeviewImageHashTableCount = 12
+                    $script:EndpointTreeviewImageHashTableCount = 16
 
                     foreach ($Image in $script:ComputerTreeViewIconList.FullName) {
                         $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Image"))
