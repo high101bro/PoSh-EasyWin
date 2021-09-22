@@ -897,15 +897,53 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel
                     $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Icon OU LightYellow.png"))
                     $EndpointTreeviewImageHashTable['1'] = "$Dependencies\Images\Icons\Icon OU LightYellow.png"
                     
-                    # Position 2 = used as the default image for the computer/account/entry node. Normalize-TreeViewData.ps1 populates it by default if an imageindex number doesn't exist for it already
-                    $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Endpoint Default.png"))
-                    $EndpointTreeviewImageHashTable['2'] = "$Dependencies\Images\Icons\Endpoint Default.png"
-
-                    # Position 3 = PowerShell Icon, used to indicate an active powershell session
+                    # Position 2 = PowerShell Icon, used to indicate an active powershell session
                     $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\PowerShell Icon.png"))
-                    $EndpointTreeviewImageHashTable['3'] = "$Dependencies\Images\Icons\PowerShell Icon.png"
+                    $EndpointTreeviewImageHashTable['2'] = "$Dependencies\Images\Icons\PowerShell Icon.png"
+
+                    # Position 3 = used as the default image for the computer/account/entry node. Normalize-TreeViewData.ps1 populates it by default if an imageindex number doesn't exist for it already
+                    $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Endpoint Default.png"))
+                    $EndpointTreeviewImageHashTable['3'] = "$Dependencies\Images\Icons\Endpoint Default.png"
                     
-                    $script:EndpointTreeviewImageHashTableCount = 3
+                    # Position 4 = Windows Server Default
+                    $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Windows Server Default.png"))
+                    $EndpointTreeviewImageHashTable['4'] = "$Dependencies\Images\Icons\Windows Server Default.png"
+                                        
+                    # Position 5 = Windows Desktop Client Default
+                    $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Endpoint\Windows-Desktop-Client.png"))
+                    $EndpointTreeviewImageHashTable['5'] = "$Dependencies\Images\Icons\Endpoint\Windows-Desktop-Client.png"
+
+                    # Position 6 = Windows Desktop `95
+                    $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Endpoint\Windows-Desktop-95.png"))
+                    $EndpointTreeviewImageHashTable['6'] = "$Dependencies\Images\Icons\Endpoint\Windows-Desktop-95.png"
+
+                    # Position 7 = Windows Desktop XP
+                    $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Endpoint\Windows-Desktop-XP.png"))
+                    $EndpointTreeviewImageHashTable['7'] = "$Dependencies\Images\Icons\Endpoint\Windows-Desktop-XP.png"
+
+                    # Position 8 = Windows Desktop Vista
+                    $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Endpoint\Windows-Desktop-Vista.png"))
+                    $EndpointTreeviewImageHashTable['8'] = "$Dependencies\Images\Icons\Endpoint\Windows-Desktop-Vista.png"
+
+                    # Position 9 = Windows Desktop 7
+                    $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Endpoint\Windows-Desktop-7.png"))
+                    $EndpointTreeviewImageHashTable['9'] = "$Dependencies\Images\Icons\Endpoint\Windows-Desktop-7.png"
+
+                    # Position 10 = Windows Desktop 8
+                    $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Endpoint\Windows-Desktop-8.png"))
+                    $EndpointTreeviewImageHashTable['10'] = "$Dependencies\Images\Icons\Endpoint\Windows-Desktop-8.png"
+
+                    # Position 11 = Windows Desktop 10
+                    $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Endpoint\Windows-Desktop-10.png"))
+                    $EndpointTreeviewImageHashTable['11'] = "$Dependencies\Images\Icons\Endpoint\Windows-Desktop-10.png"
+
+                    # Position 12 = Windows Desktop 11
+                    $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Endpoint\Windows-Desktop-11.png"))
+                    $EndpointTreeviewImageHashTable['12'] = "$Dependencies\Images\Icons\Endpoint\Windows-Desktop-11.png"
+                    
+
+                    # note, if you update this variable, update this one too... $ComputerTreeViewChangeIconRootTreeNodeCount
+                    $script:EndpointTreeviewImageHashTableCount = 12
 
                     foreach ($Image in $script:ComputerTreeViewIconList.FullName) {
                         $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Image"))
@@ -916,7 +954,7 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel
                     # Position -1 = currently unused
                     $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$high101bro_image"))
                     $script:EndpointTreeviewImageHashTableCount++
-                    $EndpointTreeviewImageHashTable["$script:EndpointTreeviewImageHashTableCount"] = "$Dependencies\Images\Icons\Endpoint Default.png"
+                    $EndpointTreeviewImageHashTable["$script:EndpointTreeviewImageHashTableCount"] = "$Dependencies\Images\high101bro Logo Color Transparent.png"
 
 
                     Update-FormProgress "$Dependencies\Code\System.Windows.Forms\TreeView\ComputerTreeView.ps1"
@@ -1117,7 +1155,7 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel
                     # Position -1 = currently unused
                     $AccountsTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$high101bro_image"))
                     $script:AccountsTreeviewImageHashTableCount++
-                    $AccountsTreeviewImageHashTable["$script:AccountsTreeviewImageHashTableCount"] = "$Dependencies\Images\Icons\Account Default.png"
+                    $AccountsTreeviewImageHashTable["$script:AccountsTreeviewImageHashTableCount"] = "$Dependencies\Images\high101bro Logo Color Transparent.png"
 
 
                     Update-FormProgress "$Dependencies\Code\System.Windows.Forms\TreeView\AccountsTreeView.ps1"

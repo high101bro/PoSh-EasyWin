@@ -32,7 +32,7 @@ $script:PoShEasyWinFormTicker.add_Tick({
                         }
                         elseif ($Entry.text -in $PoShEasyWinPSSessionsOpenComputerList) {
                             $PoShEasyWinSessionTracker[$Entry.text] = $Entry.ImageIndex
-                            $Entry.ImageIndex = 3
+                            $Entry.ImageIndex = 2
                             $Entry.Forecolor = 'Red'
                         }
                         else {
