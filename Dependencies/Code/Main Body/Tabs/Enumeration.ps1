@@ -12,6 +12,8 @@ $Section1EnumerationTab = New-Object System.Windows.Forms.TabPage -Property @{
     Height = $FormScale * $EnumerationLabelHeight
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     UseVisualStyleBackColor = $True
+    Add_MouseEnter = {Check-IfScanExecutionReady}
+    Add_MouseLeave = {Check-IfScanExecutionReady}
 }
 $MainLeftTabControl.Controls.Add($Section1EnumerationTab)
 
@@ -110,6 +112,8 @@ $EnumerationPortScanGroupBox = New-Object System.Windows.Forms.GroupBox -Propert
     Height = $FormScale * 350
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
     ForeColor = "Blue"
+    Add_MouseEnter = {Check-IfScanExecutionReady}
+    Add_MouseLeave = {Check-IfScanExecutionReady}
 }
            $script:EnumerationPortScanSpecificComputerNodeCheckbox = New-Object System.Windows.Forms.checkbox -Property @{
                 Text   = "Scan Checkboxed Endpoints"
@@ -184,6 +188,7 @@ $EnumerationPortScanGroupBox = New-Object System.Windows.Forms.GroupBox -Propert
                 ForeColor     = "Black"
                 Add_Click      = {Check-IfScanExecutionReady}
                 Add_MouseEnter = {Check-IfScanExecutionReady}
+                Add_MouseLeave = {Check-IfScanExecutionReady}
             }
             $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanSpecificIPTextbox)
 
@@ -226,6 +231,7 @@ $EnumerationPortScanGroupBox = New-Object System.Windows.Forms.GroupBox -Propert
                 ForeColor     = "Black"
                 Add_Click      = {Check-IfScanExecutionReady}
                 Add_MouseEnter = {Check-IfScanExecutionReady}
+                Add_MouseLeave = {Check-IfScanExecutionReady}
             }
             $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanIPRangeNetworkTextbox)
 
@@ -256,6 +262,7 @@ $EnumerationPortScanGroupBox = New-Object System.Windows.Forms.GroupBox -Propert
                 ForeColor     = "Black"
                 Add_Click      = {Check-IfScanExecutionReady}
                 Add_MouseEnter = {Check-IfScanExecutionReady}
+                Add_MouseLeave = {Check-IfScanExecutionReady}
             }
             $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanIPRangeFirstTextbox)
 
@@ -286,6 +293,7 @@ $EnumerationPortScanGroupBox = New-Object System.Windows.Forms.GroupBox -Propert
                 ForeColor     = "Black"
                 Add_Click      = {Check-IfScanExecutionReady}
                 Add_MouseEnter = {Check-IfScanExecutionReady}
+                Add_MouseLeave = {Check-IfScanExecutionReady}
             }
             $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanIPRangeLastTextbox)
 
@@ -316,6 +324,7 @@ $EnumerationPortScanGroupBox = New-Object System.Windows.Forms.GroupBox -Propert
                 ForeColor     = "Black"
                 Add_Click      = {Check-IfScanExecutionReady}
                 Add_MouseEnter = {Check-IfScanExecutionReady}
+                Add_MouseLeave = {Check-IfScanExecutionReady}
             }
             $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanSpecificPortsTextbox)
 
@@ -390,6 +399,7 @@ $EnumerationPortScanGroupBox = New-Object System.Windows.Forms.GroupBox -Propert
                 ForeColor     = "Black"
                 Add_Click      = {Check-IfScanExecutionReady}
                 Add_MouseEnter = {Check-IfScanExecutionReady}
+                Add_MouseLeave = {Check-IfScanExecutionReady}
             }
             $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanPortRangeFirstTextbox)
 
@@ -420,6 +430,7 @@ $EnumerationPortScanGroupBox = New-Object System.Windows.Forms.GroupBox -Propert
                 ForeColor     = "Black"
                 Add_Click      = {Check-IfScanExecutionReady}
                 Add_MouseEnter = {Check-IfScanExecutionReady}
+                Add_MouseLeave = {Check-IfScanExecutionReady}
             }
             $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanPortRangeLastTextbox)
 
@@ -465,6 +476,7 @@ $EnumerationPortScanGroupBox = New-Object System.Windows.Forms.GroupBox -Propert
                 ForeColor     = "Black"
                 Add_Click      = {Check-IfScanExecutionReady}
                 Add_MouseEnter = {Check-IfScanExecutionReady}
+                Add_MouseLeave = {Check-IfScanExecutionReady}
             }
             $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanTimeoutTextbox)
 
@@ -512,6 +524,8 @@ $EnumerationPingSweepGroupBox = New-Object System.Windows.Forms.GroupBox -Proper
     Height = $FormScale * 70
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
     ForeColor = "Blue"
+    Add_MouseEnter = {Check-IfScanExecutionReady}
+    Add_MouseLeave = {Check-IfScanExecutionReady}
 }
             $EnumerationPingSweepNote1Label = New-Object System.Windows.Forms.Label -Property @{
                 Text   = "Enter Network/CIDR: (ex: 10.0.0.0/24)"
@@ -540,6 +554,8 @@ $EnumerationPingSweepGroupBox = New-Object System.Windows.Forms.GroupBox -Proper
                 Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 10),0,0,0)
                 ForeColor     = "Black"
                 Add_KeyDown   = $EnumerationPingSweepIPNetworkCIDRTextboxAdd_KeyDown
+                Add_MouseEnter = {Check-IfScanExecutionReady}
+                Add_MouseLeave = {Check-IfScanExecutionReady}
             }
             $EnumerationPingSweepGroupBox.Controls.Add($EnumerationPingSweepIPNetworkCIDRTextbox)
 
@@ -580,6 +596,8 @@ $EnumerationComputerListBox = New-Object System.Windows.Forms.ListBox -Property 
     Height = $EnumerationResolveDNSNameButton.Size.Height + $( $FormScale * 350)
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     SelectionMode = 'MultiExtended'
+    Add_MouseEnter = {Check-IfScanExecutionReady}
+    Add_MouseLeave = {Check-IfScanExecutionReady}
 }
 $EnumerationComputerListBox.Items.Add("127.0.0.1")
 $Section1EnumerationTab.Controls.Add($EnumerationComputerListBox)
