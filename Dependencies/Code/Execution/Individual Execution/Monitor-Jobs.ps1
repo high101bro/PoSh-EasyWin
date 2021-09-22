@@ -780,14 +780,14 @@ if ($MonitorMode) {
 
 "@
 
-    if ($SMITH) {
-       Invoke-Expression @"
-       `$script:SmithScript$JobId  = `$SmithScript
-       `$script:RestartTime$JobId  = `$RestartTime
-       `$script:InputValues$JobId  = `$InputValues
-       `$script:ArgumentList$JobId = `$ArgumentList 
-"@
-   }
+#     if ($SMITH) {
+#        Invoke-Expression @"
+#        `$script:SmithScript$JobId  = `$SmithScript
+#        `$script:RestartTime$JobId  = `$RestartTime
+#        `$script:InputValues$JobId  = `$InputValues
+#        `$script:ArgumentList$JobId = `$ArgumentList 
+# "@
+#    }
 
     if ($PSWriteHTMLSwitch) {
         Invoke-Expression @"

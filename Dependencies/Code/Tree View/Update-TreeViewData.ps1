@@ -365,6 +365,10 @@ function Update-TreeViewData {
                 }
 
                 if ($Endpoint) {
+                    if ($Entry.Text -in ($script:PoShEasyWinPSSessions | Where-object {$_.State -match 'Open'}).ComputerName) {
+                        $Entry.Forecolor = 'Red'
+                    }
+
                     if ($Entry.isselected) {
                         #$Entry.ImageIndex = 8
                         $script:rootSelected     = $null

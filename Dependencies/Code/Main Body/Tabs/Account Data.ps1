@@ -78,10 +78,9 @@ $script:Section3AccountDataIconPictureBox= New-Object Windows.Forms.PictureBox -
                 ImageIndex       = 1
             }
             $AccountsTreeViewChangeIconTreeView.Sort()
-            $AccountsTreeViewChangeIconForm.Controls.Add($AccountsTreeViewChangeIconTreeView)
-        
+            $AccountsTreeViewChangeIconForm.Controls.Add($AccountsTreeViewChangeIconTreeView)        
 
-            $AccountsTreeViewChangeIconRootTreeNodeCount = 2
+            $AccountsTreeViewChangeIconRootTreeNodeCount = 2 #$script:AccountsTreeviewImageHashTableCount
             foreach ($Icon in $script:AccountsTreeViewIconList) {
                 $AccountsTreeViewChangeIconRootTreeNodeCount++
                 $newNode = New-Object System.Windows.Forms.TreeNode -Property @{
@@ -96,7 +95,7 @@ $script:Section3AccountDataIconPictureBox= New-Object Windows.Forms.PictureBox -
         
 
             $AccountsTreeViewChangeIconScriptBlock = {
-                $script:Section3AccountDataIconPictureBox.Image = [System.Drawing.Image]::FromFile("$script:AccountsTreeViewChangeIconTreeViewSelected")
+                $script:Section3AccountDataIconPictureBox.Image = [System.Drawing.Image]::FromFile($script:AccountsTreeViewChangeIconTreeViewSelected)
 
                 $AccountsTreeviewImageHashTable.GetEnumerator() | ForEach-Object {
                     If ("$($_.Value)" -eq "$script:AccountsTreeViewChangeIconTreeViewSelected"){

@@ -73,7 +73,7 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
         Remove-Item -Path "$OutputFilePath.xml" -Force -ErrorAction SilentlyContinue
 
         #The following string replacements edits the command to be compatible with session based queries witj -filepath
-        $CommandString = $CommandString.replace('Invoke-Command -FilePath ','').replace("'","").replace('"','')
+#        $CommandString = $CommandString.replace('Invoke-Command -FilePath ','').replace("'","").replace('"','')
         Invoke-Command -FilePath $CommandString -Session $PSSession | Select-Object -Property PSComputerName, * -ExcludeProperty "__*",RunspaceID `
         | Set-Variable SessionData
         $SessionData | Export-Csv -Path "$OutputFilePath.csv" -NoTypeInformation -Force

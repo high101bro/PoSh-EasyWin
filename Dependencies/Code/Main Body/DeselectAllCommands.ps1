@@ -23,6 +23,7 @@ function Deselect-AllCommands {
     $RegistrySearchCheckbox.checked                              = $false
     $RegistrySearchRecursiveCheckbox.checked                     = $false
     $RegistryKeyNameCheckbox.checked                             = $false
+    $RegistryKeyItemPropertyNameCheckbox.checked                 = $false
     $RegistryValueNameCheckbox.checked                           = $false
     $RegistryValueDataCheckbox.checked                           = $false
     $AccountsCurrentlyLoggedInConsoleCheckbox.checked            = $false
@@ -51,6 +52,7 @@ function Deselect-AllCommands {
     $RegistrySearchCheckbox.ForeColor                            = 'Blue'
     $RegistrySearchRecursiveCheckbox.ForeColor                   = 'Blue'
     $RegistryKeyNameCheckbox.ForeColor                           = 'Blue'
+    $RegistryKeyItemPropertyNameCheckbox.ForeColor               = 'Blue'
     $RegistryValueNameCheckbox.ForeColor                         = 'Blue'
     $RegistryValueDataCheckbox.ForeColor                         = 'Blue'
     $AccountsCurrentlyLoggedInConsoleCheckbox.ForeColor          = 'Blue'

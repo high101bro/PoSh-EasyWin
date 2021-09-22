@@ -4,7 +4,7 @@ Function Import-ActiveDirectoryScripts {
         $script:AllActiveDirectoryCommands += [PSCustomObject]@{
             Name                 = $CollectionName
             Type                 = "script"
-            Command_WinRM_Script = "Invoke-Command -FilePath '$($script.FullName)'"
+            Command_WinRM_Script = $script.FullName
             #Properties_PoSh      = 'PSComputerName, *'
             #Properties_WMI       = 'PSComputerName, *'
             Description          = "$(Get-Help $($script.FullName) | Select-Object -ExpandProperty Description)".TrimStart('@{Text=').TrimEnd('}')

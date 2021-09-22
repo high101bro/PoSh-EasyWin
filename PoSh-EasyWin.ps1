@@ -58,7 +58,6 @@
         You may have to use the Unblock-File cmdlet to be able to run the script.
             - For addtional info on: Get-Help Unblock-File
         How to Unblock the file:
-            - Unblock-File -Path .\PoSh-EasyWin.ps1
             - Get-ChildItem -Path C:\Path\To\PoSh-Easywin -Recurse | Unblock-File
 
     - Update Execution Policy locally
@@ -95,11 +94,6 @@
 
     .EXAMPLE
     Scripts downloaded from the internet are blocked for execution as a Windodws' security precaution
-
-        Unblock-File .\PoSh-EasyWin.ps1
-        .\PoSh-EasyWin.ps1
-
-            -or
 
         Get-ChildItem -Path C:\Path\To\PoSh-Easywin -Recurse | Unblock-File
         .\PoSh-EasyWin.ps1
@@ -235,6 +229,9 @@ $PoShHome                            = $PSScriptRoot #Deprecated# Split-Path -pa
 
 # Send Files listbox value store
 $script:SendFilesValueStoreListBox = @()
+
+# Maintains a list of the PS Sessions used during session based querying
+$script:PoShEasyWinPSSessions = @()
 
 # Used to track the number of previous queries selected
 $script:PreviousQueryCount = 0
@@ -394,8 +391,6 @@ if (Test-Path -Path "$Dependencies\Modules\PSWriteHTML"){
 
 #Start Progress bar form loading
 $global:ScriptBlockForGuiLoadAndProgressBar = {
-    
-
 function Update-FormProgress {
     param(
         [string]$ScriptPath = '...'
@@ -905,18 +900,23 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel
                     # Position 2 = used as the default image for the computer/account/entry node. Normalize-TreeViewData.ps1 populates it by default if an imageindex number doesn't exist for it already
                     $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Endpoint Default.png"))
                     $EndpointTreeviewImageHashTable['2'] = "$Dependencies\Images\Icons\Endpoint Default.png"
+
+                    # Position 3 = PowerShell Icon, used to indicate an active powershell session
+                    $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\PowerShell Icon.png"))
+                    $EndpointTreeviewImageHashTable['3'] = "$Dependencies\Images\Icons\PowerShell Icon.png"
                     
-                    $EndpointTreeviewImageHashTableCount = 2
+                    $script:EndpointTreeviewImageHashTableCount = 3
+
                     foreach ($Image in $script:ComputerTreeViewIconList.FullName) {
                         $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Image"))
-                        $EndpointTreeviewImageHashTableCount++
-                        $EndpointTreeviewImageHashTable["$EndpointTreeviewImageHashTableCount"] = "$Image"
+                        $script:EndpointTreeviewImageHashTableCount++
+                        $EndpointTreeviewImageHashTable["$script:EndpointTreeviewImageHashTableCount"] = "$Image"
                     }
 
                     # Position -1 = currently unused
                     $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$high101bro_image"))
-                    $EndpointTreeviewImageHashTableCount++
-                    $EndpointTreeviewImageHashTable["$EndpointTreeviewImageHashTableCount"] = "$Dependencies\Images\Icons\Endpoint Default.png"
+                    $script:EndpointTreeviewImageHashTableCount++
+                    $EndpointTreeviewImageHashTable["$script:EndpointTreeviewImageHashTableCount"] = "$Dependencies\Images\Icons\Endpoint Default.png"
 
 
                     Update-FormProgress "$Dependencies\Code\System.Windows.Forms\TreeView\ComputerTreeView.ps1"
@@ -1106,17 +1106,18 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel
                     $AccountsTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Account Default.png"))
                     $AccountsTreeviewImageHashTable['2'] = "$Dependencies\Images\Icons\Account Default.png"
                     
-                    $AccountsTreeviewImageHashTableCount = 2
+                    $script:AccountsTreeviewImageHashTableCount = 2
+                    
                     foreach ($Image in $script:AccountsTreeViewIconList.FullName) {
                         $AccountsTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Image"))
-                        $AccountsTreeviewImageHashTableCount++
-                        $AccountsTreeviewImageHashTable["$AccountsTreeviewImageHashTableCount"] = "$Image"
+                        $script:AccountsTreeviewImageHashTableCount++
+                        $AccountsTreeviewImageHashTable["$script:AccountsTreeviewImageHashTableCount"] = "$Image"
                     }
 
                     # Position -1 = currently unused
                     $AccountsTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$high101bro_image"))
-                    $AccountsTreeviewImageHashTableCount++
-                    $AccountsTreeviewImageHashTable["$AccountsTreeviewImageHashTableCount"] = "$Dependencies\Images\Icons\Account Default.png"
+                    $script:AccountsTreeviewImageHashTableCount++
+                    $AccountsTreeviewImageHashTable["$script:AccountsTreeviewImageHashTableCount"] = "$Dependencies\Images\Icons\Account Default.png"
 
 
                     Update-FormProgress "$Dependencies\Code\System.Windows.Forms\TreeView\AccountsTreeView.ps1"
@@ -1338,6 +1339,16 @@ $script:RpcCommandCountHistory   = $false
 $script:SmbCommandCountHistory   = $false
 $script:WinRmCommandCountHistory = $false
 
+##########################################################
+# Monitor Jobs --- Individual Execution --- Beta Testing #
+##########################################################
+
+# This executes each selected command from the Commands' TreeView
+Update-FormProgress "$Dependencies\Code\Execution\Individual Execution\Execute-IndividualCommand.ps1"
+. "$Dependencies\Code\Execution\Individual Execution\Execute-IndividualCommand.ps1"
+
+
+
 $ExecuteScriptHandler = {
     [System.Windows.Forms.Application]::UseWaitCursor = $true
 
@@ -1495,7 +1506,9 @@ $ExecuteScriptHandler = {
         if ($EventLogRPCRadioButton.checked -or $ExternalProgramsRPCRadioButton.checked -or $AccountsRPCRadioButton.checked) { $script:RpcCommandCount += 1 }
 
 
-        if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs' -or $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
+        if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs' -or 
+            $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution' -or 
+            $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Beta Testing') {
             Create-TreeViewCheckBoxArray -Endpoint
 
             # Compares the computerlist against the previous computerlist queried (generated when previous query is completed )
@@ -1535,8 +1548,14 @@ $ExecuteScriptHandler = {
                 $script:CollectedDataTimeStampDirectory = $script:CollectionSavedDirectoryTextBox.Text
                 New-Item -Type Directory -Path $script:CollectedDataTimeStampDirectory -ErrorAction SilentlyContinue
 
-                # This executes each selected command from the Commands' TreeView
-                if ($script:CommandsCheckedBoxesSelected.count -gt 0) { . "$Dependencies\Code\Execution\Individual Execution\Execute-IndividualCommands.ps1" }
+                if ($script:CommandsCheckedBoxesSelected.count -gt 0) {
+                    if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Beta Testing') { 
+                        Execute-IndividualCommand -UseSession
+                    }
+                    else { 
+                        Execute-IndividualCommand -UseComputerName 
+                    }
+                }
 
                 # Query Build
                 if ($CustomQueryScriptBlockCheckBox.Checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-QueryBuild.ps1" }

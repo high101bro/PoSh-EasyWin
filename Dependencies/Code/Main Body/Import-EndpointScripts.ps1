@@ -6,8 +6,8 @@ Function Import-EndpointScripts {
             $script:AllEndpointCommands += [PSCustomObject]@{
                 Name                 = $CollectionName
                 Type                 = "script"
-                Command_WinRM_Script = "Invoke-Command -FilePath '$($script.FullName)' -ArgumentList @('$Dependencies\Commands & Scripts\Scripts-Host\Invoke-DeepBlue-regexes.txt','$Dependencies\Commands & Scripts\Scripts-Host\Invoke-DeepBlue-whitelist.txt')"
-                Arguments            = $null
+                Command_WinRM_Script = $script.FullName
+                Arguments            = @('$Dependencies\Commands & Scripts\Scripts-Host\Invoke-DeepBlue-regexes.txt','$Dependencies\Commands & Scripts\Scripts-Host\Invoke-DeepBlue-whitelist.txt')
                 #Properties_PoSh      = 'PSComputerName, *'
                 Description          = @"
 $("$(Get-Help $($script.FullName) | Select-Object -ExpandProperty DESCRIPTION)".TrimStart('@{Text=').TrimEnd('}'))
@@ -26,7 +26,7 @@ $("$Dependencies\Commands & Scripts\Scripts-Host\Invoke-DeepBlue-whitelist.txt")
             $script:AllEndpointCommands += [PSCustomObject]@{
                 Name                 = $CollectionName
                 Type                 = "script"
-                Command_WinRM_Script = "Invoke-Command -FilePath '$($script.FullName)'"
+                Command_WinRM_Script = $script.FullName
                 Arguments            = $null
                 #Properties_PoSh      = 'PSComputerName, *'
                 Description          = @"

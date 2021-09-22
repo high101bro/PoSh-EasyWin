@@ -103,7 +103,7 @@ function Normalize-TreeViewData {
             if ($Account.ImageIndex) {
                 $AccountsTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name ImageIndex -Value $Account.ImageIndex -Force }
             else {
-                $AccountsTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name ImageIndex -Value 5 -Force }
+                $AccountsTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name ImageIndex -Value 2 -Force }
             $script:AccountsTreeViewDataTemp += $AccountsTreeNodeInsertDefaultData
 
             ###write-host $($AccountsTreeNodeInsertDefaultData | Select Name, OperatingSystem, CanonicalName, IPv4Address, Notes)
@@ -245,7 +245,7 @@ function Normalize-TreeViewData {
             if ($Computer.ImageIndex) {
                 $ComputerTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name ImageIndex -Value $Computer.ImageIndex -Force }
             else {
-                $ComputerTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name ImageIndex -Value 5 -Force }
+                $ComputerTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name ImageIndex -Value 2 -Force }
 
             $script:ComputerTreeViewDataTemp += $ComputerTreeNodeInsertDefaultData
             ###write-host $($ComputerTreeNodeInsertDefaultData | Select Name, OperatingSystem, CanonicalName, IPv4Address, Notes)

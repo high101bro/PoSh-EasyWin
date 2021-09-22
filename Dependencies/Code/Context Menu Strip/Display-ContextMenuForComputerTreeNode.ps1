@@ -61,6 +61,164 @@ Command:
             $script:ComputerListContextMenuStrip.Items.Add($ComputerListRemoteDesktopToolStripButton)
 
 
+            # if ( $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Beta Testing') {
+            #     $ComputerListEnterPSSessionToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
+            #         Text        = "  - New-PSSession"
+            #         ForeColor   = 'Black'
+            #         Add_Click   = {
+            #             $InformationTabControl.SelectedTab = $Section3ResultsTab
+            #             Create-TreeViewCheckBoxArray -Endpoint
+            #             Generate-ComputerList
+                    
+            #             if ($script:ComputerListProvideCredentialsCheckBox.Checked) { $Username = $script:Credential.UserName}
+            #             else {$Username = $PoShEasyWinAccountLaunch }
+                    
+            #             if ($script:ComputerListEndpointNameToolStripLabel.text) {
+            #                 $VerifyAction = Verify-Action -Title "Verification: PowerShell Session" -Question "Connecting Account:  $Username`n`nCreate a new PowerShell Session to the following?" -Computer $($script:ComputerListEndpointNameToolStripLabel.text)
+            #                 if ($script:ComputerListUseDNSCheckbox.checked) { 
+            #                     $script:ComputerTreeViewSelected = $script:ComputerListEndpointNameToolStripLabel.text 
+            #                 }
+            #                 else {
+            #                     [System.Windows.Forms.TreeNodeCollection]$AllTreeViewNodes = $script:ComputerTreeView.Nodes
+            #                     foreach ($root in $AllTreeViewNodes) {
+            #                         foreach ($Category in $root.Nodes) {
+            #                             foreach ($Entry in $Category.nodes) {
+            #                                 if ($Entry.Text -eq $script:ComputerListEndpointNameToolStripLabel.text) {
+            #                                     foreach ($Metadata in $Entry.nodes) {
+            #                                         if ($Metadata.Name -eq 'IPv4Address') {
+            #                                             $script:ComputerTreeViewSelected = $Metadata.text
+            #                                         }
+            #                                     }
+            #                                 }
+            #                             }
+            #                         }
+            #                     }
+            #                 }
+            #             }
+            #             elseif (-not $script:ComputerListEndpointNameToolStripLabel.text) {
+            #                 [System.Windows.Forms.Messagebox]::Show('Left click an endpoint node to select it, then right click to access the context menu and select PSSession.','PowerShell Session')
+            #             }
+                    
+            #             if ($VerifyAction) {
+            #                 # This brings specific tabs to the forefront/front view
+            #                 $InformationTabControl.SelectedTab = $Section3ResultsTab
+                    
+            #                 $StatusListBox.Items.Clear()
+            #                 $StatusListBox.Items.Add("New-PSSession:  $($script:ComputerTreeViewSelected)")
+
+            #                 if ($script:ComputerTreeViewSelected -in $($script:PoShEasyWinPSSessions | Where-Object {$_.State -match 'Open'}).ComputerName) {
+            #                     [System.Windows.Forms.MessageBox]::Show("The following endpoint already has an open PowerShell session:`n`n$($script:ComputerTreeViewSelected)","PoSh-EasyWin - PowerShell Sessions",'Ok',"Info")
+            #                 }
+            #                 else {
+            #                     $PoShEasyWinNewPSSessions = $null
+
+            #                     if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
+            #                         if (-not $script:Credential) { Create-NewCredentials }
+            #                         $PoShEasyWinNewPSSessions = New-PSSession -ComputerName $script:ComputerTreeViewSelected -Credential $script:Credential
+            #                         Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "New-PSSession -ComputerName $($script:ComputerTreeViewSelected) -Credential $script:Credential"
+            #                     }
+            #                     else {
+            #                         $PoShEasyWinNewPSSessions = New-PSSession -ComputerName $script:ComputerTreeViewSelected
+            #                         Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "New-PSSession -ComputerName $($script:ComputerTreeViewSelected)"
+            #                     }
+
+            #                     $PoShEasyWinNewPSSessions `
+            #                     | Add-Member -MemberType NoteProperty -Name 'StartTime' -Value $(Get-Date) -PassThru `
+            #                     | Add-Member -MemberType NoteProperty -Name 'Duration' -Value $null -PassThru `
+            #                     | Add-Member -MemberType NoteProperty -Name 'EndTime' -Value $null
+            #                     $script:PoShEasyWinPSSessions += $PoShEasyWinNewPSSessions
+            #                     Start-Sleep -Seconds 3 
+            #                 }
+                    
+            #                 if ($script:RollCredentialsState -and $script:ComputerListProvideCredentialsCheckBox.checked) {
+            #                     Start-Sleep -Seconds 3
+            #                     Generate-NewRollingPassword
+            #                 }
+            #             }
+            #             else {
+            #                 [system.media.systemsounds]::Exclamation.play()
+            #                 $StatusListBox.Items.Clear()
+            #                 $StatusListBox.Items.Add("PowerShell New-PSSession:  Cancelled")
+            #             }                        
+            #         }
+            #         ToolTipText = ""
+            #     }
+            #     $script:ComputerListContextMenuStrip.Items.Add($ComputerListEnterPSSessionToolStripButton)
+
+            #     $ComputerListEnterPSSessionToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
+            #         Text        = "  - Get-PSSession"
+            #         ForeColor   = 'Black'
+            #         Add_Click   = {
+            #             $PoShEasyWinPSSessionsDisplay = @()
+                        
+            #             $PoShEasyWinPSSessionsDisplay += $script:PoShEasyWinPSSessions `
+            #             | Where-Object {$_.State -match 'Open'} `
+            #             | Foreach-Object {
+            #                 $_ | Add-Member -MemberType NoteProperty -Name Duration -Value $(New-TimeSpan -Start $_.StartTime -End $(Get-Date)) -Force -PassThru
+            #             } `
+            #             | Select-Object -Property Id, ComputerName, StartTime, Duration, Endtime, Name, ComputerType, State, ConfigurationName, Availability
+
+            #             $PoShEasyWinPSSessionsDisplay += $script:PoShEasyWinPSSessions `
+            #             | Where-Object {$_.State -notmatch 'Open'} `
+            #             | Select-Object -Property Id, ComputerName, StartTime, Duration, Endtime, Name, ComputerType, State, ConfigurationName, Availability
+
+            #             $PoShEasyWinPSSessionsDisplay `
+            #             | Sort-Object -Property State `
+            #             | Select-Object -Property Id, ComputerName, StartTime, Duration, Endtime, Name, ComputerType, State, ConfigurationName, Availability `
+            #             | Out-GridView -Title "Status of Powershell Sessions"
+            #         }
+            #         ToolTipText = ""
+            #     }
+            #     $script:ComputerListContextMenuStrip.Items.Add($ComputerListEnterPSSessionToolStripButton)
+
+            #     $ComputerListEnterPSSessionToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
+            #         Text        = "  - Remove-PSSession"
+            #         ForeColor   = 'Black'
+            #         Add_Click   = {
+            #             # Adds metadata to existing open sessions 
+            #             $script:PoShEasyWinPSSessions | Where-Object {$_.State -match 'Open'} `
+            #             | ForEach-Object {
+            #                 $_ | Add-Member -MemberType NoteProperty -Name Duration -Value $(New-TimeSpan -Start $_.StartTime -End $(Get-Date)) -Force
+            #             }
+            #             $PoShEasyWinPSSessionsRemovePrompt = $script:PoShEasyWinPSSessions | Where-Object {$_.State -match 'Open'}
+
+            #             if ($($PoShEasyWinPSSessionsRemovePrompt | Where-Object {$_.State -match 'Open'})) {
+            #                 # Prompts user to close sessions
+            #                 $PoShEasyWinPSSessionsRemovePrompt | Where-Object {$_.State -match 'Open'} `
+            #                 | Select-Object -Property Id, ComputerName, StartTime, Duration, Endtime, Name, ComputerType, State, ConfigurationName, Availability `
+            #                 | Out-GridView -Title 'Selecte PowerShell Sessions To Remove' -PassThru `
+            #                 | Remove-PSSession
+
+            #                 # Adds metadata to remaining open sessions
+            #                 $PoShEasyWinPSSessionsRemovePrompt | Where-Object {$_.State -match 'Open'} `
+            #                 | ForEach-Object {
+            #                     $_ | Add-Member -MemberType NoteProperty -Name Duration -Value $(New-TimeSpan -Start $_.StartTime -End $(Get-Date)) -Force
+            #                 }
+
+            #                 # Adds metadata to remaining 'closed' sessions
+            #                 $PoShEasyWinPSSessionsRemovePrompt | Where-Object {$_.State -notmatch 'Open'} `
+            #                 | ForEach-Object {
+            #                     $_ | Add-Member -MemberType NoteProperty -Name EndTime -Value $(Get-Date) -Force
+            #                     $_ | Add-Member -MemberType NoteProperty -Name Duration -Value $(New-TimeSpan -Start $_.StartTime -End $(Get-Date)) -Force
+            #                 }
+
+            #                 if ($($PoShEasyWinPSSessionsRemovePrompt | Where-Object {$_.State -notmatch 'Open'})) {
+            #                     $script:PoShEasyWinPSSessions `
+            #                     | Select-Object -Property Id, ComputerName, StartTime, Duration, Endtime, Name, ComputerType, State, ConfigurationName, Availability `
+            #                     | Sort-Object -Property State `
+            #                     | Out-GridView -Title "Status of Powershell Sessions" -PassThru 
+            #                 }
+            #             }
+            #             else {
+            #                 [System.Windows.Forms.MessageBox]::Show("There are no open PowerShell Sessions.","PoSh-EasyWin - PowerShell Sessions",'Ok',"Info")
+            #             }
+            #         }
+            #         ToolTipText = ""
+            #     }
+            #     $script:ComputerListContextMenuStrip.Items.Add($ComputerListEnterPSSessionToolStripButton)
+            # }
+
+
             $ComputerListEnterPSSessionToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
                 Text        = "  - Enter-PSSession"
                 ForeColor   = 'Black'
@@ -494,7 +652,183 @@ Command Ex:
     }
     $script:ComputerListContextMenuStrip.Items.Add($ComputerListMultiEndpointPSSessionToolStripLabel)
 
+
     
+
+    if ( $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Beta Testing') {
+        $ComputerListEnterPSSessionToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
+            Text        = "  - New-PSSession"
+            ForeColor   = 'Black'
+            Add_Click   = {
+                $InformationTabControl.SelectedTab = $Section3ResultsTab
+                Create-TreeViewCheckBoxArray -Endpoint
+                Generate-ComputerList
+            
+                if ($script:ComputerListProvideCredentialsCheckBox.Checked) { $Username = $script:Credential.UserName}
+                else {$Username = $PoShEasyWinAccountLaunch }
+            
+                if ($script:ComputerListEndpointNameToolStripLabel.text) {
+                    $script:SessionsAlreadyExists = $false
+                    $script:SessionsAlreadyExistsList = @()
+                    $script:SessionsDontExistList = @()
+                    foreach ($Computer in $script:ComputerList) {
+                        if ($Computer -in $($script:PoShEasyWinPSSessions | Where-Object {$_.State -match 'Open'}).ComputerName) {
+                            $script:SessionsAlreadyExists = $true
+                            $script:SessionsAlreadyExistsList += $Computer
+                        }
+                        else {
+                            $script:SessionsDontExistList += $Computer
+                        }
+                    }
+
+                    $VerifyAction = Verify-Action -Title "Verification: PowerShell Session" -Question "Connecting Account:  $Username`n`nCreate a new PowerShell Session to the following?" -Computer $script:SessionsDontExistList
+                    if ($script:ComputerListUseDNSCheckbox.checked) { 
+                        $script:ComputerTreeViewSelected = $script:ComputerListEndpointNameToolStripLabel.text 
+                    }
+                    else {
+                        [System.Windows.Forms.TreeNodeCollection]$AllTreeViewNodes = $script:ComputerTreeView.Nodes
+                        foreach ($root in $AllTreeViewNodes) {
+                            foreach ($Category in $root.Nodes) {
+                                foreach ($Entry in $Category.nodes) {
+                                    if ($Entry.Text -eq $script:ComputerListEndpointNameToolStripLabel.text) {
+                                        foreach ($Metadata in $Entry.nodes) {
+                                            if ($Metadata.Name -eq 'IPv4Address') {
+                                                $script:ComputerTreeViewSelected = $Metadata.text
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                elseif (-not $script:ComputerListEndpointNameToolStripLabel.text) {
+                    [System.Windows.Forms.Messagebox]::Show('Left click an endpoint node to select it, then right click to access the context menu and select PSSession.','PowerShell Session')
+                }
+            
+                if ($VerifyAction) {
+                    # This brings specific tabs to the forefront/front view
+                    $InformationTabControl.SelectedTab = $Section3ResultsTab
+            
+                    $StatusListBox.Items.Clear()
+                    $StatusListBox.Items.Add("New-PSSession:  $($script:SessionsDontExistList.Count) Ednpoints")
+
+                    if ($script:SessionsAlreadyExists -eq $true) {
+                        [System.Windows.Forms.MessageBox]::Show("The following endpoints already have an open PowerShell session:`n`n$($script:SessionsAlreadyExistsList)","PoSh-EasyWin - PowerShell Sessions",'Ok',"Info")
+                    }
+                    else {
+                        $PoShEasyWinNewPSSessions = $null
+
+                        if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
+                            if (-not $script:Credential) { Create-NewCredentials }
+                            $PoShEasyWinNewPSSessions = New-PSSession -ComputerName $script:SessionsDontExistList -Credential $script:Credential
+                            Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "New-PSSession -ComputerName $($script:SessionsDontExistList) -Credential $script:Credential"
+                        }
+                        else {
+                            $PoShEasyWinNewPSSessions = New-PSSession -ComputerName $script:SessionsDontExistList
+                            Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "New-PSSession -ComputerName $($script:SessionsDontExistList)"
+                        }
+
+                        $PoShEasyWinNewPSSessions `
+                        | Add-Member -MemberType NoteProperty -Name 'StartTime' -Value $(Get-Date) -PassThru `
+                        | Add-Member -MemberType NoteProperty -Name 'Duration' -Value $null -PassThru `
+                        | Add-Member -MemberType NoteProperty -Name 'EndTime' -Value $null
+                        $script:PoShEasyWinPSSessions += $PoShEasyWinNewPSSessions
+                    }
+            
+                    if ($script:RollCredentialsState -and $script:ComputerListProvideCredentialsCheckBox.checked) {
+                        Start-Sleep -Seconds 3
+                        Generate-NewRollingPassword
+                    }
+                }
+                else {
+                    [system.media.systemsounds]::Exclamation.play()
+                    $StatusListBox.Items.Clear()
+                    $StatusListBox.Items.Add("PowerShell New-PSSession:  Cancelled")
+                }                        
+            }
+            ToolTipText = ""
+        }
+        $script:ComputerListContextMenuStrip.Items.Add($ComputerListEnterPSSessionToolStripButton)
+
+        $ComputerListEnterPSSessionToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
+            Text        = "  - Get-PSSession"
+            ForeColor   = 'Black'
+            Add_Click   = {
+                $PoShEasyWinPSSessionsDisplay = @()
+                
+                $PoShEasyWinPSSessionsDisplay += $script:PoShEasyWinPSSessions `
+                | Where-Object {$_.State -match 'Open'} `
+                | Foreach-Object {
+                    $_ | Add-Member -MemberType NoteProperty -Name Duration -Value $(New-TimeSpan -Start $_.StartTime -End $(Get-Date)) -Force -PassThru
+                } `
+                | Select-Object -Property Id, ComputerName, StartTime, Duration, Endtime, Name, ComputerType, State, ConfigurationName, Availability
+
+                $PoShEasyWinPSSessionsDisplay += $script:PoShEasyWinPSSessions `
+                | Where-Object {$_.State -notmatch 'Open'} `
+                | Select-Object -Property Id, ComputerName, StartTime, Duration, Endtime, Name, ComputerType, State, ConfigurationName, Availability
+
+                $PoShEasyWinPSSessionsDisplay `
+                | Sort-Object -Property State `
+                | Select-Object -Property Id, ComputerName, StartTime, Duration, Endtime, Name, ComputerType, State, ConfigurationName, Availability `
+                | Out-GridView -Title "Status of Powershell Sessions"
+            }
+            ToolTipText = ""
+        }
+        $script:ComputerListContextMenuStrip.Items.Add($ComputerListEnterPSSessionToolStripButton)
+
+        $ComputerListEnterPSSessionToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
+            Text        = "  - Remove-PSSession"
+            ForeColor   = 'Black'
+            Add_Click   = {
+                # Adds metadata to existing open sessions 
+                $script:PoShEasyWinPSSessions | Where-Object {$_.State -match 'Open'} `
+                | ForEach-Object {
+                    $_ | Add-Member -MemberType NoteProperty -Name Duration -Value $(New-TimeSpan -Start $_.StartTime -End $(Get-Date)) -Force
+                }
+                $PoShEasyWinPSSessionsRemovePrompt = $script:PoShEasyWinPSSessions | Where-Object {$_.State -match 'Open'}
+
+                if ($($PoShEasyWinPSSessionsRemovePrompt | Where-Object {$_.State -match 'Open'})) {
+                    # Prompts user to close sessions
+                    $PoShEasyWinPSSessionsRemovePrompt | Where-Object {$_.State -match 'Open'} `
+                    | Select-Object -Property Id, ComputerName, StartTime, Duration, Endtime, Name, ComputerType, State, ConfigurationName, Availability `
+                    | Out-GridView -Title 'Selecte PowerShell Sessions To Remove' -PassThru `
+                    | Remove-PSSession
+
+                    # Adds metadata to remaining open sessions
+                    $PoShEasyWinPSSessionsRemovePrompt | Where-Object {$_.State -match 'Open'} `
+                    | ForEach-Object {
+                        $_ | Add-Member -MemberType NoteProperty -Name Duration -Value $(New-TimeSpan -Start $_.StartTime -End $(Get-Date)) -Force
+                    }
+
+                    # Adds metadata to remaining 'closed' sessions
+                    $PoShEasyWinPSSessionsRemovePrompt | Where-Object {$_.State -notmatch 'Open'} `
+                    | ForEach-Object {
+                        $_ | Add-Member -MemberType NoteProperty -Name EndTime -Value $(Get-Date) -Force
+                        $_ | Add-Member -MemberType NoteProperty -Name Duration -Value $(New-TimeSpan -Start $_.StartTime -End $(Get-Date)) -Force
+                    }
+
+                    if ($($PoShEasyWinPSSessionsRemovePrompt | Where-Object {$_.State -notmatch 'Open'})) {
+                        $script:PoShEasyWinPSSessions `
+                        | Select-Object -Property Id, ComputerName, StartTime, Duration, Endtime, Name, ComputerType, State, ConfigurationName, Availability `
+                        | Sort-Object -Property State `
+                        | Out-GridView -Title "Status of Powershell Sessions" -PassThru 
+                    }
+                }
+                else {
+                    [System.Windows.Forms.MessageBox]::Show("There are no open PowerShell Sessions.","PoSh-EasyWin - PowerShell Sessions",'Ok',"Info")
+                }
+            }
+            ToolTipText = ""
+        }
+        $script:ComputerListContextMenuStrip.Items.Add($ComputerListEnterPSSessionToolStripButton)
+    }
+
+
+
+
+
+
     $ComputerListMultiEndpointPSSessionToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
         Text        = "  - MultiEndpoint-PSSession"
         ForeColor   = 'Black'

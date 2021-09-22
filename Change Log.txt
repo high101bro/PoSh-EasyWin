@@ -14,6 +14,33 @@ TODO:
 [ ] Streamline the updaing of data picture box associate with endpoint/account nodes, remove requirement of needing to click on node over and over...
 
 ==================================================
+v6.3.2 - 21 SEP 2021
+==================================================
+
+Registry query feature
+	- Added a new search pane for the ItemProperty list
+	- Able to search for and collect the itemproperty of keys, example:
+		- The following path had malicious code... using the query pulls back data found 
+		- Get-ItemProperty HKCU:\Software\Microsoft\Windows\CurrentVersion run
+
+New Session Based data collection method
+    - Alpha testing and building of new feature
+	[ ] previous collected data no longer maintains relationship with the saved file, when the next collection starts, the previous button to open the previous csv file is broken even thought the file still exists
+	[ ] The computername property in the collected results is appearing empty, but the pscomputername is not...
+
+Added button to recieve jobs
+	- able to view status / current data collected`
+	- data is kept in memory unless removed
+
+==================================================
+v6.2.2 - 20 SEP 2021
+==================================================
+
+Registry query feature doesn't show property info
+	- Added ItemProtery (Get-ItemProperty for the keyname searched)
+	- Update: Attempted 'patch' didn't gather the data the analyst reported they wanted... investigating further
+
+==================================================
 v6.2.1 - 16 SEP 2021
 ==================================================
 

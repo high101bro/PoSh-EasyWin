@@ -63,8 +63,42 @@ $script:Section3MonitorJobsResizeCheckbox = New-Object System.Windows.Forms.Chec
 $script:Section3MonitorJobsGroupBox.Controls.Add($script:Section3MonitorJobsResizeCheckbox)
 
 
+$script:Section3MonitorJobReceiveJobsButton = New-Object System.Windows.Forms.Button -Property @{
+    Text      = 'Receive'
+    Left      = $FormScale * 381
+    Top       = $script:Section3MonitorJobsResizeButton.Top
+    Width     = $FormScale * 110
+    Height    = $FormScale * 22
+    Font      = New-Object System.Drawing.Font("Courier New",$($FormScale * 8),1,2,1)
+    ForeColor = 'Black'
+    Add_Click = {
+        $PoShEasyWinJobs = Get-Job -Name "PoSh-EasyWin:*"
+ 
+        $CheckIfMonitoring = Get-Variable | Where-Object {$_.Name -match 'Section3MonitorJobContinuousCheckbox' -and $_.value -match 'checkState: 1'}
+        if ( $CheckIfMonitoring ) {
+            if ($PoShEasyWinJobs) {
+                $PoShEasyWinJobs | Out-GridView -Title 'PoSh-EasyWin Jobs'
+            }
+            else {
+                [System.Windows.Forms.MessageBox]::Show("There are no PoSh-EasyWin jobs currently running.",'PoSh-EasyWin','Info')
+            }
+        }
+        else {
+            if ($PoShEasyWinJobs) {
+                $PoShEasyWinJobs | Out-GridView -Title 'PoSh-EasyWin Jobs -- Select jobs and click OK to recieve data.' -PassThru | Receive-Job -Keep | Out-GridView -Title 'PoSh-EasyWin Jobs'
+            }
+            else {
+                [System.Windows.Forms.MessageBox]::Show("There are no PoSh-EasyWin jobs currently running.",'PoSh-EasyWin','Info')
+            }
+        }
+    }
+}
+$script:Section3MonitorJobsGroupBox.Controls.Add($script:Section3MonitorJobReceiveJobsButton)
+Apply-CommonButtonSettings -Button $script:Section3MonitorJobReceiveJobsButton
+
+
 $script:Section3MonitorJobShowAllJobsButton = New-Object System.Windows.Forms.Button -Property @{
-    Text      = 'All Jobs'
+    Text      = 'Remove'
     Left      = $FormScale * 495
     Top       = $script:Section3MonitorJobsResizeButton.Top
     Width     = $FormScale * 75
