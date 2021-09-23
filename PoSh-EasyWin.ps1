@@ -389,6 +389,7 @@ if (Test-Path -Path "$Dependencies\Modules\PSWriteHTML"){
 #
 #============================================================================================================================================================
 
+
 #Start Progress bar form loading
 $global:ScriptBlockForGuiLoadAndProgressBar = {
 function Update-FormProgress {
@@ -401,7 +402,7 @@ function Update-FormProgress {
     #    # Loads the script using the Dot Sourcing method
     #    . $ScriptPath
     #}
-    $script:ProgressBarMainLabel.text = "Download at: https://GitHub.com/high101bro
+    $script:ProgressBarMainLabel.text = "Download at: https://github.com/high101bro
 Loading: $StatusDescription"
     $script:ProgressBarMainLabel.Refresh()
     $script:ProgressBarFormProgressBar.Value += 1
@@ -443,6 +444,7 @@ $PoShEasyWin = New-Object System.Windows.Forms.Form -Property @{
     ControlBox  = $true
     MaximizeBox = $false
     MinimizeBox = $true
+    BackColor   = [System.Drawing.Color]::SlateGray
     StartPosition  = "CenterScreen"
     FormBorderStyle =  'Sizable' #  Fixed3D, FixedDialog, FixedSingle, FixedToolWindow, None, Sizable, SizableToolWindow
     Add_Load = {
@@ -528,6 +530,7 @@ $PoShEasyWin = New-Object System.Windows.Forms.Form -Property @{
     #backgroundimage =  [system.drawing.image]::FromFile("C:\Users\Administrator\Desktop\PoSh-EasyWin\Dependencies\Background Image 001.jpg")
 }
 
+
 # Takes the entered domain and lists all computers
 Update-FormProgress "$Dependencies\Code\Execution\Enumeration\Import-HostsFromDomain.ps1"
 . "$Dependencies\Code\Execution\Enumeration\Import-HostsFromDomain.ps1"
@@ -541,13 +544,13 @@ $QueryAndCollectionPanel = New-Object System.Windows.Forms.Panel -Property @{
     Top    = $FormScale * 5
 }
             $PoShEasyWinPictureBox = New-Object Windows.Forms.PictureBox -Property @{
-                Text   = "PowerShell Charts"
                 Left   = 0
                 Top    = 0
                 Width  = $FormScale * 400
-                Height = $FormScale * 45
+                Height = $FormScale * 40
                 Image  = [System.Drawing.Image]::Fromfile("$Dependencies\Images\PoSh-EasyWin Image 01.png")
                 SizeMode = 'StretchImage'
+                BackColor = 'White'
             }
             # Added/Removed by Set-GuiLayout
 
@@ -576,7 +579,7 @@ $QueryAndCollectionPanel = New-Object System.Windows.Forms.Panel -Property @{
                 Left   = 0
                 Width  = $FormScale * 460
                 Height = $FormScale * 590
-                Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+                Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)   
             }
             $QueryAndCollectionPanel.Controls.Add($MainLeftTabControl)
 
@@ -1934,7 +1937,10 @@ Update-FormProgress "$Dependencies\Code\Execution\Command Line\Select-ComputersA
 $script:ComputerListExecuteButton.Add_Click($ExecuteScriptHandler)
 
 
-$script:PoShEasyWinStatusBar = New-Object System.Windows.Forms.StatusBar
+$script:PoShEasyWinStatusBar = New-Object System.Windows.Forms.StatusBar -Property @{
+    BackColor = 'DarkBlue'
+    ForeColor = 'White'
+}
 $PoShEasyWin.Controls.Add($script:PoShEasyWinStatusBar)
 
 

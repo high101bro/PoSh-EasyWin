@@ -174,6 +174,8 @@ $PowerShellTerminalButton = New-Object System.Windows.Forms.Button -Property @{
     Top    = $AutoCreateDashboardChartButton.Top
     Width  = $FormScale * 115
     Height = $FormScale * 22
+#    Image  = [System.Drawing.Image]::FromFile("$EasyWinIcon")
+    FlatStyle = 'System'
     Add_Click = {
         Start-Process PowerShell.exe
     }

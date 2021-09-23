@@ -102,7 +102,7 @@ function Set-GuiLayout {
         $Section3AboutTab.Controls.Remove($High101BroPictureBox)
         $QueryAndCollectionPanel.Controls.Add($High101BroPictureBox)
 
-        $MainLeftTabControl.Top = $PoShEasyWinPictureBox.Top + $PoShEasyWinPictureBox.Height
+        $MainLeftTabControl.Top = $PoShEasyWinPictureBox.Top + $PoShEasyWinPictureBox.Height + $($FormScale * 5)
 
         $QueryAndCollectionPanel.Width = $FormScale * 460
         $QueryAndCollectionPanel.Height = $FormScale * 645
