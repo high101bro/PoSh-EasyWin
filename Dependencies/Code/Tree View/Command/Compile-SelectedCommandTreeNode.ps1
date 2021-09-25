@@ -79,6 +79,7 @@ function Compile-SelectedCommandTreeNode {
                         $script:CommandsCheckedBoxesSelected += New-Object psobject @{
                             Name           = $Entry.Text
                             Command        = $Command.Command_RPC_WMI
+                            Namespace      = $Command.Namespace_RPC_WMI
                             Properties     = $Command.Properties_WMI
                             ExportFileName = $Command.ExportFileName
                             Type           = "(RPC) WMI"

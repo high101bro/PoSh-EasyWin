@@ -3,6 +3,7 @@ function Display-ContextMenuForAccountsTreeNode {
         [switch]$ClickedOnNode,
         [switch]$ClickedOnArea
     )
+    # https://info.sapien.com/index.php/guis/gui-controls/spotlight-on-the-contextmenustrip-control
 
     Create-TreeViewCheckBoxArray -Accounts
 

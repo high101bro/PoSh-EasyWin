@@ -181,7 +181,7 @@ $PowerShellTerminalButton = New-Object System.Windows.Forms.Button -Property @{
     }
 }
 #$MainCenterMainTab.Controls.Add($PowerShellTerminalButton)
-Apply-CommonButtonSettings -Button $PowerShellTerminalButton
+Apply-CommonButtonSettings -Button $PowerShellTerminalButton -Name "PowerShell"
 
 
 Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\RetrieveFilesButton.ps1"

@@ -1172,7 +1172,7 @@ if ($MonitorMode) {
         if ($PSWriteHTMLSwitch) {
         Invoke-Expression @"
             `$script:Section3MonitorJobShellButton$JobId = New-Object System.Windows.Forms.Button -Property @{
-                text     = 'Browser'
+                text     = 'HTML'
                 Left     = `$script:Section3MonitorJobProgressBar$JobId.Left + `$script:Section3MonitorJobProgressBar$JobId.Width + (`$FormScale * 5)
                 Top      = `$script:Section3MonitorJobViewButton$JobId.Top + `$script:Section3MonitorJobViewButton$JobId.Height + (`$FormScale * 5)
                 Width    = `$FormScale * 60
@@ -1205,7 +1205,7 @@ if ($MonitorMode) {
                 }
             }
             if (`$OptionSaveCliXmlDataCheckBox.checked -eq `$false) {
-                `$script:Section3MonitorJobShellButton$JobId.Text = 'Browser'
+                `$script:Section3MonitorJobShellButton$JobId.Text = 'HTML'
             }
 "@
         }

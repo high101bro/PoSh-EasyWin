@@ -901,8 +901,8 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel
                     $EndpointTreeviewImageHashTable['1'] = "$Dependencies\Images\Icons\Icon OU LightYellow.png"
                     
                     # Position 2 = PowerShell Icon, used to indicate an active powershell session
-                    $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\PowerShell Icon.png"))
-                    $EndpointTreeviewImageHashTable['2'] = "$Dependencies\Images\Icons\PowerShell Icon.png"
+                    $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\PowerShell.png"))
+                    $EndpointTreeviewImageHashTable['2'] = "$Dependencies\Images\Icons\PowerShell.png"
 
                     # Position 3 = used as the default image for the computer/account/entry node. Normalize-TreeViewData.ps1 populates it by default if an imageindex number doesn't exist for it already
                     $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Endpoint Default.png"))
