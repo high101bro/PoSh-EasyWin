@@ -23,7 +23,7 @@ function Display-ContextMenuForComputerTreeNode {
     $script:ComputerListEndpointNameToolStripLabel = New-Object System.Windows.Forms.ToolStripMenuItem -Property @{
         Image = [System.Drawing.Image]::FromFile($($EndpointTreeviewImageHashTable["$($script:NodeEndpoint.ImageIndex)"]))
         Text    = "$($Entry.Text)"
-        Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+        Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),1,2,1)
         ForeColor = 'Blue'
         Add_Click = { [System.Windows.Forms.MessageBox]::Show("This is just a heading, select another option","PoSh-EasyWin",'Ok',"Info") }
     }

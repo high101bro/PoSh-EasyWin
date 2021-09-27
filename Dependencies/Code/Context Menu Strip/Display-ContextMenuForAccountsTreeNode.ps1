@@ -9,50 +9,62 @@ function Display-ContextMenuForAccountsTreeNode {
 
     $script:AccountsListContextMenuStrip.Items.Remove($AccountsListRenameToolStripButton)
     $script:AccountsListContextMenuStrip = New-Object System.Windows.Forms.ContextMenuStrip -Property @{
-        ShowCheckMargin = $false
-        ShowImageMargin = $false
-        ShowItemToolTips = $false
+        ShowCheckMargin  = $false
+        ShowImageMargin  = $true
+        ShowItemToolTips = $true
         Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         ForeColor = 'Black'
+        ImageScalingSize = @{ 
+            Width  = $FormScale * 15
+            Height = $FormScale * 15
+        }
+        Padding = @{Left=0;Top=0;Right=0;Bottom=0}
     }
-
-    $script:AccountsListAccountNameToolStripLabel = New-Object System.Windows.Forms.ToolStripLabel -Property @{
+    $script:AccountsListAccountNameToolStripLabel = New-Object System.Windows.Forms.ToolStripMenuItem -Property @{
+        Image = [System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Account Default.png")
         Text      = "$($Entry.Text)"
         Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),1,2,1)
         ForeColor = 'Blue'
+        Add_Click = { [System.Windows.Forms.MessageBox]::Show("This is just a heading, select another option","PoSh-EasyWin",'Ok',"Info") }
     }
-    $script:AccountsListContextMenuStrip.Items.Add($script:AccountsListAccountNameToolStripLabel)
+    $script:AccountsListContextMenuStrip.Items.add($AccountsListAccountNameToolStripLabel:ComputerListEndpointNameToolStripLabel)
 
 
     $script:AccountsListContextMenuStrip.Items.Add('-')
 
 
-    $AccountsListInteractWithAccountToolStripLabel = New-Object System.Windows.Forms.ToolStripLabel -Property @{
+    $script:AccountsListInteractWithAccountToolStripLabel = New-Object System.Windows.Forms.ToolStripMenuItem -Property @{
+        Image = [System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Interact.png")
         Text      = "Interact With Account"
         Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),1,2,1)
-        ForeColor = 'Black'
+        ForeColor = 'Blue'
+        Add_Click = { [System.Windows.Forms.MessageBox]::Show("This is just a heading, select another option","PoSh-EasyWin",'Ok',"Info") }
     }
-    $script:AccountsListContextMenuStrip.Items.Add($AccountsListInteractWithAccountToolStripLabel)
+    $script:AccountsListContextMenuStrip.Items.add($script:AccountsListInteractWithAccountToolStripLabel)
 
 
-    $AccountsListInteractWithAccountNoActionToolStripLabel = New-Object System.Windows.Forms.ToolStripLabel -Property @{
-        Text      = "  - Under Development"
+    $script:AccountsListInteractWithAccountNoActionToolStripLabel = New-Object System.Windows.Forms.ToolStripMenuItem -Property @{
+        Image = [System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Under-Construction.png")
+        Text      = "Under Development"
         Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         ForeColor = 'DarkRed'
+        Add_Click = { [System.Windows.Forms.MessageBox]::Show("This is just a heading, select another option","PoSh-EasyWin",'Ok',"Info") }
     }
-    $script:AccountsListContextMenuStrip.Items.Add($AccountsListInteractWithAccountNoActionToolStripLabel)
+    $script:AccountsListContextMenuStrip.Items.add($script:AccountsListInteractWithAccountNoActionToolStripLabel)
 
 
-    $AccountsListSelectedNodeActionsToolStripLabel = New-Object System.Windows.Forms.ToolStripLabel -Property @{
+    $script:AccountsListSelectedNodeActionsToolStripLabel = New-Object System.Windows.Forms.ToolStripMenuItem -Property @{
+        Image = [System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Node-Action.png")
         Text      = "Node Actions: Selected"
         Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),1,2,1)
         ForeColor = 'Black'
+        Add_Click = { [System.Windows.Forms.MessageBox]::Show("This is just a heading, select another option","PoSh-EasyWin",'Ok',"Info") }
     }
-    $script:AccountsListContextMenuStrip.Items.Add($AccountsListSelectedNodeActionsToolStripLabel)
+    $script:AccountsListContextMenuStrip.Items.add($script:AccountsListSelectedNodeActionsToolStripLabel)
 
 
     $AccountsListSelectedNodeActionsToolStripComboBox = New-Object System.Windows.Forms.ToolStripComboBox -Property @{
-        Size        = @{ Width  = $FormScale * 150 }
+        Size        = @{ Width  = $FormScale * 200 }
         Text        = '  - Make a selection'
         ForeColor   = 'Black'
         ToolTipText = 'Conduct various actions against a single node.'
@@ -288,37 +300,31 @@ function Display-ContextMenuForAccountsTreeNode {
     $script:AccountsListContextMenuStrip.Items.Add($AccountsListSelectedNodeActionsToolStripComboBox)
 
 
-    $script:AccountsListContextMenuStrip.Items.Add('-')
-    $AccountsListRenameToolStripLabel = New-Object System.Windows.Forms.ToolStripLabel -Property @{
-        Text      = 'Checked Accounts'
+    $script:AccountsListRenameToolStripLabel = New-Object System.Windows.Forms.ToolStripMenuItem -Property @{
+        Image = [System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Checked-Box.png")
+        Text      = 'Interact With Checked Accounts'
         Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),1,2,1)
         ForeColor = 'Blue'
+        Add_Click = { [System.Windows.Forms.MessageBox]::Show("This is just a heading, select another option","PoSh-EasyWin",'Ok',"Info") }
     }
-    $script:AccountsListContextMenuStrip.Items.Add($AccountsListRenameToolStripLabel)
+    $script:AccountsListContextMenuStrip.Items.add($script:AccountsListRenameToolStripLabel)
+
+
     $script:AccountsListContextMenuStrip.Items.Add('-')
 
 
-    $AccountsListCheckedNodeActionsToolStripLabel = New-Object System.Windows.Forms.ToolStripLabel -Property @{
+    $script:AccountsListCheckedNodeActionsToolStripLabel = New-Object System.Windows.Forms.ToolStripMenuItem -Property @{
+        Image = [System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Node-Action.png")
         Text      = "Node Actions: All"
         Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),1,2,1)
         ForeColor = 'Black'
+        Add_Click = { [System.Windows.Forms.MessageBox]::Show("This is just a heading, select another option","PoSh-EasyWin",'Ok',"Info") }
     }
-    $script:AccountsListContextMenuStrip.Items.Add($AccountsListCheckedNodeActionsToolStripLabel)
-
-
-    $AccountsListCheckedNodeActionsDeselectAllButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
-        Text        = "  - Uncheck All Nodes"
-        ForeColor   = 'Black'
-        Add_Click   = {
-            $script:AccountsListContextMenuStrip.Close()
-            Deselect-AllAccounts
-        }
-    }
-    $script:AccountsListContextMenuStrip.Items.Add($AccountsListCheckedNodeActionsDeselectAllButton)
+    $script:AccountsListContextMenuStrip.Items.add($script:AccountsListCheckedNodeActionsToolStripLabel)
 
 
     $AccountsListCheckeddNodeActionsToolStripComboBox = New-Object System.Windows.Forms.ToolStripComboBox -Property @{
-        Size        = @{ Width  = $FormScale * 150 }
+        Size        = @{ Width  = $FormScale * 200 }
         Text        = '  - Make a selection'
         ForeColor   = 'Black'
         ToolTipText = 'Conduct various actions against a single node.'
@@ -499,48 +505,44 @@ function Display-ContextMenuForAccountsTreeNode {
     $AccountsListCheckeddNodeActionsToolStripComboBox.Items.Add(" - Delete Checked Nodes")
     $script:AccountsListContextMenuStrip.Items.Add($AccountsListCheckeddNodeActionsToolStripComboBox)
 
+
+    $script:AccountsListCheckedNodeActionsDeselectAllButton = New-Object System.Windows.Forms.ToolStripMenuItem -Property @{
+        Image = [System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\UnChecked-Box.png")
+        Text        = "Uncheck All Nodes"
+        ForeColor   = 'Black'
+        Add_Click   = {
+            $script:AccountsListContextMenuStrip.Close()
+            Deselect-AllAccounts
+        }
+    }
+    $script:AccountsListContextMenuStrip.Items.add($script:AccountsListCheckedNodeActionsDeselectAllButton)
     
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    $AccountsListAccountsAdditionalActionsToolStripLabel = New-Object System.Windows.Forms.ToolStripLabel -Property @{
+    $script:AccountsListAccountsAdditionalActionsToolStripLabel = New-Object System.Windows.Forms.ToolStripMenuItem -Property @{
+        Image = [System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Squared-Menu-Blue.png")
         Text      = "Additional Actions"
         Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),1,2,1)
         ForeColor = 'Blue'
+        Add_Click = { [System.Windows.Forms.MessageBox]::Show("This is just a heading, select another option","PoSh-EasyWin",'Ok',"Info") }
     }
-    $script:AccountsListContextMenuStrip.Items.Add($AccountsListAccountsAdditionalActionsToolStripLabel)
+    $script:AccountsListContextMenuStrip.Items.add($script:AccountsListAccountsAdditionalActionsToolStripLabel)
 
 
     $script:AccountsListContextMenuStrip.Items.Add('-')
 
 
-    $AccountsListImportAccountDataToolStripLabel = New-Object System.Windows.Forms.ToolStripLabel -Property @{
+    $script:AccountsListImportAccountDataToolStripLabel = New-Object System.Windows.Forms.ToolStripMenuItem -Property @{
+        Image = [System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Import-Data.png")
         Text      = "Import Account Data"
         Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),1,2,1)
         ForeColor = 'Black'
+        Add_Click = { [System.Windows.Forms.MessageBox]::Show("This is just a heading, select another option","PoSh-EasyWin",'Ok',"Info") }
     }
-    $script:AccountsListContextMenuStrip.Items.Add($AccountsListImportAccountDataToolStripLabel)
+    $script:AccountsListContextMenuStrip.Items.add($script:AccountsListImportAccountDataToolStripLabel)
 
 
     $AccountsListImportAccountsDataToolStripComboBox = New-Object System.Windows.Forms.ToolStripComboBox -Property @{
-        Size        = @{ Width  = $FormScale * 150 }
+        Size        = @{ Width  = $FormScale * 200 }
         Text        = '  - Make a selection'
         ForeColor   = 'Black'
         ToolTipText = 'Import Account Data from various sources. Conflicting account names will not be imported.'
@@ -567,16 +569,18 @@ function Display-ContextMenuForAccountsTreeNode {
     $script:AccountsListContextMenuStrip.Items.Add($AccountsListImportAccountsDataToolStripComboBox)
 
 
-    $AccountsListRenameToolStripLabel = New-Object System.Windows.Forms.ToolStripLabel -Property @{
+    $script:AccountsListViewAccountDataToolStripLabel = New-Object System.Windows.Forms.ToolStripMenuItem -Property @{
+        Image = [System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\View-Data.png")
         Text      = 'View Account Data'
         Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),1,2,1)
         ForeColor = 'Black'
+        Add_Click = { [System.Windows.Forms.MessageBox]::Show("This is just a heading, select another option","PoSh-EasyWin",'Ok',"Info") }
     }
-    $script:AccountsListContextMenuStrip.Items.Add($AccountsListRenameToolStripLabel)
+    $script:AccountsListContextMenuStrip.Items.add($script:AccountsListViewAccountDataToolStripLabel)
 
 
     $AccountsListViewAccountsDataToolStripComboBox = New-Object System.Windows.Forms.ToolStripComboBox -Property @{
-        Size        = @{ Width  = $FormScale * 150 }
+        Size        = @{ Width  = $FormScale * 200 }
         Text        = '  - Make a selection'
         ForeColor   = 'Black'
         ToolTipText = 'View the local data for all accounts that populates the treeview.'
@@ -603,16 +607,18 @@ function Display-ContextMenuForAccountsTreeNode {
     $script:AccountsListContextMenuStrip.Items.Add($AccountsListViewAccountsDataToolStripComboBox)    
 
 
-    $AccountsListAccountsUpdateTreeviewToolStripLabel = New-Object System.Windows.Forms.ToolStripLabel -Property @{
+    $script:AccountsListAccountsUpdateTreeviewToolStripLabel = New-Object System.Windows.Forms.ToolStripMenuItem -Property @{
+        Image = [System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Update-TreeView.png")
         Text      = 'Update TreeView'
         Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),1,2,1)
         ForeColor = 'Black'
+        Add_Click = { [System.Windows.Forms.MessageBox]::Show("This is just a heading, select another option","PoSh-EasyWin",'Ok',"Info") }
     }
-    $script:AccountsListContextMenuStrip.Items.Add($AccountsListAccountsUpdateTreeviewToolStripLabel)
+    $script:AccountsListContextMenuStrip.Items.add($script:AccountsListAccountsUpdateTreeviewToolStripLabel)
 
 
     $AccountsListAccountsUpdateTreeviewToolStripComboBox = New-Object System.Windows.Forms.ToolStripComboBox -Property @{
-        Size        = @{ Width  = $FormScale * 150 }
+        Size        = @{ Width  = $FormScale * 200 }
         Text        = '  - Make a selection'
         ForeColor   = 'Black'
         ToolTipText = 'Quickly modify the account treeview to better manage and find nodes.'
@@ -666,61 +672,7 @@ function Display-ContextMenuForAccountsTreeNode {
     $script:AccountsListContextMenuStrip.Items.Add($AccountsListAccountsUpdateTreeviewToolStripComboBox)    
 
 
-    $script:AccountsListContextMenuStrip.Items.Add('-')
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        $script:AccountsListContextMenuStrip.Items.Add('-')
-        $AccountsListRenameToolStripLabel = New-Object System.Windows.Forms.ToolStripLabel -Property @{
-            Text      = 'View Account Data'
-            Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),1,2,1)
-            ForeColor = 'Blue'
-        }
-        $script:AccountsListContextMenuStrip.Items.Add($AccountsListRenameToolStripLabel)
-        $script:AccountsListContextMenuStrip.Items.Add('-')
-        
-        
-        $AccountsListOpenGridViewCheckToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
-            Text      = "Out-GridView"
-            Add_CLick = {
-                Import-Csv -Path $script:AccountsTreeNodeFileSave | Out-GridView -Title 'Account Data'
-            }
-        }
-        $script:AccountsListContextMenuStrip.Items.Add($AccountsListOpenGridViewCheckToolStripButton)
-        
-        $AccountsListOpenSpreadsheetCheckToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
-            Text      = "Spreadsheet"
-            Add_CLick = {
-                Invoke-Item -Path $script:AccountsTreeNodeFileSave
-            }
-        }
-        $script:AccountsListContextMenuStrip.Items.Add($AccountsListOpenSpreadsheetCheckToolStripButton)
-        
-        
-        $AccountsListOpenHtmlViewCheckToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
-            Text      = "Browser HTML View"
-            Add_CLick = {
-                Import-Csv -Path $script:AccountsTreeNodeFileSave | Out-HTMLView -Title 'Account Data'
-            }
-        }
-        $script:AccountsListContextMenuStrip.Items.Add($AccountsListOpenHtmlViewCheckToolStripButton)
+    $script:ComputerListContextMenuStrip.Items.Add('-')
 
 
     $Entry.ContextMenuStrip = $script:AccountsListContextMenuStrip
