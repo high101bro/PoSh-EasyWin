@@ -18,7 +18,7 @@ $script:Section3AccountDataIconPictureBox= New-Object Windows.Forms.PictureBox -
     Top    = $FormScale * 3
     Width  = $FormScale * 44
     Height = $FormScale * 44
-    Image  = [System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Account Default.png")
+    Image  = [System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Account-Default.png")
     SizeMode = 'StretchImage'
     Add_Click = {
         if (-not $script:NodeAccount){
@@ -214,7 +214,7 @@ $Section3AccountDataOULabel.bringtofront()
 
 
 $Section3AccountDataOUTextBox = New-Object System.Windows.Forms.TextBox -Property @{
-    Left      = $script:Section3HostDataNameTextBox.Left
+    Left      = $script:Section3AccountDataNameTextBox.Left
     Top       = $Section3AccountDataOULabel.Top
     Width     = $($FormScale * 200) - $($script:Section3AccountDataIconPictureBox.Width + $($FormScale * 5))
     Height    = $FormScale * 22

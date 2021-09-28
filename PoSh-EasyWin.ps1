@@ -897,20 +897,20 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel
                     $EndpointTreeviewImageHashTable['0'] = "$EasyWinIcon"
 
                     # Position 1 = used as the default image that is loaded against the .treeview itself, thus shown at the top level for the Organizational Units, It gets overwritten by each node that is added
-                    $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Icon OU LightYellow.png"))
-                    $EndpointTreeviewImageHashTable['1'] = "$Dependencies\Images\Icons\Icon OU LightYellow.png"
+                    $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\OU-Default.png"))
+                    $EndpointTreeviewImageHashTable['1'] = "$Dependencies\Images\Icons\OU-Default.png"
                     
                     # Position 2 = PowerShell Icon, used to indicate an active powershell session
                     $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\PowerShell.png"))
                     $EndpointTreeviewImageHashTable['2'] = "$Dependencies\Images\Icons\PowerShell.png"
 
                     # Position 3 = used as the default image for the computer/account/entry node. Normalize-TreeViewData.ps1 populates it by default if an imageindex number doesn't exist for it already
-                    $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Endpoint Default.png"))
-                    $EndpointTreeviewImageHashTable['3'] = "$Dependencies\Images\Icons\Endpoint Default.png"
+                    $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Endpoint-Default.png"))
+                    $EndpointTreeviewImageHashTable['3'] = "$Dependencies\Images\Icons\Endpoint-Default.png"
                     
                     # Position 4 = Windows Server Default
-                    $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Windows Server Default.png"))
-                    $EndpointTreeviewImageHashTable['4'] = "$Dependencies\Images\Icons\Windows Server Default.png"
+                    $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Windows-Server-Default.png"))
+                    $EndpointTreeviewImageHashTable['4'] = "$Dependencies\Images\Icons\Windows-Server-Default.png"
                                         
                     # Position 5 = Windows Desktop Client Default
                     $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Endpoint\Windows-Desktop-Client.png"))
@@ -965,8 +965,8 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel
                     $script:EndpointTreeviewImageHashTableCount = 16
 
                     foreach ($Image in $script:ComputerTreeViewIconList.FullName) {
-                        $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Image"))
                         $script:EndpointTreeviewImageHashTableCount++
+                        $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Image"))
                         $EndpointTreeviewImageHashTable["$script:EndpointTreeviewImageHashTableCount"] = "$Image"
                     }
 
@@ -1075,7 +1075,7 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel
                         }
                         #Add_MouseHover = $AccountsTreeNodeEnabledRadioButtonAdd_MouseHover
                     }
-                    $AccountsTreeNodeComboBoxList = @('CanonicalName','Enabled','LockedOut','SmartCardLogonRequired','Created','Modified','LastLogonDate','LastBadPasswordAttempt','PasswordNeverExpires','PasswordExpired','PasswordNotRequired','BadLogonCount',,'ScriptPath','HomeDrive')
+                    $AccountsTreeNodeComboBoxList = @('CanonicalName','Enabled','LockedOut','SmartCardLogonRequired','Created','Modified','LastLogonDate','LastBadPasswordAttempt','PasswordNeverExpires','PasswordExpired','PasswordNotRequired','BadLogonCount','ScriptPath','HomeDrive')
                     ForEach ($Item in $AccountsTreeNodeComboBoxList) { $script:AccountsTreeNodeComboBox.Items.Add($Item) }
                     $AccountsTreeviewTab.Controls.Add($script:AccountsTreeNodeComboBox)
 
@@ -1156,12 +1156,12 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel
                     $AccountsTreeviewImageHashTable['0'] = "$EasyWinIcon"
 
                     # Position 1 = used as the default image that is loaded against the .treeview itself, thus shown at the top level for the Organizational Units, It gets overwritten by each node that is added
-                    $AccountsTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Icon OU LightYellow.png"))
-                    $AccountsTreeviewImageHashTable['1'] = "$Dependencies\Images\Icons\Icon OU LightYellow.png"
+                    $AccountsTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\OU-Default.png"))
+                    $AccountsTreeviewImageHashTable['1'] = "$Dependencies\Images\Icons\OU-Default.png"
                     
                     # Position 2 = used as the default image for the computer/account/entry node. Normalize-TreeViewData.ps1 populates it by default if an imageindex number doesn't exist for it already
-                    $AccountsTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Account Default.png"))
-                    $AccountsTreeviewImageHashTable['2'] = "$Dependencies\Images\Icons\Account Default.png"
+                    $AccountsTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Account-Default.png"))
+                    $AccountsTreeviewImageHashTable['2'] = "$Dependencies\Images\Icons\Account-Default.png"
                     
                     $script:AccountsTreeviewImageHashTableCount = 2
                     

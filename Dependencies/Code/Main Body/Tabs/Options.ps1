@@ -263,7 +263,7 @@ if (Test-Path "$PoShHome\Settings\Audible Completion Message.txt") {
 $Section2OptionsTab.Controls.Add($OptionTextToSpeachCheckBox)
 
 
-                $OptionShowToolTipCheckBox = New-Object System.Windows.Forms.Checkbox -Property @{
+                $script:OptionShowToolTipCheckBox = New-Object System.Windows.Forms.Checkbox -Property @{
                     Text    = "Show ToolTip"
                     Left    = $OptionTextToSpeachCheckBox.Left + $OptionTextToSpeachCheckBox.Width
                     Top     = $OptionTextToSpeachCheckBox.Top
@@ -275,10 +275,10 @@ $Section2OptionsTab.Controls.Add($OptionTextToSpeachCheckBox)
                     Add_Click = { $This.Checked | Set-Content "$PoShHome\Settings\Show Tool Tip.txt" -Force }
                 }
                 if (Test-Path "$PoShHome\Settings\Show Tool Tip.txt") { 
-                    if ((Get-Content "$PoShHome\Settings\Show Tool Tip.txt") -eq 'True'){$OptionShowToolTipCheckBox.checked = $true}
-                    else {$OptionShowToolTipCheckBox.checked = $false}
+                    if ((Get-Content "$PoShHome\Settings\Show Tool Tip.txt") -eq 'True'){$script:OptionShowToolTipCheckBox.checked = $true}
+                    else {$script:OptionShowToolTipCheckBox.checked = $false}
                 }
-                $Section2OptionsTab.Controls.Add($OptionShowToolTipCheckBox)
+                $Section2OptionsTab.Controls.Add($script:OptionShowToolTipCheckBox)
 
 
 $OptionPacketKeepEtlCabFilesCheckBox = New-Object System.Windows.Forms.Checkbox -Property @{

@@ -103,7 +103,7 @@ function Normalize-TreeViewData {
             if ($Account.ImageIndex) {
                 $AccountsTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name ImageIndex -Value $Account.ImageIndex -Force }
             else {
-                $AccountsTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name ImageIndex -Value 3 -Force }
+                $AccountsTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name ImageIndex -Value 2 -Force }
             $script:AccountsTreeViewDataTemp += $AccountsTreeNodeInsertDefaultData
 
             ###write-host $($AccountsTreeNodeInsertDefaultData | Select Name, OperatingSystem, CanonicalName, IPv4Address, Notes)

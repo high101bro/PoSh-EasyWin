@@ -1,7 +1,6 @@
 function Rename-ComputerTreeNodeSelected {
     if ($script:ComputerTreeViewData.Name -contains $script:ComputerTreeNodeRenamePopupTextBox.Text) {
         Message-NodeAlreadyExists -Endpoint -Message "Rename Hostname/IP:  Error" -computer $script:ComputerTreeNodeRenamePopupTextBox.Text
-
     }
     else {
         # Makes a copy of the checkboxed node name in the new Category

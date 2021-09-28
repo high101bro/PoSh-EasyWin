@@ -5,7 +5,7 @@ function Show-ToolTip {
         $Icon    = 'Warning'
     )
     $ToolTip = New-Object System.Windows.Forms.ToolTip
-    if ($OptionShowToolTipCheckBox.Checked){
+    if ($script:OptionShowToolTipCheckBox.Checked){
         $ToolTipMessage1   = "`n`n+  ToolTips can be disabled in the Options Tab."
         $ToolTip.SetToolTip($this,$($Message + $ToolTipMessage1))
         $ToolTip.Active         = $true

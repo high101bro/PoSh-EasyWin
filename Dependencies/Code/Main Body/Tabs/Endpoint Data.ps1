@@ -17,7 +17,7 @@ $script:Section3EndpointDataIconPictureBox = New-Object Windows.Forms.PictureBox
     Top    = $FormScale * 3
     Width  = $FormScale * 44
     Height = $FormScale * 44
-    Image  = [System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Endpoint Default.png")
+    Image  = [System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Endpoint-Default.png")
     SizeMode = 'StretchImage'
     Add_Click = {
         if (-not $script:NodeEndpoint){

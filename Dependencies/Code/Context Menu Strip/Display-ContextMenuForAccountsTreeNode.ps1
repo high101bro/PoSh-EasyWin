@@ -58,6 +58,11 @@ function Display-ContextMenuForAccountsTreeNode {
         Text      = "Node Actions: Selected"
         Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),1,2,1)
         ForeColor = 'Black'
+        Add_MouseHover = {
+            Show-ToolTip -Title "Node Actions: Selected" -Icon "Info" -Message @"
++  Conduct various actions against a single node.`n`n
+"@ 
+        }
         Add_Click = { [System.Windows.Forms.MessageBox]::Show("This is just a heading, select another option","PoSh-EasyWin",'Ok',"Info") }
     }
     $script:AccountsListContextMenuStrip.Items.add($script:AccountsListSelectedNodeActionsToolStripLabel)
@@ -67,7 +72,12 @@ function Display-ContextMenuForAccountsTreeNode {
         Size        = @{ Width  = $FormScale * 200 }
         Text        = '  - Make a selection'
         ForeColor   = 'Black'
-        ToolTipText = 'Conduct various actions against a single node.'
+#        ToolTipText = 
+        Add_MouseHover = {
+            Show-ToolTip -Title "Node Actions: Selected" -Icon "Info" -Message @"
++  Conduct various actions against a single node.`n`n
+"@ 
+        }
         Add_SelectedIndexChanged = {
             $script:AccountsListContextMenuStrip.Close()
 
