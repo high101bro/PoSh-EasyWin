@@ -2,7 +2,8 @@ $Section3HostDataTab = New-Object System.Windows.Forms.TabPage -Property @{
     Text = "Endpoint Data"
     Name = "Host Data Tab"
     Font = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    UseVisualStyleBackColor = $True
+    UseVisualStyleBackColor = $True    
+    ImageIndex = 3
     Add_click = { script:Minimize-MonitorJobsTab }
 }
 $InformationTabControl.Controls.Add($Section3HostDataTab)
@@ -11,6 +12,7 @@ $InformationTabControl.Controls.Add($Section3HostDataTab)
 #############
 ### Row 1 ###
 #############
+
 
 $script:Section3EndpointDataIconPictureBox = New-Object Windows.Forms.PictureBox -Property @{
     Left   = 0

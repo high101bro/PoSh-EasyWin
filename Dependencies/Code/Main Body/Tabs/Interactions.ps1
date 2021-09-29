@@ -7,6 +7,7 @@ $Section1InteractionsTab = New-Object System.Windows.Forms.TabPage -Property @{
                   Height = $FormScale * 25 }
     Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     UseVisualStyleBackColor = $True
+    ImageIndex = 1
 }
 $MainLeftTabControl.Controls.Add($Section1InteractionsTab)
 

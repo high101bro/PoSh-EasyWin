@@ -4,6 +4,7 @@ $script:Section3MonitorJobsTab = New-Object System.Windows.Forms.TabPage -Proper
     Font = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     AutoScroll = $true
     UseVisualStyleBackColor = $True
+    ImageIndex = 2
 }
 $InformationTabControl.Controls.Add($script:Section3MonitorJobsTab)
 

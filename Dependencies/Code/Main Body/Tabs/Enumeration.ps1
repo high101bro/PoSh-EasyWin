@@ -5,7 +5,7 @@ $EnumerationLabelHeight       = 25
 $EnumerationGroupGap          = 15
 
 $Section1EnumerationTab = New-Object System.Windows.Forms.TabPage -Property @{
-    Text   = "Enumeration"
+    Text   = "Scanning"
     Left   = $FormScale * $EnumerationRightPosition
     Top    = 0
     Width  = $FormScale * $EnumerationLabelWidth
@@ -14,6 +14,7 @@ $Section1EnumerationTab = New-Object System.Windows.Forms.TabPage -Property @{
     UseVisualStyleBackColor = $True
     Add_MouseEnter = {Check-IfScanExecutionReady}
     Add_MouseLeave = {Check-IfScanExecutionReady}
+    ImageIndex = 2
 }
 $MainLeftTabControl.Controls.Add($Section1EnumerationTab)
 

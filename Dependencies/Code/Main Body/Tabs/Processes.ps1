@@ -12,10 +12,6 @@ $TabRightPosition       = 3
 $TabhDownPosition       = 3
 $TabAreaWidth           = 446
 $TabAreaHeight          = 557
-#$TextBoxRightPosition   = -2
-#$TextBoxDownPosition    = -2
-#$TextBoxWidth           = 442
-#$TextBoxHeight          = 536
 
 
 $MainLeftProcessesTabControl = New-Object System.Windows.Forms.TabControl -Property @{

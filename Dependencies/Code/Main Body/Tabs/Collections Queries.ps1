@@ -476,6 +476,9 @@ $CustomQueryScriptBlockGroupBox = New-Object System.Windows.Forms.GroupBox -Prop
                         $CustomQueryScriptBlockCheckBox.checked = $false
                         $CustomQueryScriptBlockCheckBox.enabled = $false
                     }
+                    if ($script:CustomQueryScriptBlockDisableSyntaxCheckbox.checked) {
+                        $CustomQueryScriptBlockCheckBox.enabled = $true
+                    }
                 }
                 Add_MouseLeave = {
                     if ($this.text -ne $script:CustomQueryScriptBlockSaved) {
@@ -484,6 +487,9 @@ $CustomQueryScriptBlockGroupBox = New-Object System.Windows.Forms.GroupBox -Prop
                     if ($this.text -eq '' -or $this.text -eq $null) {
                         $this.text = 'Enter a cmdlet'
                         $this.ForeColor = 'Black'
+                    }
+                    if ($script:CustomQueryScriptBlockDisableSyntaxCheckbox.checked) {
+                        $CustomQueryScriptBlockCheckBox.enabled = $true
                     }
                 }
             }
@@ -504,12 +510,14 @@ $CustomQueryScriptBlockGroupBox = New-Object System.Windows.Forms.GroupBox -Prop
                         $CustomQueryScriptBlockVerifyButton.Enabled = $false
                         $CustomQueryScriptBlockSearchAndBuildButton.Enabled = $false
                         $CustomQueryScriptBlockAddCommandButton.Enabled = $True
+                        $CustomQueryScriptBlockCheckBox.Enabled = $true
                         $CustomQueryScriptBlockAddCommandButton.Backcolor = 'LightBlue'
                     }
                     else {
                         $CustomQueryScriptBlockVerifyButton.Enabled = $true
                         $CustomQueryScriptBlockSearchAndBuildButton.Enabled = $true
                         $CustomQueryScriptBlockAddCommandButton.Enabled = $false
+                        $CustomQueryScriptBlockCheckBox.Enabled = $false
                         $CustomQueryScriptBlockAddCommandButton.Backcolor = 'LightGray'
                     }
                 }

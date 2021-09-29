@@ -3,6 +3,7 @@ $Section3AboutTab = New-Object System.Windows.Forms.TabPage -Property @{
     Text = "About"
     Font = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     UseVisualStyleBackColor = $True
+    ImageIndex = 0
     Add_click = { script:Minimize-MonitorJobsTab }
 }
 $InformationTabControl.Controls.Add($Section3AboutTab)

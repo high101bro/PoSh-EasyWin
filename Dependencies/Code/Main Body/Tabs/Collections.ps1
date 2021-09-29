@@ -3,6 +3,7 @@ $Section1CollectionsTab = New-Object System.Windows.Forms.TabPage -Property @{
     Text                    = "Collections"
     UseVisualStyleBackColor = $True
     Font                    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    ImageIndex = 0
 }
 $MainLeftTabControl.Controls.Add($Section1CollectionsTab)
 

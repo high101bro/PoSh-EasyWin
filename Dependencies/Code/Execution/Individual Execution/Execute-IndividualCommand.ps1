@@ -403,10 +403,10 @@ function Execute-IndividualCommand {
 
 
         if ($UseComputerName) {
-            Invoke-Command -ScriptBlock ${function:MonitorJobScriptBlock} -ArgumentList @($script:ComputerList,$ExecutionStartTime,$CollectionName,$CollectionSavedDirectory,$null,$UseComputerName,$UseSession)
+            Invoke-Command -ScriptBlock ${function:MonitorJobScriptBlock} -ArgumentList @($script:ComputerList,$ExecutionStartTime,$CollectionName,$CollectionSavedDirectory,$null,$true,$false)
         }
         elseif ($UseSession) {                                
-            Invoke-Command -ScriptBlock ${function:MonitorJobScriptBlock} -ArgumentList @($script:ComputerList,$ExecutionStartTime,$CollectionName,$CollectionSavedDirectory,$script:PoShEasyWinPSSessions,$UseComputerName,$UseSession)
+            Invoke-Command -ScriptBlock ${function:MonitorJobScriptBlock} -ArgumentList @($script:ComputerList,$ExecutionStartTime,$CollectionName,$CollectionSavedDirectory,$script:PoShEasyWinPSSessions,$false,$true)
         }
 
 

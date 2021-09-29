@@ -23,6 +23,7 @@ function Update-TreeViewData {
     elseif ($Endpoint) { 
         $script:TreeeViewEndpointCount = 0 
         $InformationTabControl.SelectedTab = $Section3HostDataTab
+        $Section3HostDataTab.Forecolor = 'DarkRed'
     }
     else {
         $InformationTabControl.SelectedTab = $Section3ResultsTab
@@ -381,7 +382,7 @@ function Update-TreeViewData {
 
                         if ($root.text -match 'All Endpoints') {
                             $script:NodeEndpoint = $script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}
-                            
+
                             $script:Section3EndpointDataIconPictureBox.Image        = [System.Drawing.Image]::FromFile($($EndpointTreeviewImageHashTable["$($script:NodeEndpoint.ImageIndex)"]))
                             $script:Section3HostDataNameTextBox.Text                = $script:NodeEndpoint.Name
                             $Section3HostDataOUTextBox.Text                         = $script:NodeEndpoint.CanonicalName

@@ -34,7 +34,7 @@ function Display-ContextMenuForAccountsTreeNode {
 
 
     $script:AccountsListInteractWithAccountToolStripLabel = New-Object System.Windows.Forms.ToolStripMenuItem -Property @{
-        Image = [System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Interact.png")
+        Image = [System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Interaction.png")
         Text      = "Interact With Account"
         Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),1,2,1)
         ForeColor = 'Blue'
