@@ -3,43 +3,52 @@ function Display-ContextMenuForComputerTreeNode {
         [switch]$ClickedOnNode,
         [switch]$ClickedOnArea
     )
+    # https://info.sapien.com/index.php/guis/gui-controls/spotlight-on-the-contextmenustrip-control
 
     Create-TreeViewCheckBoxArray -Endpoint
 
     $script:ComputerListContextMenuStrip = New-Object System.Windows.Forms.ContextMenuStrip -Property @{
         ShowCheckMargin  = $false
-        ShowImageMargin  = $false
+        ShowImageMargin  = $true
         ShowItemToolTips = $true
         Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         ForeColor = 'Black'
+        ImageScalingSize = @{ 
+            Width  = $FormScale * 15
+            Height = $FormScale * 15
+        }
+        Padding = @{Left=0;Top=0;Right=0;Bottom=0}
     }
 
-    #$script:ComputerListContextMenuStrip.Items.Add("Import Endpoints")
-    $script:ComputerListEndpointNameToolStripLabel = New-Object System.Windows.Forms.ToolStripLabel -Property @{
-        Text      = "$($Entry.Text)"
+    $script:ComputerListEndpointNameToolStripLabel = New-Object System.Windows.Forms.ToolStripMenuItem -Property @{
+        Image = [System.Drawing.Image]::FromFile($($EndpointTreeviewImageHashTable["$($script:NodeEndpoint.ImageIndex)"]))
+        Text    = "$($Entry.Text)"
         Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),1,2,1)
         ForeColor = 'Blue'
-        BackColor = 'lightgray'
+        Add_Click = { [System.Windows.Forms.MessageBox]::Show("This is just a heading, select another option","PoSh-EasyWin",'Ok',"Info") }
     }
-    $script:ComputerListContextMenuStrip.Items.Add($script:ComputerListEndpointNameToolStripLabel)
+    $script:ComputerListContextMenuStrip.Items.add($script:ComputerListEndpointNameToolStripLabel)
     if ($Entry.Text -eq $null) {$script:ComputerListEndpointNameToolStripLabel.Text = "Node Not Selected"}
+
+    #$script:ComputerListContextMenuStrip.Items.Add("Import Endpoints")
+    # $script:ComputerListEndpointNameToolStripLabel = New-Object System.Windows.Forms.ToolStripLabel -Property @{
+    #     Text      = "$($Entry.Text)"
+    #     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),1,2,1)
+    #     ForeColor = 'Blue'
+    #     BackColor = 'lightgray'
+    # }
+    # $script:ComputerListContextMenuStrip.Items.Add($script:ComputerListEndpointNameToolStripLabel)
+    # if ($Entry.Text -eq $null) {$script:ComputerListEndpointNameToolStripLabel.Text = "Node Not Selected"}
 
 
     $script:ComputerListContextMenuStrip.Items.Add('-')
 
-
-    $ComputerListInteractWithEndpointToolStripLabel = New-Object System.Windows.Forms.ToolStripLabel -Property @{
-        Text      = "Interact With Endpoint"
-        Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),1,2,1)
-        ForeColor = 'Black'
-    }
-    $script:ComputerListContextMenuStrip.Items.Add($ComputerListInteractWithEndpointToolStripLabel)
-
-
     if ($ClickedOnNode) {
         if ($script:ComputerListPivotExecutionCheckbox.checked -eq $false) {
-            $ComputerListRemoteDesktopToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
-                Text        = "  - Remote Desktop"
+
+            $script:ComputerListRemoteDesktopToolStripButton = New-Object System.Windows.Forms.ToolStripMenuItem -Property @{
+                Image = [System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Remote-Desktop.png")
+                Text        = "Remote Desktop"
                 ForeColor   = 'Black'
                 Add_Click   = $ComputerListRDPButtonAdd_Click
                 ToolTipText = "
@@ -56,13 +65,14 @@ Default ports, protocols, and services:
 
 Command:
     mstsc /v:<endpoints>:3389 /user:USERNAME /pass:PASSWORD /NoConsentPrompt
-"
+"           
             }
-            $script:ComputerListContextMenuStrip.Items.Add($ComputerListRemoteDesktopToolStripButton)
+            $script:ComputerListContextMenuStrip.Items.add($script:ComputerListRemoteDesktopToolStripButton)
+        
 
-
-            $ComputerListEnterPSSessionToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
-                Text        = "  - Enter-PSSession"
+            $script:ComputerListEnterPSSessionToolStripButton = New-Object System.Windows.Forms.ToolStripMenuItem -Property @{
+                Image = [System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\PowerShell.png")
+                Text        = "Enter-PSSession"
                 ForeColor   = 'Black'
                 Add_Click   = $ComputerListPSSessionButtonAdd_Click
                 ToolTipText = "
@@ -85,11 +95,12 @@ Command:
     Enter-PSSession -ComputerName <endpoint> -Credential <`$creds>
 "
             }
-            $script:ComputerListContextMenuStrip.Items.Add($ComputerListEnterPSSessionToolStripButton)
+            $script:ComputerListContextMenuStrip.Items.add($script:ComputerListEnterPSSessionToolStripButton)
 
 
-            $ComputerListPSExecToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
-                Text        = "  - PSExec (Sysinternals)"
+            $script:ComputerListPSExecToolStripButton = New-Object System.Windows.Forms.ToolStripMenuItem -Property @{
+                Image = [System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\PSExec.png")
+                Text        = "PSExec (Sysinternals)"
                 ForeColor   = 'Black'
                 Add_Click   = $ComputerListPsExecButtonAdd_Click
                 ToolTipText = "
@@ -112,11 +123,12 @@ Command:
     PsExec.exe -AcceptEULA -NoBanner \\<endpoint> -u <domain\username> -p <password> cmd
 "
             }
-            $script:ComputerListContextMenuStrip.Items.Add($ComputerListPSExecToolStripButton)
+            $script:ComputerListContextMenuStrip.Items.add($script:ComputerListPSExecToolStripButton)
 
 
-            $ComputerListSSHToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
-                Text        = "  - SSH (Secure Shell)"
+            $script:ComputerListSSHToolStripButton = New-Object System.Windows.Forms.ToolStripMenuItem -Property @{
+                Image = [System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\SSH.png")
+                Text        = "SSH (Secure Shell)"
                 ForeColor   = 'Black'
                 Add_Click   = $ComputerListSSHButtonAdd_Click
                 ToolTipText = "
@@ -138,11 +150,12 @@ Command:
     kitty.exe -ssh 'IP/hostname' -l 'username' -pw 'password'
 "
             }
-            $script:ComputerListContextMenuStrip.Items.Add($ComputerListSSHToolStripButton)
+            $script:ComputerListContextMenuStrip.Items.add($script:ComputerListSSHToolStripButton)
 
 
-            $ComputerListEventViewerToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
-                Text        = "  - Event Viewer (Connect)"
+            $script:ComputerListEventViewerToolStripButton = New-Object System.Windows.Forms.ToolStripMenuItem -Property @{
+                Image = [System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Event-Viewer.png")
+                Text        = "Event Viewer (Connect)"
                 ForeColor   = 'Black'
                 Add_Click   = $EventViewerConnectionButtonAdd_Click
                 ToolTipText = "
@@ -160,10 +173,12 @@ Command:
     Show-EventLog -ComputerName <Hostname>
 "
             }
-            $script:ComputerListContextMenuStrip.Items.Add($ComputerListEventViewerToolStripButton)
+            $script:ComputerListContextMenuStrip.Items.add($script:ComputerListEventViewerToolStripButton)
 
-            $ComputerListEventViewerToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
-                Text        = "  - Event Viewer / ChainSaw (Collect)"
+
+            $script:ComputerListEventViewerToolStripButton = New-Object System.Windows.Forms.ToolStripMenuItem -Property @{
+                Image = [System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Chainsaw.png")
+                Text        = "Event Viewer / ChainSaw (Collect)"
                 ForeColor   = 'Black'
                 Add_Click   = $EventViewerCollectionButtonAdd_Click
                 ToolTipText = "
@@ -183,38 +198,75 @@ Command Ex:
     eventvwr -l:'c:\Windows\Temp\Hostname (yyyy-MM-dd HH.mm.ss) Security.evtx'
 "
             }
-            $script:ComputerListContextMenuStrip.Items.Add($ComputerListEventViewerToolStripButton)
+            $script:ComputerListContextMenuStrip.Items.add($script:ComputerListEventViewerToolStripButton)    
         }
         elseif ($script:ComputerListPivotExecutionCheckbox.checked -eq $true) {
-            $ComputerListPSSessionPivotToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
-                Text        = "  - Pivot-PSSession"
+           
+            $script:ComputerListPSSessionPivotToolStripButton = New-Object System.Windows.Forms.ToolStripMenuItem -Property @{
+                Image = [System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\PowerShell.png")
+                Text        = "Pivot-PSSession"
                 ForeColor   = 'Black'
                 Add_Click   = $ComputerListPSSessionPivotButtonAdd_Click
-                ToolTipText = 'Sends commands to a pivot host to execute on an endpoint.'
+                ToolTipText = "
+Sends commands to a pivot host to execute on an endpoint.
+Establishes an interactive Powershell Session with an endpoint.
+
+Normally, conntections with endpoints are authenticated with Active Directory and the hostname.
+
+To use with an IP address, rather than a hostname, the Credential parameter must be used. Also, the endpoint must have the remote computer's IP must be in the local TrustedHosts or be configured for HTTPS transport.
+
+Default ports, protocols, and services: 
+    TCP / 47001 - Endpoint Listener
+    TCP / 5985 [HTTP]  Windows 7+
+    TCP / 5986 [HTTPS] Windows 7+
+    TCP / 80   [HTTP]  Windows Vista-
+    TCP / 443  [HTTPS] Windows Vista-
+    Windows Remote Management (WinRM)
+    Regardless of the transport protocol used (HTTP or HTTPS), WinRM always encrypts all PowerShell remoting communication after initial authentication
+
+Command:
+    Enter-PSSession -ComputerName <endpoint> -Credential <`$creds>
+"
             }
-            $script:ComputerListContextMenuStrip.Items.Add($ComputerListPSSessionPivotToolStripButton)
+            $script:ComputerListContextMenuStrip.Items.add($script:ComputerListPSSessionPivotToolStripButton)
         }
     }
-    else {
-        $ComputerListLeftClick1ToolStripLabel = New-Object System.Windows.Forms.ToolStripLabel -Property @{
-            Text      = "Left-Click an endpoint,`nthen Right-Click for options."
+
+    if ($ClickedOnArea) {
+
+        $script:ComputerListInteractWithEndpointToolStripLabel = New-Object System.Windows.Forms.ToolStripMenuItem -Property @{
+            Image = [System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Computer-Alert.gif")
+            Text      = "Interact With The Endpoint"
+            Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),1,2,1)
+            ForeColor = 'Blue'
+        }
+        $script:ComputerListContextMenuStrip.Items.add($script:ComputerListInteractWithEndpointToolStripLabel)        
+
+        $script:ComputerListContextMenuStrip.Items.Add('-')
+    
+        $script:ComputerListLeftClick1ToolStripLabel = New-Object System.Windows.Forms.ToolStripMenuItem -Property @{
+            Image = [System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Disable-Sign.png")
+            Text      = "Left-Click an endpoint, then Right-Click for options."
             TextAlign = 'MiddleLeft'
             ForeColor = 'DarkRed'
+
         }
-        $ComputerListContextMenuStrip.Items.Add($ComputerListLeftClick1ToolStripLabel)
+        $script:ComputerListContextMenuStrip.Items.add($script:ComputerListLeftClick1ToolStripLabel)
     }
 
 
-    $ComputerListSelectedNodeActionsToolStripLabel = New-Object System.Windows.Forms.ToolStripLabel -Property @{
+    $script:ComputerListSelectedNodeActionsToolStripLabel = New-Object System.Windows.Forms.ToolStripMenuItem -Property @{
+        Image = [System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Node-Action.png")
         Text      = "Node Actions: Selected"
         Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),1,2,1)
         ForeColor = 'Black'
+        Add_Click = { [System.Windows.Forms.MessageBox]::Show("This is just a heading, select another option","PoSh-EasyWin",'Ok',"Info") }
     }
-    $script:ComputerListContextMenuStrip.Items.Add($ComputerListSelectedNodeActionsToolStripLabel)
+    $script:ComputerListContextMenuStrip.Items.add($script:ComputerListSelectedNodeActionsToolStripLabel)
 
 
     $ComputerListSelectedNodeActionsToolStripComboBox = New-Object System.Windows.Forms.ToolStripComboBox -Property @{
-        Size        = @{ Width  = $FormScale * 150 }
+        Size        = @{ Width  = $FormScale * 200 }
         Text        = '  - Make a selection'
         ForeColor   = 'Black'
         ToolTipText = 'Conduct various actions against a single node.'
@@ -476,27 +528,191 @@ Command Ex:
 
 
     $script:ComputerListContextMenuStrip.Items.Add('-')
-    $ComputerListRenameToolStripLabel = New-Object System.Windows.Forms.ToolStripLabel -Property @{
-        Text      = 'Checked Endpoints'
+
+    $script:ComputerListMultiEndpointPSSessionToolStripLabel = New-Object System.Windows.Forms.ToolStripMenuItem -Property @{
+        Image = [System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Checked-Box.png")
+        Text      = "Interact With Checked Endpoints"
         Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),1,2,1)
         ForeColor = 'Blue'
+        Add_Click = { [System.Windows.Forms.MessageBox]::Show("This is just a heading, select another option","PoSh-EasyWin",'Ok',"Info") }
     }
-    $script:ComputerListContextMenuStrip.Items.Add($ComputerListRenameToolStripLabel)
-
+    $script:ComputerListContextMenuStrip.Items.add($script:ComputerListMultiEndpointPSSessionToolStripLabel)
 
     $script:ComputerListContextMenuStrip.Items.Add('-')
 
+    if ( $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Beta Testing') {
+        $ComputerListEnterPSSessionToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
+            Text        = "New-PSSession"
+            ForeColor   = 'Black'
+            Add_Click   = {
+                $InformationTabControl.SelectedTab = $Section3ResultsTab
+                Create-TreeViewCheckBoxArray -Endpoint
+                Generate-ComputerList
+            
+                if ($script:ComputerListProvideCredentialsCheckBox.Checked) { $Username = $script:Credential.UserName}
+                else {$Username = $PoShEasyWinAccountLaunch }
+            
+                if ($script:ComputerListEndpointNameToolStripLabel.text) {
+                    $script:SessionsAlreadyExists = $false
+                    $script:SessionsAlreadyExistsList = @()
+                    $script:SessionsDontExistList = @()
+                    foreach ($Computer in $script:ComputerList) {
+                        if ($Computer -in $($script:PoShEasyWinPSSessions | Where-Object {$_.State -match 'Open'}).ComputerName) {
+                            $script:SessionsAlreadyExists = $true
+                            $script:SessionsAlreadyExistsList += $Computer
+                        }
+                        else {
+                            $script:SessionsDontExistList += $Computer
+                        }
+                    }
 
-    $ComputerListMultiEndpointPSSessionToolStripLabel = New-Object System.Windows.Forms.ToolStripLabel -Property @{
-        Text      = "Interact with Endpoints"
-        Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),1,2,1)
-        ForeColor = 'Black'
+                    $VerifyAction = Verify-Action -Title "Verification: PowerShell Session" -Question "Connecting Account:  $Username`n`nCreate a new PowerShell Session to the following?" -Computer $script:SessionsDontExistList
+                    if ($script:ComputerListUseDNSCheckbox.checked) { 
+                        $script:ComputerTreeViewSelected = $script:ComputerListEndpointNameToolStripLabel.text 
+                    }
+                    else {
+                        [System.Windows.Forms.TreeNodeCollection]$AllTreeViewNodes = $script:ComputerTreeView.Nodes
+                        foreach ($root in $AllTreeViewNodes) {
+                            foreach ($Category in $root.Nodes) {
+                                foreach ($Entry in $Category.nodes) {
+                                    if ($Entry.Text -eq $script:ComputerListEndpointNameToolStripLabel.text) {
+                                        foreach ($Metadata in $Entry.nodes) {
+                                            if ($Metadata.Name -eq 'IPv4Address') {
+                                                $script:ComputerTreeViewSelected = $Metadata.text
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                elseif (-not $script:ComputerListEndpointNameToolStripLabel.text) {
+                    [System.Windows.Forms.Messagebox]::Show('Left click an endpoint node to select it, then right click to access the context menu and select PSSession.','PowerShell Session')
+                }
+            
+                if ($VerifyAction) {
+                    # This brings specific tabs to the forefront/front view
+                    $InformationTabControl.SelectedTab = $Section3ResultsTab
+            
+                    $StatusListBox.Items.Clear()
+                    $StatusListBox.Items.Add("New-PSSession:  $($script:SessionsDontExistList.Count) Ednpoints")
+
+                    if ($script:SessionsAlreadyExists -eq $true) {
+                        [System.Windows.Forms.MessageBox]::Show("The following endpoints already have an open PowerShell session:`n`n$($script:SessionsAlreadyExistsList)","PoSh-EasyWin - PowerShell Sessions",'Ok',"Info")
+                    }
+                    else {
+                        $PoShEasyWinNewPSSessions = $null
+
+                        if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
+                            if (-not $script:Credential) { Create-NewCredentials }
+                            $PoShEasyWinNewPSSessions = New-PSSession -ComputerName $script:SessionsDontExistList -Credential $script:Credential
+                            Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "New-PSSession -ComputerName $($script:SessionsDontExistList) -Credential $script:Credential"
+                        }
+                        else {
+                            $PoShEasyWinNewPSSessions = New-PSSession -ComputerName $script:SessionsDontExistList
+                            Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "New-PSSession -ComputerName $($script:SessionsDontExistList)"
+                        }
+
+                        $PoShEasyWinNewPSSessions `
+                        | Add-Member -MemberType NoteProperty -Name 'StartTime' -Value $(Get-Date) -PassThru `
+                        | Add-Member -MemberType NoteProperty -Name 'Duration' -Value $null -PassThru `
+                        | Add-Member -MemberType NoteProperty -Name 'EndTime' -Value $null
+                        $script:PoShEasyWinPSSessions += $PoShEasyWinNewPSSessions
+                    }
+            
+                    if ($script:RollCredentialsState -and $script:ComputerListProvideCredentialsCheckBox.checked) {
+                        Start-Sleep -Seconds 3
+                        Generate-NewRollingPassword
+                    }
+                }
+                else {
+                    [system.media.systemsounds]::Exclamation.play()
+                    $StatusListBox.Items.Clear()
+                    $StatusListBox.Items.Add("PowerShell New-PSSession:  Cancelled")
+                }                        
+            }
+            ToolTipText = ""
+        }
+        $script:ComputerListContextMenuStrip.Items.Add($ComputerListEnterPSSessionToolStripButton)
+
+        $ComputerListEnterPSSessionToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
+            Text        = "Get-PSSession"
+            ForeColor   = 'Black'
+            Add_Click   = {
+                $PoShEasyWinPSSessionsDisplay = @()
+                
+                $PoShEasyWinPSSessionsDisplay += $script:PoShEasyWinPSSessions `
+                | Where-Object {$_.State -match 'Open'} `
+                | Foreach-Object {
+                    $_ | Add-Member -MemberType NoteProperty -Name Duration -Value $(New-TimeSpan -Start $_.StartTime -End $(Get-Date)) -Force -PassThru
+                } `
+                | Select-Object -Property Id, ComputerName, StartTime, Duration, Endtime, Name, ComputerType, State, ConfigurationName, Availability
+
+                $PoShEasyWinPSSessionsDisplay += $script:PoShEasyWinPSSessions `
+                | Where-Object {$_.State -notmatch 'Open'} `
+                | Select-Object -Property Id, ComputerName, StartTime, Duration, Endtime, Name, ComputerType, State, ConfigurationName, Availability
+
+                $PoShEasyWinPSSessionsDisplay `
+                | Sort-Object -Property State `
+                | Select-Object -Property Id, ComputerName, StartTime, Duration, Endtime, Name, ComputerType, State, ConfigurationName, Availability `
+                | Out-GridView -Title "Status of Powershell Sessions"
+            }
+            ToolTipText = ""
+        }
+        $script:ComputerListContextMenuStrip.Items.Add($ComputerListEnterPSSessionToolStripButton)
+
+        $ComputerListEnterPSSessionToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
+            Text        = "Remove-PSSession"
+            ForeColor   = 'Black'
+            Add_Click   = {
+                # Adds metadata to existing open sessions 
+                $script:PoShEasyWinPSSessions | Where-Object {$_.State -match 'Open'} `
+                | ForEach-Object {
+                    $_ | Add-Member -MemberType NoteProperty -Name Duration -Value $(New-TimeSpan -Start $_.StartTime -End $(Get-Date)) -Force
+                }
+                $PoShEasyWinPSSessionsRemovePrompt = $script:PoShEasyWinPSSessions | Where-Object {$_.State -match 'Open'}
+
+                if ($($PoShEasyWinPSSessionsRemovePrompt | Where-Object {$_.State -match 'Open'})) {
+                    # Prompts user to close sessions
+                    $PoShEasyWinPSSessionsRemovePrompt | Where-Object {$_.State -match 'Open'} `
+                    | Select-Object -Property Id, ComputerName, StartTime, Duration, Endtime, Name, ComputerType, State, ConfigurationName, Availability `
+                    | Out-GridView -Title 'Selecte PowerShell Sessions To Remove' -PassThru `
+                    | Remove-PSSession
+
+                    # Adds metadata to remaining open sessions
+                    $PoShEasyWinPSSessionsRemovePrompt | Where-Object {$_.State -match 'Open'} `
+                    | ForEach-Object {
+                        $_ | Add-Member -MemberType NoteProperty -Name Duration -Value $(New-TimeSpan -Start $_.StartTime -End $(Get-Date)) -Force
+                    }
+
+                    # Adds metadata to remaining 'closed' sessions
+                    $PoShEasyWinPSSessionsRemovePrompt | Where-Object {$_.State -notmatch 'Open'} `
+                    | ForEach-Object {
+                        $_ | Add-Member -MemberType NoteProperty -Name EndTime -Value $(Get-Date) -Force
+                        $_ | Add-Member -MemberType NoteProperty -Name Duration -Value $(New-TimeSpan -Start $_.StartTime -End $(Get-Date)) -Force
+                    }
+
+                    if ($($PoShEasyWinPSSessionsRemovePrompt | Where-Object {$_.State -notmatch 'Open'})) {
+                        $script:PoShEasyWinPSSessions `
+                        | Select-Object -Property Id, ComputerName, StartTime, Duration, Endtime, Name, ComputerType, State, ConfigurationName, Availability `
+                        | Sort-Object -Property State `
+                        | Out-GridView -Title "Status of Powershell Sessions" -PassThru 
+                    }
+                }
+                else {
+                    [System.Windows.Forms.MessageBox]::Show("There are no open PowerShell Sessions.","PoSh-EasyWin - PowerShell Sessions",'Ok',"Info")
+                }
+            }
+            ToolTipText = ""
+        }
+        $script:ComputerListContextMenuStrip.Items.Add($ComputerListEnterPSSessionToolStripButton)
     }
-    $script:ComputerListContextMenuStrip.Items.Add($ComputerListMultiEndpointPSSessionToolStripLabel)
 
-    
-    $ComputerListMultiEndpointPSSessionToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
-        Text        = "  - MultiEndpoint-PSSession"
+
+    $script:ComputerListMultiEndpointPSSessionToolStripButton = New-Object System.Windows.Forms.ToolStripMenuItem -Property @{
+        Image = [System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\PowerShell-Multi-Session.png")
+        Text        = "MultiEndpoint-PSSession"
         ForeColor   = 'Black'
         Add_Click   = {
             Create-TreeViewCheckBoxArray -Endpoint
@@ -568,20 +784,22 @@ Regardless of the transport protocol used (HTTP or HTTPS), WinRM always encrypts
 
 Command:
 function:MultiEndpoint-PSSession -ComputerName <endpoints(s)> -Credential <`$creds>
-"
-    }
-    $script:ComputerListContextMenuStrip.Items.Add($ComputerListMultiEndpointPSSessionToolStripButton)
+"    }
+    $script:ComputerListContextMenuStrip.Items.add($script:ComputerListMultiEndpointPSSessionToolStripButton)
 
 
-    $ComputerListRenameToolStripLabel = New-Object System.Windows.Forms.ToolStripLabel -Property @{
+    $script:ComputerListRenameToolStripLabel = New-Object System.Windows.Forms.ToolStripMenuItem -Property @{
+        Image = [System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Network-Cable.png")
         Text      = 'Test Connection'
         Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),1,2,1)
         ForeColor = 'Black'
+        Add_Click = { [System.Windows.Forms.MessageBox]::Show("This is just a heading, select another option","PoSh-EasyWin",'Ok',"Info") }
     }
-    $script:ComputerListContextMenuStrip.Items.Add($ComputerListRenameToolStripLabel)
+    $script:ComputerListContextMenuStrip.Items.add($script:ComputerListRenameToolStripLabel)
 
+    
     $ComputerListTestConnectionToolStripComboBox = New-Object System.Windows.Forms.ToolStripComboBox -Property @{
-        Size = @{ Width  = $FormScale * 150 }
+        Size = @{ Width  = $FormScale * 200 }
         Text = '  - Make a selection'
         ForeColor = "Black"
         Add_SelectedIndexChanged = {
@@ -681,25 +899,18 @@ function:MultiEndpoint-PSSession -ComputerName <endpoints(s)> -Credential <`$cre
     $script:ComputerListContextMenuStrip.Items.Add($ComputerListTestConnectionToolStripComboBox)
 
 
-    $ComputerListCheckedNodeActionsToolStripLabel = New-Object System.Windows.Forms.ToolStripLabel -Property @{
+    $script:ComputerListCheckedNodeActionsToolStripLabel = New-Object System.Windows.Forms.ToolStripMenuItem -Property @{
+        Image = [System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Node-Action.png")
         Text      = "Node Actions: All"
         Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),1,2,1)
         ForeColor = 'Black'
+        Add_Click = { [System.Windows.Forms.MessageBox]::Show("This is just a heading, select another option","PoSh-EasyWin",'Ok',"Info") }
     }
-    $script:ComputerListContextMenuStrip.Items.Add($ComputerListCheckedNodeActionsToolStripLabel)
+    $script:ComputerListContextMenuStrip.Items.add($script:ComputerListCheckedNodeActionsToolStripLabel)
 
-    $ComputerListCheckedNodeActionsDeselectAllButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
-        Text        = "  - Uncheck All Nodes"
-        ForeColor   = 'Black'
-        Add_Click   = {
-            $script:ComputerListContextMenuStrip.Close()
-            Deselect-AllComputers
-        }
-    }
-    $script:ComputerListContextMenuStrip.Items.Add($ComputerListCheckedNodeActionsDeselectAllButton)
 
     $ComputerListCheckedNodeActionsToolStripComboBox = New-Object System.Windows.Forms.ToolStripComboBox -Property @{
-        Size = @{ Width  = $FormScale * 150 }
+        Size = @{ Width  = $FormScale * 200 }
         Text = '  - Make a selection'
         ForeColor = 'Black'
         ToolTipText = 'Conduct various actions against selected nodes.'
@@ -946,30 +1157,46 @@ function:MultiEndpoint-PSSession -ComputerName <endpoints(s)> -Credential <`$cre
     $script:ComputerListContextMenuStrip.Items.Add($ComputerListCheckedNodeActionsToolStripComboBox)
 
 
+    $script:ComputerListCheckedNodeActionsDeselectAllButton = New-Object System.Windows.Forms.ToolStripMenuItem -Property @{
+        Image = [System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\UnChecked-Box.png")
+        Text        = "Uncheck All Nodes"
+        ForeColor   = 'Black'
+        Add_Click   = {
+            $script:ComputerListContextMenuStrip.Close()
+            Deselect-AllComputers
+        }
+    }
+    $script:ComputerListContextMenuStrip.Items.add($script:ComputerListCheckedNodeActionsDeselectAllButton)
+
+
     $script:ComputerListContextMenuStrip.Items.Add('-')
     
 
-    $ComputerListEndpointAdditionalActionsToolStripLabel = New-Object System.Windows.Forms.ToolStripLabel -Property @{
+    $script:ComputerListEndpointAdditionalActionsToolStripLabel = New-Object System.Windows.Forms.ToolStripMenuItem -Property @{
+        Image = [System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Squared-Menu-Blue.png")
         Text      = "Additional Actions"
         Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),1,2,1)
         ForeColor = 'Blue'
+        Add_Click = { [System.Windows.Forms.MessageBox]::Show("This is just a heading, select another option","PoSh-EasyWin",'Ok',"Info") }
     }
-    $script:ComputerListContextMenuStrip.Items.Add($ComputerListEndpointAdditionalActionsToolStripLabel)
+    $script:ComputerListContextMenuStrip.Items.add($script:ComputerListEndpointAdditionalActionsToolStripLabel)
 
 
     $script:ComputerListContextMenuStrip.Items.Add('-')
 
 
-    $ComputerListImportEndpointDataToolStripLabel = New-Object System.Windows.Forms.ToolStripLabel -Property @{
+    $script:ComputerListImportEndpointDataToolStripLabel = New-Object System.Windows.Forms.ToolStripMenuItem -Property @{
+        Image = [System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Import-Data.png")
         Text      = "Import Endpoint Data"
         Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),1,2,1)
         ForeColor = 'Black'
+        Add_Click = { [System.Windows.Forms.MessageBox]::Show("This is just a heading, select another option","PoSh-EasyWin",'Ok',"Info") }
     }
-    $script:ComputerListContextMenuStrip.Items.Add($ComputerListImportEndpointDataToolStripLabel)
+    $script:ComputerListContextMenuStrip.Items.add($script:ComputerListImportEndpointDataToolStripLabel)
 
 
     $ComputerListImportEndpointDataToolStripComboBox = New-Object System.Windows.Forms.ToolStripComboBox -Property @{
-        Size        = @{ Width  = $FormScale * 150 }
+        Size        = @{ Width  = $FormScale * 200 }
         Text        = '  - Make a selection'
         ForeColor   = 'Black'
         ToolTipText = 'Import Endpoint Data from various sources. Conflicting endpoint names will not be imported.'
@@ -1014,16 +1241,18 @@ function:MultiEndpoint-PSSession -ComputerName <endpoints(s)> -Credential <`$cre
     $script:ComputerListContextMenuStrip.Items.Add($ComputerListImportEndpointDataToolStripComboBox)
 
 
-    $ComputerListRenameToolStripLabel = New-Object System.Windows.Forms.ToolStripLabel -Property @{
+    $script:ComputerListRenameToolStripLabel = New-Object System.Windows.Forms.ToolStripMenuItem -Property @{
+        Image = [System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\View-Data.png")
         Text      = 'View Endpoint Data'
         Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),1,2,1)
         ForeColor = 'Black'
+        Add_Click = { [System.Windows.Forms.MessageBox]::Show("This is just a heading, select another option","PoSh-EasyWin",'Ok',"Info") }
     }
-    $script:ComputerListContextMenuStrip.Items.Add($ComputerListRenameToolStripLabel)
+    $script:ComputerListContextMenuStrip.Items.add($script:ComputerListRenameToolStripLabel)
 
 
     $ComputerListViewEndpointDataToolStripComboBox = New-Object System.Windows.Forms.ToolStripComboBox -Property @{
-        Size        = @{ Width  = $FormScale * 150 }
+        Size        = @{ Width  = $FormScale * 200 }
         Text        = '  - Make a selection'
         ForeColor   = 'Black'
         ToolTipText = 'View the local data for all endpoints that populates the treeview.'
@@ -1049,17 +1278,20 @@ function:MultiEndpoint-PSSession -ComputerName <endpoints(s)> -Credential <`$cre
     $ComputerListViewEndpointDataToolStripComboBox.Items.Add(' - Browser HTML View')
     $script:ComputerListContextMenuStrip.Items.Add($ComputerListViewEndpointDataToolStripComboBox)    
 
+    
 
-    $ComputerListEndpointUpdateTreeviewToolStripLabel = New-Object System.Windows.Forms.ToolStripLabel -Property @{
+    $script:ComputerListEndpointUpdateTreeviewToolStripLabel = New-Object System.Windows.Forms.ToolStripMenuItem -Property @{
+        Image = [System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Update-TreeView.png")
         Text      = 'Update TreeView'
         Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),1,2,1)
         ForeColor = 'Black'
+        Add_Click = { [System.Windows.Forms.MessageBox]::Show("This is just a heading, select another option","PoSh-EasyWin",'Ok',"Info") }
     }
-    $script:ComputerListContextMenuStrip.Items.Add($ComputerListEndpointUpdateTreeviewToolStripLabel)
+    $script:ComputerListContextMenuStrip.Items.add($script:ComputerListEndpointUpdateTreeviewToolStripLabel)
 
 
     $ComputerListEndpointUpdateTreeviewToolStripComboBox = New-Object System.Windows.Forms.ToolStripComboBox -Property @{
-        Size        = @{ Width  = $FormScale * 150 }
+        Size        = @{ Width  = $FormScale * 200 }
         Text        = '  - Make a selection'
         ForeColor   = 'Black'
         ToolTipText = 'Quickly modify the endpoint treeview to better manage and find nodes.'

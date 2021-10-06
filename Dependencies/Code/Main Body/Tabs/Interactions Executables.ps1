@@ -13,6 +13,7 @@ $Section1ExecutablesTab = New-Object System.Windows.Forms.TabPage -Property @{
                   Height = $FormScale * 22 }
     UseVisualStyleBackColor = $True
     Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    ImageIndex = 1
 }
 # Test if the External Programs directory is present; if it's there load the tab
 if (Test-Path $ExternalPrograms) { $MainLeftSection1InteractionsTabTabControl.Controls.Add($Section1ExecutablesTab) }

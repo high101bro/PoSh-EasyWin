@@ -9,6 +9,7 @@ $Section1RegistryTab = New-Object System.Windows.Forms.TabPage -Property @{
                   Height = $FormScale * 22 }
     Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     UseVisualStyleBackColor = $True
+    ImageIndex = 3
 }
 $MainLeftCollectionsTabControl.Controls.Add($Section1RegistryTab)
 
@@ -26,7 +27,11 @@ $RegistrySearchCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
         
         if ($this.Checked -eq $true){
             $RegistrySearchCheckbox.checked = $true
-            if     ($script:RegistrySelected -eq 'RegistryKeyNameCheckBox') {
+            if ($script:RegistrySelected -eq 'RegistryKeyItemPropertyNameCheckBox') {
+                $RegistryKeyItemPropertyNameCheckbox.checked = $true
+                $RegistryKeyItemPropertyNameCheckbox.ForeColor = 'Red'
+            }
+            elseif ($script:RegistrySelected -eq 'RegistryKeyNameCheckBox') {
                 $RegistryKeyNameCheckbox.checked = $true
                 $RegistryKeyNameCheckbox.ForeColor = 'Red'
             }
@@ -39,18 +44,20 @@ $RegistrySearchCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
                 $RegistryValueDataCheckbox.ForeColor = 'Red'
             }
             else {
-                $RegistryKeyNameCheckbox.checked = $true
-                $RegistryKeyNameCheckbox.ForeColor = 'Red'
+                $RegistryKeyItemPropertyNameCheckbox.checked = $true
+                $RegistryKeyItemPropertyNameCheckbox.ForeColor = 'Red'
             }
         }
         else {
-            $RegistrySearchCheckbox.checked    = $false
-            $RegistryKeyNameCheckbox.checked   = $false
+            $RegistrySearchCheckbox.checked = $false
+            $RegistryKeyItemPropertyNameCheckbox.checked = $false
+            $RegistryKeyNameCheckbox.checked = $false
             $RegistryValueNameCheckbox.checked = $false
             $RegistryValueDataCheckbox.checked = $false
 
-            $RegistrySearchCheckbox.ForeColor    = 'Blue'
-            $RegistryKeyNameCheckbox.ForeColor   = 'Blue'
+            $RegistrySearchCheckbox.ForeColor = 'Blue'
+            $RegistryKeyItemPropertyNameCheckbox.ForeColor = 'Blue'
+            $RegistryKeyNameCheckbox.ForeColor = 'Blue'
             $RegistryValueNameCheckbox.ForeColor = 'Blue'
             $RegistryValueDataCheckbox.ForeColor = 'Blue'                
         }
@@ -75,6 +82,18 @@ $Section1RegistryTab.Controls.Add($RegistrySearchRecursiveCheckbox)
 $script:RegistrySelected = ''
 
 
+# $RegistrySearchItemPropertiesCheckbox = New-Object System.Windows.Forms.Checkbox -Property @{
+#     Text     = "Item Properties"
+#     Location = @{ X = $RegistrySearchCheckbox.Size.Width + $($FormScale * 85)
+#                   Y = $RegistrySearchCheckbox.Location.Y + $($FormScale * 3) }
+#     Size     = @{ Width  = $FormScale * 200
+#                   Height = $FormScale * 22 }
+#     Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+#     ForeColor  = "Black"
+# }
+# $Section1RegistryTab.Controls.Add($RegistrySearchItemPropertiesCheckbox)
+
+
 $RegistrySearchLabel = New-Object System.Windows.Forms.Label -Property @{
     Text      = "The collection time is depenant on the number of paths and queries entered, and more so if recursive is selected."
     Location = @{ X = $RegistrySearchCheckbox.Location.X
@@ -90,7 +109,7 @@ $Section1RegistryTab.Controls.Add($RegistrySearchLabel)
 $RegistrySearchReferenceButton = New-Object System.Windows.Forms.Button -Property @{
     Text     = "Select Location"
     Location = @{ X = $RegistrySearchLabel.Location.X + $RegistrySearchLabel.Size.Width + $($FormScale * 30)
-                  Y = $RegistrySearchLabel.Location.Y }
+                  Y = $RegistrySearchLabel.Location.Y + $($FormScale * 5)}
     Size     = @{ Width  = $FormScale * 100
                   Height = $FormScale * 22 }
     Add_Click = {
@@ -110,7 +129,7 @@ $script:RegistrySearchDirectoryRichTextbox = New-Object System.Windows.Forms.Ric
     Location = @{ X = $RegistrySearchLabel.Location.X
                   Y = $RegistrySearchLabel.Location.Y + $RegistrySearchLabel.Size.Height }
     Size     = @{ Width  = $FormScale * 430
-                  Height = $FormScale * 80 }
+                  Height = $FormScale * 100 }
     MultiLine     = $True
     ShortcutsEnabled = $true
     Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
@@ -121,21 +140,70 @@ $script:RegistrySearchDirectoryRichTextbox = New-Object System.Windows.Forms.Ric
 $Section1RegistryTab.Controls.Add($script:RegistrySearchDirectoryRichTextbox)
 
 
-$RegistryKeyNameCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
-    Text     = "Key Name (Supports RegEx)"
+$RegistryKeyItemPropertyNameCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
+    Text     = "Key Item Property (no monitor)"
     Location = @{ X = $script:RegistrySearchDirectoryRichTextbox.Location.X
                   Y = $script:RegistrySearchDirectoryRichTextbox.Location.Y + $script:RegistrySearchDirectoryRichTextbox.Size.Height + $($FormScale * 10) }
-    Size     = @{ Width  = $FormScale * 300
+    Size     = @{ Width  = $FormScale * 210
                   Height = $FormScale * 22 }
     Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     Add_Click = {
-        $RegistrySearchCheckbox.checked    = $true
-        $RegistryKeyNameCheckbox.checked   = $true
+        $RegistrySearchCheckbox.checked = $true
+        $RegistryKeyItemPropertyNameCheckbox.checked = $true
+        $RegistryKeyNameCheckbox.checked = $false
         $RegistryValueNameCheckbox.checked = $false
         $RegistryValueDataCheckbox.checked = $false
 
         $RegistrySearchCheckbox.ForeColor    = 'Red'
-        $RegistryKeyNameCheckbox.ForeColor   = 'Red'
+        $RegistryKeyItemPropertyNameCheckbox.ForeColor = 'Red'
+        $RegistryKeyNameCheckbox.ForeColor   = 'Blue'
+        $RegistryValueNameCheckbox.ForeColor = 'Blue'
+        $RegistryValueDataCheckbox.ForeColor = 'Blue'                
+
+        $script:RegistrySelected = 'RegistryKeyItemPropertyNameCheckBox'
+        Update-TreeViewData -Commands -TreeView $script:CommandsTreeView.Nodes    
+
+    }
+}
+$Section1RegistryTab.Controls.Add($RegistryKeyItemPropertyNameCheckbox)
+
+
+#batman update the mouseover,hover,enter
+Update-FormProgress "$Dependencies\Code\System.Windows.Forms\RichTextBox\RegistryKeyNameSearchRichTextbox.ps1"
+. "$Dependencies\Code\System.Windows.Forms\RichTextBox\RegistryKeyNameSearchRichTextbox.ps1"
+$script:RegistryKeyItemPropertyNameSearchRichTextbox = New-Object System.Windows.Forms.RichTextBox -Property @{
+    Text     = "Enter Key Name; One Per Line"
+    Location = @{ X = $RegistryKeyItemPropertyNameCheckbox.Location.X
+                  Y = $RegistryKeyItemPropertyNameCheckbox.Location.Y + $RegistryKeyItemPropertyNameCheckbox.Size.Height + $($FormScale * 10) }
+    Size     = @{ Width  = $FormScale * 210
+                  Height = $FormScale * 115 }
+    MultiLine     = $True
+    ShortcutsEnabled = $true
+    Font           = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    Add_MouseEnter = $RegistryKeyNameSearchRichTextboxAdd_MouseEnter
+    Add_MouseLeave = $RegistryKeyNameSearchRichTextboxAdd_MouseLeave
+    Add_MouseHover = $RegistryKeyNameSearchRichTextboxAdd_MouseHover
+}
+$Section1RegistryTab.Controls.Add($script:RegistryKeyItemPropertyNameSearchRichTextbox)
+
+
+$RegistryKeyNameCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
+    Text     = "Key Name (RegEx)"
+    Location = @{ X = $RegistryKeyItemPropertyNameCheckbox.Location.X + $RegistryKeyItemPropertyNameCheckbox.Size.Width + $($FormScale * 10)
+                  Y = $RegistryKeyItemPropertyNameCheckbox.Location.Y }
+    Size     = @{ Width  = $FormScale * 210
+                  Height = $FormScale * 22 }
+    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    Add_Click = {
+        $RegistrySearchCheckbox.checked = $true
+        $RegistryKeyItemPropertyNameCheckbox.checked = $false
+        $RegistryKeyNameCheckbox.checked = $true
+        $RegistryValueNameCheckbox.checked = $false
+        $RegistryValueDataCheckbox.checked = $false
+
+        $RegistrySearchCheckbox.ForeColor = 'Red'
+        $RegistryKeyItemPropertyNameCheckbox.ForeColor = 'Blue'
+        $RegistryKeyNameCheckbox.ForeColor = 'Red'
         $RegistryValueNameCheckbox.ForeColor = 'Blue'
         $RegistryValueDataCheckbox.ForeColor = 'Blue'                
 
@@ -146,26 +214,14 @@ $RegistryKeyNameCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
 $Section1RegistryTab.Controls.Add($RegistryKeyNameCheckbox)
 
 
-$SupportsRegexButton = New-Object System.Windows.Forms.Button -Property @{
-    Text     = "Regex Examples"
-    Location = @{ X = $RegistryKeyNameCheckbox.Location.X + $RegistryKeyNameCheckbox.Size.Width + $($FormScale * 28)
-                  Y = $RegistryKeyNameCheckbox.Location.Y }
-    Size     = @{ Width  = $FormScale * 100
-                  Height = $FormScale * 22 }
-    Add_Click = { Import-Csv "$Dependencies\Reference RegEx Examples.csv" | Out-GridView }
-}
-$Section1RegistryTab.Controls.Add($SupportsRegexButton)
-Apply-CommonButtonSettings -Button $SupportsRegexButton
-
-
 Update-FormProgress "$Dependencies\Code\System.Windows.Forms\RichTextBox\RegistryKeyNameSearchRichTextbox.ps1"
 . "$Dependencies\Code\System.Windows.Forms\RichTextBox\RegistryKeyNameSearchRichTextbox.ps1"
 $script:RegistryKeyNameSearchRichTextbox = New-Object System.Windows.Forms.RichTextBox -Property @{
     Text     = "Enter Key Name; One Per Line"
     Location = @{ X = $RegistryKeyNameCheckbox.Location.X
                   Y = $RegistryKeyNameCheckbox.Location.Y + $RegistryKeyNameCheckbox.Size.Height + $($FormScale * 10) }
-    Size     = @{ Width  = $FormScale * 430
-                  Height = $FormScale * 80 }
+    Size     = @{ Width  = $FormScale * 210
+                  Height = $FormScale * 115 }
     MultiLine     = $True
     ShortcutsEnabled = $true
     Font           = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
@@ -177,20 +233,22 @@ $Section1RegistryTab.Controls.Add($script:RegistryKeyNameSearchRichTextbox)
 
 
 $RegistryValueNameCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
-    Text     = "Value Name (Supports RegEx)"
-    Location = @{ X = $script:RegistryKeyNameSearchRichTextboxv.Location.X
-                  Y = $script:RegistryKeyNameSearchRichTextbox.Location.Y + $script:RegistryKeyNameSearchRichTextbox.Size.Height + $($FormScale * 10) }
-    Size     = @{ Width  = $FormScale * 300
+    Text     = "Value Name (RegEx)"
+    Location = @{ X = $script:RegistryKeyItemPropertyNameSearchRichTextbox.Location.X
+                  Y = $script:RegistryKeyItemPropertyNameSearchRichTextbox.Location.Y + $script:RegistryKeyItemPropertyNameSearchRichTextbox.Size.Height + $($FormScale * 10) }
+    Size     = @{ Width  = $FormScale * 210
                   Height = $FormScale * 22 }
     Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     Add_Click = {
-        $RegistrySearchCheckbox.checked    = $true
-        $RegistryKeyNameCheckbox.checked   = $false
+        $RegistrySearchCheckbox.checked = $true
+        $RegistryKeyItemPropertyNameCheckbox.checked = $false
+        $RegistryKeyNameCheckbox.checked = $false
         $RegistryValueNameCheckbox.checked = $true
         $RegistryValueDataCheckbox.checked = $false
     
-        $RegistrySearchCheckbox.ForeColor    = 'Red'
-        $RegistryKeyNameCheckbox.ForeColor   = 'Blue'
+        $RegistrySearchCheckbox.ForeColor = 'Red'
+        $RegistryKeyItemPropertyNameCheckbox.ForeColor = 'Blue'
+        $RegistryKeyNameCheckbox.ForeColor = 'Blue'
         $RegistryValueNameCheckbox.ForeColor = 'Red'
         $RegistryValueDataCheckbox.ForeColor = 'Blue'
 
@@ -202,26 +260,14 @@ $RegistryValueNameCheckbox = New-Object System.Windows.Forms.CheckBox -Property 
 $Section1RegistryTab.Controls.Add($RegistryValueNameCheckbox)
 
 
-$SupportsRegexButton = New-Object System.Windows.Forms.Button -Property @{
-    Text     = "Regex Examples"
-    Location = @{ X = $RegistryValueNameCheckbox.Location.X + $RegistryValueNameCheckbox.Size.Width + $($FormScale * 28)
-                  Y = $RegistryValueNameCheckbox.Location.Y }
-    Size     = @{ Width  = $FormScale * 100
-                  Height = $FormScale * 22 }
-}
-$SupportsRegexButton.Add_Click({ Import-Csv "$Dependencies\Reference RegEx Examples.csv" | Out-GridView })
-$Section1RegistryTab.Controls.Add($SupportsRegexButton)
-Apply-CommonButtonSettings -Button $SupportsRegexButton
-
-
 Update-FormProgress "$Dependencies\Code\System.Windows.Forms\RichTextBox\RegistryValueNameSearchRichTextbox.ps1"
 . "$Dependencies\Code\System.Windows.Forms\RichTextBox\RegistryValueNameSearchRichTextbox.ps1"
 $script:RegistryValueNameSearchRichTextbox = New-Object System.Windows.Forms.RichTextBox -Property @{
     Text     = "Enter Value Name; One Per Line"
     Location = @{ X = $RegistryValueNameCheckbox.Location.X
                   Y = $RegistryValueNameCheckbox.Location.Y + $RegistryValueNameCheckbox.Size.Height + $($FormScale * 10) }
-    Size     = @{ Width  = $FormScale * 430
-                  Height = $FormScale * 80 }
+    Size     = @{ Width  = $FormScale * 210
+                  Height = $FormScale * 115 }
     MultiLine     = $True
     ShortcutsEnabled = $true
     Font           = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
@@ -233,20 +279,22 @@ $Section1RegistryTab.Controls.Add($script:RegistryValueNameSearchRichTextbox)
 
 
 $RegistryValueDataCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
-    Text     = "Value Data (Supports RegEx)"
-    Location = @{ X = $script:RegistryValueNameSearchRichTextbox.Location.X
-                  Y = $script:RegistryValueNameSearchRichTextbox.Location.Y + $script:RegistryValueNameSearchRichTextbox.Size.Height + $($FormScale * 10) }
-    Size     = @{ Width  = $FormScale * 300
+    Text     = "Value Data (RegEx)"
+    Location = @{ X = $RegistryValueNameCheckbox.Location.X + $RegistryValueNameCheckbox.Size.Width + $($FormScale * 10)
+                  Y = $RegistryValueNameCheckbox.Location.Y }
+    Size     = @{ Width  = $FormScale * 210
                   Height = $FormScale * 22 }
     Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     Add_Click = {
-        $RegistrySearchCheckbox.checked    = $true
-        $RegistryKeyNameCheckbox.checked   = $false
+        $RegistrySearchCheckbox.checked = $true
+        $RegistryKeyItemPropertyNameCheckbox.checked = $false
+        $RegistryKeyNameCheckbox.checked = $false
         $RegistryValueNameCheckbox.checked = $false
         $RegistryValueDataCheckbox.checked = $true
 
-        $RegistrySearchCheckbox.ForeColor    = 'Red'
-        $RegistryKeyNameCheckbox.ForeColor   = 'Blue'
+        $RegistrySearchCheckbox.ForeColor = 'Red'
+        $RegistryKeyItemPropertyNameCheckbox.ForeColor = 'Blue'
+        $RegistryKeyNameCheckbox.ForeColor = 'Blue'
         $RegistryValueNameCheckbox.ForeColor = 'Blue'
         $RegistryValueDataCheckbox.ForeColor = 'Red'
 
@@ -258,26 +306,14 @@ $RegistryValueDataCheckbox = New-Object System.Windows.Forms.CheckBox -Property 
 $Section1RegistryTab.Controls.Add($RegistryValueDataCheckbox)
 
 
-$SupportsRegexButton = New-Object System.Windows.Forms.Button -Property @{
-    Text     = "Regex Examples"
-    Location = @{ X = $RegistryValueDataCheckbox.Location.X + $RegistryValueDataCheckbox.Size.Width + $($FormScale * 28)
-                  Y = $RegistryValueDataCheckbox.Location.Y }
-    Size     = @{ Width  = $FormScale * 100
-                  Height = $FormScale * 22 }
-    Add_Click = { Import-Csv "$Dependencies\Reference RegEx Examples.csv" | Out-GridView }
-}
-$Section1RegistryTab.Controls.Add($SupportsRegexButton)
-Apply-CommonButtonSettings -Button $SupportsRegexButton
-
-
 Update-FormProgress "$Dependencies\Code\System.Windows.Forms\RichTextBox\RegistryValueDataSearchRichTextbox.ps1"
 . "$Dependencies\Code\System.Windows.Forms\RichTextBox\RegistryValueDataSearchRichTextbox.ps1"
 $script:RegistryValueDataSearchRichTextbox = New-Object System.Windows.Forms.RichTextBox -Property @{
     Text     = "Enter Value Data; One Per Line"
     Location = @{ X = $RegistryValueDataCheckbox.Location.X
                   Y = $RegistryValueDataCheckbox.Location.Y + $RegistryValueDataCheckbox.Size.Height + $($FormScale * 10) }
-    Size     = @{ Width  = $FormScale * 430
-                  Height = $FormScale * 80 }
+    Size     = @{ Width  = $FormScale * 210
+                  Height = $FormScale * 115 }
     MultiLine     = $True
     ShortcutsEnabled = $true
     Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
@@ -287,3 +323,14 @@ $script:RegistryValueDataSearchRichTextbox = New-Object System.Windows.Forms.Ric
 }
 $Section1RegistryTab.Controls.Add($script:RegistryValueDataSearchRichTextbox)
 
+
+$SupportsRegexButton = New-Object System.Windows.Forms.Button -Property @{
+    Text     = "RegEx Examples"
+    Location = @{ X = $script:RegistryValueDataSearchRichTextbox.Location.X + $script:RegistryValueDataSearchRichTextbox.Size.Width - $($FormScale * 100)
+                  Y = $script:RegistryValueDataSearchRichTextbox.Location.Y + $script:RegistryValueDataSearchRichTextbox.Size.Height + $($FormScale * 10) }
+    Size     = @{ Width  = $FormScale * 100
+                  Height = $FormScale * 22 }
+    Add_Click = { Import-Csv "$Dependencies\Reference RegEx Examples.csv" | Out-GridView }
+}
+$Section1RegistryTab.Controls.Add($SupportsRegexButton)
+Apply-CommonButtonSettings -Button $SupportsRegexButton

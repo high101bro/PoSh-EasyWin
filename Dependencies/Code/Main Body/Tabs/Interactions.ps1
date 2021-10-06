@@ -7,8 +7,21 @@ $Section1InteractionsTab = New-Object System.Windows.Forms.TabPage -Property @{
                   Height = $FormScale * 25 }
     Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     UseVisualStyleBackColor = $True
+    ImageIndex = 1
 }
 $MainLeftTabControl.Controls.Add($Section1InteractionsTab)
+
+
+$MainLeftSection1InteractionsTabControlImageList = New-Object System.Windows.Forms.ImageList -Property @{
+    ImageSize = @{
+        Width  = $FormScale * 16
+        Height = $FormScale * 16
+    }
+}
+# Index 0 = Main
+$MainLeftSection1InteractionsTabControlImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Muliple-Endpoints.png"))
+# Index 1 = Options
+$MainLeftSection1InteractionsTabControlImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Executable.png"))
 
 
 $MainLeftSection1InteractionsTabTabControl = New-Object System.Windows.Forms.TabControl -Property @{
@@ -20,6 +33,7 @@ $MainLeftSection1InteractionsTabTabControl = New-Object System.Windows.Forms.Tab
     ShowToolTips  = $True
     SelectedIndex = 0
     Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    ImageList = $MainLeftSection1InteractionsTabControlImageList
 }
 $Section1InteractionsTab.Controls.Add($MainLeftSection1InteractionsTabTabControl)
 

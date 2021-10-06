@@ -3,6 +3,7 @@ $Section2OptionsTab = New-Object System.Windows.Forms.TabPage -Property @{
     Text = "Options"
     Font = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     UseVisualStyleBackColor = $True
+    ImageIndex = 1
 }
 $MainCenterTabControl.Controls.Add($Section2OptionsTab)
 
@@ -213,7 +214,7 @@ $Section2OptionsTab.Controls.Add($script:ExtendedViewRadioButton)
 
                 $OptionGUITopWindowCheckBox = New-Object System.Windows.Forms.Checkbox -Property @{
                     Text    = "GUI always on top"
-                    Left    = $script:ExtendedViewRadioButton.Left + $script:ExtendedViewRadioButton.Width
+                    Left    = $FormScale * 300
                     Top     = $script:ExtendedViewRadioButton.Top
                     Width   = $FormScale * 200
                     Height  = $FormScale * 22
@@ -224,12 +225,8 @@ $Section2OptionsTab.Controls.Add($script:ExtendedViewRadioButton)
                         $This.checked | Set-Content "$PoShHome\Settings\GUI Top Most Window.txt" -Force
 
                         # Option to toggle if the Windows is not the top most
-                        if   ( $OptionGUITopWindowCheckBox.checked ) {
-                            $PoShEasyWin.Topmost = $true
-                        }
-                        else {
-                            $PoShEasyWin.Topmost = $false
-                        }                    
+                        if   ( $OptionGUITopWindowCheckBox.checked ) { $PoShEasyWin.Topmost = $true }
+                        else { $PoShEasyWin.Topmost = $false }                    
                     }
                 }
                 if (Test-Path "$PoShHome\Settings\GUI Top Most Window.txt") { 
@@ -243,6 +240,42 @@ $Section2OptionsTab.Controls.Add($script:ExtendedViewRadioButton)
                     }
                 }
                 $Section2OptionsTab.Controls.Add( $OptionGUITopWindowCheckBox )
+
+
+                $OptionShowToolTipCheckBox = New-Object System.Windows.Forms.Checkbox -Property @{
+                    Text    = "Show ToolTip"
+                    Left    = $OptionGUITopWindowCheckBox.Left
+                    Top     = $OptionGUITopWindowCheckBox.Top + $OptionGUITopWindowCheckBox.Height
+                    Width   = $FormScale * 200
+                    Height  = $FormScale * 22
+                    Enabled = $true
+                    Checked = $True
+                    Font    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+                    Add_Click = { $This.Checked | Set-Content "$PoShHome\Settings\Show Tool Tip.txt" -Force }
+                }
+                if (Test-Path "$PoShHome\Settings\Show Tool Tip.txt") { 
+                    if ((Get-Content "$PoShHome\Settings\Show Tool Tip.txt") -eq 'True'){$OptionShowToolTipCheckBox.checked = $true}
+                    else {$OptionShowToolTipCheckBox.checked = $false}
+                }
+                $Section2OptionsTab.Controls.Add($OptionShowToolTipCheckBox)
+
+
+                $script:OptionEventViewerCollectVerboseCheckBox = New-Object System.Windows.Forms.Checkbox -Property @{
+                    Text    = "Event Viewer Collect (Verbose)"
+                    Left    = $OptionShowToolTipCheckBox.Left
+                    Top     = $OptionShowToolTipCheckBox.Top + $OptionShowToolTipCheckBox.Height
+                    Width   = $FormScale * 200
+                    Height  = $FormScale * 22
+                    Enabled = $true
+                    Checked = $false
+                    Font    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+                    Add_Click = { $This.Checked | Set-Content "$PoShHome\Settings\Event Viewer Collect Verbose.txt" -Force }
+                }
+                if (Test-Path "$PoShHome\Settings\Event Viewer Collect Verbose.txt") { 
+                    if ((Get-Content "$PoShHome\Settings\Event Viewer Collect Verbose.txt") -eq 'True'){$script:OptionEventViewerCollectVerboseCheckBox.checked = $true}
+                    else {$script:OptionEventViewerCollectVerboseCheckBox.checked = $false}
+                }
+                $Section2OptionsTab.Controls.Add($script:OptionEventViewerCollectVerboseCheckBox)
 
 
 $OptionTextToSpeachCheckBox = New-Object System.Windows.Forms.Checkbox -Property @{
@@ -261,24 +294,6 @@ if (Test-Path "$PoShHome\Settings\Audible Completion Message.txt") {
     else {$OptionTextToSpeachCheckBox.checked = $false}
 }
 $Section2OptionsTab.Controls.Add($OptionTextToSpeachCheckBox)
-
-
-                $OptionShowToolTipCheckBox = New-Object System.Windows.Forms.Checkbox -Property @{
-                    Text    = "Show ToolTip"
-                    Left    = $OptionTextToSpeachCheckBox.Left + $OptionTextToSpeachCheckBox.Width
-                    Top     = $OptionTextToSpeachCheckBox.Top
-                    Width   = $FormScale * 200
-                    Height  = $FormScale * 22
-                    Enabled = $true
-                    Checked = $True
-                    Font    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-                    Add_Click = { $This.Checked | Set-Content "$PoShHome\Settings\Show Tool Tip.txt" -Force }
-                }
-                if (Test-Path "$PoShHome\Settings\Show Tool Tip.txt") { 
-                    if ((Get-Content "$PoShHome\Settings\Show Tool Tip.txt") -eq 'True'){$OptionShowToolTipCheckBox.checked = $true}
-                    else {$OptionShowToolTipCheckBox.checked = $false}
-                }
-                $Section2OptionsTab.Controls.Add($OptionShowToolTipCheckBox)
 
 
 $OptionPacketKeepEtlCabFilesCheckBox = New-Object System.Windows.Forms.Checkbox -Property @{

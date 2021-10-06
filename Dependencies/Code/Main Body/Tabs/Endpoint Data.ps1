@@ -4,6 +4,7 @@ $Section3HostDataTab = New-Object System.Windows.Forms.TabPage -Property @{
     Font = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     UseVisualStyleBackColor = $True
     Add_click = { script:Minimize-MonitorJobsTab }
+    ImageIndex = 3
 }
 $InformationTabControl.Controls.Add($Section3HostDataTab)
 
@@ -17,7 +18,7 @@ $script:Section3EndpointDataIconPictureBox = New-Object Windows.Forms.PictureBox
     Top    = $FormScale * 3
     Width  = $FormScale * 44
     Height = $FormScale * 44
-    Image  = [System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Endpoint Default.png")
+    Image  = [System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Endpoint-Default.png")
     SizeMode = 'StretchImage'
     Add_Click = {
         if (-not $script:NodeEndpoint){
@@ -80,7 +81,7 @@ $script:Section3EndpointDataIconPictureBox = New-Object Windows.Forms.PictureBox
             $ComputerTreeViewChangeIconForm.Controls.Add($ComputerTreeViewChangeIconTreeView)
         
 
-            $ComputerTreeViewChangeIconRootTreeNodeCount = 2
+            $ComputerTreeViewChangeIconRootTreeNodeCount = 16 #$script:EndpointTreeviewImageHashTableCount
             foreach ($Icon in $script:ComputerTreeViewIconList) {
                 $ComputerTreeViewChangeIconRootTreeNodeCount++
                 $newNode = New-Object System.Windows.Forms.TreeNode -Property @{
@@ -92,6 +93,7 @@ $script:Section3EndpointDataIconPictureBox = New-Object Windows.Forms.PictureBox
                 }
                 $ComputerTreeViewChangeIconTreeView.Nodes.Add($newNode)
             }
+
         
             $ComputerTreeViewChangeIconScriptBlock = {
                 $script:Section3EndpointDataIconPictureBox.Image = [System.Drawing.Image]::FromFile($script:ComputerTreeViewChangeIconTreeViewSelected)

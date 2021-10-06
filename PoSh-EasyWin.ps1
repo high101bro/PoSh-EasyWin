@@ -251,7 +251,7 @@ $script:RpcCommandCount = 0
 
 # Creates Shortcut for PoSh-EasyWin on Desktop
 $FileToShortCut      = $($myinvocation.mycommand.definition)
-$ShortcutDestination = "C:\Users\$env:USERNAME\Desktop\PoSh-EasyWin.lnk"
+$ShortcutDestination = "C:\Users\$($env:USERNAME)\Desktop\PoSh-EasyWin.lnk"
 if (-not (Test-Path $ShortcutDestination)) {
     $WScriptShell = New-Object -ComObject WScript.Shell
     $Shortcut = $WScriptShell.CreateShortcut($ShortcutDestination)
@@ -577,11 +577,31 @@ $QueryAndCollectionPanel = New-Object System.Windows.Forms.Panel -Property @{
                 }
             }
 
+
+            $MainLeftTabControlImageList = New-Object System.Windows.Forms.ImageList -Property @{
+                ImageSize = @{
+                    Width  = $FormScale * 16
+                    Height = $FormScale * 16
+                }
+            }
+            # Index 0 = Collection
+            $MainLeftTabControlImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Collection.png"))
+            # Index 1 = Interaction
+            $MainLeftTabControlImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Interaction.png"))
+            # Index 2 = Enumeration / Scanning
+            $MainLeftTabControlImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Radar-Scanning.png"))
+            # Index 3 = OpNotes 
+            $MainLeftTabControlImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Notes.png"))
+            # Index 4 = Info
+            $MainLeftTabControlImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Info.png"))
+
+
             $MainLeftTabControl = New-Object System.Windows.Forms.TabControl -Property @{
                 Left   = 0
                 Width  = $FormScale * 460
                 Height = $FormScale * 590
                 Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+                ImageList = $MainLeftTabControlImageList
             }
             $QueryAndCollectionPanel.Controls.Add($MainLeftTabControl)
 
@@ -630,6 +650,20 @@ $PoShEasyWin.Controls.Add($QueryAndCollectionPanel)
 
 $MainCenterPanel = New-Object System.Windows.Forms.Panel
 
+            $MainCenterTabControlImageList = New-Object System.Windows.Forms.ImageList -Property @{
+                ImageSize = @{
+                    Width  = $FormScale * 16
+                    Height = $FormScale * 16
+                }
+            }
+            # Index 0 = Main
+            $MainCenterTabControlImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Home-Main.png"))
+            # Index 1 = Options
+            $MainCenterTabControlImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Options.png"))
+            # Index 2 = Statistics
+            $MainCenterTabControlImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Statistics.png"))
+
+
             $MainCenterTabControl = New-Object System.Windows.Forms.TabControl -Property @{
                 Left   = 0
                 Top    = 0
@@ -639,6 +673,7 @@ $MainCenterPanel = New-Object System.Windows.Forms.Panel
                 ShowToolTips   = $True
                 Font           = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
                 Add_MouseHover = $MainCenterTabControlAdd_MouseHover
+                ImageList = $MainCenterTabControlImageList
             }
             $MainCenterPanel.Controls.Add($MainCenterTabControl)
 
@@ -663,6 +698,17 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel
             . "$Dependencies\Code\Context Menu Strip\Display-ContextMenuForAccountsTreeNode.ps1"
             Display-ContextMenuForAccountsTreeNode -ClickedOnArea
 
+            $ComputerAndAccountTreeViewTabControlImageList = New-Object System.Windows.Forms.ImageList -Property @{
+                ImageSize = @{
+                    Width  = $FormScale * 16
+                    Height = $FormScale * 16
+                }
+            }
+            # Index 0 = Endpoints
+            $ComputerAndAccountTreeViewTabControlImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Endpoint-Default.png"))
+            # Index 1 = Accounts
+            $ComputerAndAccountTreeViewTabControlImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Accounts.png"))
+
             $ComputerAndAccountTreeViewTabControl = New-Object System.Windows.Forms.TabControl -Property @{
                 Left   = 0
                 Top    = 0
@@ -675,6 +721,7 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel
                         $InformationTabControl.SelectedTab = $Section3AccountDataTab
                     }
                 }
+                ImageList = $ComputerAndAccountTreeViewTabControlImageList
             }
             $ComputerAndAccountTreeNodeViewPanel.Controls.Add($ComputerAndAccountTreeViewTabControl)
 
@@ -739,6 +786,7 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel
                 Text = "Endpoints"
                 Font = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
                 UseVisualStyleBackColor = $True
+                ImageIndex = 0
             }
             $ComputerAndAccountTreeViewTabControl.Controls.Add($ComputerTreeviewTab)
 
@@ -903,20 +951,103 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel
                     $EndpointTreeviewImageHashTable['1'] = "$Dependencies\Images\Icons\Icon OU LightYellow.png"
                     
                     # Position 2 = used as the default image for the computer/account/entry node. Normalize-TreeViewData.ps1 populates it by default if an imageindex number doesn't exist for it already
-                    $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Endpoint Default.png"))
-                    $EndpointTreeviewImageHashTable['2'] = "$Dependencies\Images\Icons\Endpoint Default.png"
+                    $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Endpoint-Default.png"))
+                    $EndpointTreeviewImageHashTable['2'] = "$Dependencies\Images\Icons\Endpoint-Default.png"
                     
-                    $EndpointTreeviewImageHashTableCount = 2
+                    # The .ImageList allows for the images to be loaded from disk to memory only once, then referenced using their index number
+                    $ComputerTreeviewImageList = New-Object System.Windows.Forms.ImageList -Property @{
+                        ImageSize = @{
+                            Width  = $FormScale * 16
+                            Height = $FormScale * 16
+                        }
+                    }
+                    $script:ComputerTreeViewIconList = Get-ChildItem "$Dependencies\Images\Icons\Endpoint"
+
+                    # This hashtable is used to maintain a relationship between the imageindex number and the image filepath, it is used when populating the Endpoint Data tab
+                    $EndpointTreeviewImageHashTable = [ordered]@{}
+
+                    # Position 0 = Default Image, this one is often seen when clicking on a treenode
+                    $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$EasyWinIcon"))
+                    $EndpointTreeviewImageHashTable['0'] = "$EasyWinIcon"
+
+                    # Position 1 = used as the default image that is loaded against the .treeview itself, thus shown at the top level for the Organizational Units, It gets overwritten by each node that is added
+                    $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\OU-Default.png"))
+                    $EndpointTreeviewImageHashTable['1'] = "$Dependencies\Images\Icons\OU-Default.png"
+                    
+                    # Position 2 = PowerShell Icon, used to indicate an active powershell session
+                    $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\PowerShell.png"))
+                    $EndpointTreeviewImageHashTable['2'] = "$Dependencies\Images\Icons\PowerShell.png"
+
+                    # Position 3 = used as the default image for the computer/account/entry node. Normalize-TreeViewData.ps1 populates it by default if an imageindex number doesn't exist for it already
+                    $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Endpoint-Default.png"))
+                    $EndpointTreeviewImageHashTable['3'] = "$Dependencies\Images\Icons\Endpoint-Default.png"
+                    
+                    # Position 4 = Windows Server Default
+                    $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Windows-Server-Default.png"))
+                    $EndpointTreeviewImageHashTable['4'] = "$Dependencies\Images\Icons\Windows-Server-Default.png"
+                                        
+                    # Position 5 = Windows Desktop Client Default
+                    $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Endpoint\Windows-Desktop-Client.png"))
+                    $EndpointTreeviewImageHashTable['5'] = "$Dependencies\Images\Icons\Endpoint\Windows-Desktop-Client.png"
+
+                    # Position 6 = Windows Desktop `95
+                    $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Endpoint\Windows-Desktop-95.png"))
+                    $EndpointTreeviewImageHashTable['6'] = "$Dependencies\Images\Icons\Endpoint\Windows-Desktop-95.png"
+
+                    # Position 7 = Windows Desktop XP
+                    $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Endpoint\Windows-Desktop-XP.png"))
+                    $EndpointTreeviewImageHashTable['7'] = "$Dependencies\Images\Icons\Endpoint\Windows-Desktop-XP.png"
+
+                    # Position 8 = Windows Desktop Vista
+                    $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Endpoint\Windows-Desktop-Vista.png"))
+                    $EndpointTreeviewImageHashTable['8'] = "$Dependencies\Images\Icons\Endpoint\Windows-Desktop-Vista.png"
+
+                    # Position 9 = Windows Desktop 7
+                    $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Endpoint\Windows-Desktop-7.png"))
+                    $EndpointTreeviewImageHashTable['9'] = "$Dependencies\Images\Icons\Endpoint\Windows-Desktop-7.png"
+
+                    # Position 10 = Windows Desktop 8
+                    $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Endpoint\Windows-Desktop-8.png"))
+                    $EndpointTreeviewImageHashTable['10'] = "$Dependencies\Images\Icons\Endpoint\Windows-Desktop-8.png"
+
+                    # Position 11 = Windows Desktop 10
+                    $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Endpoint\Windows-Desktop-10.png"))
+                    $EndpointTreeviewImageHashTable['11'] = "$Dependencies\Images\Icons\Endpoint\Windows-Desktop-10.png"
+
+                    # Position 12 = Windows Desktop 11
+                    $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Endpoint\Windows-Desktop-11.png"))
+                    $EndpointTreeviewImageHashTable['12'] = "$Dependencies\Images\Icons\Endpoint\Windows-Desktop-11.png"
+                    
+                    # Position 13 = Linux Ubuntu
+                    $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Endpoint\Linux-OS-Ubuntu.png"))
+                    $EndpointTreeviewImageHashTable['13'] = "$Dependencies\Images\Icons\Endpoint\Linux-OS-Ubuntu.png"
+
+                    # Position 14 = Linux Debian
+                    $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Endpoint\Linux-OS-Debian.png"))
+                    $EndpointTreeviewImageHashTable['14'] = "$Dependencies\Images\Icons\Endpoint\Linux-OS-Debian.png"
+
+                    # Position 15 = Linux Red Hat
+                    $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Endpoint\Linux-OS-Red-Hat.png"))
+                    $EndpointTreeviewImageHashTable['15'] = "$Dependencies\Images\Icons\Endpoint\Linux-OS-Red-Hat.png"
+
+                    # Position 16 = Linux CentOS
+                    $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Endpoint\Linux-OS-CentOS.png"))
+                    $EndpointTreeviewImageHashTable['16'] = "$Dependencies\Images\Icons\Endpoint\Linux-OS-CentOS.png"
+ 
+                    
+                    # note, if you update this variable, update this one too... $ComputerTreeViewChangeIconRootTreeNodeCount
+                    $script:EndpointTreeviewImageHashTableCount = 16
+
                     foreach ($Image in $script:ComputerTreeViewIconList.FullName) {
+                        $script:EndpointTreeviewImageHashTableCount++
                         $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Image"))
-                        $EndpointTreeviewImageHashTableCount++
-                        $EndpointTreeviewImageHashTable["$EndpointTreeviewImageHashTableCount"] = "$Image"
+                        $EndpointTreeviewImageHashTable["$script:EndpointTreeviewImageHashTableCount"] = "$Image"
                     }
 
                     # Position -1 = currently unused
                     $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$high101bro_image"))
-                    $EndpointTreeviewImageHashTableCount++
-                    $EndpointTreeviewImageHashTable["$EndpointTreeviewImageHashTableCount"] = "$Dependencies\Images\Icons\Endpoint Default.png"
+                    $script:EndpointTreeviewImageHashTableCount++
+                    $EndpointTreeviewImageHashTable["$script:EndpointTreeviewImageHashTableCount"] = "$Dependencies\Images\high101bro Logo Color Transparent.png"
 
 
                     Update-FormProgress "$Dependencies\Code\System.Windows.Forms\TreeView\ComputerTreeView.ps1"
@@ -976,9 +1107,11 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel
             $AccountsTreeviewTab = New-Object System.Windows.Forms.TabPage -Property @{
                 Text = "Accounts"
                 Font = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+                ImageIndex = 1
                 UseVisualStyleBackColor = $True
             }
             $ComputerAndAccountTreeViewTabControl.Controls.Add($AccountsTreeviewTab)
+
 
                     $script:AccountsTreeNodeComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
                         Text    = "CanonicalName"
@@ -1103,8 +1236,8 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel
                     $AccountsTreeviewImageHashTable['1'] = "$Dependencies\Images\Icons\Icon OU LightYellow.png"
                     
                     # Position 2 = used as the default image for the computer/account/entry node. Normalize-TreeViewData.ps1 populates it by default if an imageindex number doesn't exist for it already
-                    $AccountsTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Account Default.png"))
-                    $AccountsTreeviewImageHashTable['2'] = "$Dependencies\Images\Icons\Account Default.png"
+                    $AccountsTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\OU-Default.png"))
+                    $AccountsTreeviewImageHashTable['2'] = "$Dependencies\Images\Icons\OU-Default.png"
                     
                     $AccountsTreeviewImageHashTableCount = 2
                     foreach ($Image in $script:AccountsTreeViewIconList.FullName) {
@@ -1116,7 +1249,7 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel
                     # Position -1 = currently unused
                     $AccountsTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$high101bro_image"))
                     $AccountsTreeviewImageHashTableCount++
-                    $AccountsTreeviewImageHashTable["$AccountsTreeviewImageHashTableCount"] = "$Dependencies\Images\Icons\Account Default.png"
+                    $AccountsTreeviewImageHashTable["$AccountsTreeviewImageHashTableCount"] = "$Dependencies\Images\Icons\OU-Default.png"
 
 
                     Update-FormProgress "$Dependencies\Code\System.Windows.Forms\TreeView\AccountsTreeView.ps1"
@@ -1180,13 +1313,24 @@ $PoShEasyWin.Controls.Add($ComputerAndAccountTreeNodeViewPanel)
 
 $ExecutionButtonPanel = New-Object System.Windows.Forms.Panel
 
+            $MainRightTabControlImageList = New-Object System.Windows.Forms.ImageList -Property @{
+                ImageSize = @{
+                    Width  = $FormScale * 16
+                    Height = $FormScale * 16
+                }
+            }
+            $MainRightTabControlImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Action.png"))
+
+
             $MainRightTabControl = New-Object System.Windows.Forms.TabControl -Property @{
                 Name   = "Main Tab Window for Computer List"
                 Left   = 0
                 Top    = 0
                 Width  = $FormScale * 140
                 ShowToolTips = $True
-                Font         = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+                Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+                ImageList = $MainRightTabControlImageList
+                SelectedIndex = 0
             }
             $ExecutionButtonPanel.Controls.Add($MainRightTabControl)
 
@@ -1198,6 +1342,26 @@ $PoShEasyWin.Controls.Add($ExecutionButtonPanel)
 
 $InformationPanel = New-Object System.Windows.Forms.Panel
 
+            $InformationPanelImageList = New-Object System.Windows.Forms.ImageList -Property @{
+                ImageSize = @{
+                    Width  = $FormScale * 16
+                    Height = $FormScale * 16
+                }
+            }
+            # Index 0 = About
+            $InformationPanelImageList.Images.Add([System.Drawing.Image]::FromFile("$high101bro_image"))
+            # Index 1 = Results / Information
+            $InformationPanelImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Information.png"))
+            # Index 2 = Monitor Jobs
+            $InformationPanelImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Monitor-Jobs.png"))
+            # Index 3 = Endpoint Data
+            $InformationPanelImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Endpoint-Default.png"))
+            # Index 4 = Account Data
+            $InformationPanelImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Accounts.png"))
+            # Index 5 = Command Exploration
+            $InformationPanelImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\PowerShell.png"))
+
+
             $InformationTabControl = New-Object System.Windows.Forms.TabControl -Property @{
                 Left   = 0
                 Top    = 0
@@ -1206,6 +1370,7 @@ $InformationPanel = New-Object System.Windows.Forms.Panel
                 ShowToolTips = $True
                 Add_Click = { script:Minimize-MonitorJobsTab }
                 Add_MouseHover = { $this.bringtofront() }
+                ImageList = $InformationPanelImageList
             }
             $InformationPanel.Controls.Add($InformationTabControl)
 
@@ -1404,17 +1569,6 @@ $ExecuteScriptHandler = {
         # Counts the Total Queries
         $CountCommandQueries = 0
 
-        # Verifies that the command is only present once. Prevents running the multiple copies of the same comand, line from using the Custom Group Commands
-        $CommandsCheckedBoxesSelectedTemp  = @()
-        $CommandsCheckedBoxesSelectedDedup = @()
-        foreach ($Command in $script:CommandsCheckedBoxesSelected) {
-            if ($CommandsCheckedBoxesSelectedTemp -notcontains $Command.command) {
-                $CommandsCheckedBoxesSelectedTemp  += "$($Command.command)"
-                $CommandsCheckedBoxesSelectedDedup += $command
-                $CountCommandQueries++
-            }
-        }
-
         # Checks if the query/command was validated, if it was modified it will uncheck it
         if ($script:CustomQueryScriptBlockTextbox.text -ne $script:CustomQueryScriptBlockSaved) {
             $CustomQueryScriptBlockCheckBox.checked = $false
@@ -1467,11 +1621,20 @@ $ExecuteScriptHandler = {
         if ($ExternalProgramsRpcRadioButton.checked   -and $SysinternalsProcessMonitorCheckbox.Checked)                { $CountCommandQueries++ ; $script:RpcCommandCount++ }
         if ($ExternalProgramsRpcRadioButton.checked   -and $ExeScriptUserSpecifiedExecutableAndScriptCheckbox.checked) { $CountCommandQueries++ ; $script:RpcCommandCount++ }
 
-        $script:CommandsCheckedBoxesSelected          = $CommandsCheckedBoxesSelectedDedup
-        $script:ProgressBarQueriesProgressBar.Maximum = $CountCommandQueries
-
+        $CommandsCheckedBoxesSelectedTemp  = @()
+        $CommandsCheckedBoxesSelectedDedup = @()
+        foreach ($Command in $script:CommandsCheckedBoxesSelected) {
+            if ($CommandsCheckedBoxesSelectedTemp -notcontains $Command.command) {
+                $CommandsCheckedBoxesSelectedTemp  += "$($Command.command)"
+                $CommandsCheckedBoxesSelectedDedup += $command
+                $CountCommandQueries++
+            }
+        }
+        $script:CommandsCheckedBoxesSelected = $CommandsCheckedBoxesSelectedDedup
         #[int]$script:RpcCommandCount + [int]$script:SmbCommandCount + [int]$script:WinRMCommandCount
-        $QueryCount = $script:SectionQueryCount + $script:CommandsCheckedBoxesSelected.count
+        $QueryCount = $script:CommandsCheckedBoxesSelectedDedup.count + $CountCommandQueries
+        $script:ProgressBarQueriesProgressBar.Maximum = $QueryCount
+
 
         # This is Execution Start Time is just a catch all
         # Each script/code within the execution modes should set this before they run

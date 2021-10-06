@@ -103,7 +103,7 @@ function Normalize-TreeViewData {
             if ($Account.ImageIndex) {
                 $AccountsTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name ImageIndex -Value $Account.ImageIndex -Force }
             else {
-                $AccountsTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name ImageIndex -Value 5 -Force }
+                $AccountsTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name ImageIndex -Value 2 -Force }
             $script:AccountsTreeViewDataTemp += $AccountsTreeNodeInsertDefaultData
 
             ###write-host $($AccountsTreeNodeInsertDefaultData | Select Name, OperatingSystem, CanonicalName, IPv4Address, Notes)
@@ -245,8 +245,46 @@ function Normalize-TreeViewData {
             if ($Computer.ImageIndex) {
                 $ComputerTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name ImageIndex -Value $Computer.ImageIndex -Force }
             else {
-                $ComputerTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name ImageIndex -Value 5 -Force }
-
+                if ($Computer.OperatingSystem -match 'Win' -and $Computer.OperatingSystem -match 'Server') {
+                    $ComputerTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name ImageIndex -Value 4 -Force
+                }
+                elseif ($Computer.OperatingSystem -match 'Win' -and $Computer.OperatingSystem -match '95' -and $Computer.OperatingSystem -notmatch 'Server' ) {
+                    $ComputerTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name ImageIndex -Value 6 -Force
+                }
+                elseif ($Computer.OperatingSystem -match 'Win' -and $Computer.OperatingSystem -match 'XP' -and $Computer.OperatingSystem -notmatch 'Server' ) {
+                    $ComputerTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name ImageIndex -Value 7 -Force
+                }
+                elseif ($Computer.OperatingSystem -match 'Win' -and $Computer.OperatingSystem -match 'Vista' -and $Computer.OperatingSystem -notmatch 'Server' ) {
+                    $ComputerTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name ImageIndex -Value 8 -Force
+                }
+                elseif ($Computer.OperatingSystem -match 'Win' -and $Computer.OperatingSystem -match '7' -and $Computer.OperatingSystem -notmatch 'Server' ) {
+                    $ComputerTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name ImageIndex -Value 9 -Force
+                }
+                elseif ($Computer.OperatingSystem -match 'Win' -and $Computer.OperatingSystem -match '8' -and $Computer.OperatingSystem -notmatch 'Server' ) {
+                    $ComputerTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name ImageIndex -Value 10 -Force
+                }
+                elseif ($Computer.OperatingSystem -match 'Win' -and $Computer.OperatingSystem -match '10' -and $Computer.OperatingSystem -notmatch 'Server' ) {
+                    $ComputerTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name ImageIndex -Value 11 -Force
+                }
+                elseif ($Computer.OperatingSystem -match 'Win' -and $Computer.OperatingSystem -match '11' -and $Computer.OperatingSystem -notmatch 'Server' ) {
+                    $ComputerTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name ImageIndex -Value 12 -Force
+                }
+                elseif ($Computer.OperatingSystem -match 'ubuntu' ) {
+                    $ComputerTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name ImageIndex -Value 13 -Force
+                }
+                elseif ($Computer.OperatingSystem -match 'debian' ) {
+                    $ComputerTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name ImageIndex -Value 14 -Force
+                }
+                elseif ($Computer.OperatingSystem -match 'redhat' -or $Computer.OperatingSystem -match 'rhel' ) {
+                    $ComputerTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name ImageIndex -Value 15 -Force
+                }
+                elseif ($Computer.OperatingSystem -match 'centos' ) {
+                    $ComputerTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name ImageIndex -Value 16 -Force
+                }
+                else {
+                    $ComputerTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name ImageIndex -Value 3 -Force
+                }
+            }
             $script:ComputerTreeViewDataTemp += $ComputerTreeNodeInsertDefaultData
             ###write-host $($ComputerTreeNodeInsertDefaultData | Select Name, OperatingSystem, CanonicalName, IPv4Address, Notes)
         }

@@ -12,6 +12,7 @@ $Section1EnumerationTab = New-Object System.Windows.Forms.TabPage -Property @{
     Height = $FormScale * $EnumerationLabelHeight
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     UseVisualStyleBackColor = $True
+    ImageIndex = 2
 }
 $MainLeftTabControl.Controls.Add($Section1EnumerationTab)
 

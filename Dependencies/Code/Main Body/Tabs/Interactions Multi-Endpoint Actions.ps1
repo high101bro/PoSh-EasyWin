@@ -7,6 +7,7 @@ $Section1ActionOnEndpointTab = New-Object System.Windows.Forms.TabPage -Property
     Height = $FormScale * 22
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     UseVisualStyleBackColor = $True
+    ImageIndex = 0
 }
 $MainLeftSection1InteractionsTabTabControl.Controls.Add($Section1ActionOnEndpointTab)
 

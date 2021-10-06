@@ -4,6 +4,7 @@ $MainCenterMainTab = New-Object System.Windows.Forms.TabPage -Property @{
     Name = "Main"
     Font = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     UseVisualStyleBackColor = $True
+    ImageIndex = 0
 }
 $MainCenterTabControl.Controls.Add($MainCenterMainTab)
 

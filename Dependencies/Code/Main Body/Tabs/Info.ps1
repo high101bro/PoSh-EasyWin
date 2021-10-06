@@ -3,6 +3,7 @@ $MainLeftInfoTab = New-Object System.Windows.Forms.TabPage -Property @{
     Text = "Info"
     Font = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     UseVisualStyleBackColor = $True
+    ImageIndex = 4
 }
 $MainLeftTabControl.Controls.Add($MainLeftInfoTab)
 

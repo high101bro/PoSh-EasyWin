@@ -10,12 +10,12 @@ function MultiEndpoint-PSSession {
     while ($Command -ne "exit") {
         $PSSession = Get-PSSession -Id $SessionId
 
-        if ($PSSession.ComputerName.count -ge 1) {
-            Write-Host "[$($PSSession.ComputerName)]: $($PSSession.ComputerName.count) Endpoints > " -NoNewline
-        }
-        elseif ($PSSession.ComputerName.count -eq 0) {
-            Write-Host "[$($PSSession.ComputerName)]: $($PSSession.ComputerName.count) Endpoint > " -NoNewline
-        }
+#        if ($PSSession.ComputerName.count -ge 1) {
+#            Write-Host "MultiEndpoint [$($PSSession.ComputerName.count)]: > " -NoNewline
+#        }
+#        elseif ($PSSession.ComputerName.count -eq 0) {
+            Write-Host "MultiEndpoint [$($PSSession.ComputerName.count)]: > " -NoNewline
+#        }
         $Command = Read-Host
         
         if ($Command -eq '' -or $Command -eq $null) {

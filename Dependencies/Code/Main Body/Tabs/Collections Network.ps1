@@ -7,6 +7,7 @@ $Section1NetworkConnectionsSearchTab = New-Object System.Windows.Forms.TabPage -
     Height = $FormScale * 22
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     UseVisualStyleBackColor = $True
+    ImageIndex = 5
 }
 $MainLeftCollectionsTabControl.Controls.Add($Section1NetworkConnectionsSearchTab)
 

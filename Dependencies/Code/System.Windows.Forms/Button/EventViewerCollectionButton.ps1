@@ -50,35 +50,47 @@ $EventViewerCollectionButtonAdd_Click = {
         }
             
         $EventLogSelectionLogFileName = $null
-        $EventLogSelectionLogFileName = (Invoke-Command -ScriptBlock { 
-            # Method 1: Didn't list all event logs, like sysmon
-            # Get-WmiObject -Class Win32_NTEventlogFile 
 
-            # Method 2 - Lists all available logs, the script queries for addtional log information
-            $AllEventLogNames = wevtutil enum-logs
-            $EventLogDetails = @()
-            Foreach ($LogName in $AllEventLogNames) {
-                $EventLogMetadata = wevtutil get-log $LogName
-            
-                $EventLogObject = [pscustomobject]@{}
-            
-                ForEach ($line in $EventLogMetadata){
-                    $Name  = $line.split(':').trim()[0]
-                    $Value = $line.split(':').trim()[1]
-                    if ($Value) {
-                        $EventLogObject | Add-Member -MemberType NoteProperty -Name $Name -Value $Value
+        if ($script:OptionEventViewerCollectVerboseCheckBox.checked -eq $false) {
+            $EventLogSelectionLogFileName = Invoke-Command -ScriptBlock { 
+                # Method 1: Didn't list all event logs, like sysmon
+                # Get-WmiObject -Class Win32_NTEventlogFile 
+    
+                # Method 2 - Faster, but no added metadata
+                wevtutil enum-logs
+            } `
+            -Session $Session `
+            | Out-GridView -Title 'Event Log Selection' -OutputMode 'Single'    
+        }
+        elseif ($script:OptionEventViewerCollectVerboseCheckBox.checked -eq $true) {
+            $EventLogSelectionLogFileName = (Invoke-Command -ScriptBlock {     
+                # Method 3 - Slower, but adds metadata. Lists all available logs, the script queries for addtional log information
+                $AllEventLogNames = wevtutil enum-logs
+                $EventLogDetails = @()
+                Foreach ($LogName in $AllEventLogNames) {
+                    $EventLogMetadata = wevtutil get-log $LogName
+                
+                    $EventLogObject = [pscustomobject]@{}
+                
+                    ForEach ($line in $EventLogMetadata){
+                        $Name  = $line.split(':').trim()[0]
+                        $Value = $line.split(':').trim()[1]
+                        if ($Value) {
+                            $EventLogObject | Add-Member -MemberType NoteProperty -Name $Name -Value $Value
+                        }
                     }
+                    $EventLogDetails += $EventLogObject
                 }
-                $EventLogDetails += $EventLogObject
-            }
-            $EventLogDetails `
-            | Select-Object -Property @{n='Name';e={$_.Name}}, @{n='Enabled';e={$_.Enabled}}, @{n='Type';e={$_.Type}}, @{n='OwningPublisher';e={$_.OwningPublisher}}, @{n='Isolation';e={$_.Isolation}}, @{n='LogFileName';e={$_.LogFileName}}, @{n='MaxSize';e={$_.MaxSize}}, @{n='FileMax';e={$_.FileMax}}, @{n='Retention';e={$_.Retention}}, @{n='AutoBackup';e={$_.AutoBackup}} `
-            | Sort-Object -Property @{e="Enabled";Descending=$True}, @{e="Name";Descending=$False}
-        } `
-        -Session $Session `
-        | Out-GridView -Title 'Event Log Selection' -OutputMode 'Single').Name
+                $EventLogDetails `
+                | Select-Object -Property @{n='Name';e={$_.Name}}, @{n='Enabled';e={$_.Enabled}}, @{n='Type';e={$_.Type}}, @{n='OwningPublisher';e={$_.OwningPublisher}}, @{n='Isolation';e={$_.Isolation}}, @{n='LogFileName';e={$_.LogFileName}}, @{n='MaxSize';e={$_.MaxSize}}, @{n='FileMax';e={$_.FileMax}}, @{n='Retention';e={$_.Retention}}, @{n='AutoBackup';e={$_.AutoBackup}} `
+                | Sort-Object -Property @{e="Enabled";Descending=$True}, @{e="Name";Descending=$False}
+                
+            } `
+            -Session $Session `
+            | Out-GridView -Title 'Event Log Selection' -OutputMode 'Single').Name
+        }
 
-       if ($EventLogSelectionLogFileName) {
+        if ($EventLogSelectionLogFileName) {
             $EventLogSelectionLogFileSaveName = $EventLogSelectionLogFileName.replace('/','-')
 
             # Clears localhost previously saved results... these results appear automatically when viewing saved .evtx logs
@@ -98,7 +110,7 @@ $EventViewerCollectionButtonAdd_Click = {
                 #(Get-WmiObject -Class Win32_NTEventlogFile | Where-Object { $_.LogFileName -eq $EventLogSelectionLogFileName }).BackupEventlog("c:\Windows\Temp\$EventLogSelectionLogFileSaveName ($EventLogPullDateTime).evtx")
 
                 # Method 2 - Lists all available logs
-                wevtutil epl $EventLogSelectionLogFileName "c:\Windows\Temp\$EventLogSelectionLogFileSaveName ($EventLogPullDateTime).evtx"
+                wevtutil export-log $EventLogSelectionLogFileName "c:\Windows\Temp\$EventLogSelectionLogFileSaveName ($EventLogPullDateTime).evtx"
 
             } `
             -ArgumentList @($EventLogSelectionLogFileName, $EventLogSelectionLogFileSaveName, $EventLogPullDateTime) `

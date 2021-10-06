@@ -230,7 +230,7 @@ $script:AutoChart01NetworkConnectionsOptionsButton = New-Object Windows.Forms.Bu
     Size      = @{ Width  = $FormScale * 75
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart01NetworkConnectionsOptionsButton
+Apply-CommonButtonSettings -Button $script:AutoChart01NetworkConnectionsOptionsButton
 $script:AutoChart01NetworkConnectionsOptionsButton.Add_Click({
     if ($script:AutoChart01NetworkConnectionsOptionsButton.Text -eq 'Options v') {
         $script:AutoChart01NetworkConnectionsOptionsButton.Text = 'Options ^'
@@ -353,7 +353,7 @@ $script:AutoChart01NetworkConnections3DToggleButton = New-Object Windows.Forms.B
     Size      = @{ Width  = $FormScale * 65
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart01NetworkConnections3DToggleButton
+Apply-CommonButtonSettings -Button $script:AutoChart01NetworkConnections3DToggleButton
 $script:AutoChart01NetworkConnections3DInclination = 0
 $script:AutoChart01NetworkConnections3DToggleButton.Add_Click({
 
@@ -432,7 +432,7 @@ $script:AutoChart01NetworkConnectionsCheckDiffButton = New-Object Windows.Forms.
                    Height = $FormScale * 23 }
     Anchor    = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
 }
-CommonButtonSettings -Button $script:AutoChart01NetworkConnectionsCheckDiffButton
+Apply-CommonButtonSettings -Button $script:AutoChart01NetworkConnectionsCheckDiffButton
 $script:AutoChart01NetworkConnectionsCheckDiffButton.Add_Click({
     $script:AutoChart01NetworkConnectionsInvestDiffDropDownArraY = $script:AutoChartDataSourceCsvNetworkConnections | Select-Object -Property 'LocalAddressPort' -ExpandProperty 'LocalAddressPort' | Sort-Object -Unique
 
@@ -477,7 +477,7 @@ $script:AutoChart01NetworkConnectionsCheckDiffButton.Add_Click({
         Width    = $FormScale * 100
         Height   = $FormScale * 20
     }
-    CommonButtonSettings -Button $script:AutoChart01NetworkConnectionsInvestDiffExecuteButton
+    Apply-CommonButtonSettings -Button $script:AutoChart01NetworkConnectionsInvestDiffExecuteButton
     $script:AutoChart01NetworkConnectionsInvestDiffExecuteButton.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart01NetworkConnections }})
     $script:AutoChart01NetworkConnectionsInvestDiffExecuteButton.Add_Click({ script:InvestigateDifference-AutoChart01NetworkConnections })
 
@@ -543,7 +543,7 @@ $AutoChart01NetworkConnectionsExpandChartButton = New-Object System.Windows.Form
                 Height = $FormScale * 23 }
     Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvNetworkConnectionsFileName -QueryName "Network Settings" -QueryTabName "IPv4 Ports Listening" -PropertyX "LocalAddressPort" -PropertyY "PSComputerName" }
 }
-CommonButtonSettings -Button $AutoChart01NetworkConnectionsExpandChartButton
+Apply-CommonButtonSettings -Button $AutoChart01NetworkConnectionsExpandChartButton
 $script:AutoChart01NetworkConnectionsManipulationPanel.Controls.Add($AutoChart01NetworkConnectionsExpandChartButton)
 
 
@@ -554,7 +554,7 @@ $script:AutoChart01NetworkConnectionsOpenInShell = New-Object Windows.Forms.Butt
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart01NetworkConnectionsOpenInShell
+Apply-CommonButtonSettings -Button $script:AutoChart01NetworkConnectionsOpenInShell
 $script:AutoChart01NetworkConnectionsOpenInShell.Add_Click({ AutoChartOpenDataInShell })
 $script:AutoChart01NetworkConnectionsManipulationPanel.controls.Add($script:AutoChart01NetworkConnectionsOpenInShell)
 
@@ -566,7 +566,7 @@ $script:AutoChart01NetworkConnectionsSortButton = New-Object Windows.Forms.Butto
     Size     = @{ Width  = $FormScale * 100
                   Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart01NetworkConnectionsSortButton
+Apply-CommonButtonSettings -Button $script:AutoChart01NetworkConnectionsSortButton
 $script:AutoChart01NetworkConnectionsSortButton.Add_Click({
     if ($this.Text -eq "View: Count") {
         $script:AutoChart01NetworkConnectionsOverallDataResults = $script:AutoChart01NetworkConnectionsOverallDataResultsSortCount
@@ -589,7 +589,7 @@ $script:AutoChart01NetworkConnectionsViewResults = New-Object Windows.Forms.Butt
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart01NetworkConnectionsViewResults
+Apply-CommonButtonSettings -Button $script:AutoChart01NetworkConnectionsViewResults
 $script:AutoChart01NetworkConnectionsViewResults.Add_Click({
     $script:AutoChartDataSourceCsvNetworkConnections | Out-GridView })
 $script:AutoChart01NetworkConnectionsManipulationPanel.controls.Add($script:AutoChart01NetworkConnectionsViewResults)
@@ -603,7 +603,7 @@ $script:AutoChart01NetworkConnectionsSaveButton = New-Object Windows.Forms.Butto
     Size     = @{ Width  = $FormScale * 100
                   Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart01NetworkConnectionsSaveButton
+Apply-CommonButtonSettings -Button $script:AutoChart01NetworkConnectionsSaveButton
 [enum]::GetNames('System.Windows.Forms.DataVisualization.Charting.ChartImageFormat')
 $script:AutoChart01NetworkConnectionsSaveButton.Add_Click({
     Save-ChartImage -Chart $script:AutoChart01NetworkConnections -Title $script:AutoChart01NetworkConnectionsTitle
@@ -779,7 +779,7 @@ $script:AutoChart02NetworkConnectionsOptionsButton = New-Object Windows.Forms.Bu
     Size      = @{ Width  = $FormScale * 75
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart02NetworkConnectionsOptionsButton
+Apply-CommonButtonSettings -Button $script:AutoChart02NetworkConnectionsOptionsButton
 $script:AutoChart02NetworkConnectionsOptionsButton.Add_Click({
     if ($script:AutoChart02NetworkConnectionsOptionsButton.Text -eq 'Options v') {
         $script:AutoChart02NetworkConnectionsOptionsButton.Text = 'Options ^'
@@ -902,7 +902,7 @@ $script:AutoChart02NetworkConnections3DToggleButton = New-Object Windows.Forms.B
     Size      = @{ Width  = $FormScale * 65
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart02NetworkConnections3DToggleButton
+Apply-CommonButtonSettings -Button $script:AutoChart02NetworkConnections3DToggleButton
 $script:AutoChart02NetworkConnections3DInclination = 0
 $script:AutoChart02NetworkConnections3DToggleButton.Add_Click({
 
@@ -981,7 +981,7 @@ $script:AutoChart02NetworkConnectionsCheckDiffButton = New-Object Windows.Forms.
                    Height = $FormScale * 23 }
     Anchor    = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
 }
-CommonButtonSettings -Button $script:AutoChart02NetworkConnectionsCheckDiffButton
+Apply-CommonButtonSettings -Button $script:AutoChart02NetworkConnectionsCheckDiffButton
 $script:AutoChart02NetworkConnectionsCheckDiffButton.Add_Click({
     $script:AutoChart02NetworkConnectionsInvestDiffDropDownArraY = $script:AutoChartDataSourceCsvNetworkConnections | Select-Object -Property 'RemoteAddress' -ExpandProperty 'RemoteAddress' | Sort-Object -Unique
 
@@ -1026,7 +1026,7 @@ $script:AutoChart02NetworkConnectionsCheckDiffButton.Add_Click({
         Width    = $FormScale * 100
         Height   = $FormScale * 20
     }
-    CommonButtonSettings -Button $script:AutoChart02NetworkConnectionsInvestDiffExecuteButton
+    Apply-CommonButtonSettings -Button $script:AutoChart02NetworkConnectionsInvestDiffExecuteButton
     $script:AutoChart02NetworkConnectionsInvestDiffExecuteButton.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart02NetworkConnections }})
     $script:AutoChart02NetworkConnectionsInvestDiffExecuteButton.Add_Click({ script:InvestigateDifference-AutoChart02NetworkConnections })
 
@@ -1092,7 +1092,7 @@ $AutoChart02NetworkConnectionsExpandChartButton = New-Object System.Windows.Form
                 Height = $FormScale * 23 }
     Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvNetworkConnectionsFileName -QueryName "Network Settings" -QueryTabName "Connections to Private Network Endpoints" -PropertyX "RemoteAddress" -PropertyY "PSComputerName" }
 }
-CommonButtonSettings -Button $AutoChart02NetworkConnectionsExpandChartButton
+Apply-CommonButtonSettings -Button $AutoChart02NetworkConnectionsExpandChartButton
 $script:AutoChart02NetworkConnectionsManipulationPanel.Controls.Add($AutoChart02NetworkConnectionsExpandChartButton)
 
 
@@ -1103,7 +1103,7 @@ $script:AutoChart02NetworkConnectionsOpenInShell = New-Object Windows.Forms.Butt
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart02NetworkConnectionsOpenInShell
+Apply-CommonButtonSettings -Button $script:AutoChart02NetworkConnectionsOpenInShell
 $script:AutoChart02NetworkConnectionsOpenInShell.Add_Click({ AutoChartOpenDataInShell })
 $script:AutoChart02NetworkConnectionsManipulationPanel.controls.Add($script:AutoChart02NetworkConnectionsOpenInShell)
 
@@ -1115,7 +1115,7 @@ $script:AutoChart02NetworkConnectionsSortButton = New-Object Windows.Forms.Butto
     Size     = @{ Width  = $FormScale * 100
                   Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart02NetworkConnectionsSortButton
+Apply-CommonButtonSettings -Button $script:AutoChart02NetworkConnectionsSortButton
 $script:AutoChart02NetworkConnectionsSortButton.Add_Click({
     if ($this.Text -eq "View: Count") {
         $script:AutoChart02NetworkConnectionsOverallDataResults = $script:AutoChart02NetworkConnectionsOverallDataResultsSortCount
@@ -1138,7 +1138,7 @@ $script:AutoChart02NetworkConnectionsViewResults = New-Object Windows.Forms.Butt
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart02NetworkConnectionsViewResults
+Apply-CommonButtonSettings -Button $script:AutoChart02NetworkConnectionsViewResults
 $script:AutoChart02NetworkConnectionsViewResults.Add_Click({
     $script:AutoChartDataSourceCsvNetworkConnections | Out-GridView })
 $script:AutoChart02NetworkConnectionsManipulationPanel.controls.Add($script:AutoChart02NetworkConnectionsViewResults)
@@ -1152,7 +1152,7 @@ $script:AutoChart02NetworkConnectionsSaveButton = New-Object Windows.Forms.Butto
     Size     = @{ Width  = $FormScale * 100
                   Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart02NetworkConnectionsSaveButton
+Apply-CommonButtonSettings -Button $script:AutoChart02NetworkConnectionsSaveButton
 [enum]::GetNames('System.Windows.Forms.DataVisualization.Charting.ChartImageFormat')
 $script:AutoChart02NetworkConnectionsSaveButton.Add_Click({
     Save-ChartImage -Chart $script:AutoChart02NetworkConnections -Title $script:AutoChart02NetworkConnectionsTitle

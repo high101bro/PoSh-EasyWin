@@ -10,6 +10,7 @@ Update-FormProgress "$Dependencies\Code\Tree View\Computer\ComputerNodeSelectedM
 Update-FormProgress "$Dependencies\Code\Main Body\Execution\Verify-Action.ps1"
 . "$Dependencies\Code\Main Body\Execution\Verify-Action.ps1"
 
+
 $Section3ActionTab = New-Object System.Windows.Forms.TabPage -Property @{
     Text   = "Action"
     Left   = $FormScale * 3
@@ -18,6 +19,7 @@ $Section3ActionTab = New-Object System.Windows.Forms.TabPage -Property @{
     Width  = $FormScale * 22
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     UseVisualStyleBackColor = $True
+    ImageIndex = 0
 }
 $MainRightTabControl.Controls.Add($Section3ActionTab)
 
@@ -283,8 +285,7 @@ $ExecutionModeGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
             $QueryMethodSelectionList = @(
                 'Monitor Jobs',
                 'Individual Execution',
-                'Session Based',
-                'Beta Testing'
+                'Session Based'
             )
             Foreach ($QueryMethod in $QueryMethodSelectionList) { $script:CommandTreeViewQueryMethodSelectionComboBox.Items.Add($QueryMethod) }
             if (Test-Path "$PoShHome\Settings\Script Execution Mode.txt") { $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem = Get-Content "$PoShHome\Settings\Script Execution Mode.txt" }

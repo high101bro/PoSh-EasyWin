@@ -7,6 +7,7 @@ $Section1FileSearchTab = New-Object System.Windows.Forms.TabPage -Property @{
     Height = $FormScale * 22
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     UseVisualStyleBackColor = $True
+    ImageIndex = 4
 }
 $MainLeftCollectionsTabControl.Controls.Add($Section1FileSearchTab)
 

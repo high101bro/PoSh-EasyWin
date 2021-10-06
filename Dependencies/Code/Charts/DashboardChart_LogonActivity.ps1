@@ -220,7 +220,7 @@ $script:AutoChart01LogonActivityOptionsButton = New-Object Windows.Forms.Button 
     Size      = @{ Width  = $FormScale * 75
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart01LogonActivityOptionsButton
+Apply-CommonButtonSettings -Button $script:AutoChart01LogonActivityOptionsButton
 $script:AutoChart01LogonActivityOptionsButton.Add_Click({
     if ($script:AutoChart01LogonActivityOptionsButton.Text -eq 'Options v') {
         $script:AutoChart01LogonActivityOptionsButton.Text = 'Options ^'
@@ -344,7 +344,7 @@ $script:AutoChart01LogonActivity3DToggleButton = New-Object Windows.Forms.Button
     Size      = @{ Width  = $FormScale * 65
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart01LogonActivity3DToggleButton
+Apply-CommonButtonSettings -Button $script:AutoChart01LogonActivity3DToggleButton
 $script:AutoChart01LogonActivity3DInclination = 0
 $script:AutoChart01LogonActivity3DToggleButton.Add_Click({
 
@@ -429,7 +429,7 @@ $script:AutoChart01LogonActivityCheckDiffButton = New-Object Windows.Forms.Butto
                    Height = $FormScale * 23 }
     Anchor    = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
 }
-CommonButtonSettings -Button $script:AutoChart01LogonActivityCheckDiffButton
+Apply-CommonButtonSettings -Button $script:AutoChart01LogonActivityCheckDiffButton
 $script:AutoChart01LogonActivityCheckDiffButton.Add_Click({
     $script:AutoChart01LogonActivityInvestDiffDropDownArray = $script:AutoChartDataSourceCsvLogonActivity | Select-Object -Property 'Owner' -ExpandProperty 'Owner' | Sort-Object -Unique
 
@@ -474,7 +474,7 @@ $script:AutoChart01LogonActivityCheckDiffButton.Add_Click({
         Width    = $Formscale * 100
         Height   = $Formscale * 20
     }
-    CommonButtonSettings -Button $script:AutoChart01LogonActivityInvestDiffExecuteButton
+    Apply-CommonButtonSettings -Button $script:AutoChart01LogonActivityInvestDiffExecuteButton
     $script:AutoChart01LogonActivityInvestDiffExecuteButton.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart01 }})
     $script:AutoChart01LogonActivityInvestDiffExecuteButton.Add_Click({ script:InvestigateDifference-AutoChart01 })
 
@@ -540,7 +540,7 @@ $AutoChart01ExpandChartButton = New-Object System.Windows.Forms.Button -Property
                 Height = $FormScale * 23 }
     Add_Click  = { Generate-AutoChartsCommand -FileProfileLoaded $script:AutoChartDataSourceCsvLogonActivityFileName -QueryName "Current Logon Activity" -QueryTabName "Owner" -PropertyX "Owner" -PropertyY "PSComputerName" }
 }
-CommonButtonSettings -Button $AutoChart01ExpandChartButton
+Apply-CommonButtonSettings -Button $AutoChart01ExpandChartButton
 $script:AutoChart01LogonActivityManipulationPanel.Controls.Add($AutoChart01ExpandChartButton)
 
 
@@ -551,7 +551,7 @@ $script:AutoChart01LogonActivityOpenInShell = New-Object Windows.Forms.Button -P
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart01LogonActivityOpenInShell
+Apply-CommonButtonSettings -Button $script:AutoChart01LogonActivityOpenInShell
 $script:AutoChart01LogonActivityOpenInShell.Add_Click({ AutoChartOpenDataInShell })
 $script:AutoChart01LogonActivityManipulationPanel.controls.Add($script:AutoChart01LogonActivityOpenInShell)
 
@@ -563,7 +563,7 @@ $script:AutoChart01LogonActivityViewResults = New-Object Windows.Forms.Button -P
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart01LogonActivityViewResults
+Apply-CommonButtonSettings -Button $script:AutoChart01LogonActivityViewResults
 $script:AutoChart01LogonActivityViewResults.Add_Click({ $script:AutoChartDataSourceCsvLogonActivity | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" })
 $script:AutoChart01LogonActivityManipulationPanel.controls.Add($script:AutoChart01LogonActivityViewResults)
 
@@ -576,7 +576,7 @@ $script:AutoChart01LogonActivitySaveButton = New-Object Windows.Forms.Button -Pr
     Size     = @{ Width  = $FormScale * 205
                   Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart01LogonActivitySaveButton
+Apply-CommonButtonSettings -Button $script:AutoChart01LogonActivitySaveButton
 [enum]::GetNames('System.Windows.Forms.DataVisualization.Charting.ChartImageFormat')
 $script:AutoChart01LogonActivitySaveButton.Add_Click({
     Save-ChartImage -Chart $script:AutoChart01LogonActivity -Title $script:AutoChart01LogonActivityTitle
@@ -749,7 +749,7 @@ $script:AutoChart02LogonActivityOptionsButton = New-Object Windows.Forms.Button 
     Size      = @{ Width  = $FormScale * 75
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart02LogonActivityOptionsButton
+Apply-CommonButtonSettings -Button $script:AutoChart02LogonActivityOptionsButton
 $script:AutoChart02LogonActivityOptionsButton.Add_Click({
     if ($script:AutoChart02LogonActivityOptionsButton.Text -eq 'Options v') {
         $script:AutoChart02LogonActivityOptionsButton.Text = 'Options ^'
@@ -872,7 +872,7 @@ $script:AutoChart02LogonActivity3DToggleButton = New-Object Windows.Forms.Button
     Size      = @{ Width  = $FormScale * 65
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart02LogonActivity3DToggleButton
+Apply-CommonButtonSettings -Button $script:AutoChart02LogonActivity3DToggleButton
 $script:AutoChart02LogonActivity3DInclination = 0
 $script:AutoChart02LogonActivity3DToggleButton.Add_Click({
     $script:AutoChart02LogonActivity3DInclination += 10
@@ -956,7 +956,7 @@ $script:AutoChart02LogonActivityCheckDiffButton = New-Object Windows.Forms.Butto
                    Height = $FormScale * 23 }
     Anchor    = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
 }
-CommonButtonSettings -Button $script:AutoChart02LogonActivityCheckDiffButton
+Apply-CommonButtonSettings -Button $script:AutoChart02LogonActivityCheckDiffButton
 $script:AutoChart02LogonActivityCheckDiffButton.Add_Click({
     $script:AutoChart02LogonActivityInvestDiffDropDownArray = $script:AutoChartDataSourceCsvLogonActivity | Select-Object -Property 'Name' -ExpandProperty 'Name' | Sort-Object -Unique
 
@@ -1001,7 +1001,7 @@ $script:AutoChart02LogonActivityCheckDiffButton.Add_Click({
         Width    = $Formscale * 100
         Height   = $Formscale * 20
     }
-    CommonButtonSettings -Button $script:AutoChart02LogonActivityInvestDiffExecuteButton
+    Apply-CommonButtonSettings -Button $script:AutoChart02LogonActivityInvestDiffExecuteButton
     $script:AutoChart02LogonActivityInvestDiffExecuteButton.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart02 }})
     $script:AutoChart02LogonActivityInvestDiffExecuteButton.Add_Click({ script:InvestigateDifference-AutoChart02 })
 
@@ -1067,7 +1067,7 @@ $AutoChart02ExpandChartButton = New-Object System.Windows.Forms.Button -Property
                 Height = $FormScale * 23 }
     Add_Click  = { Generate-AutoChartsCommand -FileProfileLoaded $script:AutoChartDataSourceCsvLogonActivityFileName -QueryName "Current Logon Activity" -QueryTabName "Logons per Endpoint" -PropertyX "PSComputerName" -PropertyY "ProcessID" }
 }
-CommonButtonSettings -Button $AutoChart02ExpandChartButton
+Apply-CommonButtonSettings -Button $AutoChart02ExpandChartButton
 $script:AutoChart02LogonActivityManipulationPanel.Controls.Add($AutoChart02ExpandChartButton)
 
 
@@ -1078,7 +1078,7 @@ $script:AutoChart02LogonActivityOpenInShell = New-Object Windows.Forms.Button -P
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart02LogonActivityOpenInShell
+Apply-CommonButtonSettings -Button $script:AutoChart02LogonActivityOpenInShell
 $script:AutoChart02LogonActivityOpenInShell.Add_Click({ AutoChartOpenDataInShell })
 $script:AutoChart02LogonActivityManipulationPanel.controls.Add($script:AutoChart02LogonActivityOpenInShell)
 
@@ -1090,7 +1090,7 @@ $script:AutoChart02LogonActivityViewResults = New-Object Windows.Forms.Button -P
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart02LogonActivityViewResults
+Apply-CommonButtonSettings -Button $script:AutoChart02LogonActivityViewResults
 $script:AutoChart02LogonActivityViewResults.Add_Click({ $script:AutoChartDataSourceCsvLogonActivity | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" })
 $script:AutoChart02LogonActivityManipulationPanel.controls.Add($script:AutoChart02LogonActivityViewResults)
 
@@ -1103,7 +1103,7 @@ $script:AutoChart02LogonActivitySaveButton = New-Object Windows.Forms.Button -Pr
     Size     = @{ Width  = $FormScale * 205
                   Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart02LogonActivitySaveButton
+Apply-CommonButtonSettings -Button $script:AutoChart02LogonActivitySaveButton
 [enum]::GetNames('System.Windows.Forms.DataVisualization.Charting.ChartImageFormat')
 $script:AutoChart02LogonActivitySaveButton.Add_Click({
     Save-ChartImage -Chart $script:AutoChart02LogonActivity -Title $script:AutoChart02LogonActivityTitle
@@ -1258,7 +1258,7 @@ $script:AutoChart03LogonActivityOptionsButton = New-Object Windows.Forms.Button 
     Size      = @{ Width  = $FormScale * 75
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart03LogonActivityOptionsButton
+Apply-CommonButtonSettings -Button $script:AutoChart03LogonActivityOptionsButton
 $script:AutoChart03LogonActivityOptionsButton.Add_Click({
     if ($script:AutoChart03LogonActivityOptionsButton.Text -eq 'Options v') {
         $script:AutoChart03LogonActivityOptionsButton.Text = 'Options ^'
@@ -1381,7 +1381,7 @@ $script:AutoChart03LogonActivity3DToggleButton = New-Object Windows.Forms.Button
     Size      = @{ Width  = $FormScale * 65
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart03LogonActivity3DToggleButton
+Apply-CommonButtonSettings -Button $script:AutoChart03LogonActivity3DToggleButton
 $script:AutoChart03LogonActivity3DInclination = 0
 $script:AutoChart03LogonActivity3DToggleButton.Add_Click({
     $script:AutoChart03LogonActivity3DInclination += 10
@@ -1464,7 +1464,7 @@ $script:AutoChart03LogonActivityCheckDiffButton = New-Object Windows.Forms.Butto
                    Height = $FormScale * 23 }
     Anchor    = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
 }
-CommonButtonSettings -Button $script:AutoChart03LogonActivityCheckDiffButton
+Apply-CommonButtonSettings -Button $script:AutoChart03LogonActivityCheckDiffButton
 $script:AutoChart03LogonActivityCheckDiffButton.Add_Click({
     $script:AutoChart03LogonActivityInvestDiffDropDownArray = $script:AutoChartDataSourceCsvLogonActivity | Select-Object -Property 'ClientIP' -ExpandProperty 'ClientIP' | Sort-Object -Unique
 
@@ -1509,7 +1509,7 @@ $script:AutoChart03LogonActivityCheckDiffButton.Add_Click({
         Width    = $Formscale * 100
         Height   = $Formscale * 20
     }
-    CommonButtonSettings -Button $script:AutoChart03LogonActivityInvestDiffExecuteButton
+    Apply-CommonButtonSettings -Button $script:AutoChart03LogonActivityInvestDiffExecuteButton
     $script:AutoChart03LogonActivityInvestDiffExecuteButton.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart03 }})
     $script:AutoChart03LogonActivityInvestDiffExecuteButton.Add_Click({ script:InvestigateDifference-AutoChart03 })
 
@@ -1575,7 +1575,7 @@ $AutoChart03ExpandChartButton = New-Object System.Windows.Forms.Button -Property
                 Height = $FormScale * 23 }
     Add_Click  = { Generate-AutoChartsCommand -FileProfileLoaded $script:AutoChartDataSourceCsvLogonActivityFileName -QueryName "Current Logon Activity" -QueryTabName "Client IP" -PropertyX "ClientIP" -PropertyY "PSComputerName" }
 }
-CommonButtonSettings -Button $AutoChart03ExpandChartButton
+Apply-CommonButtonSettings -Button $AutoChart03ExpandChartButton
 $script:AutoChart03LogonActivityManipulationPanel.Controls.Add($AutoChart03ExpandChartButton)
 
 
@@ -1586,7 +1586,7 @@ $script:AutoChart03LogonActivityOpenInShell = New-Object Windows.Forms.Button -P
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart03LogonActivityOpenInShell
+Apply-CommonButtonSettings -Button $script:AutoChart03LogonActivityOpenInShell
 $script:AutoChart03LogonActivityOpenInShell.Add_Click({ AutoChartOpenDataInShell })
 $script:AutoChart03LogonActivityManipulationPanel.controls.Add($script:AutoChart03LogonActivityOpenInShell)
 
@@ -1598,7 +1598,7 @@ $script:AutoChart03LogonActivityViewResults = New-Object Windows.Forms.Button -P
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart03LogonActivityViewResults
+Apply-CommonButtonSettings -Button $script:AutoChart03LogonActivityViewResults
 $script:AutoChart03LogonActivityViewResults.Add_Click({ $script:AutoChartDataSourceCsvLogonActivity | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" })
 $script:AutoChart03LogonActivityManipulationPanel.controls.Add($script:AutoChart03LogonActivityViewResults)
 
@@ -1611,7 +1611,7 @@ $script:AutoChart03LogonActivitySaveButton = New-Object Windows.Forms.Button -Pr
     Size     = @{ Width  = $FormScale * 205
                   Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart03LogonActivitySaveButton
+Apply-CommonButtonSettings -Button $script:AutoChart03LogonActivitySaveButton
 [enum]::GetNames('System.Windows.Forms.DataVisualization.Charting.ChartImageFormat')
 $script:AutoChart03LogonActivitySaveButton.Add_Click({
     Save-ChartImage -Chart $script:AutoChart03LogonActivity -Title $script:AutoChart03LogonActivityTitle
@@ -1767,7 +1767,7 @@ $script:AutoChart04LogonActivityOptionsButton = New-Object Windows.Forms.Button 
     Size      = @{ Width  = $FormScale * 75
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart04LogonActivityOptionsButton
+Apply-CommonButtonSettings -Button $script:AutoChart04LogonActivityOptionsButton
 $script:AutoChart04LogonActivityOptionsButton.Add_Click({
     if ($script:AutoChart04LogonActivityOptionsButton.Text -eq 'Options v') {
         $script:AutoChart04LogonActivityOptionsButton.Text = 'Options ^'
@@ -1890,7 +1890,7 @@ $script:AutoChart04LogonActivity3DToggleButton = New-Object Windows.Forms.Button
     Size      = @{ Width  = $FormScale * 65
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart04LogonActivity3DToggleButton
+Apply-CommonButtonSettings -Button $script:AutoChart04LogonActivity3DToggleButton
 $script:AutoChart04LogonActivity3DInclination = 0
 $script:AutoChart04LogonActivity3DToggleButton.Add_Click({
     $script:AutoChart04LogonActivity3DInclination += 10
@@ -1973,7 +1973,7 @@ $script:AutoChart04LogonActivityCheckDiffButton = New-Object Windows.Forms.Butto
                    Height = $FormScale * 23 }
     Anchor    = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
 }
-CommonButtonSettings -Button $script:AutoChart04LogonActivityCheckDiffButton
+Apply-CommonButtonSettings -Button $script:AutoChart04LogonActivityCheckDiffButton
 $script:AutoChart04LogonActivityCheckDiffButton.Add_Click({
     $script:AutoChart04LogonActivityInvestDiffDropDownArray = $script:AutoChartDataSourceCsvLogonActivity | Select-Object -Property 'State' -ExpandProperty 'State' | Sort-Object -Unique
 
@@ -2018,7 +2018,7 @@ $script:AutoChart04LogonActivityCheckDiffButton.Add_Click({
         Width    = $Formscale * 100
         Height   = $Formscale * 20
     }
-    CommonButtonSettings -Button $script:AutoChart04LogonActivityInvestDiffExecuteButton
+    Apply-CommonButtonSettings -Button $script:AutoChart04LogonActivityInvestDiffExecuteButton
     $script:AutoChart04LogonActivityInvestDiffExecuteButton.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart04 }})
     $script:AutoChart04LogonActivityInvestDiffExecuteButton.Add_Click({ script:InvestigateDifference-AutoChart04 })
 
@@ -2084,7 +2084,7 @@ $AutoChart04ExpandChartButton = New-Object System.Windows.Forms.Button -Property
                 Height = $FormScale * 23 }
     Add_Click  = { Generate-AutoChartsCommand -FileProfileLoaded $script:AutoChartDataSourceCsvLogonActivityFileName -QueryName "Current Logon Activity" -QueryTabName "Connection State" -PropertyX "State" -PropertyY "PSComputerName" }
 }
-CommonButtonSettings -Button $AutoChart04ExpandChartButton
+Apply-CommonButtonSettings -Button $AutoChart04ExpandChartButton
 $script:AutoChart04LogonActivityManipulationPanel.Controls.Add($AutoChart04ExpandChartButton)
 
 
@@ -2095,7 +2095,7 @@ $script:AutoChart04LogonActivityOpenInShell = New-Object Windows.Forms.Button -P
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart04LogonActivityOpenInShell
+Apply-CommonButtonSettings -Button $script:AutoChart04LogonActivityOpenInShell
 $script:AutoChart04LogonActivityOpenInShell.Add_Click({ AutoChartOpenDataInShell })
 $script:AutoChart04LogonActivityManipulationPanel.controls.Add($script:AutoChart04LogonActivityOpenInShell)
 
@@ -2107,7 +2107,7 @@ $script:AutoChart04LogonActivityViewResults = New-Object Windows.Forms.Button -P
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart04LogonActivityViewResults
+Apply-CommonButtonSettings -Button $script:AutoChart04LogonActivityViewResults
 $script:AutoChart04LogonActivityViewResults.Add_Click({ $script:AutoChartDataSourceCsvLogonActivity | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" })
 $script:AutoChart04LogonActivityManipulationPanel.controls.Add($script:AutoChart04LogonActivityViewResults)
 
@@ -2120,7 +2120,7 @@ $script:AutoChart04LogonActivitySaveButton = New-Object Windows.Forms.Button -Pr
     Size     = @{ Width  = $FormScale * 205
                   Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart04LogonActivitySaveButton
+Apply-CommonButtonSettings -Button $script:AutoChart04LogonActivitySaveButton
 [enum]::GetNames('System.Windows.Forms.DataVisualization.Charting.ChartImageFormat')
 $script:AutoChart04LogonActivitySaveButton.Add_Click({
     Save-ChartImage -Chart $script:AutoChart04LogonActivity -Title $script:AutoChart04LogonActivityTitle
@@ -2275,7 +2275,7 @@ $script:AutoChart05LogonActivityOptionsButton = New-Object Windows.Forms.Button 
     Size      = @{ Width  = $FormScale * 75
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart05LogonActivityOptionsButton
+Apply-CommonButtonSettings -Button $script:AutoChart05LogonActivityOptionsButton
 $script:AutoChart05LogonActivityOptionsButton.Add_Click({
     if ($script:AutoChart05LogonActivityOptionsButton.Text -eq 'Options v') {
         $script:AutoChart05LogonActivityOptionsButton.Text = 'Options ^'
@@ -2398,7 +2398,7 @@ $script:AutoChart05LogonActivity3DToggleButton = New-Object Windows.Forms.Button
     Size      = @{ Width  = $FormScale * 65
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart05LogonActivity3DToggleButton
+Apply-CommonButtonSettings -Button $script:AutoChart05LogonActivity3DToggleButton
 $script:AutoChart05LogonActivity3DInclination = 0
 $script:AutoChart05LogonActivity3DToggleButton.Add_Click({
     $script:AutoChart05LogonActivity3DInclination += 10
@@ -2481,7 +2481,7 @@ $script:AutoChart05LogonActivityCheckDiffButton = New-Object Windows.Forms.Butto
                    Height = $FormScale * 23 }
     Anchor    = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
 }
-CommonButtonSettings -Button $script:AutoChart05LogonActivityCheckDiffButton
+Apply-CommonButtonSettings -Button $script:AutoChart05LogonActivityCheckDiffButton
 $script:AutoChart05LogonActivityCheckDiffButton.Add_Click({
     $script:AutoChart05LogonActivityInvestDiffDropDownArray = $script:AutoChartDataSourceCsvLogonActivity | Select-Object -Property 'ShellRunTime' -ExpandProperty 'ShellRunTime' | Sort-Object -Unique
 
@@ -2526,7 +2526,7 @@ $script:AutoChart05LogonActivityCheckDiffButton.Add_Click({
         Width    = $Formscale * 100
         Height   = $Formscale * 20
     }
-    CommonButtonSettings -Button $script:AutoChart05LogonActivityInvestDiffExecuteButton
+    Apply-CommonButtonSettings -Button $script:AutoChart05LogonActivityInvestDiffExecuteButton
     $script:AutoChart05LogonActivityInvestDiffExecuteButton.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart05 }})
     $script:AutoChart05LogonActivityInvestDiffExecuteButton.Add_Click({ script:InvestigateDifference-AutoChart05 })
 
@@ -2592,7 +2592,7 @@ $AutoChart05ExpandChartButton = New-Object System.Windows.Forms.Button -Property
                 Height = $FormScale * 23 }
     Add_Click  = { Generate-AutoChartsCommand -FileProfileLoaded $script:AutoChartDataSourceCsvLogonActivityFileName -QueryName "Current Logon Activity" -QueryTabName "Shell Run Time" -PropertyX "ShellRunTime" -PropertyY "PSComputerName" }
 }
-CommonButtonSettings -Button $AutoChart05ExpandChartButton
+Apply-CommonButtonSettings -Button $AutoChart05ExpandChartButton
 $script:AutoChart05LogonActivityManipulationPanel.Controls.Add($AutoChart05ExpandChartButton)
 
 
@@ -2603,7 +2603,7 @@ $script:AutoChart05LogonActivityOpenInShell = New-Object Windows.Forms.Button -P
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart05LogonActivityOpenInShell
+Apply-CommonButtonSettings -Button $script:AutoChart05LogonActivityOpenInShell
 $script:AutoChart05LogonActivityOpenInShell.Add_Click({ AutoChartOpenDataInShell })
 $script:AutoChart05LogonActivityManipulationPanel.controls.Add($script:AutoChart05LogonActivityOpenInShell)
 
@@ -2615,7 +2615,7 @@ $script:AutoChart05LogonActivityViewResults = New-Object Windows.Forms.Button -P
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart05LogonActivityViewResults
+Apply-CommonButtonSettings -Button $script:AutoChart05LogonActivityViewResults
 $script:AutoChart05LogonActivityViewResults.Add_Click({ $script:AutoChartDataSourceCsvLogonActivity | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" })
 $script:AutoChart05LogonActivityManipulationPanel.controls.Add($script:AutoChart05LogonActivityViewResults)
 
@@ -2628,7 +2628,7 @@ $script:AutoChart05LogonActivitySaveButton = New-Object Windows.Forms.Button -Pr
     Size     = @{ Width  = $FormScale * 205
                   Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart05LogonActivitySaveButton
+Apply-CommonButtonSettings -Button $script:AutoChart05LogonActivitySaveButton
 [enum]::GetNames('System.Windows.Forms.DataVisualization.Charting.ChartImageFormat')
 $script:AutoChart05LogonActivitySaveButton.Add_Click({
     Save-ChartImage -Chart $script:AutoChart05LogonActivity -Title $script:AutoChart05LogonActivityTitle
@@ -2783,7 +2783,7 @@ $script:AutoChart06LogonActivityOptionsButton = New-Object Windows.Forms.Button 
     Size      = @{ Width  = $FormScale * 75
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart06LogonActivityOptionsButton
+Apply-CommonButtonSettings -Button $script:AutoChart06LogonActivityOptionsButton
 $script:AutoChart06LogonActivityOptionsButton.Add_Click({
     if ($script:AutoChart06LogonActivityOptionsButton.Text -eq 'Options v') {
         $script:AutoChart06LogonActivityOptionsButton.Text = 'Options ^'
@@ -2906,7 +2906,7 @@ $script:AutoChart06LogonActivity3DToggleButton = New-Object Windows.Forms.Button
     Size      = @{ Width  = $FormScale * 65
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart06LogonActivity3DToggleButton
+Apply-CommonButtonSettings -Button $script:AutoChart06LogonActivity3DToggleButton
 $script:AutoChart06LogonActivity3DInclination = 0
 $script:AutoChart06LogonActivity3DToggleButton.Add_Click({
     $script:AutoChart06LogonActivity3DInclination += 10
@@ -2989,7 +2989,7 @@ $script:AutoChart06LogonActivityCheckDiffButton = New-Object Windows.Forms.Butto
                    Height = $FormScale * 23 }
     Anchor    = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
 }
-CommonButtonSettings -Button $script:AutoChart06LogonActivityCheckDiffButton
+Apply-CommonButtonSettings -Button $script:AutoChart06LogonActivityCheckDiffButton
 $script:AutoChart06LogonActivityCheckDiffButton.Add_Click({
     $script:AutoChart06LogonActivityInvestDiffDropDownArray = $script:AutoChartDataSourceCsvLogonActivity | Select-Object -Property 'ShellInactivity' -ExpandProperty 'ShellInactivity' | Sort-Object -Unique
 
@@ -3034,7 +3034,7 @@ $script:AutoChart06LogonActivityCheckDiffButton.Add_Click({
         Width    = $Formscale * 100
         Height   = $Formscale * 20
     }
-    CommonButtonSettings -Button $script:AutoChart06LogonActivityInvestDiffExecuteButton
+    Apply-CommonButtonSettings -Button $script:AutoChart06LogonActivityInvestDiffExecuteButton
     $script:AutoChart06LogonActivityInvestDiffExecuteButton.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart06 }})
     $script:AutoChart06LogonActivityInvestDiffExecuteButton.Add_Click({ script:InvestigateDifference-AutoChart06 })
 
@@ -3100,7 +3100,7 @@ $AutoChart06ExpandChartButton = New-Object System.Windows.Forms.Button -Property
                 Height = $FormScale * 23 }
     Add_Click  = { Generate-AutoChartsCommand -FileProfileLoaded $script:AutoChartDataSourceCsvLogonActivityFileName -QueryName "Current Logon Activity" -QueryTabName "Shell Inactivity Timees" -PropertyX "ShellInactivity" -PropertyY "PSComputerName" }
 }
-CommonButtonSettings -Button $AutoChart06ExpandChartButton
+Apply-CommonButtonSettings -Button $AutoChart06ExpandChartButton
 $script:AutoChart06LogonActivityManipulationPanel.Controls.Add($AutoChart06ExpandChartButton)
 
 
@@ -3111,7 +3111,7 @@ $script:AutoChart06LogonActivityOpenInShell = New-Object Windows.Forms.Button -P
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart06LogonActivityOpenInShell
+Apply-CommonButtonSettings -Button $script:AutoChart06LogonActivityOpenInShell
 $script:AutoChart06LogonActivityOpenInShell.Add_Click({ AutoChartOpenDataInShell })
 $script:AutoChart06LogonActivityManipulationPanel.controls.Add($script:AutoChart06LogonActivityOpenInShell)
 
@@ -3123,7 +3123,7 @@ $script:AutoChart06LogonActivityViewResults = New-Object Windows.Forms.Button -P
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart06LogonActivityViewResults
+Apply-CommonButtonSettings -Button $script:AutoChart06LogonActivityViewResults
 $script:AutoChart06LogonActivityViewResults.Add_Click({ $script:AutoChartDataSourceCsvLogonActivity | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" })
 $script:AutoChart06LogonActivityManipulationPanel.controls.Add($script:AutoChart06LogonActivityViewResults)
 
@@ -3136,7 +3136,7 @@ $script:AutoChart06LogonActivitySaveButton = New-Object Windows.Forms.Button -Pr
     Size     = @{ Width  = $FormScale * 205
                   Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart06LogonActivitySaveButton
+Apply-CommonButtonSettings -Button $script:AutoChart06LogonActivitySaveButton
 [enum]::GetNames('System.Windows.Forms.DataVisualization.Charting.ChartImageFormat')
 $script:AutoChart06LogonActivitySaveButton.Add_Click({
     Save-ChartImage -Chart $script:AutoChart06LogonActivity -Title $script:AutoChart06LogonActivityTitle
@@ -3292,7 +3292,7 @@ $script:AutoChart07LogonActivityOptionsButton = New-Object Windows.Forms.Button 
     Size      = @{ Width  = $FormScale * 75
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart07LogonActivityOptionsButton
+Apply-CommonButtonSettings -Button $script:AutoChart07LogonActivityOptionsButton
 $script:AutoChart07LogonActivityOptionsButton.Add_Click({
     if ($script:AutoChart07LogonActivityOptionsButton.Text -eq 'Options v') {
         $script:AutoChart07LogonActivityOptionsButton.Text = 'Options ^'
@@ -3415,7 +3415,7 @@ $script:AutoChart07LogonActivity3DToggleButton = New-Object Windows.Forms.Button
     Size      = @{ Width  = $FormScale * 65
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart07LogonActivity3DToggleButton
+Apply-CommonButtonSettings -Button $script:AutoChart07LogonActivity3DToggleButton
 $script:AutoChart07LogonActivity3DInclination = 0
 $script:AutoChart07LogonActivity3DToggleButton.Add_Click({
     $script:AutoChart07LogonActivity3DInclination += 10
@@ -3498,7 +3498,7 @@ $script:AutoChart07LogonActivityCheckDiffButton = New-Object Windows.Forms.Butto
                    Height = $FormScale * 23 }
     Anchor    = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
 }
-CommonButtonSettings -Button $script:AutoChart07LogonActivityCheckDiffButton
+Apply-CommonButtonSettings -Button $script:AutoChart07LogonActivityCheckDiffButton
 $script:AutoChart07LogonActivityCheckDiffButton.Add_Click({
     $script:AutoChart07LogonActivityInvestDiffDropDownArray = $script:AutoChartDataSourceCsvLogonActivity | Select-Object -Property 'ChildProcesses' -ExpandProperty 'ChildProcesses' | Sort-Object -Unique
 
@@ -3543,7 +3543,7 @@ $script:AutoChart07LogonActivityCheckDiffButton.Add_Click({
         Width    = $Formscale * 100
         Height   = $Formscale * 20
     }
-    CommonButtonSettings -Button $script:AutoChart07LogonActivityInvestDiffExecuteButton
+    Apply-CommonButtonSettings -Button $script:AutoChart07LogonActivityInvestDiffExecuteButton
     $script:AutoChart07LogonActivityInvestDiffExecuteButton.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart07 }})
     $script:AutoChart07LogonActivityInvestDiffExecuteButton.Add_Click({ script:InvestigateDifference-AutoChart07 })
 
@@ -3609,7 +3609,7 @@ $AutoChart07ExpandChartButton = New-Object System.Windows.Forms.Button -Property
                 Height = $FormScale * 23 }
     Add_Click  = { Generate-AutoChartsCommand -FileProfileLoaded $script:AutoChartDataSourceCsvLogonActivityFileName -QueryName "Current Logon Activity" -QueryTabName "Child Processes" -PropertyX "ChildProcesses" -PropertyY "PSComputerName" }
 }
-CommonButtonSettings -Button $AutoChart07ExpandChartButton
+Apply-CommonButtonSettings -Button $AutoChart07ExpandChartButton
 $script:AutoChart07LogonActivityManipulationPanel.Controls.Add($AutoChart07ExpandChartButton)
 
 
@@ -3620,7 +3620,7 @@ $script:AutoChart07LogonActivityOpenInShell = New-Object Windows.Forms.Button -P
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart07LogonActivityOpenInShell
+Apply-CommonButtonSettings -Button $script:AutoChart07LogonActivityOpenInShell
 $script:AutoChart07LogonActivityOpenInShell.Add_Click({ AutoChartOpenDataInShell })
 $script:AutoChart07LogonActivityManipulationPanel.controls.Add($script:AutoChart07LogonActivityOpenInShell)
 
@@ -3632,7 +3632,7 @@ $script:AutoChart07LogonActivityViewResults = New-Object Windows.Forms.Button -P
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart07LogonActivityViewResults
+Apply-CommonButtonSettings -Button $script:AutoChart07LogonActivityViewResults
 $script:AutoChart07LogonActivityViewResults.Add_Click({ $script:AutoChartDataSourceCsvLogonActivity | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" })
 $script:AutoChart07LogonActivityManipulationPanel.controls.Add($script:AutoChart07LogonActivityViewResults)
 
@@ -3645,7 +3645,7 @@ $script:AutoChart07LogonActivitySaveButton = New-Object Windows.Forms.Button -Pr
     Size     = @{ Width  = $FormScale * 205
                   Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart07LogonActivitySaveButton
+Apply-CommonButtonSettings -Button $script:AutoChart07LogonActivitySaveButton
 [enum]::GetNames('System.Windows.Forms.DataVisualization.Charting.ChartImageFormat')
 $script:AutoChart07LogonActivitySaveButton.Add_Click({
     Save-ChartImage -Chart $script:AutoChart07LogonActivity -Title $script:AutoChart07LogonActivityTitle
@@ -3802,7 +3802,7 @@ $script:AutoChart08LogonActivityOptionsButton = New-Object Windows.Forms.Button 
     Size      = @{ Width  = $FormScale * 75
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart08LogonActivityOptionsButton
+Apply-CommonButtonSettings -Button $script:AutoChart08LogonActivityOptionsButton
 $script:AutoChart08LogonActivityOptionsButton.Add_Click({
     if ($script:AutoChart08LogonActivityOptionsButton.Text -eq 'Options v') {
         $script:AutoChart08LogonActivityOptionsButton.Text = 'Options ^'
@@ -3925,7 +3925,7 @@ $script:AutoChart08LogonActivity3DToggleButton = New-Object Windows.Forms.Button
     Size      = @{ Width  = $FormScale * 65
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart08LogonActivity3DToggleButton
+Apply-CommonButtonSettings -Button $script:AutoChart08LogonActivity3DToggleButton
 $script:AutoChart08LogonActivity3DInclination = 0
 $script:AutoChart08LogonActivity3DToggleButton.Add_Click({
     $script:AutoChart08LogonActivity3DInclination += 10
@@ -4009,7 +4009,7 @@ $script:AutoChart08LogonActivityCheckDiffButton = New-Object Windows.Forms.Butto
                    Height = $FormScale * 23 }
     Anchor    = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
 }
-CommonButtonSettings -Button $script:AutoChart08LogonActivityCheckDiffButton
+Apply-CommonButtonSettings -Button $script:AutoChart08LogonActivityCheckDiffButton
 $script:AutoChart08LogonActivityCheckDiffButton.Add_Click({
     $script:AutoChart08LogonActivityInvestDiffDropDownArray = $script:AutoChartDataSourceCsvLogonActivity | Select-Object -Property 'MemoryUsed' -ExpandProperty 'MemoryUsed' | Sort-Object -Unique
 
@@ -4054,7 +4054,7 @@ $script:AutoChart08LogonActivityCheckDiffButton.Add_Click({
         Width    = $Formscale * 100
         Height   = $Formscale * 20
     }
-    CommonButtonSettings -Button $script:AutoChart08LogonActivityInvestDiffExecuteButton
+    Apply-CommonButtonSettings -Button $script:AutoChart08LogonActivityInvestDiffExecuteButton
     $script:AutoChart08LogonActivityInvestDiffExecuteButton.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart08 }})
     $script:AutoChart08LogonActivityInvestDiffExecuteButton.Add_Click({ script:InvestigateDifference-AutoChart08 })
 
@@ -4120,7 +4120,7 @@ $AutoChart08ExpandChartButton = New-Object System.Windows.Forms.Button -Property
                 Height = $FormScale * 23 }
     Add_Click  = { Generate-AutoChartsCommand -FileProfileLoaded $script:AutoChartDataSourceCsvLogonActivityFileName -QueryName "Current Logon Activity" -QueryTabName "Memory Used" -PropertyX "MemoryUsed" -PropertyY "PSComputerName" }
 }
-CommonButtonSettings -Button $AutoChart08ExpandChartButton
+Apply-CommonButtonSettings -Button $AutoChart08ExpandChartButton
 $script:AutoChart08LogonActivityManipulationPanel.Controls.Add($AutoChart08ExpandChartButton)
 
 
@@ -4131,7 +4131,7 @@ $script:AutoChart08LogonActivityOpenInShell = New-Object Windows.Forms.Button -P
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart08LogonActivityOpenInShell
+Apply-CommonButtonSettings -Button $script:AutoChart08LogonActivityOpenInShell
 $script:AutoChart08LogonActivityOpenInShell.Add_Click({ AutoChartOpenDataInShell })
 $script:AutoChart08LogonActivityManipulationPanel.controls.Add($script:AutoChart08LogonActivityOpenInShell)
 
@@ -4143,7 +4143,7 @@ $script:AutoChart08LogonActivityViewResults = New-Object Windows.Forms.Button -P
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart08LogonActivityViewResults
+Apply-CommonButtonSettings -Button $script:AutoChart08LogonActivityViewResults
 $script:AutoChart08LogonActivityViewResults.Add_Click({ $script:AutoChartDataSourceCsvLogonActivity | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" })
 $script:AutoChart08LogonActivityManipulationPanel.controls.Add($script:AutoChart08LogonActivityViewResults)
 
@@ -4156,7 +4156,7 @@ $script:AutoChart08LogonActivitySaveButton = New-Object Windows.Forms.Button -Pr
     Size     = @{ Width  = $FormScale * 205
                   Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart08LogonActivitySaveButton
+Apply-CommonButtonSettings -Button $script:AutoChart08LogonActivitySaveButton
 [enum]::GetNames('System.Windows.Forms.DataVisualization.Charting.ChartImageFormat')
 $script:AutoChart08LogonActivitySaveButton.Add_Click({
     Save-ChartImage -Chart $script:AutoChart08LogonActivity -Title $script:AutoChart08LogonActivityTitle
@@ -4313,7 +4313,7 @@ $script:AutoChart09LogonActivityOptionsButton = New-Object Windows.Forms.Button 
     Size      = @{ Width  = $FormScale * 75
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart09LogonActivityOptionsButton
+Apply-CommonButtonSettings -Button $script:AutoChart09LogonActivityOptionsButton
 $script:AutoChart09LogonActivityOptionsButton.Add_Click({
     if ($script:AutoChart09LogonActivityOptionsButton.Text -eq 'Options v') {
         $script:AutoChart09LogonActivityOptionsButton.Text = 'Options ^'
@@ -4436,7 +4436,7 @@ $script:AutoChart09LogonActivity3DToggleButton = New-Object Windows.Forms.Button
     Size      = @{ Width  = $FormScale * 65
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart09LogonActivity3DToggleButton
+Apply-CommonButtonSettings -Button $script:AutoChart09LogonActivity3DToggleButton
 $script:AutoChart09LogonActivity3DInclination = 0
 $script:AutoChart09LogonActivity3DToggleButton.Add_Click({
     $script:AutoChart09LogonActivity3DInclination += 10
@@ -4520,7 +4520,7 @@ $script:AutoChart09LogonActivityCheckDiffButton = New-Object Windows.Forms.Butto
                    Height = $FormScale * 23 }
     Anchor    = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
 }
-CommonButtonSettings -Button $script:AutoChart09LogonActivityCheckDiffButton
+Apply-CommonButtonSettings -Button $script:AutoChart09LogonActivityCheckDiffButton
 $script:AutoChart09LogonActivityCheckDiffButton.Add_Click({
     $script:AutoChart09LogonActivityInvestDiffDropDownArray = $script:AutoChartDataSourceCsvLogonActivity | Select-Object -Property 'ProfileLoaded' -ExpandProperty 'ProfileLoaded' | Sort-Object -Unique
 
@@ -4565,7 +4565,7 @@ $script:AutoChart09LogonActivityCheckDiffButton.Add_Click({
         Width    = $Formscale * 100
         Height   = $Formscale * 20
     }
-    CommonButtonSettings -Button $script:AutoChart09LogonActivityInvestDiffExecuteButton
+    Apply-CommonButtonSettings -Button $script:AutoChart09LogonActivityInvestDiffExecuteButton
     $script:AutoChart09LogonActivityInvestDiffExecuteButton.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart09 }})
     $script:AutoChart09LogonActivityInvestDiffExecuteButton.Add_Click({ script:InvestigateDifference-AutoChart09 })
 
@@ -4631,7 +4631,7 @@ $AutoChart09ExpandChartButton = New-Object System.Windows.Forms.Button -Property
                 Height = $FormScale * 23 }
     Add_Click  = { Generate-AutoChartsCommand -FileProfileLoaded $script:AutoChartDataSourceCsvLogonActivityFileName -QueryName "Current Logon Activity" -QueryTabName "Profile Loadeds" -PropertyX "ProfileLoaded" -PropertyY "PSComputerName" }
 }
-CommonButtonSettings -Button $AutoChart09ExpandChartButton
+Apply-CommonButtonSettings -Button $AutoChart09ExpandChartButton
 $script:AutoChart09LogonActivityManipulationPanel.Controls.Add($AutoChart09ExpandChartButton)
 
 
@@ -4642,7 +4642,7 @@ $script:AutoChart09LogonActivityOpenInShell = New-Object Windows.Forms.Button -P
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart09LogonActivityOpenInShell
+Apply-CommonButtonSettings -Button $script:AutoChart09LogonActivityOpenInShell
 $script:AutoChart09LogonActivityOpenInShell.Add_Click({ AutoChartOpenDataInShell })
 $script:AutoChart09LogonActivityManipulationPanel.controls.Add($script:AutoChart09LogonActivityOpenInShell)
 
@@ -4654,7 +4654,7 @@ $script:AutoChart09LogonActivityViewResults = New-Object Windows.Forms.Button -P
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart09LogonActivityViewResults
+Apply-CommonButtonSettings -Button $script:AutoChart09LogonActivityViewResults
 $script:AutoChart09LogonActivityViewResults.Add_Click({ $script:AutoChartDataSourceCsvLogonActivity | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" })
 $script:AutoChart09LogonActivityManipulationPanel.controls.Add($script:AutoChart09LogonActivityViewResults)
 
@@ -4667,7 +4667,7 @@ $script:AutoChart09LogonActivitySaveButton = New-Object Windows.Forms.Button -Pr
     Size     = @{ Width  = $FormScale * 205
                   Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart09LogonActivitySaveButton
+Apply-CommonButtonSettings -Button $script:AutoChart09LogonActivitySaveButton
 [enum]::GetNames('System.Windows.Forms.DataVisualization.Charting.ChartImageFormat')
 $script:AutoChart09LogonActivitySaveButton.Add_Click({
     Save-ChartImage -Chart $script:AutoChart09LogonActivity -Title $script:AutoChart09LogonActivityTitle
@@ -4824,7 +4824,7 @@ $script:AutoChart10LogonActivityOptionsButton = New-Object Windows.Forms.Button 
     Size      = @{ Width  = $FormScale * 75
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart10LogonActivityOptionsButton
+Apply-CommonButtonSettings -Button $script:AutoChart10LogonActivityOptionsButton
 $script:AutoChart10LogonActivityOptionsButton.Add_Click({
     if ($script:AutoChart10LogonActivityOptionsButton.Text -eq 'Options v') {
         $script:AutoChart10LogonActivityOptionsButton.Text = 'Options ^'
@@ -4947,7 +4947,7 @@ $script:AutoChart10LogonActivity3DToggleButton = New-Object Windows.Forms.Button
     Size      = @{ Width  = $FormScale * 65
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart10LogonActivity3DToggleButton
+Apply-CommonButtonSettings -Button $script:AutoChart10LogonActivity3DToggleButton
 $script:AutoChart10LogonActivity3DInclination = 0
 $script:AutoChart10LogonActivity3DToggleButton.Add_Click({
     $script:AutoChart10LogonActivity3DInclination += 10
@@ -5031,7 +5031,7 @@ $script:AutoChart10LogonActivityCheckDiffButton = New-Object Windows.Forms.Butto
                    Height = $FormScale * 23 }
     Anchor    = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
 }
-CommonButtonSettings -Button $script:AutoChart10LogonActivityCheckDiffButton
+Apply-CommonButtonSettings -Button $script:AutoChart10LogonActivityCheckDiffButton
 $script:AutoChart10LogonActivityCheckDiffButton.Add_Click({
     $script:AutoChart10LogonActivityInvestDiffDropDownArray = $script:AutoChartDataSourceCsvLogonActivity | Select-Object -Property 'CompressionMode' -ExpandProperty 'CompressionMode' | Sort-Object -Unique
 
@@ -5076,7 +5076,7 @@ $script:AutoChart10LogonActivityCheckDiffButton.Add_Click({
         Width    = $Formscale * 100
         Height   = $Formscale * 20
     }
-    CommonButtonSettings -Button $script:AutoChart10LogonActivityInvestDiffExecuteButton
+    Apply-CommonButtonSettings -Button $script:AutoChart10LogonActivityInvestDiffExecuteButton
     $script:AutoChart10LogonActivityInvestDiffExecuteButton.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart10 }})
     $script:AutoChart10LogonActivityInvestDiffExecuteButton.Add_Click({ script:InvestigateDifference-AutoChart10 })
 
@@ -5142,7 +5142,7 @@ $AutoChart10ExpandChartButton = New-Object System.Windows.Forms.Button -Property
                 Height = $FormScale * 23 }
     Add_Click  = { Generate-AutoChartsCommand -FileProfileLoaded $script:AutoChartDataSourceCsvLogonActivityFileName -QueryName "Current Logon Activity" -QueryTabName "Compression Mode" -PropertyX "CompressionMode" -PropertyY "PSComputerName" }
 }
-CommonButtonSettings -Button $AutoChart10ExpandChartButton
+Apply-CommonButtonSettings -Button $AutoChart10ExpandChartButton
 $script:AutoChart10LogonActivityManipulationPanel.Controls.Add($AutoChart10ExpandChartButton)
 
 
@@ -5153,7 +5153,7 @@ $script:AutoChart10LogonActivityOpenInShell = New-Object Windows.Forms.Button -P
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart10LogonActivityOpenInShell
+Apply-CommonButtonSettings -Button $script:AutoChart10LogonActivityOpenInShell
 $script:AutoChart10LogonActivityOpenInShell.Add_Click({ AutoChartOpenDataInShell })
 $script:AutoChart10LogonActivityManipulationPanel.controls.Add($script:AutoChart10LogonActivityOpenInShell)
 
@@ -5165,7 +5165,7 @@ $script:AutoChart10LogonActivityViewResults = New-Object Windows.Forms.Button -P
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart10LogonActivityViewResults
+Apply-CommonButtonSettings -Button $script:AutoChart10LogonActivityViewResults
 $script:AutoChart10LogonActivityViewResults.Add_Click({ $script:AutoChartDataSourceCsvLogonActivity | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" })
 $script:AutoChart10LogonActivityManipulationPanel.controls.Add($script:AutoChart10LogonActivityViewResults)
 
@@ -5178,7 +5178,7 @@ $script:AutoChart10LogonActivitySaveButton = New-Object Windows.Forms.Button -Pr
     Size     = @{ Width  = $FormScale * 205
                   Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart10LogonActivitySaveButton
+Apply-CommonButtonSettings -Button $script:AutoChart10LogonActivitySaveButton
 [enum]::GetNames('System.Windows.Forms.DataVisualization.Charting.ChartImageFormat')
 $script:AutoChart10LogonActivitySaveButton.Add_Click({
     Save-ChartImage -Chart $script:AutoChart10LogonActivity -Title $script:AutoChart10LogonActivityTitle

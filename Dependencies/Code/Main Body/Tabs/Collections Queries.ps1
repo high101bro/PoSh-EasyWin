@@ -1,11 +1,12 @@
 $Section1CommandsTab = New-Object System.Windows.Forms.TabPage -Property @{
-    Text   = "Queries"
+    Text   = "Commands"
     Left   = $FormScale * $Column1RightPosition
     Top    = $FormScale * $Column1DownPosition
     Width  = $FormScale * $Column1BoxWidth
     Height = $FormScale * ($Column1BoxHeight + 10)
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     UseVisualStyleBackColor = $True
+    ImageIndex = 0
 }
 $MainLeftCollectionsTabControl.Controls.Add($Section1CommandsTab)
 
@@ -399,7 +400,7 @@ $script:CommandsTreeView = New-Object System.Windows.Forms.TreeView -Property @{
     Left   = 0
     Top    = $FormScale * 70
     Width  = $FormScale * 435
-    Height = $FormScale * 395
+    Height = $FormScale * 375
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     CheckBoxes       = $True
     #LabelEdit       = $True
@@ -476,6 +477,9 @@ $CustomQueryScriptBlockGroupBox = New-Object System.Windows.Forms.GroupBox -Prop
                         $CustomQueryScriptBlockCheckBox.checked = $false
                         $CustomQueryScriptBlockCheckBox.enabled = $false
                     }
+                    if ($script:CustomQueryScriptBlockDisableSyntaxCheckbox.checked) {
+                        $CustomQueryScriptBlockCheckBox.enabled = $true
+                    }
                 }
                 Add_MouseLeave = {
                     if ($this.text -ne $script:CustomQueryScriptBlockSaved) {
@@ -484,6 +488,9 @@ $CustomQueryScriptBlockGroupBox = New-Object System.Windows.Forms.GroupBox -Prop
                     if ($this.text -eq '' -or $this.text -eq $null) {
                         $this.text = 'Enter a cmdlet'
                         $this.ForeColor = 'Black'
+                    }
+                    if ($script:CustomQueryScriptBlockDisableSyntaxCheckbox.checked) {
+                        $CustomQueryScriptBlockCheckBox.enabled = $true
                     }
                 }
             }
@@ -504,12 +511,14 @@ $CustomQueryScriptBlockGroupBox = New-Object System.Windows.Forms.GroupBox -Prop
                         $CustomQueryScriptBlockVerifyButton.Enabled = $false
                         $CustomQueryScriptBlockSearchAndBuildButton.Enabled = $false
                         $CustomQueryScriptBlockAddCommandButton.Enabled = $True
+                        $CustomQueryScriptBlockCheckBox.Enabled = $true
                         $CustomQueryScriptBlockAddCommandButton.Backcolor = 'LightBlue'
                     }
                     else {
                         $CustomQueryScriptBlockVerifyButton.Enabled = $true
                         $CustomQueryScriptBlockSearchAndBuildButton.Enabled = $true
                         $CustomQueryScriptBlockAddCommandButton.Enabled = $false
+                        $CustomQueryScriptBlockCheckBox.Enabled = $false
                         $CustomQueryScriptBlockAddCommandButton.Backcolor = 'LightGray'
                     }
                 }

@@ -1,8 +1,9 @@
 
 $Section1OpNotesTab = New-Object System.Windows.Forms.TabPage -Property @{
-    Text                    = "OpNotes"
+    Text = "OpNotes"
     UseVisualStyleBackColor = $True
-    Font                    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    Font = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    ImageIndex = 3
 }
 $MainLeftTabControl.Controls.Add($Section1OpNotesTab)
 
@@ -19,11 +20,11 @@ $OpNotesDownPosition       = 2
 $OpNotesDownPositionShift  = 22
 
 # The purpose to allow saving of Opnotes automatcially
-Load-Code "$Dependencies\Code\Main Body\Save-OpNotes.ps1"
+Update-FormProgress "$Dependencies\Code\Main Body\Save-OpNotes.ps1"
 . "$Dependencies\Code\Main Body\Save-OpNotes.ps1"
 
 # This function is called when pressing enter in the text box or click add
-Load-Code "$Dependencies\Code\Main Body\OpNoteTextBoxEntry.ps1"
+Update-FormProgress "$Dependencies\Code\Main Body\OpNoteTextBoxEntry.ps1"
 . "$Dependencies\Code\Main Body\OpNoteTextBoxEntry.ps1"
 
 
@@ -41,7 +42,7 @@ $Section1OpNotesTab.Controls.Add($OpNotesLabel)
 $OpNotesDownPosition += $OpNotesDownPositionShift + $($FormScale + 5)
 
 
-Load-Code "$Dependencies\Code\System.Windows.Forms\TextBox\OpNotesInputTextBox.ps1"
+Update-FormProgress "$Dependencies\Code\System.Windows.Forms\TextBox\OpNotesInputTextBox.ps1"
 . "$Dependencies\Code\System.Windows.Forms\TextBox\OpNotesInputTextBox.ps1"
 $OpNotesInputTextBox = New-Object System.Windows.Forms.TextBox -Property @{
     Location = @{ X = $FormScale * $OpNotesRightPosition
@@ -56,7 +57,7 @@ $Section1OpNotesTab.Controls.Add($OpNotesInputTextBox)
 $OpNotesDownPosition += $OpNotesDownPositionShift + $($FormScale + 5)
 
 
-Load-Code "$Dependencies\Code\System.Windows.Forms\Button\OpNotesAddButton.ps1"
+Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\OpNotesAddButton.ps1"
 . "$Dependencies\Code\System.Windows.Forms\Button\OpNotesAddButton.ps1"
 $OpNotesAddButton = New-Object System.Windows.Forms.Button -Property @{
     Text     = "Add"
@@ -67,12 +68,12 @@ $OpNotesAddButton = New-Object System.Windows.Forms.Button -Property @{
     Add_Click = $OpNotesAddButtonAdd_Click
 }
 $Section1OpNotesTab.Controls.Add($OpNotesAddButton)
-CommonButtonSettings -Button $OpNotesAddButton
+Apply-CommonButtonSettings -Button $OpNotesAddButton
 
 $OpNotesRightPosition += $OpNotesRightPositionShift
 
 
-Load-Code "$Dependencies\Code\System.Windows.Forms\Button\OpNotesSelectAllButton.ps1"
+Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\OpNotesSelectAllButton.ps1"
 . "$Dependencies\Code\System.Windows.Forms\Button\OpNotesSelectAllButton.ps1"
 $OpNotesSelectAllButton = New-Object System.Windows.Forms.Button -Property @{
     Text     = "Select All"
@@ -83,12 +84,12 @@ $OpNotesSelectAllButton = New-Object System.Windows.Forms.Button -Property @{
     Add_Click = $OpNotesSelectAllButtonAdd_Click
 }
 $Section1OpNotesTab.Controls.Add($OpNotesSelectAllButton)
-CommonButtonSettings -Button $OpNotesSelectAllButton
+Apply-CommonButtonSettings -Button $OpNotesSelectAllButton
 
 $OpNotesRightPosition += $OpNotesRightPositionShift
 
 
-Load-Code "$Dependencies\Code\System.Windows.Forms\Button\OpNotesOpenOpNotesButton.ps1"
+Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\OpNotesOpenOpNotesButton.ps1"
 . "$Dependencies\Code\System.Windows.Forms\Button\OpNotesOpenOpNotesButton.ps1"
 $OpNotesOpenOpNotesButton = New-Object System.Windows.Forms.Button -Property @{
     Text     = "Open OpNotes"
@@ -99,12 +100,12 @@ $OpNotesOpenOpNotesButton = New-Object System.Windows.Forms.Button -Property @{
     Add_Click = $OpNotesOpenOpNotesButtonAdd_Click
 }
 $Section1OpNotesTab.Controls.Add($OpNotesOpenOpNotesButton)
-CommonButtonSettings -Button $OpNotesOpenOpNotesButton
+Apply-CommonButtonSettings -Button $OpNotesOpenOpNotesButton
 
 $OpNotesRightPosition += $OpNotesRightPositionShift
 
 
-Load-Code "$Dependencies\Code\System.Windows.Forms\Button\OpNotesMoveUpButton.ps1"
+Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\OpNotesMoveUpButton.ps1"
 . "$Dependencies\Code\System.Windows.Forms\Button\OpNotesMoveUpButton.ps1"
 $OpNotesMoveUpButton = New-Object System.Windows.Forms.Button -Property @{
     Text     = 'Move Up'
@@ -115,13 +116,13 @@ $OpNotesMoveUpButton = New-Object System.Windows.Forms.Button -Property @{
     Add_Click = $OpNotesMoveUpButtonAdd_Click
 }
 $Section1OpNotesTab.Controls.Add($OpNotesMoveUpButton)
-CommonButtonSettings -Button $OpNotesMoveUpButton
+Apply-CommonButtonSettings -Button $OpNotesMoveUpButton
 
 $OpNotesDownPosition += $OpNotesDownPositionShift + $($FormScale + 5)
 $OpNotesRightPosition = $OpNotesRightPositionStart
 
 
-Load-Code "$Dependencies\Code\System.Windows.Forms\Button\OpNotesRemoveButton.ps1"
+Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\OpNotesRemoveButton.ps1"
 . "$Dependencies\Code\System.Windows.Forms\Button\OpNotesRemoveButton.ps1"
 $OpNotesRemoveButton = New-Object System.Windows.Forms.Button -Property @{
     Text     = 'Remove'
@@ -132,12 +133,12 @@ $OpNotesRemoveButton = New-Object System.Windows.Forms.Button -Property @{
     Add_Click = $OpNotesRemoveButtonAdd_Click
 }
 $Section1OpNotesTab.Controls.Add($OpNotesRemoveButton)
-CommonButtonSettings -Button $OpNotesRemoveButton
+Apply-CommonButtonSettings -Button $OpNotesRemoveButton
 
 $OpNotesRightPosition += $OpNotesRightPositionShift
 
 
-Load-Code "$Dependencies\Code\System.Windows.Forms\Button\OpNotesCreateReportButton.ps1"
+Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\OpNotesCreateReportButton.ps1"
 . "$Dependencies\Code\System.Windows.Forms\Button\OpNotesCreateReportButton.ps1"
 $OpNotesCreateReportButton = New-Object System.Windows.Forms.Button -Property @{
     Text     = "Create Report"
@@ -148,7 +149,7 @@ $OpNotesCreateReportButton = New-Object System.Windows.Forms.Button -Property @{
     Add_Click = $OpNotesCreateReportButtonAdd_Click
 }
 $Section1OpNotesTab.Controls.Add($OpNotesCreateReportButton)
-CommonButtonSettings -Button $OpNotesCreateReportButton
+Apply-CommonButtonSettings -Button $OpNotesCreateReportButton
 
 $OpNotesRightPosition += $OpNotesRightPositionShift
 
@@ -162,12 +163,12 @@ $OpNotesOpenReportsButton = New-Object System.Windows.Forms.Button -Property @{
     Add_Click = { Invoke-Item -Path "$PoShHome\Reports" }
 }
 $Section1OpNotesTab.Controls.Add($OpNotesOpenReportsButton)
-CommonButtonSettings -Button $OpNotesOpenReportsButton
+Apply-CommonButtonSettings -Button $OpNotesOpenReportsButton
 
 $OpNotesRightPosition += $OpNotesRightPositionShift
 
 
-Load-Code "$Dependencies\Code\System.Windows.Forms\Button\OpNotesMoveDownButton.ps1"
+Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\OpNotesMoveDownButton.ps1"
 . "$Dependencies\Code\System.Windows.Forms\Button\OpNotesMoveDownButton.ps1"
 $OpNotesMoveDownButton = New-Object System.Windows.Forms.Button -Property @{
     Text     = 'Move Down'
@@ -178,12 +179,12 @@ $OpNotesMoveDownButton = New-Object System.Windows.Forms.Button -Property @{
     Add_Click = $OpNotesMoveDownButtonAdd_Click
 }
 $Section1OpNotesTab.Controls.Add($OpNotesMoveDownButton)
-CommonButtonSettings -Button $OpNotesMoveDownButton
+Apply-CommonButtonSettings -Button $OpNotesMoveDownButton
 
 $OpNotesDownPosition += $OpNotesDownPositionShift + $($FormScale + 5)
 
 
-Load-Code "$Dependencies\Code\System.Windows.Forms\ListBox\OpNotesListBox.ps1"
+Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ListBox\OpNotesListBox.ps1"
 . "$Dependencies\Code\System.Windows.Forms\ListBox\OpNotesListBox.ps1"
 $OpNotesListBox = New-Object System.Windows.Forms.ListBox -Property @{
     Name     = "OpNotesListBox"

@@ -7,26 +7,15 @@ $Section1AccountsTab = New-Object System.Windows.Forms.TabPage -Property @{
     Height = $FormScale * $Column1BoxHeight
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     UseVisualStyleBackColor = $True
+    ImageIndex = 1
 }
 $MainLeftCollectionsTabControl.Controls.Add($Section1AccountsTab)
-
-
-$AccountsMainLabel = New-Object System.Windows.Forms.Label -Property @{
-    Text   = "Accounts can be obtained from workstations and servers."
-    Left   = $FormScale * 5
-    Top    = $FormScale * 5
-    Width  = $FormScale * 410
-    Height = $FormScale * 22
-    Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
-    ForeColor = "Black"
-}
-$Section1AccountsTab.Controls.Add($AccountsMainLabel)
 
 
 $AccountsOptionsGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
     Text   = "Collection Options"
     Left   = $FormScale * 5
-    Top    = $AccountsMainLabel.Top + $AccountsMainLabel.Height
+    Top    = $FormScale * 5
     Width  = $FormScale * 425
     Height = $FormScale * 94
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
@@ -165,79 +154,12 @@ $AccountsOptionsGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
 $Section1AccountsTab.Controls.Add($AccountsOptionsGroupBox)
 
 
-$AccountsCurrentlyLoggedInConsoleCheckbox  = New-Object System.Windows.Forms.CheckBox -Property @{
-    Text   = "Accounts Logged In via Console (Currently)"
-    Left   = $FormScale * 7
-    Top    = $AccountsOptionsGroupBox.Top + $AccountsOptionsGroupBox.Height + $($FormScale * 10)
-    Width  = $FormScale * 325
-    Height = $FormScale * 22
-    Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
-    ForeColor = 'Blue'
-    Add_Click = {
-        Update-QueryCount
-        
-        Update-TreeViewData -Commands -TreeView $script:CommandsTreeView.Nodes 
-        if ($this.checked){$this.ForeColor = 'Red'} else {$this.ForeColor = 'Blue'}
-    }
-}
-$Section1AccountsTab.Controls.Add($AccountsCurrentlyLoggedInConsoleCheckbox)
-
-
-$AccountsCurrentlyLoggedInInfoButton = New-Object System.Windows.Forms.Button -Property @{
-    Text   = "Reference"
-    Left   = $AccountsCurrentlyLoggedInConsoleCheckbox.Left + $AccountsCurrentlyLoggedInConsoleCheckbox.Width + ($FormScale * 22)
-    Top    = $AccountsCurrentlyLoggedInConsoleCheckbox.Top #- ($FormScale * 9)
-    Width  = $FormScale * 75
-    Height = $FormScale * 20
-    Add_Click = {
-        if (Test-Path "$Dependencies\Reference Account Information.csv") {
-            Import-Csv "$Dependencies\Reference Account Information.csv" | Out-GridView -Title 'PoSh-EasyWin - General Account Information'
-        }
-        else {[System.Windows.Forms.MessageBox]::Show("The General Account Information file for reference cannot be located.",'PoSh-EasyWin Select Accounts')}
-     }
-}
-$Section1AccountsTab.Controls.Add($AccountsCurrentlyLoggedInInfoButton)
-Apply-CommonButtonSettings -Button $AccountsCurrentlyLoggedInInfoButton
-
-
-
-$AccountsCurrentlyLoggedInPSSessionCheckbox  = New-Object System.Windows.Forms.CheckBox -Property @{
-    Text   = "Accounts Logged In via PowerShell Session (Currently)"
-    Left   = $FormScale * 7
-    Top    = $AccountsCurrentlyLoggedInConsoleCheckbox.Top + $AccountsCurrentlyLoggedInConsoleCheckbox.Height + $($FormScale * 10)
-    Width  = $FormScale * 350
-    Height = $FormScale * 22
-    Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
-    ForeColor = 'Blue'
-    Add_Click = {
-        Update-QueryCount
-        
-        Update-TreeViewData -Commands -TreeView $script:CommandsTreeView.Nodes
-        if ($this.checked){$this.ForeColor = 'Red'} else {$this.ForeColor = 'Blue'}
-    }
-}
-$Section1AccountsTab.Controls.Add($AccountsCurrentlyLoggedInPSSessionCheckbox)
-
-
-$AccountsCurrentlyLoggedInPSSessionLabel  = New-Object System.Windows.Forms.Label -Property @{
-    Text   = "With WinRM Sessions, your account should also show up in these results."
-    Left   = $FormScale * 7
-    Top    = $AccountsCurrentlyLoggedInPSSessionCheckbox.Top + $AccountsCurrentlyLoggedInPSSessionCheckbox.Height
-    Width  = $FormScale * 400
-    Height = $FormScale * 22
-    Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    ForeColor = "Black"
-    Add_MouseHover = $AccountsMaximumCollectionLabelAdd_MouseHover
-}
-$Section1AccountsTab.Controls.Add($AccountsCurrentlyLoggedInPSSessionLabel)
-
-
 Update-FormProgress "$Dependencies\Code\Main Body\Get-AccountLogonActivity.ps1"
 . "$Dependencies\Code\Main Body\Get-AccountLogonActivity.ps1"
 $AccountActivityCheckbox  = New-Object System.Windows.Forms.CheckBox -Property @{
     Text   = "Account Logon Activity (Select Datetime Range)"
     Left   = $FormScale * 7
-    Top    = $AccountsCurrentlyLoggedInPSSessionLabel.Top + $AccountsCurrentlyLoggedInPSSessionLabel.Height + $($FormScale * 10)
+    Top    = $AccountsOptionsGroupBox.Top + $AccountsOptionsGroupBox.Height + $($FormScale * 10)
     Width  = $FormScale * 410
     Height = $FormScale * 22
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
@@ -301,7 +223,7 @@ $AccountActivityTextbox = New-Object System.Windows.Forms.TextBox -Property @{
     Lines  = 'Default is All Accounts'
     Left   = $FormScale * 5
     Top    = $AccountActivityClearButton.Top + $AccountActivityClearButton.Height + $($FormScale * 5)
-    Width  = $FormScale * 205
+    Width  = $FormScale * 425
     Height = $FormScale * 139
     MultiLine  = $True
     WordWrap   = $True
@@ -313,3 +235,99 @@ $AccountActivityTextbox = New-Object System.Windows.Forms.TextBox -Property @{
     Add_MouseLeave = {if ($this.Text -eq ''){$this.Text = 'Default is All Accounts'}}
 }
 $Section1AccountsTab.Controls.Add($AccountActivityTextbox)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+$AccountsCurrentlyLoggedInConsoleCheckbox  = New-Object System.Windows.Forms.CheckBox -Property @{
+    Text   = "Accounts Logged In via Console (Currently)"
+    Left   = $FormScale * 7
+    Top    = $AccountActivityTextbox.Top + $AccountActivityTextbox.Height + $($FormScale * 10)
+    Width  = $FormScale * 325
+    Height = $FormScale * 22
+    Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
+    ForeColor = 'Blue'
+    Add_Click = {
+        Update-QueryCount
+        
+        Update-TreeViewData -Commands -TreeView $script:CommandsTreeView.Nodes 
+        if ($this.checked){$this.ForeColor = 'Red'} else {$this.ForeColor = 'Blue'}
+    }
+}
+$Section1AccountsTab.Controls.Add($AccountsCurrentlyLoggedInConsoleCheckbox)
+
+
+$AccountsCurrentlyLoggedInInfoButton = New-Object System.Windows.Forms.Button -Property @{
+    Text   = "Reference"
+    Left   = $AccountsCurrentlyLoggedInConsoleCheckbox.Left + $AccountsCurrentlyLoggedInConsoleCheckbox.Width + ($FormScale * 22)
+    Top    = $AccountsCurrentlyLoggedInConsoleCheckbox.Top #- ($FormScale * 9)
+    Width  = $FormScale * 75
+    Height = $FormScale * 20
+    Add_Click = {
+        if (Test-Path "$Dependencies\Reference Account Information.csv") {
+            Import-Csv "$Dependencies\Reference Account Information.csv" | Out-GridView -Title 'PoSh-EasyWin - General Account Information'
+        }
+        else {[System.Windows.Forms.MessageBox]::Show("The General Account Information file for reference cannot be located.",'PoSh-EasyWin Select Accounts')}
+     }
+}
+$Section1AccountsTab.Controls.Add($AccountsCurrentlyLoggedInInfoButton)
+Apply-CommonButtonSettings -Button $AccountsCurrentlyLoggedInInfoButton
+
+
+
+$AccountsCurrentlyLoggedInPSSessionCheckbox  = New-Object System.Windows.Forms.CheckBox -Property @{
+    Text   = "Accounts Logged In via PowerShell Session (Currently)"
+    Left   = $FormScale * 7
+    Top    = $AccountsCurrentlyLoggedInConsoleCheckbox.Top + $AccountsCurrentlyLoggedInConsoleCheckbox.Height + $($FormScale * 10)
+    Width  = $FormScale * 350
+    Height = $FormScale * 22
+    Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
+    ForeColor = 'Blue'
+    Add_Click = {
+        Update-QueryCount
+        
+        Update-TreeViewData -Commands -TreeView $script:CommandsTreeView.Nodes
+        if ($this.checked){$this.ForeColor = 'Red'} else {$this.ForeColor = 'Blue'}
+    }
+}
+$Section1AccountsTab.Controls.Add($AccountsCurrentlyLoggedInPSSessionCheckbox)
+
+
+$AccountsCurrentlyLoggedInPSSessionLabel  = New-Object System.Windows.Forms.Label -Property @{
+    Text   = "With WinRM Sessions, your account should also show up in these results."
+    Left   = $FormScale * 7
+    Top    = $AccountsCurrentlyLoggedInPSSessionCheckbox.Top + $AccountsCurrentlyLoggedInPSSessionCheckbox.Height
+    Width  = $FormScale * 400
+    Height = $FormScale * 22
+    Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    ForeColor = "Black"
+    Add_MouseHover = $AccountsMaximumCollectionLabelAdd_MouseHover
+}
+$Section1AccountsTab.Controls.Add($AccountsCurrentlyLoggedInPSSessionLabel)
+
+
