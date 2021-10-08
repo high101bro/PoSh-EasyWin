@@ -12,6 +12,68 @@ TODO:
 [ ] Checking custom group box makes user add commands turn blue... wierd? Check inside Update-Treeivew function
 [ ] Add to add_closing ... This.dispose() gc-clearnup
 [ ] Streamline the updaing of data picture box associate with endpoint/account nodes, remove requirement of needing to click on node over and over...
+[ ] Looking the Network Connection execution path search... not sure if its working
+
+[ ] Processes tab.. the one that broke down each process
+
+Writing Daily Tips...
+	- The "Directory Listing (WinRM)" query within the "File Search" tab provides you with a "Get File" button that allows you to easily download multiple files from multiple hosts.
+	- Retrieved files from endpoints have additional data collected from them like Signer Certificates and File Hashes, then are zipped before being downloaded to the localhost.
+	- Only unique files, based on their MD5 file hash, are kept when retrieved from a single endpoint, though files with maching hashes are kept for each endpoint when downloading from multiple endpoints.
+	- WHen using the "Retrieve Files" button, you must select any pre-exiting results from a "Directory Listing" or "File Search".
+
+
+==================================================
+v6.5.4 - 
+==================================================
+
+Updated the following to support -UseCompupter and -UseSession 
+	- IndividualQuery-QueryBuild 
+
+Fixed bug Custom [WinRM] Query
+	- When you check the disable syntax button, it how enables the [WinRM] Query checkbox
+
+
+==================================================
+v6.4.3 - 27 SEP 2021
+==================================================
+
+Added Icons to Computer and Accounts Treeview
+
+Renamed many of the icons
+	- Easier to find them when listed
+
+Enumeration Scanning
+	- Added more events that check if conditions are met to execute scans
+
+Fixed a bug with displaying options own how to display the accounts treeview
+
+==================================================
+v6.3.2 - 21 SEP 2021
+==================================================
+
+Registry query feature
+	- Added a new search pane for the ItemProperty list
+	- Able to search for and collect the itemproperty of keys, example:
+		- The following path had malicious code... using the query pulls back data found 
+		- Get-ItemProperty HKCU:\Software\Microsoft\Windows\CurrentVersion run
+
+New Session Based data collection method
+    - Alpha testing and building of new feature
+	[ ] previous collected data no longer maintains relationship with the saved file, when the next collection starts, the previous button to open the previous csv file is broken even thought the file still exists
+	[ ] The computername property in the collected results is appearing empty, but the pscomputername is not...
+
+Added button to recieve jobs
+	- able to view status / current data collected`
+	- data is kept in memory unless removed
+
+==================================================
+v6.2.2 - 20 SEP 2021
+==================================================
+
+Registry query feature doesn't show property info
+	- Added ItemProtery (Get-ItemProperty for the keyname searched)
+	- Update: Attempted 'patch' didn't gather the data the analyst reported they wanted... investigating further
 
 ==================================================
 v6.2.1 - 16 SEP 2021

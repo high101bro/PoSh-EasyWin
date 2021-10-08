@@ -5,7 +5,6 @@
 
     .NOTES  
         Modified by    : @high101bro (for use within PoSh-EasyWin)
-        Updated        : 25 May 21
         
         Based on:      : Invoke-SRUMDump.ps1
         Version        : v.0.2

@@ -26,10 +26,10 @@ $MainLeftSection1InteractionsTabControlImageList.Images.Add([System.Drawing.Imag
 
 $MainLeftSection1InteractionsTabTabControl = New-Object System.Windows.Forms.TabControl -Property @{
     Name     = "Interactions TabControl"
-    Location = @{ X = $FormScale * $TabRightPosition
-                  Y = $FormScale * $TabhDownPosition }
-    Size     = @{ Width  = $FormScale * $TabAreaWidth
-                  Height = $FormScale * $TabAreaHeight }
+    Location = @{ X = $FormScale * 3
+                  Y = $FormScale * 3 }
+    Size     = @{ Width  = $FormScale * 446
+                  Height = $FormScale * 557 }
     ShowToolTips  = $True
     SelectedIndex = 0
     Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)

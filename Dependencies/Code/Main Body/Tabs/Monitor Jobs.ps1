@@ -20,7 +20,7 @@ $script:Section3MonitorJobsGroupBox = New-Object System.Windows.Forms.GroupBox -
     Text      = "Monitor Jobs Options"
     Left      = 0
     Top       = 0
-    Width     = $FormScale * 730
+    Width     = $FormScale * 745
     Height    = $FormScale * 42
     Font      = New-Object System.Drawing.Font($Font,$($FormScale * 11),1,2,1)
     ForeColor = 'Blue'
@@ -66,7 +66,7 @@ $script:Section3MonitorJobsGroupBox.Controls.Add($script:Section3MonitorJobsResi
 
 $script:Section3MonitorJobShowAllJobsButton = New-Object System.Windows.Forms.Button -Property @{
     Text      = 'All Jobs'
-    Left      = $FormScale * 495
+    Left      = $FormScale * 510
     Top       = $script:Section3MonitorJobsResizeButton.Top
     Width     = $FormScale * 75
     Height    = $FormScale * 22
@@ -100,7 +100,7 @@ Apply-CommonButtonSettings -Button $script:Section3MonitorJobShowAllJobsButton
 
 $script:Section3MonitorJobRemoveButton = New-Object System.Windows.Forms.Button -Property @{
     Text      = 'Remove All'
-    Left      = $FormScale * 575
+    Left      = $FormScale * 590
     Top       = $script:Section3MonitorJobsResizeButton.Top
     Width     = $FormScale * 75
     Height    = $FormScale * 22

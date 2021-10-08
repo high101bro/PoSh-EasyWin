@@ -339,9 +339,6 @@ foreach ($TargetComputer in $script:ComputerList) {
         $NetworkEndpointPacketCaptureDuration
     )
 
-
-    $EndpointString = ''
-    foreach ($item in $script:ComputerList) {$EndpointString += "$item`n"}
     
     $InputValues = @"
 ===========================================================================
@@ -362,7 +359,7 @@ $($script:Credential.UserName)
 ===========================================================================
 Endpoints:
 ===========================================================================
-$($EndpointString.trim())
+$TargetComputer
 
 ===========================================================================
 Note:

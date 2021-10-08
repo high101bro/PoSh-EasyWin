@@ -18,10 +18,10 @@ foreach ($File in $ResourceFiles) {
     $Section1ProcessesSubTabTextBox = New-Object System.Windows.Forms.TextBox -Property @{
         Name       = "$file"
         Text       = "$TabContents"
-        Location = @{ X = $TextBoxRightPosition
-                      Y = $TextBoxDownPosition }
-        Size     = @{ Width  = $FormScale * $TextBoxWidth
-                      Height = $FormScale * $TextBoxHeight }
+        Location = @{ X = -2
+                      Y = -2 }
+        Size     = @{ Width  = $FormScale * 442
+                      Height = $FormScale * 536 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         MultiLine  = $True
         ScrollBars = "Vertical"

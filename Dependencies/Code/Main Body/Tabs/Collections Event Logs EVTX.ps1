@@ -1,5 +1,5 @@
 $Section1EventLogNameEVTXTab = New-Object System.Windows.Forms.TabPage -Property @{
-    Text   = "Event Logs (Under Dev)"
+    Text   = "Event Logs"
     Left   = $FormScale * $Column1RightPosition
     Top    = $FormScale * $Column1DownPosition
     Width  = $FormScale * $Column1BoxWidth
@@ -207,10 +207,10 @@ $Section1EventLogNameEVTXTab.Controls.Add($EventLogNameEVTXOptionsGroupBox)
 #============================================================================================================================================================
 
 $EventLogNameEVTXLogNameSelectionCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
-    Text   = "Log Name Selection"
+    Text   = "Log Name Selection (ChainSaw Integration Under Development)"
     Left   = $FormScale * 7
     Top    = $EventLogNameEVTXOptionsGroupBox.Top + $EventLogNameEVTXOptionsGroupBox.Height + $($FormScale * 5)
-    Width  = $FormScale * 200
+    Width  = $FormScale * 400
     Height = $FormScale * 22
     Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
     ForeColor = 'Blue'

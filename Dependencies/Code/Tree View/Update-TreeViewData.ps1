@@ -546,8 +546,8 @@ function Update-TreeViewData {
         if ($AccountsCurrentlyLoggedInPSSessionCheckbox.checked)        { $script:TreeeViewCommandsCount++ }
         if ($AccountActivityCheckbox.checked)                           { $script:TreeeViewCommandsCount++ }
         if ($EventLogsEventIDsManualEntryCheckbox.Checked)              { $script:TreeeViewCommandsCount++ }
-        if ($EventLogsEventIDsToMonitorCheckbox.Checked)                { $script:TreeeViewCommandsCount++ }
         if ($EventLogsQuickPickSelectionCheckbox.Checked)               { $script:TreeeViewCommandsCount++ }
+        if ($EventLogNameEVTXLogNameSelectionCheckbox.Checked)          { $script:TreeeViewCommandsCount++ }                
         if ($NetworkEndpointPacketCaptureCheckBox.Checked)              { $script:TreeeViewCommandsCount++ }
         if ($NetworkConnectionSearchRemoteIPAddressCheckbox.checked)    { $script:TreeeViewCommandsCount++ }
         if ($NetworkConnectionSearchRemotePortCheckbox.checked)         { $script:TreeeViewCommandsCount++ }

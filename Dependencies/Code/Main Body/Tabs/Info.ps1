@@ -8,21 +8,11 @@ $MainLeftInfoTab = New-Object System.Windows.Forms.TabPage -Property @{
 $MainLeftTabControl.Controls.Add($MainLeftInfoTab)
 
 
-$TabRightPosition       = 3
-$TabhDownPosition       = 3
-$TabAreaWidth           = 446
-$TabAreaHeight          = 557
-$TextBoxRightPosition   = -2
-$TextBoxDownPosition    = -2
-$TextBoxWidth           = 442
-$TextBoxHeight          = 536
-
-
 $MainLeftInfoTabControl = New-Object System.Windows.Forms.TabControl -Property @{
-    Location = @{ X = $FormScale * $TabRightPosition
-                  Y = $FormScale * $TabhDownPosition }
-    Size     = @{ Width  = $FormScale * $TabAreaWidth
-                  Height = $FormScale * $TabAreaHeight }
+    Location = @{ X = $FormScale * 3
+                  Y = $FormScale * 3 }
+    Size     = @{ Width  = $FormScale * 446
+                  Height = $FormScale * 557 }
     Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     ShowToolTips  = $True
     SelectedIndex = 0
@@ -48,10 +38,10 @@ foreach ($File in $ResourceFiles) {
     $Section1AboutSubTabTextBox = New-Object System.Windows.Forms.TextBox -Property @{
         Text       = "$TabContents"
         Name       = "$file"
-        Location = @{ X = $FormScale * $TextBoxRightPosition
-                      Y = $FormScale * $TextBoxDownPosition }
-        Size     = @{ Width  = $FormScale * $TextBoxWidth
-                      Height = $FormScale * $TextBoxHeight }
+        Location = @{ X = $FormScale * -2
+                      Y = $FormScale * -2 }
+        Size     = @{ Width  = $FormScale * 442
+                      Height = $FormScale * 536 }
         MultiLine  = $True
         ScrollBars = "Vertical"
         Font       = New-Object System.Drawing.Font("Courier New",($FormScale * 9),0,0,0)

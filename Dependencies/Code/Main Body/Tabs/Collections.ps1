@@ -35,10 +35,10 @@ $MainLeftCollectionsTabControlImageList.Images.Add([System.Drawing.Image]::FromF
 
 $MainLeftCollectionsTabControl = New-Object System.Windows.Forms.TabControl -Property @{
     Name     = "Collections TabControl"
-    Location = @{ X = $FormScale * $TabRightPosition
-                  Y = $FormScale * $TabhDownPosition }
-    Size     = @{ Width  = $FormScale * $TabAreaWidth
-                  Height = $FormScale * ($TabAreaHeight + 5)}
+    Location = @{ X = $FormScale * 3
+                  Y = $FormScale * 3 }
+    Size     = @{ Width  = $FormScale * 446
+                  Height = $FormScale * (557 + 5)}
     ShowToolTips  = $True
     SelectedIndex = 0
     ImageList     = $MainLeftCollectionsTabControlImageList

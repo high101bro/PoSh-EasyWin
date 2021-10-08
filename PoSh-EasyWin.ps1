@@ -16,8 +16,6 @@
     ==================================================================================
 
     File Name      : PoSh-EasyWin.ps1
-    Version        : v6.2.1
-    Updated        : 17 Sep 2021
     Created        : 21 Aug 2018
 
     Requirements   : PowerShell v6.0+ - PowerShell Core is not supported
@@ -600,20 +598,10 @@ $QueryAndCollectionPanel = New-Object System.Windows.Forms.Panel -Property @{
                 Left   = 0
                 Width  = $FormScale * 460
                 Height = $FormScale * 590
-                Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+                Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),1,2,1)
                 ImageList = $MainLeftTabControlImageList
             }
             $QueryAndCollectionPanel.Controls.Add($MainLeftTabControl)
-
-
-            $TabRightPosition     = 3
-            $TabhDownPosition     = 3
-            $TabAreaWidth         = 446
-            $TabAreaHeight        = 557
-            $TextBoxRightPosition = -2
-            $TextBoxDownPosition  = -2
-            $TextBoxWidth         = 442
-            $TextBoxHeight        = 536
 
 
             # Collections Tab
@@ -1586,16 +1574,14 @@ $ExecuteScriptHandler = {
         if ($AccountsRpcRadioButton.Checked   -and $AccountActivityCheckbox.Checked)                    { $CountCommandQueries++ ; $script:RpcCommandCount++ }
 
         if ($EventLogWinRMRadioButton.Checked -and $EventLogsEventIDsManualEntryCheckbox.Checked)       { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
-        if ($EventLogWinRMRadioButton.Checked -and $EventLogsEventIDsToMonitorCheckbox.Checked)         { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
         if ($EventLogRpcRadioButton.Checked   -and $EventLogsEventIDsManualEntryCheckbox.Checked)       { $CountCommandQueries++ ; $script:RpcCommandCount++ }
-        if ($EventLogRpcRadioButton.Checked   -and $EventLogsEventIDsToMonitorCheckbox.Checked)         { $CountCommandQueries++ ; $script:RpcCommandCount++ }
         if ($EventLogsQuickPickSelectionCheckbox.Checked) {
             foreach ($Query in $script:EventLogQueries) {
                 if ($EventLogWinRMRadioButton.Checked -and $EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match $Query.Name) { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
                 if ($EventLogRpcRadioButton.Checked   -and $EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match $Query.Name) { $CountCommandQueries++ ; $script:RpcCommandCount++ }
             }
         }
-
+        if ($EventLogNameEVTXLogNameSelectionCheckbox.Checked)          { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
         if ($RegistrySearchCheckbox.checked)                            { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
 
         if ($FileSearchDirectoryListingCheckbox.Checked)                { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
@@ -1719,8 +1705,8 @@ $ExecuteScriptHandler = {
                 # Event Logs Event IDs Quick Pick Selection
                 if ($EventLogsQuickPickSelectionCheckbox.Checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-EventLogsQuickPick.ps1" }
 
-                # Event Logs Event IDs To Monitor
-                if ($EventLogsEventIDsToMonitorCheckbox.Checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-EventLogsEventIDsToMonitor.ps1" }
+                # Event Log Names to retrieve .evtx files
+                if ($EventLogNameEVTXLogNameSelectionCheckbox.Checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-EventLogNameRetrieveEVTX.ps1" }
 
                 # Registry Search
                 if ($RegistrySearchCheckbox.checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-RegistrySearch.ps1" }
@@ -1737,12 +1723,13 @@ $ExecuteScriptHandler = {
                 # Combines the inputs from the various GUI fields to query for Alternate Data Streams
                 if ($FileSearchAlternateDataStreamCheckbox.Checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-FileSearchAlternateDataStream.ps1" }
 
+
+                # Endpoint Packet Capture
+                # Conducts a packet capture on the endpoints using netsh
                 if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution' -and $NetworkEndpointPacketCaptureCheckBox.Checked) {
                     [System.Windows.Forms.MessageBox]::Show("The Individual Execution mode does not support Packet Capture, use either Monitor Jobs or Session Based mode.","Incompatible Mode",'Ok',"Info")
                 }
                 else {
-                    # Endpoint Packet Capture
-                    # Conducts a packet capture on the endpoints using netsh
                     if ($NetworkEndpointPacketCaptureCheckBox.Checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualCapture-EndpointPacketCaptureNetSh.ps1" }
                 }
 
@@ -1913,8 +1900,8 @@ $ExecuteScriptHandler = {
                 # Event Logs Event IDs Quick Pick Selection
                 if ($EventLogsQuickPickSelectionCheckbox.Checked) { . "$Dependencies\Code\Execution\Session Based\SessionQuery-EventLogsQuickPickSelection.ps1" }
 
-                # Event Logs Event IDs To Monitor
-                if ($EventLogsEventIDsToMonitorCheckbox.Checked) { . "$Dependencies\Code\Execution\Session Based\SessionQuery-EventLogsEventIDsToMonitor.ps1" }
+                # Event Log Names to retrieve .evtx files
+                if ($EventLogNameEVTXLogNameSelectionCheckbox.Checked) { . "$Dependencies\Code\Execution\Session Based\SessionQuery-EventLogNameRetrieveEVTX.ps1" }
 
                 # Registry Search
                 if ($RegistrySearchCheckbox.checked) { . "$Dependencies\Code\Execution\Session Based\SessionQuery-RegistrySearch.ps1" }

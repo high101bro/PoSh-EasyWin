@@ -31,7 +31,7 @@ function Deselect-AllCommands {
     $AccountActivityCheckbox.checked                             = $false
     $EventLogsEventIDsManualEntryCheckbox.checked                = $false
     $EventLogsQuickPickSelectionCheckbox.checked                 = $false
-    $EventLogsEventIDsToMonitorCheckbox.checked                  = $false
+    $EventLogNameEVTXLogNameSelectionCheckbox.Checked            = $false
     $FileSearchDirectoryListingCheckbox.checked                  = $false
     $FileSearchFileSearchCheckbox.checked                        = $false
     $FileSearchAlternateDataStreamCheckbox.checked               = $false
@@ -60,7 +60,7 @@ function Deselect-AllCommands {
     $AccountActivityCheckbox.ForeColor                           = 'Blue'
     $EventLogsEventIDsManualEntryCheckbox.ForeColor              = 'Blue'
     $EventLogsQuickPickSelectionCheckbox.ForeColor               = 'Blue'
-    $EventLogsEventIDsToMonitorCheckbox.ForeColor                = 'Blue'
+    $EventLogNameEVTXLogNameSelectionCheckbox.ForeColor          = 'Blue'
     $FileSearchDirectoryListingCheckbox.ForeColor                = 'Blue'
     $FileSearchFileSearchCheckbox.ForeColor                      = 'Blue'
     $FileSearchAlternateDataStreamCheckbox.ForeColor             = 'Blue'
