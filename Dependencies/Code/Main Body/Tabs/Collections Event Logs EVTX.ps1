@@ -280,6 +280,7 @@ $EventLogNameEVTXEventIDsManualEntrySelectionButton = New-Object System.Windows.
     Top    = $EventLogNameEVTXEventIDsManualEntryLabel.Top + $EventLogNameEVTXEventIDsManualEntryLabel.Height
     Width  = $FormScale * 170
     Height = $FormScale * 20
+    Enabled = $false
     Add_Click = {
         Import-Csv $EventIDsFile | Out-GridView  -Title 'Windows Event IDs' -OutputMode Multiple | Set-Variable -Name EventCodeManualEntrySelectionContents
         $EventIDColumn = $EventCodeManualEntrySelectionContents | Select-Object -ExpandProperty "Event ID"
@@ -299,6 +300,7 @@ $EventLogNameEVTXEventIDsManualEntryClearButton = New-Object System.Windows.Form
     Width  = $FormScale * 75
     Height = $FormScale * 20
     Add_Click = { $EventLogNameEVTXEventIDsManualEntryTextbox.Text = "" }
+    enabled = $false
 }
 $Section1EventLogNameEVTXTab.Controls.Add($EventLogNameEVTXEventIDsManualEntryClearButton)
 Apply-CommonButtonSettings -Button $EventLogNameEVTXEventIDsManualEntryClearButton
@@ -310,6 +312,7 @@ $EventLogNameEVTXEventIDsManualEntryTextbox = New-Object System.Windows.Forms.Te
     Top    = $EventLogNameEVTXEventIDsManualEntryClearButton.Top + $EventLogNameEVTXEventIDsManualEntryClearButton.Height + $($FormScale * 5)
     Width  = $FormScale * 250
     Height = $FormScale * 300
+    Enabled = $false
     MultiLine     = $True
     WordWrap      = $True
     AcceptsTab    = $false

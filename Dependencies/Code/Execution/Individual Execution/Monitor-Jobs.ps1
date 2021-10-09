@@ -1233,7 +1233,7 @@ if ($MonitorMode) {
             `$EVTXLogfILE$JobId = "$EVTXLocalSavePath"
 
             `$script:EVTXChainSawCommand$JobId = @"
-Start-Process 'PowerShell' -ArgumentList '-NoProfile', '-NoExit',
+Start-Process 'PowerShell' -ArgumentList '-NoProfile',
 '-ExecutionPolicy ByPass',
 { Set-Location '"`$SaveLocation$JobId"' | Out-Null; },
 { "& '$Dependencies\Executables\chainsaw\chainsaw.exe' hunt '`$EVTXLogfILE$JobId' --rules '$Dependencies\Executables\chainsaw\sigma_rules\' --mapping '$Dependencies\Executables\chainsaw\mapping_files\sigma-mapping.yml' --full --lateral-all --csv"; },
