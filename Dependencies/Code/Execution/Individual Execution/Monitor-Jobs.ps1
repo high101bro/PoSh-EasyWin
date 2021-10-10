@@ -1002,7 +1002,7 @@ if ($MonitorMode) {
             `$script:SysmonName$JobId = "$SysmonName"
             
             `$script:MonitorJobsButtonOne$JobId = New-Object System.Windows.Forms.Button -Property @{
-                text      = 'Check Endpoint'
+                text      = 'Check Sysmon'
                 Left      = `$script:Section3MonitorJobProgressBar$JobId.Left + `$script:Section3MonitorJobProgressBar$JobId.Width + (`$FormScale * 5)
                 Top       = `$script:Section3MonitorJobLabel$JobId.Top - (`$FormScale * 1)
                 Width     = `$FormScale * 125
@@ -1391,10 +1391,20 @@ Start-Process 'PowerShell' -ArgumentList '-NoProfile',
                         `$This.BackColor = 'LightGray'
                     }
 
-                    Invoke-Command -ScriptBlock {
+                    `$script:SelectedEndpointsToRemoveSysmon$JobId = Invoke-Command -ScriptBlock {
                         param(`$name)
-                        & "`$name" -u
-                    } -ArgumentList @(`$script:SysmonName$JobId, `$null) -ComputerName `$(`$script:ComputerName$JobId -split ' ') -Credential `$script:Credential
+                        Get-Process -Name `$name
+                    } -ArgumentList @(`$script:SysmonName$JobId, `$null) -ComputerName `$(`$script:ComputerName$JobId -split ' ') -Credential `$script:Credential | Select-Object PSComputerName, Name, Id, PriorityClass, FileVersion, WorkingSet, StartTime, CPU, Company, Path, Modules, Threads, Handles | Out-GridView -Title "Endpoint Count: `$((`$script:ComputerName$JobId -split ' ').Count) - Select to Remove Sysmon" -PassThru
+ 
+                    `$script:SelectedEndpointsToRemoveSysmonFrom = `$null
+                    `$script:SelectedEndpointsToRemoveSysmonFrom = `$((`$script:SelectedEndpointsToRemoveSysmon$JobId).PSComputerName -split ' ')
+
+                    if (`$script:SelectedEndpointsToRemoveSysmonFrom) {
+                        Invoke-Command -ScriptBlock {
+                            param(`$name)
+                            & "`$name" -u
+                        } -ArgumentList @(`$script:SysmonName$JobId, `$null) -ComputerName `$(`$script:SelectedEndpointsToRemoveSysmonFrom -split ' ') -Credential `$script:Credential
+                    }
 
                     if (`$script:RollCredentialsState -and `$script:ComputerListProvideCredentialsCheckBox.checked) {
                         Start-Sleep -Seconds 3

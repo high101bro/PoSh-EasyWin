@@ -150,7 +150,7 @@ elseif ($ExternalProgramsWinRMRadioButton.checked) {
                 $ExternalPrograms,
                 $SysinternalsSysmonRenameServiceProcessTextBox,
                 $SysinternalsSysmonRenameDriverTextBox,
-                $ExternalProgramsCheckTimeTextBox,
+                $ExternalProgramsTimoutOutTextBox,
                 $script:SysmonXMLPath,
                 $script:SysmonXMLName
             )
@@ -221,12 +221,12 @@ elseif ($ExternalProgramsWinRMRadioButton.checked) {
                 } -Argumentlist @($SysmonName,$SysmonDriverName,$TargetFolder,$SysmonExecutable,$Script:SysmonXMLName) -Session $Session
             }
 
-
-            $SecondsToCheck = 1 #$ExternalProgramsCheckTimeTextBox.Text
             
+            $TimeOutTimer = 0            
             while ($true) {
-                Start-Sleep -Seconds $SecondsToCheck
-            
+                Start-Sleep -Seconds 1
+                $TimeOutTimer++
+
                 if (( Invoke-Command -ScriptBlock { Get-Service "$SysmonName" } -Session $Session )) {
                     Invoke-Command -ScriptBlock {
                         param(
@@ -237,6 +237,9 @@ elseif ($ExternalProgramsWinRMRadioButton.checked) {
                         Remove-Item $TargetFolder\$SysmonExecutable -Recurse -Force
                         Remove-Item $TargetFolder\$SysmonXMLName    -Recurse -Force
                     } -Argumentlist $TargetFolder,$SysmonExecutable,$Script:SysmonXMLName -Session $Session
+                    break
+                }
+                elseif ($TimeOutTimer -eq $ExternalProgramsTimoutOutTextBox.text) {
                     break
                 }
             }
@@ -251,12 +254,14 @@ elseif ($ExternalProgramsWinRMRadioButton.checked) {
             $ExternalPrograms,
             $SysinternalsSysmonRenameServiceProcessTextBox,
             $SysinternalsSysmonRenameDriverTextBox,
-            $ExternalProgramsCheckTimeTextBox,
+            $ExternalProgramsTimoutOutTextBox,
             $script:SysmonXMLPath,
             $script:SysmonXMLName
         )
 
-        
+        $EndpointString = ''
+        foreach ($item in $script:ComputerList) {$EndpointString += "$item`n"}
+
         $InputValues = @"
 ===========================================================================
 Collection Name:
@@ -276,7 +281,7 @@ $($script:Credential.UserName)
 ===========================================================================
 Endpoint:
 ===========================================================================
-$TargetComputer
+$EndpointString
 
 ===========================================================================
 Sysmon Service/Process Name:
@@ -289,20 +294,20 @@ Sysmon Driver Name:
 $($SysinternalsSysmonRenameDriverTextBox.Text)
 
 ===========================================================================
-Recheck Time:
+Timeout:
 ===========================================================================
-$($ExternalProgramsCheckTimeTextBox.Text) # Note: This is option is deprecated, it checks every 1 second
+$($ExternalProgramsTimoutOutTextBox.Text)
 
 "@
 
 
-        if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
-            Monitor-Jobs -CollectionName $script:CollectionName -MonitorMode -SysmonSwitch -SysmonName $SysinternalsSysmonRenameServiceProcessTextBox.text -ComputerName $TargetComputer -DisableReRun -InputValues $InputValues -NotExportFiles
-        }
-        elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
-            Monitor-Jobs -CollectionName $script:CollectionName -NotExportFiles
-            Post-MonitorJobs -CollectionName $script:CollectionName -CollectionCommandStartTime $ExecutionStartTime
-        }
+    }
+    if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
+        Monitor-Jobs -CollectionName $script:CollectionName -MonitorMode -SysmonSwitch -SysmonName $SysinternalsSysmonRenameServiceProcessTextBox.text -ComputerName $script:ComputerList -DisableReRun -InputValues $InputValues -NotExportFiles
+    }
+    elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
+        Monitor-Jobs -CollectionName $script:CollectionName -NotExportFiles
+        Post-MonitorJobs -CollectionName $script:CollectionName -CollectionCommandStartTime $ExecutionStartTime
     }
 }
 

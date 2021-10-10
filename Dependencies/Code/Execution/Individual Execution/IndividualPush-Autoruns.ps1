@@ -48,7 +48,7 @@ foreach ($TargetComputer in $script:ComputerList) {
 
     #$ResultsListBox.Items.Insert(2,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))   [-] Terminating $AutorunsName process on $TargetComputer")
     #Start-Process -WindowStyle Hidden -FilePath $PsExecPath -ArgumentList "/AcceptEULA -s \\$TargetComputer $LocalDrive\$TargetFolder\$procmon /AcceptEULA /terminate /quiet" -PassThru | Out-Null
-    Start-Sleep -Seconds $ExternalProgramsCheckTimeTextBox.Text
+    Start-Sleep -Seconds $ExternalProgramsTimoutOutTextBox.Text
 
     # Checks to see if the process is still running
     while ($true) {
@@ -58,7 +58,7 @@ foreach ($TargetComputer in $script:ComputerList) {
             $Message = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) Checking Autoruns Status on $TargetComputer"
             #$ResultsListBox.Items.RemoveAt(0) ; $ResultsListBox.Items.RemoveAt(0)
             $ResultsListBox.Items.Insert(2,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))   [!] $Message")
-            Start-Sleep -Seconds $ExternalProgramsCheckTimeTextBox.Text
+            Start-Sleep -Seconds $ExternalProgramsTimoutOutTextBox.Text
         }
         else {
             Start-Sleep -Seconds 5

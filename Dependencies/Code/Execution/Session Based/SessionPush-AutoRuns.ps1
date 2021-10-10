@@ -70,7 +70,7 @@ foreach ($Session in $PSSession) {
     $PoShEasyWin.Refresh()
 }
 # Delay needed to ensure Tool has time to start
-$SecondsToCheck = $ExternalProgramsCheckTimeTextBox.Text
+$SecondsToCheck = $ExternalProgramsTimoutOutTextBox.Text
 
 $script:ProgressBarEndpointsProgressBar.Value = 0
 $AutoRunsCompletedEndpoints = @()

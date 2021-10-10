@@ -146,7 +146,7 @@ else {
         $script:ProgressBarEndpointsProgressBar.Value = 0
         $ProcmonCompletedEndpoints = @()
         $FirstCheck = $true
-        $SecondsToCheck = $ExternalProgramsCheckTimeTextBox.Text
+        $SecondsToCheck = $ExternalProgramsTimoutOutTextBox.Text
 
         while ($true) {
             if ($FirstCheck -eq $true) {

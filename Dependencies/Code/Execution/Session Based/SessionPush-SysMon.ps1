@@ -128,7 +128,7 @@ foreach ($Session in $PSSession) {
 $script:ProgressBarEndpointsProgressBar.Value = 0
 $SysmonCompletedEndpoints = @()
 $FirstCheck = $true
-$SecondsToCheck = $ExternalProgramsCheckTimeTextBox.Text
+$SecondsToCheck = $ExternalProgramsTimoutOutTextBox.Text
 
 while ($true) {
     # Results listbox count down visual

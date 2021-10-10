@@ -104,7 +104,7 @@ if ($ExternalProgramsRPCRadioButton.checked) {
         Create-LogEntry -LogFile $LogFile -TargetComputer $TargetComputer -Message "Invoke-WmiMethod -ComputerName $TargetComputer -Class Win32_Process -Name Create -ArgumentList `"$RemoteDrive\$TargetFolder\$ProcmonExecutable /AcceptEULA /BackingFile $RemoteDrive\$TargetFolder\$ProcmonName /RunTime $ProcMonDuration /Quiet`""
 
         $FirstCheck      = $true
-        $SecondsToCheck  = $ExternalProgramsCheckTimeTextBox.Text
+        $SecondsToCheck  = $ExternalProgramsTimoutOutTextBox.Text
 
         while ($true) {
             # Results listbox count down visual

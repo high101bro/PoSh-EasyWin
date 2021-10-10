@@ -77,7 +77,7 @@ $ExternalProgramsOptionsGroupBox = New-Object System.Windows.Forms.GroupBox -Pro
 
 
             $ExternalProgramsCheckTimeLabel = New-Object System.Windows.Forms.Label -Property @{
-                Text     = "Recheck Time (secs):"
+                Text     = "Recheck / Timeout:"
                 Location = @{ X = $ExternalProgramsRPCRadioButton.Location.X + $ExternalProgramsRPCRadioButton.Size.Width + $($FormScale * 30)
                             Y = $ExternalProgramsRPCRadioButton.Location.Y + $($FormScale * 3) }
                 Size     = @{ Width  = $FormScale * 130
@@ -89,18 +89,18 @@ $ExternalProgramsOptionsGroupBox = New-Object System.Windows.Forms.GroupBox -Pro
 
             Update-FormProgress "$Dependencies\Code\System.Windows.Forms\TextBox\ExternalProgramsCheckTimeTextBox.ps1"
             . "$Dependencies\Code\System.Windows.Forms\TextBox\ExternalProgramsCheckTimeTextBox.ps1"
-            $ExternalProgramsCheckTimeTextBox = New-Object System.Windows.Forms.TextBox -Property @{
-                Text     = 15
+            $ExternalProgramsTimoutOutTextBox = New-Object System.Windows.Forms.TextBox -Property @{
+                Text     = 60
                 Location = @{ X = $ExternalProgramsCheckTimeLabel.Location.X + $ExternalProgramsCheckTimeLabel.Size.Width
                                 Y = $ExternalProgramsCheckTimeLabel.Location.Y - 3 }
                 Size     = @{ Width  = $FormScale * 30
                                 Height = $FormScale * 22 }
                 Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 10),0,0,0)
                 Enabled  = $True
-                Add_MouseHover = $ExternalProgramsCheckTimeTextBoxAdd_MouseHover
+                Add_MouseHover = $ExternalProgramsTimoutOutTextBoxAdd_MouseHover
             }
 
-            $ExternalProgramsOptionsGroupBox.Controls.AddRange(@($ExternalProgramsProtocolRadioButtonLabel,$ExternalProgramsRPCRadioButton,$ExternalProgramsWinRMRadioButton,$ExternalProgramsCheckTimeLabel,$ExternalProgramsCheckTimeTextBox))
+            $ExternalProgramsOptionsGroupBox.Controls.AddRange(@($ExternalProgramsProtocolRadioButtonLabel,$ExternalProgramsRPCRadioButton,$ExternalProgramsWinRMRadioButton,$ExternalProgramsCheckTimeLabel,$ExternalProgramsTimoutOutTextBox))
 $Section1ExecutablesTab.Controls.Add($ExternalProgramsOptionsGroupBox)
 
 
@@ -111,7 +111,7 @@ $Section1ExecutablesTab.Controls.Add($ExternalProgramsOptionsGroupBox)
 Update-FormProgress "$Dependencies\Code\System.Windows.Forms\CheckBox\SysinternalsSysmonCheckbox.ps1"
 . "$Dependencies\Code\System.Windows.Forms\CheckBox\SysinternalsSysmonCheckbox.ps1"
 $SysinternalsSysmonCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
-    Text      = "Sysmon"
+    Text      = "Sysmon (64-bit)"
     Location  = @{ X = $ExternalProgramsOptionsGroupBox.Location.X + $($FormScale * 5)
                    Y = $ExternalProgramsOptionsGroupBox.Location.Y + $ExternalProgramsOptionsGroupBox.Size.Height + $($FormScale * 5) }
     AutoSize  = $true
@@ -186,6 +186,17 @@ $ExternalProgramsSysmonGroupBox = New-Object System.Windows.Forms.GroupBox -Prop
                 Multiline = $true
             }
             $ExternalProgramsSysmonGroupBox.Controls.Add($SysinternalsSysmonConfigTextBox)
+
+
+            # $SysinternalsSysmonUninstallCheckbox = New-Object System.Windows.Forms.checkbox -Property @{
+            #     Text     = "Uninstall"
+            #     Location = @{ X = $SysinternalsSysmonConfigTextBox.Location.X
+            #                 Y = $SysinternalsSysmonConfigTextBox.Location.Y + $SysinternalsSysmonConfigTextBox.Size.Height + $($FormScale * 10) }
+            #     Autosize = $true
+            #     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+            #     ForeColor = "Black"
+            # }
+            # $ExternalProgramsSysmonGroupBox.Controls.Add($SysinternalsSysmonUninstallCheckbox)
 
 
             $SysinternalsSysmonRenameServiceProcessLabel = New-Object System.Windows.Forms.Label -Property @{
