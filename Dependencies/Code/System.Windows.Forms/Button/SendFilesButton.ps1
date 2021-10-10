@@ -420,7 +420,7 @@ $($SearchString.trim())
                             #Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript ${function:MonitorJobScriptBlock} -ArgumentList @($ExecutionStartTime,$CollectionName,$NetworkConnectionSearchExecutablePath) -InputValues $InputValues
 
                             if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
-                                Monitor-Jobs -CollectionName $CollectionName -MonitorMode -InputValues $InputValues
+                                Monitor-Jobs -CollectionName $CollectionName -MonitorMode -InputValues $InputValues -SendFileSwitch -SendFilePath "$($script:FileTransferDestinationPathRichTextBox.text)" -ComputerName $script:ComputerList
                             }
                             elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
                                 Monitor-Jobs -CollectionName $CollectionName

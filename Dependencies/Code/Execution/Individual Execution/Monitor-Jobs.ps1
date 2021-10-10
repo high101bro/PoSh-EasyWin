@@ -23,7 +23,11 @@ function Monitor-Jobs {
         $PSWriteHTMLFilePath,
         [string[]]$PSWriteHTMLOptions,
         [switch]$EVTXSwitch,
-        $EVTXLocalSavePath
+        $EVTXLocalSavePath,
+        [switch]$SendFileSwitch,
+        $SendFilePath,
+        [switch]$SysmonSwitch,
+        $SysmonName
     )
     
     $JobId = Get-Random
@@ -962,6 +966,66 @@ if ($MonitorMode) {
             }
 "@    
         }
+        elseif ($SendFileSwitch) {
+            Invoke-Expression @"
+            `$script:ComputerName$JobId = "$ComputerName"
+            `$script:SendFilePath$JobId = "$SendFilePath"
+            
+            `$script:MonitorJobsButtonOne$JobId = New-Object System.Windows.Forms.Button -Property @{
+                text      = 'Check Endpoint'
+                Left      = `$script:Section3MonitorJobProgressBar$JobId.Left + `$script:Section3MonitorJobProgressBar$JobId.Width + (`$FormScale * 5)
+                Top       = `$script:Section3MonitorJobLabel$JobId.Top - (`$FormScale * 1)
+                Width     = `$FormScale * 125
+                Height    = `$FormScale * 21
+                Font      = New-Object System.Drawing.Font('Courier New',`$(`$FormScale * 8),1,2,1)
+                Add_click = {
+                    if (`$This.BackColor -ne 'LightGray') {
+                        `$This.BackColor = 'LightGray'
+                    }
+
+                    Invoke-Command -ScriptBlock {
+                        param(`$path)
+                        Get-ChildItem `$path
+                    } -ArgumentList @(`$script:SendFilePath$JobId, `$null) -ComputerName `$(`$script:ComputerName$JobId -split ' ') -Credential `$script:Credential | Select-Object PSComputerName, Name, Length, CreationTime, LastAccessTime, LastWriteTime, Directory, Attributes, FullName | Out-GridView -Title "`$(`$script:ComputerName$JobId -split ' '):  Send Files Check"
+
+                    if (`$script:RollCredentialsState -and `$script:ComputerListProvideCredentialsCheckBox.checked) {
+                        Start-Sleep -Seconds 3
+                        Generate-NewRollingPassword
+                    }
+                }
+            }
+"@    
+        }
+        elseif ($SysmonSwitch) {
+            Invoke-Expression @"
+            `$script:ComputerName$JobId = "$ComputerName"
+            `$script:SysmonName$JobId = "$SysmonName"
+            
+            `$script:MonitorJobsButtonOne$JobId = New-Object System.Windows.Forms.Button -Property @{
+                text      = 'Check Endpoint'
+                Left      = `$script:Section3MonitorJobProgressBar$JobId.Left + `$script:Section3MonitorJobProgressBar$JobId.Width + (`$FormScale * 5)
+                Top       = `$script:Section3MonitorJobLabel$JobId.Top - (`$FormScale * 1)
+                Width     = `$FormScale * 125
+                Height    = `$FormScale * 21
+                Font      = New-Object System.Drawing.Font('Courier New',`$(`$FormScale * 8),1,2,1)
+                Add_click = {
+                    if (`$This.BackColor -ne 'LightGray') {
+                        `$This.BackColor = 'LightGray'
+                    }
+
+                    Invoke-Command -ScriptBlock {
+                        param(`$name)
+                        Get-Process -Name `$name
+                    } -ArgumentList @(`$script:SysmonName$JobId, `$null) -ComputerName `$(`$script:ComputerName$JobId -split ' ') -Credential `$script:Credential | Select-Object PSComputerName, Name, Id, PriorityClass, FileVersion, WorkingSet, StartTime, CPU, Company, Path, Modules, Threads, Handles | Out-GridView -Title "`$(`$script:ComputerName$JobId -split ' '):  Check for Sysmon Running"
+
+                    if (`$script:RollCredentialsState -and `$script:ComputerListProvideCredentialsCheckBox.checked) {
+                        Start-Sleep -Seconds 3
+                        Generate-NewRollingPassword
+                    }
+                }
+            }
+"@    
+        }
         elseif ("$JobsExportFiles" -eq "false" -and "$FileExtension" -like 'txt') {
             Invoke-Expression @"
             `$script:MonitorJobsButtonOne$JobId = New-Object System.Windows.Forms.Button -Property @{
@@ -1274,6 +1338,73 @@ Start-Process 'PowerShell' -ArgumentList '-NoProfile',
             }
 "@
         }
+        elseif ($SendFileSwitch) {
+            Invoke-Expression @"
+            `$script:ComputerName$JobId = "$ComputerName"
+            `$script:SendFilePath$JobId = "$SendFilePath"
+            
+            
+            `$script:MonitorJobsButtonThree$JobId = New-Object System.Windows.Forms.Button -Property @{
+                text      = 'Remove Files'
+                Left      = `$script:Section3MonitorJobProgressBar$JobId.Left + `$script:Section3MonitorJobProgressBar$JobId.Width + (`$FormScale * 5)
+                Top       = `$script:MonitorJobsButtonOne$JobId.Top + `$script:MonitorJobsButtonOne$JobId.Height + (`$FormScale * 5)
+                Width     = `$FormScale * 125
+                Height    = `$FormScale * 21
+                Font      = New-Object System.Drawing.Font('Courier New',`$(`$FormScale * 8),1,2,1)
+                Add_click = {
+                    if (`$This.BackColor -ne 'LightGray') {
+                        `$This.BackColor = 'LightGray'
+                    }
+
+                    `$script:SelectedFilesToRemove$JobId = Invoke-Command -ScriptBlock {
+                        param(`$path)
+                        Get-ChildItem `$path
+                    } -ArgumentList @(`$script:SendFilePath$JobId, `$null) -ComputerName `$(`$script:ComputerName$JobId -split ' ') -Credential `$script:Credential | Select-Object PSComputerName, Name, Length, CreationTime, LastAccessTime, LastWriteTime, Directory, Attributes, FullName | Out-GridView -Title "`$(`$script:ComputerName$JobId -split ' '):  Select Files to Remove" -PassThru
+
+                    `$script:SelectedFilesToRemove$JobId = Invoke-Command -ScriptBlock {
+                        param(`$ToRemove)
+                        Remove-Item `$ToRemove.FullName -Force
+                    } -ArgumentList @(`$script:SelectedFilesToRemove$JobId, `$null) -ComputerName `$(`$script:ComputerName$JobId -split ' ') -Credential `$script:Credential
+
+                    if (`$script:RollCredentialsState -and `$script:ComputerListProvideCredentialsCheckBox.checked) {
+                        Start-Sleep -Seconds 3
+                        Generate-NewRollingPassword
+                    }
+                }
+            }
+"@
+        }
+        elseif ($SysmonSwitch) {
+            Invoke-Expression @"
+            `$script:ComputerName$JobId = "$ComputerName"
+            `$script:SysmonName$JobId = "$SysmonName"
+
+            `$script:MonitorJobsButtonThree$JobId = New-Object System.Windows.Forms.Button -Property @{
+                text      = 'Remove Sysmon'
+                Left      = `$script:Section3MonitorJobProgressBar$JobId.Left + `$script:Section3MonitorJobProgressBar$JobId.Width + (`$FormScale * 5)
+                Top       = `$script:MonitorJobsButtonOne$JobId.Top + `$script:MonitorJobsButtonOne$JobId.Height + (`$FormScale * 5)
+                Width     = `$FormScale * 125
+                Height    = `$FormScale * 21
+                Font      = New-Object System.Drawing.Font('Courier New',`$(`$FormScale * 8),1,2,1)
+                Add_click = {
+                    if (`$This.BackColor -ne 'LightGray') {
+                        `$This.BackColor = 'LightGray'
+                    }
+
+                    Invoke-Command -ScriptBlock {
+                        param(`$name)
+                        & "`$name" -u
+                    } -ArgumentList @(`$script:SysmonName$JobId, `$null) -ComputerName `$(`$script:ComputerName$JobId -split ' ') -Credential `$script:Credential
+
+                    if (`$script:RollCredentialsState -and `$script:ComputerListProvideCredentialsCheckBox.checked) {
+                        Start-Sleep -Seconds 3
+                        Generate-NewRollingPassword
+                    }
+                }
+            }
+"@    
+        }
+
         elseif ($PSWriteHTMLSwitch) {
         Invoke-Expression @"
             `$script:MonitorJobsButtonThree$JobId = New-Object System.Windows.Forms.Button -Property @{

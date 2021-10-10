@@ -120,45 +120,190 @@ if ($ExternalProgramsRPCRadioButton.checked) {
 
 # Executes WinRM based commands over PSSessions if the WinRM Radio Button is Checked
 elseif ($ExternalProgramsWinRMRadioButton.checked) {
+
+
+    $StatusListBox.Items.Clear()
+    $StatusListBox.Items.Add("Executing: sysmon deployment")
+
+    $script:ProgressBarEndpointsProgressBar.Value = 0
+
+    $script:CollectionName = "Sysinternals Sysmon Configuration"
+
+
     New-Item -Type Directory -Path $script:CollectionSavedDirectoryTextBox.Text -ErrorAction SilentlyContinue
 
-    if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
-        if (!$script:Credential) { Create-NewCredentials }
-            $PSSession = New-PSSession -ComputerName $script:ComputerList -Credential $script:Credential
+
+    foreach ($TargetComputer in $script:ComputerList) {
+        Conduct-PreCommandCheck -CollectedDataTimeStampDirectory $($script:CollectionSavedDirectoryTextBox.Text) `
+                                -IndividualHostResults "$script:IndividualHostResults" -CollectionName $script:CollectionName `
+                                -TargetComputer $TargetComputer
+        Create-LogEntry -TargetComputer $TargetComputer  -LogFile $LogFile -Message $script:CollectionName
+
+        $LocalSavePath = "$($script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\$script:CollectionName\$TargetComputer - $script:CollectionName.evtx"
+
+
+        Start-Job -Name "PoSh-EasyWin: $script:CollectionName -- $TargetComputer $DateTime" -ScriptBlock {
+            param(
+                $ComputerListProvideCredentialsCheckBox,
+                $script:Credential,
+                $TargetComputer,
+                $ExternalPrograms,
+                $SysinternalsSysmonRenameServiceProcessTextBox,
+                $SysinternalsSysmonRenameDriverTextBox,
+                $ExternalProgramsCheckTimeTextBox,
+                $script:SysmonXMLPath,
+                $script:SysmonXMLName
+            )
+
+
+            if ($ComputerListProvideCredentialsCheckBox.Checked) {
+                if (!$script:Credential) { $script:Credential = Get-Credential }
+                $Session = New-PSSession -ComputerName $TargetComputer -Credential $script:Credential
+            }
+            else {
+                $Session = New-PSSession -ComputerName $TargetComputer
+            } 
+            
+            $SysmonName           = "Sysmon"
+            $SysmonDriverName     = "SysmonDrv"
+            $SysmonExecutable     = "$SysmonName.exe"
+            $SysmonExecutablePath = "$ExternalPrograms\$SysmonExecutable"
+            $TargetFolder         = "C:\Windows\Temp"
+            
+            # Renames sysmon Service/Process name in order to obfuscate deployent
+            if ($SysinternalsSysmonRenameServiceProcessTextBox.text -ne 'Sysmon') {
+                Copy-Item -Path "$SysmonExecutablePath" -Destination "$ExternalPrograms\$($SysinternalsSysmonRenameServiceProcessTextBox.text).exe" -Force
+                $SysmonName           = "$($SysinternalsSysmonRenameServiceProcessTextBox.text)"
+                $SysmonExecutable     = "$($SysinternalsSysmonRenameServiceProcessTextBox.text).exe"
+                $SysmonExecutablePath = "$ExternalPrograms\$SysmonExecutable"
+            }
+            # Renames sysmon Driver name in order to obfuscate deployent
+            if ($SysinternalsSysmonRenameDriverTextBox.text -ne 'SysmonDrv') {
+                $SysmonDriverName = "$($SysinternalsSysmonRenameDriverTextBox.text)"
+            }
+
+
+            Copy-Item -Path $SysmonExecutablePath -Destination "$TargetFolder" -ToSession $Session -Force -ErrorAction Stop
+            Copy-Item -Path $script:SysmonXMLPath -Destination "$TargetFolder" -ToSession $Session -Force -ErrorAction Stop
+
+
+            if ($SysinternalsSysmonRenameServiceProcessTextBox.text -ne 'Sysmon') {
+                # Removes the local renamed copy of Sysmon
+                Remove-Item "$ExternalPrograms\$($SysinternalsSysmonRenameServiceProcessTextBox.text).exe" -Force
+            }
+            
+
+            if ($SysinternalsSysmonRenameDriverTextBox.text -ne 'SysmonDrv' -and ($SysinternalsSysmonRenameDriverTextBox.text).length -ne 0 ) {
+                # Checks if the Sysmon service exists, if not it will install sysmon and log it locally
+                Invoke-Command -ScriptBlock {
+                    param($SysmonName,$SysmonDriverName,$TargetFolder,$SysmonExecutable,$Script:SysmonXMLName)
+                    # Installs Tool if service not detected
+                    if (-not (Get-Service -Name "$SysmonName")){
+                        Start-Process -NoNewWindow -FilePath "$TargetFolder\$SysmonExecutable" -Argumentlist @("-AcceptEULA", "-i", "$TargetFolder\$Script:SysmonXMLName")
+                    }
+                    # If the Tool service exists, it updates the configuration file
+                    else {
+                        Start-Process -NoNewWindow -FilePath "$TargetFolder\$SysmonExecutable" -Argumentlist @("-AcceptEULA", "-c", "$TargetFolder\$Script:SysmonXMLName")
+                    }
+                } -Argumentlist @($SysmonName,$SysmonDriverName,$TargetFolder,$SysmonExecutable,$Script:SysmonXMLName) -Session $Session
+            }
+            else {
+                Invoke-Command -ScriptBlock {
+                    param($SysmonName,$SysmonDriverName,$TargetFolder,$SysmonExecutable,$Script:SysmonXMLName)
+                    # Installs Tool if service not detected
+                    if (-not (Get-Service -Name "$SysmonName")){
+                        Start-Process -NoNewWindow -FilePath "$TargetFolder\$SysmonExecutable" -Argumentlist @("-AcceptEULA", "-i", "$TargetFolder\$Script:SysmonXMLName")
+                    }
+                    # If the Tool service exists, it updates the configuration file
+                    else {
+                        Start-Process -NoNewWindow -FilePath "$TargetFolder\$SysmonExecutable" -Argumentlist @("-AcceptEULA", "-c", "$TargetFolder\$Script:SysmonXMLName")
+                    }
+                } -Argumentlist @($SysmonName,$SysmonDriverName,$TargetFolder,$SysmonExecutable,$Script:SysmonXMLName) -Session $Session
+            }
+
+
+            $SecondsToCheck = 1 #$ExternalProgramsCheckTimeTextBox.Text
+            
+            while ($true) {
+                Start-Sleep -Seconds $SecondsToCheck
+            
+                if (( Invoke-Command -ScriptBlock { Get-Service "$SysmonName" } -Session $Session )) {
+                    Invoke-Command -ScriptBlock {
+                        param(
+                            $TargetFolder,
+                            $SysmonExecutable,
+                            $SysmonXMLName
+                        )
+                        Remove-Item $TargetFolder\$SysmonExecutable -Recurse -Force
+                        Remove-Item $TargetFolder\$SysmonXMLName    -Recurse -Force
+                    } -Argumentlist $TargetFolder,$SysmonExecutable,$Script:SysmonXMLName -Session $Session
+                    break
+                }
+            }
+
+
+            $Session | Remove-PSSession
+
+        } -ArgumentList @(
+            $ComputerListProvideCredentialsCheckBox,
+            $script:Credential,
+            $TargetComputer,
+            $ExternalPrograms,
+            $SysinternalsSysmonRenameServiceProcessTextBox,
+            $SysinternalsSysmonRenameDriverTextBox,
+            $ExternalProgramsCheckTimeTextBox,
+            $script:SysmonXMLPath,
+            $script:SysmonXMLName
+        )
+
+        
+        $InputValues = @"
+===========================================================================
+Collection Name:
+===========================================================================
+Sysmon Deployment / Update
+
+===========================================================================
+Execution Time:
+===========================================================================
+$ExecutionStartTime
+
+===========================================================================
+Credentials:
+===========================================================================
+$($script:Credential.UserName)
+
+===========================================================================
+Endpoint:
+===========================================================================
+$TargetComputer
+
+===========================================================================
+Sysmon Service/Process Name:
+===========================================================================
+$($SysinternalsSysmonRenameServiceProcessTextBox.text)
+
+===========================================================================
+Sysmon Driver Name:
+===========================================================================
+$($SysinternalsSysmonRenameDriverTextBox.Text)
+
+===========================================================================
+Recheck Time:
+===========================================================================
+$($ExternalProgramsCheckTimeTextBox.Text) # Note: This is option is deprecated, it checks every 1 second
+
+"@
+
+
+        if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
+            Monitor-Jobs -CollectionName $script:CollectionName -MonitorMode -SysmonSwitch -SysmonName $SysinternalsSysmonRenameServiceProcessTextBox.text -ComputerName $TargetComputer -DisableReRun -InputValues $InputValues -NotExportFiles
+        }
+        elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
+            Monitor-Jobs -CollectionName $script:CollectionName -NotExportFiles
+            Post-MonitorJobs -CollectionName $script:CollectionName -CollectionCommandStartTime $ExecutionStartTime
+        }
     }
-    else {
-        $PSSession = New-PSSession -ComputerName $script:ComputerList
-    }
-
-    Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "WinRM Collection Started to $($PSSession.count) Endpoints"
-    Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "New-PSSession -ComputerName $($PSSession.ComputerName -join ', ')"
-
-    # Unchecks hosts that do not have a session established
-    . "$Dependencies\Code\Execution\Session Based\Uncheck-ComputerTreeNodesWithoutSessions.ps1"
-
-    if ($PSSession.count -eq 1) {
-        $ResultsListBox.Items.Add("$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  Session Created to $($PSSession.count) Endpoint")
-    }
-    elseif ($PSSession.count -gt 1) {
-        $ResultsListBox.Items.Add("$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  Sessions Created to $($PSSession.count) Endpoints")
-    }
-    else {
-        $ResultsListBox.Items.Add("$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  Unable to push Sysmon because a WinRM sessions could not be established")
-        [system.media.systemsounds]::Exclamation.play()
-    }
-    $PoShEasyWin.Refresh()
-
-    $script:ProgressBarQueriesProgressBar.Maximum   = $CountCommandQueries
-    $script:ProgressBarEndpointsProgressBar.Maximum = ($PSSession.ComputerName).Count
-
-
-    if ($PSSession.count -ge 1) {
-        . "$Dependencies\Code\Execution\Session Based\SessionPush-SysMon.ps1"
-    }
-    Get-PSSession | Remove-PSSession
-    Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Remove-PSSession -ComputerName $($PSSession.ComputerName -join ', ')"
-
-    $SysinternalsAutorunsButton.BackColor = 'LightGreen'
 }
 
 
