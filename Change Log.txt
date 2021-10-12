@@ -22,19 +22,29 @@ Writing Daily Tips...
 	- Only unique files, based on their MD5 file hash, are kept when retrieved from a single endpoint, though files with maching hashes are kept for each endpoint when downloading from multiple endpoints.
 	- WHen using the "Retrieve Files" button, you must select any pre-exiting results from a "Directory Listing" or "File Search".
 
+==================================================
+v6.5.4 - 11 OCT 2021
+==================================================
 
-==================================================
-v6.5.4 - 
-==================================================
+Updated Readme.txt file
+
+Re-wrote Monitor-Jobs
+	- Made it easier to make it update for unique queries/commands
+
+Updated Sysmon and Prcmon integration
+	- They are now compatiable with Monitor Jobs
+	- Much, much faster...
+
+Updated File Search
+	- The buttons in Monitor Jobs now have the options to Get File or Get ADS
 
 Removed autoruns, couldn't get it to execute remotely and pull back data reliably... it hangs no matter what method I trying
 
-Updated the following to support -UseCompupter and -UseSession 
-	- IndividualQuery-QueryBuild 
+Updated the following to support -UseCompupter and -UseSession
+	- IndividualQuery-QueryBuild
 
 Fixed bug Custom [WinRM] Query
 	- When you check the disable syntax button, it how enables the [WinRM] Query checkbox
-
 
 ==================================================
 v6.4.3 - 27 SEP 2021

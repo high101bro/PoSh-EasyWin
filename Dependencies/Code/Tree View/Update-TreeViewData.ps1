@@ -560,7 +560,6 @@ function Update-TreeViewData {
         if ($FileSearchFileSearchCheckbox.Checked)                      { $script:TreeeViewCommandsCount++ }
         if ($FileSearchAlternateDataStreamCheckbox.Checked)             { $script:TreeeViewCommandsCount++ }
         if ($SysinternalsSysmonCheckbox.Checked)                        { $script:TreeeViewCommandsCount++ }
-        if ($SysinternalsAutorunsCheckbox.Checked)                      { $script:TreeeViewCommandsCount++ }
         if ($SysinternalsProcessMonitorCheckbox.Checked)                { $script:TreeeViewCommandsCount++ }
         if ($ExeScriptUserSpecifiedExecutableAndScriptCheckbox.checked) { $script:TreeeViewCommandsCount++ }
     }

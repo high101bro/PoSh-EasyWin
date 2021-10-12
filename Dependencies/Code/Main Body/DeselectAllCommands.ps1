@@ -44,7 +44,6 @@ function Deselect-AllCommands {
     $NetworkConnectionSearchCommandLineCheckbox.checked          = $false
     $NetworkConnectionSearchExecutablePathCheckbox.checked       = $false
     $SysinternalsSysmonCheckbox.checked                          = $false
-    $SysinternalsAutorunsCheckbox.checked                        = $false
     $SysinternalsProcessMonitorCheckbox.checked                  = $false
     $ExeScriptUserSpecifiedExecutableAndScriptCheckbox.checked   = $false
 
@@ -73,7 +72,6 @@ function Deselect-AllCommands {
     $NetworkConnectionSearchCommandLineCheckbox.ForeColor        = 'Blue'
     $NetworkConnectionSearchExecutablePathCheckbox.ForeColor     = 'Blue'
     $SysinternalsSysmonCheckbox.ForeColor                        = 'Blue'
-    $SysinternalsAutorunsCheckbox.ForeColor                      = 'Blue'
     $SysinternalsProcessMonitorCheckbox.ForeColor                = 'Blue'
     $ExeScriptUserSpecifiedExecutableAndScriptCheckbox.ForeColor = 'Blue'
 
