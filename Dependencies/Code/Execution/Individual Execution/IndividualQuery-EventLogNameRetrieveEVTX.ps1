@@ -26,7 +26,7 @@ foreach ($TargetComputer in $script:ComputerList) {
                             -TargetComputer $TargetComputer
     Create-LogEntry -TargetComputer $TargetComputer  -LogFile $LogFile -Message $script:CollectionName
 
-    $LocalSavePath = "$($script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\$script:CollectionName\$TargetComputer - $script:CollectionName.evtx"
+    $LocalSavePath = "$($script:CollectionSavedDirectoryTextBox.Text)\$script:CollectionName\$TargetComputer - $script:CollectionName.evtx"
 
     Start-Job -Name "PoSh-EasyWin: $script:CollectionName -- $TargetComputer $DateTime" -ScriptBlock {
         param(

@@ -77,7 +77,7 @@ $ExternalProgramsOptionsGroupBox = New-Object System.Windows.Forms.GroupBox -Pro
 
 
             $ExternalProgramsCheckTimeLabel = New-Object System.Windows.Forms.Label -Property @{
-                Text     = "Recheck / Timeout:"
+                Text     = "Recheck Time:"
                 Location = @{ X = $ExternalProgramsRPCRadioButton.Location.X + $ExternalProgramsRPCRadioButton.Size.Width + $($FormScale * 30)
                             Y = $ExternalProgramsRPCRadioButton.Location.Y + $($FormScale * 3) }
                 Size     = @{ Width  = $FormScale * 130
@@ -254,90 +254,6 @@ $Section1ExecutablesTab.Controls.Add($ExternalProgramsSysmonGroupBox)
 
 
 #============================================================================================================================================================
-# Sysinternals Autoruns
-#============================================================================================================================================================
-
-Update-FormProgress "$Dependencies\Code\System.Windows.Forms\CheckBox\SysinternalsAutorunsCheckbox.ps1"
-. "$Dependencies\Code\System.Windows.Forms\CheckBox\SysinternalsAutorunsCheckbox.ps1"
-$SysinternalsAutorunsCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
-    Text      = "Autoruns"
-    Location  = @{ X = $ExternalProgramsOptionsGroupBox.Location.X + $($FormScale * 5)
-                   Y = $ExternalProgramsSysmonGroupBox.Location.Y + $ExternalProgramsSysmonGroupBox.Size.Height + $($FormScale * 5) }
-    AutoSize  = $true
-    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
-    ForeColor = "Blue"
-    Add_Click = {
-        Update-QueryCount
-        Update-TreeViewData -Commands -TreeView $script:CommandsTreeView.Nodes
-    }
-    Add_MouseHover = $SysinternalsAutorunsCheckboxAdd_MouseHover
-}
-$Section1ExecutablesTab.Controls.Add($SysinternalsAutorunsCheckbox)
-
-
-$ExternalProgramsAutorunsGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
-    Location  = @{ X = $ExternalProgramsSysmonGroupBox.Location.X
-                   Y = $ExternalProgramsSysmonGroupBox.Location.Y + $ExternalProgramsSysmonGroupBox.Size.Height + $($FormScale * 5) }
-    Size      = @{ Width  = $ExternalProgramsOptionsGroupBox.Size.Width
-                   Height = $FormScale * 76 }
-    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
-}
-            $SysinternalsAutorunsLabel = New-Object System.Windows.Forms.Label -Property @{
-                Location = @{ X = $FormScale * 5
-                            Y = $FormScale * 20 }
-                Size     = @{ Width  = $SysinternalsSysmonLabel.Size.Width
-                            Height = $FormScale * 25 }
-                Text      = "Obtains More Startup Information than Native WMI and other Windows Commands, like various built-in Windows Applications."
-                Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-                ForeColor = "Black"
-            }
-            $ExternalProgramsAutorunsGroupBox.Controls.Add($SysinternalsAutorunsLabel)
-
-            $SysinternalsDownPosition += $SysinternalsDownPositionShift
-
-
-            Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\SysinternalsAutorunsButton.ps1"
-            . "$Dependencies\Code\System.Windows.Forms\Button\SysinternalsAutorunsButton.ps1"
-            $SysinternalsAutorunsButton = New-Object System.Windows.Forms.Button -Property @{
-                Text     = "Open Autoruns"
-                Location = @{ X = $SysinternalsAutorunsLabel.Location.X
-                            Y = $SysinternalsAutorunsLabel.Location.Y + $SysinternalsAutorunsLabel.Size.Height + $($FormScale * 5) }
-                Size     = @{ Width  = $FormScale * $SysinternalsButtonWidth
-                            Height = $FormScale * $SysinternalsButtonHeight }
-                Add_Click = $SysinternalsAutorunsButtonAdd_Click
-            }
-            $ExternalProgramsAutorunsGroupBox.Controls.Add($SysinternalsAutorunsButton)
-            Apply-CommonButtonSettings -Button $SysinternalsAutorunsButton
-
-
-            $SysinternalsAutorunsRenameProcessLabel = New-Object System.Windows.Forms.Label -Property @{
-                Text     = "Process Name:"
-                Location = @{ X = $SysinternalsSysmonRenameServiceProcessLabel.Location.X
-                            Y = $SysinternalsAutorunsButton.Location.Y }
-                Size     = @{ Width  = $SysinternalsSysmonRenameServiceProcessLabel.Size.Width
-                            Height = $FormScale * 22 }
-                Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-                ForeColor = "Blue"
-            }
-            $ExternalProgramsAutorunsGroupBox.Controls.Add($SysinternalsAutorunsRenameProcessLabel)
-
-
-            Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Textbox\SysinternalsAutorunsRenameProcessTextBox.ps1"
-            . "$Dependencies\Code\System.Windows.Forms\Textbox\SysinternalsAutorunsRenameProcessTextBox.ps1"
-            $SysinternalsAutorunsRenameProcessTextBox = New-Object System.Windows.Forms.Textbox -Property @{
-                Text     = "Autoruns"
-                Location = @{ X = $SysinternalsSysmonRenameServiceProcessTextBox.Location.X
-                            Y = $SysinternalsAutorunsRenameProcessLabel.Location.Y - $($FormScale * 3) }
-                Size     = @{ Width  = $SysinternalsSysmonRenameServiceProcessTextBox.Size.Width
-                            Height = $FormScale * 22 }
-                Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-                Add_MouseHover = $SysinternalsAutorunsRenameProcessTextBoxAdd_MouseHover
-            }
-            $ExternalProgramsAutorunsGroupBox.Controls.Add($SysinternalsAutorunsRenameProcessTextBox)
-$Section1ExecutablesTab.Controls.Add($ExternalProgramsAutorunsGroupBox)
-
-
-#============================================================================================================================================================
 # Sysinternals Process Monitor
 #============================================================================================================================================================
 
@@ -345,8 +261,8 @@ Update-FormProgress "$Dependencies\Code\System.Windows.Forms\CheckBox\Sysinterna
 . "$Dependencies\Code\System.Windows.Forms\CheckBox\SysinternalsProcessMonitorCheckbox.ps1"
 $SysinternalsProcessMonitorCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
     Text     = "Procmon"
-    Location = @{ X = $ExternalProgramsAutorunsGroupBox.Location.X + $($FormScale * 5)
-                  Y = $ExternalProgramsAutorunsGroupBox.Location.Y + $ExternalProgramsAutorunsGroupBox.Size.Height + $($FormScale * 5) }
+    Location  = @{ X = $ExternalProgramsOptionsGroupBox.Location.X + $($FormScale * 5)
+                   Y = $ExternalProgramsSysmonGroupBox.Location.Y + $ExternalProgramsSysmonGroupBox.Size.Height + $($FormScale * 5) }
     AutoSize  = $true
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
     ForeColor = "Blue"
@@ -360,8 +276,8 @@ $Section1ExecutablesTab.Controls.Add($SysinternalsProcessMonitorCheckbox)
 
 
 $ExternalProgramsProcmonGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
-    Location  = @{ X = $ExternalProgramsAutorunsGroupBox.Location.X
-                   Y = $ExternalProgramsAutorunsGroupBox.Location.Y + $ExternalProgramsAutorunsGroupBox.Size.Height + $($FormScale * 5) }
+    Location  = @{ X = $ExternalProgramsSysmonGroupBox.Location.X
+                   Y = $ExternalProgramsSysmonGroupBox.Location.Y + $ExternalProgramsSysmonGroupBox.Size.Height + $($FormScale * 5) }
     Size      = @{ Width  = $ExternalProgramsOptionsGroupBox.Size.Width
                    Height = $FormScale * 102 }
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)

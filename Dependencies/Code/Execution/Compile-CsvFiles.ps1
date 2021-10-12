@@ -20,8 +20,8 @@ function Compile-CsvFiles {
 
     # # BUG: When the box is unchecked, the results don't compile correctly
     # if ($OptionKeepResultsByEndpointsFilesCheckBox.checked -eq $false) {
-    #     if (Test-Path "$($script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\*\*.csv") {
-    #         Remove-Item -Path "$($script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\*\*.csv" -Recurse -Force
+    #     if (Test-Path "$($script:CollectionSavedDirectoryTextBox.Text)\*\*.csv") {
+    #         Remove-Item -Path "$($script:CollectionSavedDirectoryTextBox.Text)\*\*.csv" -Recurse -Force
     #     }
     # }
 }

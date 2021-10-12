@@ -27,7 +27,9 @@ function Monitor-Jobs {
         [switch]$SendFileSwitch,
         $SendFilePath,
         [switch]$SysmonSwitch,
-        $SysmonName
+        $SysmonName,
+        [switch]$ProcmonSwitch,
+        $ProcmonLocalPath
     )
     
     $JobId = Get-Random
@@ -692,8 +694,8 @@ if ($MonitorMode) {
     }
 
     # Creates locations to saves the results from jobs
-    if (-not (Test-Path "$($script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\$($CollectionName)")){
-        New-Item -Type Directory "$($script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\$($CollectionName)" -Force -ErrorAction SilentlyContinue
+    if (-not (Test-Path "$($script:CollectionSavedDirectoryTextBox.Text)\$($CollectionName)")){
+        New-Item -Type Directory "$($script:CollectionSavedDirectoryTextBox.Text)\$($CollectionName)" -Force -ErrorAction SilentlyContinue
     }
 
     #Get-Job | Sort-Object Id | Select-Object -Last 1 -ExpandProperty ID
@@ -933,8 +935,8 @@ if ($MonitorMode) {
                         if (`$This.BackColor -ne 'LightGray') {
                             `$This.BackColor = 'LightGray'
                         }
-                        if ((Test-Path "`$(`$script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\`$(`$script:JobName$JobId)\`$(`$script:EndpointName$JobId)*Packet Capture*`$(`$script:JobData$JobId)*.pcapng")) {
-                            Invoke-Item "`$(`$script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\`$(`$script:JobName$JobId)\`$(`$script:EndpointName$JobId)*Packet Capture*`$(`$script:JobData$JobId)*.pcapng"
+                        if ((Test-Path "`$(`$script:CollectionSavedDirectoryTextBox.Text)\`$(`$script:JobName$JobId)\`$(`$script:EndpointName$JobId)*Packet Capture*`$(`$script:JobData$JobId)*.pcapng")) {
+                            Invoke-Item "`$(`$script:CollectionSavedDirectoryTextBox.Text)\`$(`$script:JobName$JobId)\`$(`$script:EndpointName$JobId)*Packet Capture*`$(`$script:JobData$JobId)*.pcapng"
                         }
                         else {
                             [System.Windows.Forms.MessageBox]::Show("There is no pcap data available.",'PoSh-EasyWin')
@@ -1026,6 +1028,35 @@ if ($MonitorMode) {
             }
 "@    
         }
+        elseif ($ProcmonSwitch) {
+            Invoke-Expression @"
+            `$script:ProcmonLocalPath$JobId = "$ProcmonLocalPath"
+            
+            `$script:MonitorJobsButtonOne$JobId = New-Object System.Windows.Forms.Button -Property @{
+                text      = 'Open Procmon'
+                Left      = `$script:Section3MonitorJobProgressBar$JobId.Left + `$script:Section3MonitorJobProgressBar$JobId.Width + (`$FormScale * 5)
+                Top       = `$script:Section3MonitorJobLabel$JobId.Top - (`$FormScale * 1)
+                Width     = `$FormScale * 125
+                Height    = `$FormScale * 21
+                Font      = New-Object System.Drawing.Font('Courier New',`$(`$FormScale * 8),1,2,1)
+                Add_click = {
+                    if (`$This.BackColor -ne 'LightGray') {
+                        `$This.BackColor = 'LightGray'
+                    }
+
+                    [System.Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms") | Out-Null
+                    `$ProcmonOpenFileDialog = New-Object System.Windows.Forms.OpenFileDialog -Property @{
+                        Title            = "Open Procmon file"
+                        InitialDirectory = "`$script:ProcmonLocalPath$JobId"
+                        filter           = "Results (*.pml)|*.pml|Procmon (*.pml)|*.pml|All files (*.*)|*.*"
+                        ShowHelp = `$true
+                    }
+                    `$ProcmonOpenFileDialog.ShowDialog()
+                    Invoke-Item `$ProcmonOpenFileDialog.filename
+                }
+            }
+"@    
+        }
         elseif ("$JobsExportFiles" -eq "false" -and "$FileExtension" -like 'txt') {
             Invoke-Expression @"
             `$script:MonitorJobsButtonOne$JobId = New-Object System.Windows.Forms.Button -Property @{
@@ -1039,8 +1070,8 @@ if ($MonitorMode) {
                     if (`$This.BackColor -ne 'LightGray') {
                         `$This.BackColor = 'LightGray'
                     }
-                    if ((Test-Path "`$(`$script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\`$(`$script:JobName$JobId)\*")) {
-                        Invoke-Item "`$(`$script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\`$(`$script:JobName$JobId)\"
+                    if ((Test-Path "`$(`$script:CollectionSavedDirectoryTextBox.Text)\`$(`$script:JobName$JobId)\*")) {
+                        Invoke-Item "`$(`$script:CollectionSavedDirectoryTextBox.Text)\`$(`$script:JobName$JobId)\"
                     }
                     else {
                         [System.Windows.Forms.MessageBox]::Show("There are no results avaiable.",'PoSh-EasyWin')
@@ -1286,7 +1317,7 @@ if ($MonitorMode) {
                     if (`$This.BackColor -ne 'LightGray') {
                         `$This.BackColor = 'LightGray'
                     }
-                    Invoke-Item "`$(`$script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\`$(`$script:JobName$JobId)\"
+                    Invoke-Item "`$(`$script:CollectionSavedDirectoryTextBox.Text)\`$(`$script:JobName$JobId)\"
                 }
             }
 "@    
@@ -1326,8 +1357,8 @@ Start-Process 'PowerShell' -ArgumentList '-NoProfile',
                     if (`$This.BackColor -ne 'LightGray') {
                         `$This.BackColor = 'LightGray'
                     }
-                    # if ((Test-Path "`$(`$script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\`$(`$script:JobName$JobId)\`$(`$script:EndpointName$JobId)*Packet Capture*`$(`$script:JobData$JobId)*.pcapng")) {
-                    #     Invoke-Item "`$(`$script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\`$(`$script:JobName$JobId)\`$(`$script:EndpointName$JobId)*Packet Capture*`$(`$script:JobData$JobId)*.pcapng"
+                    # if ((Test-Path "`$(`$script:CollectionSavedDirectoryTextBox.Text)\`$(`$script:JobName$JobId)\`$(`$script:EndpointName$JobId)*Packet Capture*`$(`$script:JobData$JobId)*.pcapng")) {
+                    #     Invoke-Item "`$(`$script:CollectionSavedDirectoryTextBox.Text)\`$(`$script:JobName$JobId)\`$(`$script:EndpointName$JobId)*Packet Capture*`$(`$script:JobData$JobId)*.pcapng"
                     # }
                     # else {
                     #     [System.Windows.Forms.MessageBox]::Show("There is no pcap data available.",'PoSh-EasyWin')
@@ -1414,7 +1445,27 @@ Start-Process 'PowerShell' -ArgumentList '-NoProfile',
             }
 "@    
         }
+        elseif ($ProcmonSwitch) {
+            Invoke-Expression @"
+            `$script:ProcmonLocalPath$JobId = "$ProcmonLocalPath"
 
+            `$script:MonitorJobsButtonThree$JobId = New-Object System.Windows.Forms.Button -Property @{
+                text      = 'Open Folder'
+                Left      = `$script:Section3MonitorJobProgressBar$JobId.Left + `$script:Section3MonitorJobProgressBar$JobId.Width + (`$FormScale * 5)
+                Top       = `$script:MonitorJobsButtonOne$JobId.Top + `$script:MonitorJobsButtonOne$JobId.Height + (`$FormScale * 5)
+                Width     = `$FormScale * 125
+                Height    = `$FormScale * 21
+                Font      = New-Object System.Drawing.Font('Courier New',`$(`$FormScale * 8),1,2,1)
+                Add_click = {
+                    if (`$This.BackColor -ne 'LightGray') {
+                        `$This.BackColor = 'LightGray'
+                    }
+
+                    Invoke-Item "`$script:ProcmonLocalPath$JobId"
+                }
+            }
+"@    
+        }
         elseif ($PSWriteHTMLSwitch) {
         Invoke-Expression @"
             `$script:MonitorJobsButtonThree$JobId = New-Object System.Windows.Forms.Button -Property @{
@@ -1510,7 +1561,7 @@ Start-Process 'PowerShell' -ArgumentList '-NoProfile',
                     if (`$This.BackColor -ne 'LightGray') {
                         `$This.BackColor = 'LightGray'
                     }
-                    Invoke-Item "`$(`$script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\`$(`$script:JobName$JobId)\"
+                    Invoke-Item "`$(`$script:CollectionSavedDirectoryTextBox.Text)\`$(`$script:JobName$JobId)\"
                 }
             }
 "@            
@@ -1528,7 +1579,7 @@ Start-Process 'PowerShell' -ArgumentList '-NoProfile',
                     if (`$This.BackColor -ne 'LightGray') {
                         `$This.BackColor = 'LightGray'
                     }
-                    Invoke-Item "`$(`$script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\`$(`$script:JobName$JobId)\"
+                    Invoke-Item "`$(`$script:CollectionSavedDirectoryTextBox.Text)\`$(`$script:JobName$JobId)\"
                 }
             }
 "@
@@ -1546,7 +1597,7 @@ Start-Process 'PowerShell' -ArgumentList '-NoProfile',
                     if (`$This.BackColor -ne 'LightGray') {
                         `$This.BackColor = 'LightGray'
                     }
-                    Invoke-Item "`$(`$script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\`$(`$script:JobName$JobId)\"
+                    Invoke-Item "`$(`$script:CollectionSavedDirectoryTextBox.Text)\`$(`$script:JobName$JobId)\"
                 }
             }
 "@
@@ -1568,7 +1619,7 @@ Start-Process 'PowerShell' -ArgumentList '-NoProfile',
             if ("$JobsExportFiles" -eq "true" -and "$FileExtension" -like 'txt') {
                 `$script:MonitorJobsButtonFour$JobId.text = 'Folder'
                 `$script:MonitorJobsButtonFour$JobId.Add_click({
-                    Invoke-Item "`$(`$script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\`$(`$script:JobName$JobId)\"
+                    Invoke-Item "`$(`$script:CollectionSavedDirectoryTextBox.Text)\`$(`$script:JobName$JobId)\"
                 })
             }
             else {
@@ -2629,11 +2680,11 @@ Start-Process 'PowerShell' -ArgumentList '-NoProfile',
                 `$script:MonitorJobsButtonOne$JobId.BackColor = 'LightGreen'
                 `$script:MonitorJobsButtonTwo$JobId.BackColor = 'LightGreen'
                 
-                if ((Test-Path "`$(`$script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\`$(`$script:JobName$JobId)\`$(`$script:EndpointName$JobId)*Packet Capture*`$(`$script:JobData$JobId)*.pcapng")) {
+                if ((Test-Path "`$(`$script:CollectionSavedDirectoryTextBox.Text)\`$(`$script:JobName$JobId)\`$(`$script:EndpointName$JobId)*Packet Capture*`$(`$script:JobData$JobId)*.pcapng")) {
                     `$script:MonitorJobsButtonThree$JobId.BackColor = 'LightGreen'
                     `$script:MonitorJobsButtonFour$JobId.BackColor = 'LightGreen'
                 }
-                elseif ((Get-ChildItem "`$(`$script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\`$(`$script:JobName$JobId)\`$(`$script:EndpointName$JobId)*Packet Capture*`$(`$script:JobData$JobId)*.pcapng").length -lt 30 ) {
+                elseif ((Get-ChildItem "`$(`$script:CollectionSavedDirectoryTextBox.Text)\`$(`$script:JobName$JobId)\`$(`$script:EndpointName$JobId)*Packet Capture*`$(`$script:JobData$JobId)*.pcapng").length -lt 30 ) {
                     `$script:MonitorJobsButtonThree$JobId.BackColor = 'LightCoral'
                     `$script:MonitorJobsButtonFour$JobId.BackColor = 'LightCoral'
                 }
@@ -2846,7 +2897,7 @@ Start-Process 'PowerShell' -ArgumentList '-NoProfile',
                             `$script:CurrentJobsWithComputerNameAutoEach$JobId += `$EndpointHostNameTxt
                             `$script:CurrentJobsWithComputerNameAutoEach$JobId += "####################################################################################################"
                             `$script:CurrentJobsWithComputerNameAutoEach$JobId += `$Job | Receive-Job -Keep
-                            `$script:CurrentJobsWithComputerNameAutoEach$JobId | Out-File "`$(`$script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\`$script:JobName$JobId\`$script:JobName$JobId - `$EndpointHostNameTxt.txt"
+                            `$script:CurrentJobsWithComputerNameAutoEach$JobId | Out-File "`$(`$script:CollectionSavedDirectoryTextBox.Text)\`$script:JobName$JobId\`$script:JobName$JobId - `$EndpointHostNameTxt.txt"
 
                             # Attempts to create a csv by replacing more than one space with comas
                             `$script:CurrentJobsWithComputerName$JobId += `$Job | Receive-Job -Keep | Foreach-Object { `$_ -replace "\s{2,}",","} | ConvertFrom-Csv
@@ -2898,7 +2949,7 @@ Start-Process 'PowerShell' -ArgumentList '-NoProfile',
 
                         
                         # Sets the button color depending on if there are results
-                        if ("$JobsExportFiles" -eq "false" -and (Test-Path "`$(`$script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\`$(`$script:JobName$JobId)\*")) {
+                        if ("$JobsExportFiles" -eq "false" -and (Test-Path "`$(`$script:CollectionSavedDirectoryTextBox.Text)\`$(`$script:JobName$JobId)\*")) {
                         # Support for PSExec/SMB commands
                             `$script:Section3MonitorJobProgressBar$JobId.ForeColor          = 'LightGreen'
                             `$script:MonitorJobsButtonOne$JobId.BackColor           = 'LightGreen'
@@ -2911,7 +2962,7 @@ Start-Process 'PowerShell' -ArgumentList '-NoProfile',
                                 `$script:MonitorJobsButtonFour$JobId.BackColor     = 'LightCoral'
                             }
                         }
-                        elseif ("$JobsExportFiles" -eq "false" -and -not (Test-Path "`$(`$script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\`$(`$script:JobName$JobId)\*")) {
+                        elseif ("$JobsExportFiles" -eq "false" -and -not (Test-Path "`$(`$script:CollectionSavedDirectoryTextBox.Text)\`$(`$script:JobName$JobId)\*")) {
                         # Support for PSExec/SMB commands
                             `$script:Section3MonitorJobProgressBar$JobId.ForeColor          = 'LightCoral'
                             `$script:MonitorJobsButtonOne$JobId.BackColor           = 'LightCoral'
@@ -3199,8 +3250,8 @@ if (-not $MonitorMode) {
     $MainBottomTabControl.SelectedTab = $Section3ResultsTab
 
     # Creates locations to saves the results from jobs
-    if (-not (Test-Path "$($script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\$($CollectionName)")){
-        New-Item -Type Directory "$($script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\$($CollectionName)" -Force -ErrorAction SilentlyContinue
+    if (-not (Test-Path "$($script:CollectionSavedDirectoryTextBox.Text)\$($CollectionName)")){
+        New-Item -Type Directory "$($script:CollectionSavedDirectoryTextBox.Text)\$($CollectionName)" -Force -ErrorAction SilentlyContinue
     }
 
     # Initially updates statistics
@@ -3281,30 +3332,30 @@ if (-not $MonitorMode) {
                     if ($job.Location -notmatch $(($Job.Name -split ' ')[-1]) ) {
                         if ($SaveProperties) {
                             # This is needed because when jobs are started locally that use invoke-command, the localhost is used as the PSComputerName becuase it started the job rather than the invoke-command to a remote computer
-                            $JobReceived | Select-Object @{n='PSComputerName';e={"$(($Job.Name -split ' ')[-1])"}},* -ErrorAction SilentlyContinue | Select-Object $(iex $SaveProperties) | Export-CSV    "$($script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\$CollectionName\$JobName.csv" $NoTypeInfo
+                            $JobReceived | Select-Object @{n='PSComputerName';e={"$(($Job.Name -split ' ')[-1])"}},* -ErrorAction SilentlyContinue | Select-Object $(iex $SaveProperties) | Export-CSV    "$($script:CollectionSavedDirectoryTextBox.Text)\$CollectionName\$JobName.csv" $NoTypeInfo
                             if ($OptionSaveCliXmlDataCheckBox.checked -eq $true) {
-                                $JobReceived | Select-Object @{n='PSComputerName';e={"$(($Job.Name -split ' ')[-1])"}},* -ErrorAction SilentlyContinue | Select-Object $(iex $SaveProperties) | Export-Clixml "$($script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\$CollectionName\$JobName.xml"
+                                $JobReceived | Select-Object @{n='PSComputerName';e={"$(($Job.Name -split ' ')[-1])"}},* -ErrorAction SilentlyContinue | Select-Object $(iex $SaveProperties) | Export-Clixml "$($script:CollectionSavedDirectoryTextBox.Text)\$CollectionName\$JobName.xml"
                             }
                         }
                         else {
                             # This is needed because when jobs are started locally that use inovke-command, the localhost is used as the PSComputerName becuase it started the job rather than the invoke-command to a remote computer
-                            $JobReceived | Select-Object @{n='PSComputerName';e={"$(($Job.Name -split ' ')[-1])"}},* -ErrorAction SilentlyContinue | Export-CSV "$($script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\$CollectionName\$JobName.csv" $NoTypeInfo
+                            $JobReceived | Select-Object @{n='PSComputerName';e={"$(($Job.Name -split ' ')[-1])"}},* -ErrorAction SilentlyContinue | Export-CSV "$($script:CollectionSavedDirectoryTextBox.Text)\$CollectionName\$JobName.csv" $NoTypeInfo
                             if ($OptionSaveCliXmlDataCheckBox.checked -eq $true) {
-                                $JobReceived | Select-Object @{n='PSComputerName';e={"$(($Job.Name -split ' ')[-1])"}},* -ErrorAction SilentlyContinue | Export-Clixml "$($script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\$CollectionName\$JobName.xml"
+                                $JobReceived | Select-Object @{n='PSComputerName';e={"$(($Job.Name -split ' ')[-1])"}},* -ErrorAction SilentlyContinue | Export-Clixml "$($script:CollectionSavedDirectoryTextBox.Text)\$CollectionName\$JobName.xml"
                             }
                         }
                     }
                     else {
                         if ($SaveProperties) {
-                            $JobReceived | Select-Object $(iex $SaveProperties) | Export-CSV    "$($script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\$CollectionName\$JobName.csv" $NoTypeInfo
+                            $JobReceived | Select-Object $(iex $SaveProperties) | Export-CSV    "$($script:CollectionSavedDirectoryTextBox.Text)\$CollectionName\$JobName.csv" $NoTypeInfo
                             if ($OptionSaveCliXmlDataCheckBox.checked -eq $true) {
-                                $JobReceived | Select-Object $(iex $SaveProperties) | Export-Clixml "$($script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\$CollectionName\$JobName.xml"
+                                $JobReceived | Select-Object $(iex $SaveProperties) | Export-Clixml "$($script:CollectionSavedDirectoryTextBox.Text)\$CollectionName\$JobName.xml"
                             }
                         }
                         else {
-                            $JobReceived | Export-CSV    "$($script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\$CollectionName\$JobName.csv" $NoTypeInfo
+                            $JobReceived | Export-CSV    "$($script:CollectionSavedDirectoryTextBox.Text)\$CollectionName\$JobName.csv" $NoTypeInfo
                             if ($OptionSaveCliXmlDataCheckBox.checked -eq $true) {
-                                $JobReceived | Export-Clixml "$($script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\$CollectionName\$JobName.xml"
+                                $JobReceived | Export-Clixml "$($script:CollectionSavedDirectoryTextBox.Text)\$CollectionName\$JobName.xml"
                             }
                         }
                     }

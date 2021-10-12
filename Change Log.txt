@@ -27,6 +27,8 @@ Writing Daily Tips...
 v6.5.4 - 
 ==================================================
 
+Removed autoruns, couldn't get it to execute remotely and pull back data reliably... it hangs no matter what method I trying
+
 Updated the following to support -UseCompupter and -UseSession 
 	- IndividualQuery-QueryBuild 
 

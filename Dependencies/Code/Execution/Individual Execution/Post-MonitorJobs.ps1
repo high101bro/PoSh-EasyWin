@@ -8,10 +8,10 @@ function Post-MonitorJobs {
     $ResultsListBox.Items.RemoveAt(0)
     $ResultsListBox.Items.Insert(0,"$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss')) [$CollectionCommandDiffTime]  $CollectionName")
 
-    Compile-CsvFiles -LocationOfCSVsToCompile "$($script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\$($CollectionName)\$($CollectionName)*.csv" `
+    Compile-CsvFiles -LocationOfCSVsToCompile "$($script:CollectionSavedDirectoryTextBox.Text)\$($CollectionName)\$($CollectionName)*.csv" `
                      -LocationToSaveCompiledCSV "$($script:CollectionSavedDirectoryTextBox.Text)\$($CollectionName) ($ExecutionStartTime).csv"
 
-    Compile-XmlFiles -LocationOfXmlsToCompile "$($script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\$($CollectionName)\$($CollectionName)*.xml" `
+    Compile-XmlFiles -LocationOfXmlsToCompile "$($script:CollectionSavedDirectoryTextBox.Text)\$($CollectionName)\$($CollectionName)*.xml" `
                      -LocationToSaveCompiledXml "$($script:CollectionSavedDirectoryTextBox.Text)\$($CollectionName) ($ExecutionStartTime).xml"
 
     #Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Compilied CSV and XML Files"

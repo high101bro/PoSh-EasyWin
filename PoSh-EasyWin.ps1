@@ -35,7 +35,7 @@
                    : DCOM    RPC     - TCP/135 and dynamic ports, typically:
                                        TCP 49152-65535 (Windows Vista, Server 2008 and above)
                                        TCP 1024 -65535 (Windows NT4, Windows 2000, Windows 2003)
-    Optional       : PsExec.exe, Procmon.exe, Autoruns.exe, Sysmon.exe,
+    Optional       : PsExec.exe, Procmon.exe, Sysmon.exe,
                      etl2pcapng.exe, kitty.exe, plink.exe, chainsaw.exe
 
     Author         : Daniel Komnick (high101bro)
@@ -1516,7 +1516,7 @@ $ExecuteScriptHandler = {
     $script:CollectedDataTimeStampDirectory = $script:CollectionSavedDirectoryTextBox.Text
 
     # Location of Uncompiled Results
-    $script:IndividualHostResults = "$script:CollectedDataTimeStampDirectory\Results By Endpoints"
+    $script:IndividualHostResults = "$script:CollectedDataTimeStampDirectory"
 
     # This function compiles the selected treeview comamnds, placing the proper command type and protocol into a variable list to be executed.
     Compile-SelectedCommandTreeNode
@@ -1599,11 +1599,9 @@ $ExecuteScriptHandler = {
     
 
         if ($ExternalProgramsWinRMRadioButton.checked -and $SysinternalsSysmonCheckbox.Checked)                        { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
-        if ($ExternalProgramsWinRMRadioButton.checked -and $SysinternalsAutorunsCheckbox.Checked)                      { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
         if ($ExternalProgramsWinRMRadioButton.checked -and $SysinternalsProcessMonitorCheckbox.Checked)                { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
         if ($ExternalProgramsWinRMRadioButton.checked -and $ExeScriptUserSpecifiedExecutableAndScriptCheckbox.checked) { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
         if ($ExternalProgramsRpcRadioButton.checked   -and $SysinternalsSysmonCheckbox.Checked)                        { $CountCommandQueries++ ; $script:RpcCommandCount++ }
-        if ($ExternalProgramsRpcRadioButton.checked   -and $SysinternalsAutorunsCheckbox.Checked)                      { $CountCommandQueries++ ; $script:RpcCommandCount++ }
         if ($ExternalProgramsRpcRadioButton.checked   -and $SysinternalsProcessMonitorCheckbox.Checked)                { $CountCommandQueries++ ; $script:RpcCommandCount++ }
         if ($ExternalProgramsRpcRadioButton.checked   -and $ExeScriptUserSpecifiedExecutableAndScriptCheckbox.checked) { $CountCommandQueries++ ; $script:RpcCommandCount++ }
 
@@ -1765,38 +1763,14 @@ $ExecuteScriptHandler = {
                 # Pushes Sysmon to remote hosts and configure it with the selected config .xml file
                 # If sysmon is already installed, it will update the config .xml file instead
                 # Symon and its supporting files are removed afterwards        
-
-                # Deprecated
-                # if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution' -and $SysinternalsSysmonCheckbox.Checked) {
-                #     [System.Windows.Forms.MessageBox]::Show("The Individual Execution mode does not support Sysmon, you need to use the Session Based mode.","Incompatible Mode",'Ok',"Info")
-                # }
-                # elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs' -and $SysinternalsSysmonCheckbox.Checked) {
-                #     [System.Windows.Forms.MessageBox]::Show("The Monitor Jobs mode does not support Sysmon, you need to use the Session Based mode.","Incompatible Mode",'Ok',"Info")
-                # }
                 if ($SysinternalsSysmonCheckbox.Checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualPush-Sysmon.ps1" }
 
-                # Autoruns
-                # Pushes Autoruns to remote hosts and pulls back the autoruns results to be opened locally
-                # Autoruns and its supporting files are removed afterwards
-                if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution' -and $SysinternalsAutorunsCheckbox.Checked) {
-                    [System.Windows.Forms.MessageBox]::Show("The Individual Execution mode does not support AutoRuns, you need to use the Session Based mode.","Incompatible Mode",'Ok',"Info")
-                }
-                elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs' -and $SysinternalsAutorunsCheckbox.Checked) {
-                    [System.Windows.Forms.MessageBox]::Show("The Monitor Jobs mode does not support AutoRuns, you need to use the Session Based mode.","Incompatible Mode",'Ok',"Info")
-                }
-                #if ($SysinternalsAutorunsCheckbox.Checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualPush-Autoruns.ps1" }
 
                 # Procmon
                 # Pushes Process Monitor to remote hosts and pulls back the procmon results to be opened locally
                 # Diskspace is calculated on local and target hosts to determine if there's a risk
                 # Process Monitor and its supporting files are removed afterwards
-                if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution' -and $SysinternalsProcessMonitorCheckbox.Checked) {
-                    [System.Windows.Forms.MessageBox]::Show("The Individual Execution mode does not support Procmon, you need to use the Session Based mode.","Incompatible Mode",'Ok',"Info")
-                }
-                elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs' -and $SysinternalsProcessMonitorCheckbox.Checked) {
-                    [System.Windows.Forms.MessageBox]::Show("The Monitor Jobs mode does not support Procmon, you need to use the Session Based mode.","Incompatible Mode",'Ok',"Info")
-                }
-                #if ($SysinternalsProcessMonitorCheckbox.Checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualPush-Procmon.ps1" }
+                if ($SysinternalsProcessMonitorCheckbox.Checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualPush-Procmon.ps1" }
 
                 # User Specified Files and Custom Script
                 # Pushes user Specified Files and Custom Script to the endpoints
@@ -1957,11 +1931,6 @@ $ExecuteScriptHandler = {
                 # If sysmon is already installed, it will update the config .xml file instead
                 # Symon and its supporting files are removed afterwards
                 if ($SysinternalsSysmonCheckbox.Checked) { . "$Dependencies\Code\Execution\Session Based\SessionPush-SysMon.ps1" }
-
-                # AutoRuns
-                # Pushes Autoruns to remote hosts and pulls back the autoruns results to be opened locally
-                # Autoruns and its supporting files are removed afterwards
-                if ($SysinternalsAutorunsCheckbox.Checked) { . "$Dependencies\Code\Execution\Session Based\SessionPush-AutoRuns.ps1" }
 
                 # ProcMon
                 # Pushes Process Monitor to remote hosts and pulls back the procmon results to be opened locally

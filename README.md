@@ -18,7 +18,7 @@
 |                |                     - PowerShell Charts support                 |
 |                |                     - Limited testing                           |
 |                |               v2.0  - Not supported, requires splatting         |
-|  Optional      |  PsExec.exe, Procmon.exe, Autoruns.exe, Sysmon.exe,             |
+|  Optional      |  PsExec.exe, Procmon.exe, Sysmon.exe,                           |
 |                |  etl2pcapng.exe, kitty.exe, plink.exe, chainsaw.exe             |
 |                |                                                                 |
 
@@ -75,7 +75,7 @@ PoSh-EasyWin is a tool that allows you to run any number of queries against any 
 |:-----------------------------:|:-----------------------------:|
 |  Suports VariosLookup Tables  |  Sysinternals Tools Provided  |
 
-If the Resource folder is present, it adds additional functionality. Such as the ability to select ports/protocols or Event IDs from a GUI rather than memorizing them all or looking them up externally. It also allows you to now push various Sysinternals tools to remote hosts and pull back data for analysis (procmon & autoruns); moreover, you can install sysmon to selected endpoints with XML configurations. Other items of interest in the Resource folder is the PoSh-EasyWin Icon; the Checklist, Processes, adn About tabs, and tags.
+If the Resource folder is present, it adds additional functionality. Such as the ability to select ports/protocols or Event IDs from a GUI rather than memorizing them all or looking them up externally. It also allows you to now push various Sysinternals tools to remote hosts and pull back data for analysis (procmon data); moreover, you can install sysmon to selected endpoints with XML configurations. Other items of interest in the Resource folder is the PoSh-EasyWin Icon; the Checklist, Processes, adn About tabs, and tags.
 
 ***
 ***

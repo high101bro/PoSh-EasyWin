@@ -18,7 +18,7 @@ function Generate-AutoChartsCommand {
     $script:CollectedDataTimeStampDirectory = "$CollectedDataDirectory\$((Get-Date).ToString('yyyy-MM-dd HH.mm.ss'))"
 
     # Location of Uncompiled Results
-    $script:IndividualHostResults           = "$script:CollectedDataTimeStampDirectory\Results By Endpoints"
+    $script:IndividualHostResults           = "$script:CollectedDataTimeStampDirectory"
 
     # Removes a tab if it already exists... Since the same variable is used when spawning multi-series tabs whenever multiple tabs are created, the previous ones break and are unable to close
     $AutoChartsTabControl.Controls.Remove($script:AutoChartsIndividualTabPage)

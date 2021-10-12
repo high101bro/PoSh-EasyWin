@@ -242,9 +242,6 @@ $Acknowledgement = "About PoSh-EasyWin
             Process Monitor (Procmon) Capture
                 Able to capture process data over a timespace (default 5 seconds)
                 Able to change the procmon process name
-            AutoRuns Data Pull
-                Obtains more startup information than native WMI and Windows cmdlets
-                Able to change the autoruns process name
             User specified files and custom script
                 Allows for the custom deployable of executables and scripts
                 Execution flow, cleanup, and retrieve of any files is not managed by PoSh-EasyWin

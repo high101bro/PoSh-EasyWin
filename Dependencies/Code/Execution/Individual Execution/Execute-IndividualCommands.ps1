@@ -11,7 +11,7 @@
 #         $ResultsListBox.Items.Insert(0,"$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss')) $($Command.Name)")
 
 #         $CollectionName = $Command.ExportFileName
-#         $script:IndividualHostResults = "$script:CollectedDataTimeStampDirectory\Results By Endpoints"
+#         $script:IndividualHostResults = "$script:CollectedDataTimeStampDirectory"
 #         New-Item -ItemType Directory -Path "$script:IndividualHostResults\$CollectionName" -Force
 
 #         # if the SaveDirectory parameter is provided, it will be used to identify where to save the results to
@@ -193,7 +193,7 @@
         $ResultsListBox.Items.Insert(0,"$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss')) $($Command.Name)")
 
         $CollectionName = $Command.ExportFileName
-        $script:IndividualHostResults = "$script:CollectedDataTimeStampDirectory\Results By Endpoints"
+        $script:IndividualHostResults = "$script:CollectedDataTimeStampDirectory"
         New-Item -ItemType Directory -Path "$script:IndividualHostResults\$CollectionName" -Force
 
         $CollectionSavedDirectory = "$script:IndividualHostResults\$CollectionName"

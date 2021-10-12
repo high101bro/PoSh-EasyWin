@@ -94,14 +94,14 @@ if ($ExternalProgramsRPCRadioButton.checked) {
 
         # Process monitor must be launched as a separate process otherwise the sleep and terminate commands below would never execute and fill the disk
         $ResultsListBox.Items.Insert(2,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  [!] Starting process monitor on $TargetComputer")
-        ### $Command = Start-Process -WindowStyle Hidden -FilePath $PsExecPath -ArgumentList "/AcceptEULA $script:Credential -s \\$TargetComputer $RemoteDrive\$TargetFolder\$ProcmonExecutable /AcceptEULA /BackingFile $RemoteDrive\$TargetFolder\$TargetComputer /RunTime 10 /Quiet" -PassThru | Out-Null
-        ### $Command = Start-Process -WindowStyle Hidden -FilePath $PsExecPath -ArgumentList "/AcceptEULA -s \\$TargetComputer $RemoteDrive\$TargetFolder\$ProcmonExecutable /AcceptEULA /BackingFile `"$RemoteDrive\$TargetFolder\$ProcmonName-$TargetComputer`" /RunTime $ProcMonDuration /Quiet" -PassThru | Out-Null
+        ### $Command = Start-Process -WindowStyle Hidden -FilePath $PsExecPath -ArgumentList "-AcceptEULA $script:Credential -s \\$TargetComputer $RemoteDrive\$TargetFolder\$ProcmonExecutable -AcceptEULA /BackingFile $RemoteDrive\$TargetFolder\$TargetComputer /RunTime 10 /Quiet" -PassThru | Out-Null
+        ### $Command = Start-Process -WindowStyle Hidden -FilePath $PsExecPath -ArgumentList "-AcceptEULA -s \\$TargetComputer $RemoteDrive\$TargetFolder\$ProcmonExecutable -AcceptEULA /BackingFile `"$RemoteDrive\$TargetFolder\$ProcmonName-$TargetComputer`" /RunTime $ProcMonDuration /Quiet" -PassThru | Out-Null
         ### $Command
-        Invoke-WmiMethod -ComputerName $TargetComputer -Class Win32_Process -Name Create -ArgumentList "$RemoteDrive\$TargetFolder\$ProcmonExecutable /AcceptEULA /BackingFile $RemoteDrive\$TargetFolder\$ProcmonName /RunTime $ProcMonDuration /Quiet"
+        Invoke-WmiMethod -ComputerName $TargetComputer -Class Win32_Process -Name Create -ArgumentList "$RemoteDrive\$TargetFolder\$ProcmonExecutable -AcceptEULA /BackingFile $RemoteDrive\$TargetFolder\$ProcmonName /RunTime $ProcMonDuration /Quiet"
 
         Create-LogEntry -LogFile $LogFile -TargetComputer $TargetComputer -Message "$($SysinternalsProcessMonitorCheckbox.Name)"
         #Create-LogEntry -LogFile $LogFile -TargetComputer $TargetComputer -Message "$Command"
-        Create-LogEntry -LogFile $LogFile -TargetComputer $TargetComputer -Message "Invoke-WmiMethod -ComputerName $TargetComputer -Class Win32_Process -Name Create -ArgumentList `"$RemoteDrive\$TargetFolder\$ProcmonExecutable /AcceptEULA /BackingFile $RemoteDrive\$TargetFolder\$ProcmonName /RunTime $ProcMonDuration /Quiet`""
+        Create-LogEntry -LogFile $LogFile -TargetComputer $TargetComputer -Message "Invoke-WmiMethod -ComputerName $TargetComputer -Class Win32_Process -Name Create -ArgumentList `"$RemoteDrive\$TargetFolder\$ProcmonExecutable -AcceptEULA /BackingFile $RemoteDrive\$TargetFolder\$ProcmonName /RunTime $ProcMonDuration /Quiet`""
 
         $FirstCheck      = $true
         $SecondsToCheck  = $ExternalProgramsTimoutOutTextBox.Text
@@ -185,37 +185,207 @@ if ($ExternalProgramsRPCRadioButton.checked) {
 
 # Executes WinRM based commands over PSSessions if the WinRM Radio Button is Checked
 elseif ($ExternalProgramsWinRMRadioButton.checked) {
-    New-Item -Type Directory -Path $script:CollectionSavedDirectoryTextBox.Text -ErrorAction SilentlyContinue
 
-    $PSSession = New-PSSession -ComputerName $script:ComputerList | Sort-Object ComputerName
-    Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "WinRM Collection Started to $($PSSession.count) Endpoints"
-    Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "New-PSSession -ComputerName $($PSSession.ComputerName -join ', ')"
+    $StatusListBox.Items.Clear()
+    $StatusListBox.Items.Add("Executing: Procmon")
 
-    # Unchecks hosts that do not have a session established
-    . "$Dependencies\Code\Execution\Session Based\Uncheck-ComputerTreeNodesWithoutSessions.ps1"
+    $script:ProgressBarEndpointsProgressBar.Value = 0
 
-    if ($PSSession.count -eq 1) {
-        $ResultsListBox.Items.Add("$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  Session Created to $($PSSession.count) Endpoint")
+    $script:CollectionName = "Sysinternals Procmon"
+
+    $LocalSavePath = "$($script:CollectionSavedDirectoryTextBox.Text)\$script:CollectionName"
+
+    New-Item -Type Directory -Path $LocalSavePath -ErrorAction SilentlyContinue
+
+
+    foreach ($TargetComputer in $script:ComputerList) {
+        Conduct-PreCommandCheck -CollectedDataTimeStampDirectory $($script:CollectionSavedDirectoryTextBox.Text) `
+                                -IndividualHostResults "$script:IndividualHostResults" -CollectionName $script:CollectionName `
+                                -TargetComputer $TargetComputer
+        Create-LogEntry -TargetComputer $TargetComputer  -LogFile $LogFile -Message $script:CollectionName
+
+        $ProcmonName                   = 'Procmon'
+        $ProcmonExecutable             = "$ProcmonName.exe"
+        $LocalPathForProcmonExecutable = "$ExternalPrograms\$ProcmonExecutable"
+        $RemoteTargetDirectory         = "c:\Windows\Temp"
+        
+        
+        $ProcmonDuration = switch ($script:SysinternalsProcessMonitorTimeComboBox.text) {
+            '5 Seconds'   {5}
+            '10 Seconds'  {10}
+            '15 Seconds'  {15}
+            '30 Seconds'  {30}
+            '1 Minute'    {60}
+            '2 Minutes'   {120}
+            '3 Minutes'   {180}
+            '4 Minutes'   {240}
+            '5 Minutes'   {360}
+            Default       {5}
+        }
+
+        Start-Job -Name "PoSh-EasyWin: $script:CollectionName -- $TargetComputer $DateTime" -ScriptBlock {
+            param(
+                $ComputerListProvideCredentialsCheckBox,
+                $script:Credential,
+                $TargetComputer,
+                $CollectionName,
+                $LocalSavePath,
+                $ExternalPrograms,
+                $RemoteTargetDirectory,
+                $ProcmonDuration,
+                $ProcmonExecutable,
+                $ProcmonName,
+                $LocalPathForProcmonExecutable,
+                $SysinternalsProcmonRenameProcessTextBox
+            )
+
+
+            if ($ComputerListProvideCredentialsCheckBox.Checked) {
+                if (!$script:Credential) { $script:Credential = Get-Credential }
+                $Session = New-PSSession -ComputerName $TargetComputer -Credential $script:Credential
+            }
+            else {
+                $Session = New-PSSession -ComputerName $TargetComputer
+            } 
+                        
+            
+            # Renames Procmon Process name in order to obfuscate deployent
+            if ($SysinternalsProcmonRenameProcessTextBox.text -ne 'Procmon') {
+                Copy-Item -Path "$LocalPathForProcmonExecutable" -Destination "$ExternalPrograms\$($SysinternalsProcmonRenameProcessTextBox.text).exe" -Force
+                $ProcmonName                   = "$($SysinternalsProcmonRenameProcessTextBox.text)"
+                $ProcmonExecutable             = "$($SysinternalsProcmonRenameProcessTextBox.text).exe"
+                $LocalPathForProcmonExecutable = "$ExternalPrograms\$ProcmonExecutable"
+            }
+            
+            
+            Function Get-SessionDiskSpace {
+                $HD = Get-WmiObject Win32_LogicalDisk -Filter "DeviceID='C:'" -ErrorAction Stop
+                if(!$HD) { throw }
+                $FreeSpace = [math]::round(($HD.FreeSpace/1gb),2)
+                return $FreeSpace
+            }
+                       
+            
+            if( (Invoke-Command -ScriptBlock ${function:Get-SessionDiskSpace} -Session $Session) -lt 0.5 -or (Get-SessionDiskSpace) -lt 0.5) {
+                $Session | Remove-PSSession
+            }
+            else {
+                # Attempts to send a copy of Procmon to the endpoints
+                Copy-Item -Path "$LocalPathForProcmonExecutable" -Destination "$RemoteTargetDirectory" -ToSession $Session -Force -ErrorAction Stop
+
+                if ($SysinternalsProcmonRenameProcessTextBox.text -ne 'Procmon') {
+                    # Removes the local renamed copy of Procmon
+                    Remove-Item "$ExternalPrograms\$($SysinternalsProcmonRenameProcessTextBox.text).exe" -Force
+                }
+        
+                Invoke-Command -ScriptBlock {
+                    param(
+                        $RemoteTargetDirectory,
+                        $ProcmonExecutable,
+                        $ProcmonDuration,
+                        $ProcmonName
+                    )
+                    Start-Process -Filepath "$RemoteTargetDirectory\$ProcmonExecutable" -ArgumentList @("-AcceptEULA", "/BackingFile", "$RemoteTargetDirectory\$ProcmonName", "/RunTime", "$ProcmonDuration", "/Quiet")
+
+                } -ArgumentList @($RemoteTargetDirectory,$ProcmonExecutable,$ProcmonDuration,$ProcmonName) -Session $Session
+
+
+                $TimeOutTimer = 0            
+                while ($true) {
+                    while ($TimeOutTimer -lt $ProcmonDuration) {
+                        $TimeOutTimer++
+                        Start-Sleep -Seconds 1
+                    }
+                    Start-Sleep -Seconds 1
+                    $TimeOutTimer++
+    
+                    
+                    if ( (Invoke-Command -ScriptBlock { param($RemoteTargetDirectory,$ProcmonName);  (-not $(Get-Process $ProcmonName -ea SilentlyContinue) -and $(Get-Item "$RemoteTargetDirectory\$ProcmonName.pml"  -ea SilentlyContinue) ) } -ArgumentList @($RemoteTargetDirectory,$ProcmonName)  -Session $Session) ) {
+
+                        Copy-Item -Path "$RemoteTargetDirectory\$ProcmonName.pml" -Destination "$LocalSavePath\Procmon-$($TargetComputer).pml" -FromSession $Session -Force
+
+                        Invoke-Command -ScriptBlock {
+                            param(
+                                $RemoteTargetDirectory,
+                                $ProcmonName
+                            )
+                            Remove-Item -Path $RemoteTargetDirectory\$ProcmonName.pml -Force
+                            Remove-Item -Path $RemoteTargetDirectory\$ProcmonName.exe -Force
+                        } -ArgumentList @($RemoteTargetDirectory,$ProcmonName) -Session $Session
+
+                        break
+                    }
+                }
+            }                        
+
+            $Session | Remove-PSSession
+
+        } -ArgumentList @(
+            $ComputerListProvideCredentialsCheckBox,
+            $script:Credential,
+            $TargetComputer,
+            $CollectionName,
+            $LocalSavePath,
+            $ExternalPrograms,
+            $RemoteTargetDirectory,
+            $ProcmonDuration,
+            $ProcmonExecutable,
+            $ProcmonName,
+            $LocalPathForProcmonExecutable,
+            $SysinternalsProcmonRenameProcessTextBox
+        )
+
+
+        $EndpointString = ''
+        foreach ($item in $script:ComputerList) {$EndpointString += "$item`n"}
+
+        $InputValues = @"
+===========================================================================
+Collection Name:
+===========================================================================
+$script:CollectionName
+
+===========================================================================
+Execution Time:
+===========================================================================
+$ExecutionStartTime
+
+===========================================================================
+Credentials:
+===========================================================================
+$($script:Credential.UserName)
+
+===========================================================================
+Endpoint:
+===========================================================================
+$EndpointString
+
+===========================================================================
+Promon Process Name:
+===========================================================================
+$($SysinternalsProcmonRenameProcessTextBox.text)
+
+===========================================================================
+Collection Duration:
+===========================================================================
+$script:SysinternalsProcessMonitorTimeComboBox
+
+===========================================================================
+Timeout:
+===========================================================================
+$($script:OptionJobTimeoutSelectionComboBox.Text)
+
+"@
+
+
     }
-    elseif ($PSSession.count -gt 1) {
-        $ResultsListBox.Items.Add("$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  Sessions Created to $($PSSession.count) Endpoints")
+    if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
+        Monitor-Jobs -CollectionName $script:CollectionName -MonitorMode -ProcmonSwitch -ProcmonLocalPath $LocalSavePath -ComputerName $script:ComputerList -DisableReRun -InputValues $InputValues -NotExportFiles
     }
-    else {
-        $ResultsListBox.Items.Add("$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  Unabled to push Sysmon because a WinRM sessions could not be established")
-        [system.media.systemsounds]::Exclamation.play()
+    elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
+        Monitor-Jobs -CollectionName $script:CollectionName -NotExportFiles
+        Post-MonitorJobs -CollectionName $script:CollectionName -CollectionCommandStartTime $ExecutionStartTime
     }
-    $PoShEasyWin.Refresh()
-
-    $script:ProgressBarQueriesProgressBar.Maximum   = $CountCommandQueries
-    $script:ProgressBarEndpointsProgressBar.Maximum = ($PSSession.ComputerName).Count
-
-
-    if ($PSSession.count -ge 1) {
-        . "$Dependencies\Code\Execution\Session Based\SessionPush-Procmon.ps1"
-    }
-    Get-PSSession | Remove-PSSession
-    Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Remove-PSSession -ComputerName $($PSSession.ComputerName -join ', ')"
-
 }
 
 

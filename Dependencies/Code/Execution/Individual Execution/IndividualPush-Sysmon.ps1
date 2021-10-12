@@ -55,7 +55,7 @@ if ($ExternalProgramsRPCRadioButton.checked) {
 
             $ResultsListBox.Items.Insert(2,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))   [!] Updating $SysmonName configuration on $TargetComputer")
             $PoShEasyWin.Refresh()
-            #Start-Process -WindowStyle Hidden -FilePath $PsExecPath -ArgumentList "/AcceptEULA -s \\$TargetComputer $LocalDrive\$TargetFolder\$SysmonExecutable -AcceptEULA -c '$LocalDrive\$TargetFolder\$Script:SysmonXMLName' -d $SysmonDriverName" -PassThru | Out-Null
+            #Start-Process -WindowStyle Hidden -FilePath $PsExecPath -ArgumentList "-AcceptEULA -s \\$TargetComputer $LocalDrive\$TargetFolder\$SysmonExecutable -AcceptEULA -c '$LocalDrive\$TargetFolder\$Script:SysmonXMLName' -d $SysmonDriverName" -PassThru | Out-Null
             if ($SysinternalsSysmonRenameDriverTextBox.text -ne 'SysmonDrv' -and ($SysinternalsSysmonRenameDriverTextBox.text).length -ne 0 ) {
                 Invoke-WmiMethod -ComputerName $TargetComputer -Class Win32_Process -Name Create -ArgumentList "$LocalDrive\$TargetFolder\$SysmonExecutable -AcceptEULA -c $LocalDrive\$TargetFolder\$Script:SysmonXMLName -d $SysmonDriverName"
                 Create-LogEntry -TargetComputer $TargetComputer  -LogFile $LogFile -Message "Invoke-WmiMethod -ComputerName $TargetComputer -Class Win32_Process -Name Create -ArgumentList `"$LocalDrive\$TargetFolder\$SysmonExecutable -AcceptEULA -c $LocalDrive\$TargetFolder\$Script:SysmonXMLName -d $SysmonDriverName`""
@@ -84,7 +84,7 @@ if ($ExternalProgramsRPCRadioButton.checked) {
 
             $ResultsListBox.Items.Insert(2,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))   [!] Installing $SysmonName on $TargetComputer")
             $PoShEasyWin.Refresh()
-            #Start-Process -WindowStyle Hidden -FilePath $PsExecPath -ArgumentList "/AcceptEULA -s \\$TargetComputer $LocalDrive\$TargetFolder\$SysmonExecutable /AcceptEULA -i '$LocalDrive\$TargetFolder\$Script:SysmonXMLName' -d $SysmonDriverName" -PassThru | Out-Null
+            #Start-Process -WindowStyle Hidden -FilePath $PsExecPath -ArgumentList "-AcceptEULA -s \\$TargetComputer $LocalDrive\$TargetFolder\$SysmonExecutable -AcceptEULA -i '$LocalDrive\$TargetFolder\$Script:SysmonXMLName' -d $SysmonDriverName" -PassThru | Out-Null
             if ($SysinternalsSysmonRenameDriverTextBox.text -ne 'SysmonDrv' -and ($SysinternalsSysmonRenameDriverTextBox.text).length -ne 0 ) {
                 Invoke-WmiMethod -ComputerName $TargetComputer -Class Win32_Process -Name Create -ArgumentList "$LocalDrive\$TargetFolder\$SysmonExecutable -AcceptEULA -i $LocalDrive\$TargetFolder\$Script:SysmonXMLName -d $SysmonDriverName"
                 Create-LogEntry -TargetComputer $TargetComputer  -LogFile $LogFile -Message "Invoke-WmiMethod -ComputerName $TargetComputer -Class Win32_Process -Name Create -ArgumentList `"$LocalDrive\$TargetFolder\$SysmonExecutable -AcceptEULA -i $LocalDrive\$TargetFolder\$Script:SysmonXMLName -d $SysmonDriverName`""
@@ -123,11 +123,11 @@ elseif ($ExternalProgramsWinRMRadioButton.checked) {
 
 
     $StatusListBox.Items.Clear()
-    $StatusListBox.Items.Add("Executing: sysmon deployment")
+    $StatusListBox.Items.Add("Executing: Sysmon Deployment / Update")
 
     $script:ProgressBarEndpointsProgressBar.Value = 0
 
-    $script:CollectionName = "Sysinternals Sysmon Configuration"
+    $script:CollectionName = "Sysinternals Sysmon"
 
 
     New-Item -Type Directory -Path $script:CollectionSavedDirectoryTextBox.Text -ErrorAction SilentlyContinue
@@ -139,7 +139,7 @@ elseif ($ExternalProgramsWinRMRadioButton.checked) {
                                 -TargetComputer $TargetComputer
         Create-LogEntry -TargetComputer $TargetComputer  -LogFile $LogFile -Message $script:CollectionName
 
-        $LocalSavePath = "$($script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\$script:CollectionName\$TargetComputer - $script:CollectionName.evtx"
+        $LocalSavePath = "$($script:CollectionSavedDirectoryTextBox.Text)\$script:CollectionName\$TargetComputer - $script:CollectionName.evtx"
 
 
         Start-Job -Name "PoSh-EasyWin: $script:CollectionName -- $TargetComputer $DateTime" -ScriptBlock {
@@ -232,14 +232,11 @@ elseif ($ExternalProgramsWinRMRadioButton.checked) {
                         param(
                             $TargetFolder,
                             $SysmonExecutable,
-                            $SysmonXMLName
+                            $Script:SysmonXMLName
                         )
-                        Remove-Item $TargetFolder\$SysmonExecutable -Recurse -Force
-                        Remove-Item $TargetFolder\$SysmonXMLName    -Recurse -Force
-                    } -Argumentlist $TargetFolder,$SysmonExecutable,$Script:SysmonXMLName -Session $Session
-                    break
-                }
-                elseif ($TimeOutTimer -eq $ExternalProgramsTimoutOutTextBox.text) {
+                        Remove-Item "$TargetFolder\$SysmonExecutable"     -Recurse -Force
+                        Remove-Item "$TargetFolder\$Script:SysmonXMLName" -Recurse -Force
+                    } -Argumentlist @($TargetFolder,$SysmonExecutable,$Script:SysmonXMLName) -Session $Session
                     break
                 }
             }
@@ -296,7 +293,7 @@ $($SysinternalsSysmonRenameDriverTextBox.Text)
 ===========================================================================
 Timeout:
 ===========================================================================
-$($ExternalProgramsTimoutOutTextBox.Text)
+$($script:OptionJobTimeoutSelectionComboBox.Text)
 
 "@
 

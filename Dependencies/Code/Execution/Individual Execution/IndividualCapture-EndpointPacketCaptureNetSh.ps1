@@ -34,7 +34,7 @@ $StatusListBox.Items.Add("Executing: $CollectionName")
 $ResultsListBox.Items.Insert(0,"$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  $CollectionName")
 $PoShEasyWin.Refresh()
 
-New-Item -Type Directory -path "$($script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\$CollectionName\" -ErrorAction SilentlyContinue
+New-Item -Type Directory -path "$($script:CollectionSavedDirectoryTextBox.Text)\$CollectionName\" -ErrorAction SilentlyContinue
 
 
 $script:ProgressBarEndpointsProgressBar.Value = 0
@@ -245,9 +245,9 @@ foreach ($TargetComputer in $script:ComputerList) {
     Create-LogEntry -TargetComputer $TargetComputer  -LogFile $LogFile -Message $CollectionName
 
 
-    $LocalEtlFilePath = "$($script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\$CollectionName\$TargetComputer - $TraceName.etl"
-    $LocalCabFilePath = "$($script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\$CollectionName\$TargetComputer - $TraceName.cab"
-    $OutPcapNG        = "$($script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\$CollectionName\$TargetComputer - $PacketCaptureName"
+    $LocalEtlFilePath = "$($script:CollectionSavedDirectoryTextBox.Text)\$CollectionName\$TargetComputer - $TraceName.etl"
+    $LocalCabFilePath = "$($script:CollectionSavedDirectoryTextBox.Text)\$CollectionName\$TargetComputer - $TraceName.cab"
+    $OutPcapNG        = "$($script:CollectionSavedDirectoryTextBox.Text)\$CollectionName\$TargetComputer - $PacketCaptureName"
 
 
     Start-Job -Name "PoSh-EasyWin: $CollectionName -- $TargetComputer $DateTime" -ScriptBlock {
@@ -317,8 +317,8 @@ foreach ($TargetComputer in $script:ComputerList) {
 
 
         if ( $OptionPacketKeepEtlCabFilesCheckBox.checked -eq $false ) {
-            Remove-Item -Path "$($script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\$CollectionName\*.etl" -Force
-            Remove-Item -Path "$($script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\$CollectionName\*.cab" -Force
+            Remove-Item -Path "$($script:CollectionSavedDirectoryTextBox.Text)\$CollectionName\*.etl" -Force
+            Remove-Item -Path "$($script:CollectionSavedDirectoryTextBox.Text)\$CollectionName\*.cab" -Force
         }
         
 

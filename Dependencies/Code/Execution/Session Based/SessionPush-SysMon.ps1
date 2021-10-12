@@ -123,7 +123,6 @@ foreach ($Session in $PSSession) {
     $script:ProgressBarEndpointsProgressBar.Value = ($PSSession.ComputerName).Count
 }
 
-# Intended to ensure that autoruns has completed execution; this is not needed if using Start-Process with the -Wait parameter
 
 $script:ProgressBarEndpointsProgressBar.Value = 0
 $SysmonCompletedEndpoints = @()

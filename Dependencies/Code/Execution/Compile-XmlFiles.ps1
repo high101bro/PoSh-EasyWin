@@ -13,8 +13,8 @@ function Compile-XmlFiles {
 
     # # BUG: When the box is unchecked, the results don't compile correctly
     # if ($OptionKeepResultsByEndpointsFilesCheckBox.checked -eq $false) {
-    #     if (Test-Path "$($script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\*\*.xml") {
-    #         Remove-Item -Path "$($script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\*" -Recurse -Force
+    #     if (Test-Path "$($script:CollectionSavedDirectoryTextBox.Text)\*\*.xml") {
+    #         Remove-Item -Path "$($script:CollectionSavedDirectoryTextBox.Text)\*" -Recurse -Force
     #     }
     # }
 }

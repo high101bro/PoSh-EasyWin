@@ -219,11 +219,11 @@ $AutoCreateMultiSeriesChartButtonAdd_Click = {
 
                     # Software Installed
                     elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Software Installed by Names") { Generate-AutoChartsCommand -QueryName "Software Installed" -QueryTabName "Software Installed by Names" -PropertyX "Name" -PropertyY "PSComputerName" }
-                    elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Software Installed by Vendors") { Generate-AutoChartsCommand -QueryName "Software Installed" -QueryTabName "Software Installed by Vendors"             -PropertyX "Vendor" -PropertyY "PSComputerName" }
+                    elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Software Installed by Vendors") { Generate-AutoChartsCommand -QueryName "Software Installed" -QueryTabName "Software Installed by Vendors" -PropertyX "Vendor" -PropertyY "PSComputerName" }
                     elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Software Installed per Endpoint") { Generate-AutoChartsCommand -QueryName "Software Installed" -QueryTabName "Software Installed per Endpoint" -PropertyX "PSComputerName" -PropertyY "Name" }
 
                     # Startup / Autoruns
-                    elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Startup Names") { Generate-AutoChartsCommand -QueryName "Startup Commands" -QueryTabName "Startup Names"    -PropertyX "Name"    -PropertyY "PSComputerName" }
+                    elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Startup Names") { Generate-AutoChartsCommand -QueryName "Startup Commands" -QueryTabName "Startup Names" -PropertyX "Name" -PropertyY "PSComputerName" }
                     elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Startup Commands") { Generate-AutoChartsCommand -QueryName "Startup Commands" -QueryTabName "Startup Commands" -PropertyX "Command" -PropertyY "PSComputerName" }
                     elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Startups per Endpoint") { Generate-AutoChartsCommand -QueryName "Startup Commands" -QueryTabName "Startups per Endpoint" -PropertyX "PSComputerName" -PropertyY "Name" }
                 }
