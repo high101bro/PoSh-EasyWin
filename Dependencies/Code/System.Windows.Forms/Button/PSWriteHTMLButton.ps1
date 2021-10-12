@@ -165,7 +165,7 @@ $PSWriteHTMLCheckedBoxList = @(
     'Endpoint PowerShell Sessions',
     'Endpoint Process Data',
     'Endpoint Logon Activity (30 Days)',
-    'Endpoint Data Deep Dive (Under Development)'
+    'Endpoint Data Deep Dive'
 )
 
 #    'Endpoint CPU Data',
@@ -195,7 +195,11 @@ $PSWriteHTMLGraphDataButton = New-Object -TypeName System.Windows.Forms.Button -
 
         if ($PSWriteHTMLCheckedListBox.CheckedItems.Count -ge 1) {
             Generate-ComputerList
-            if ($script:ComputerList.count -ge 1) {
+                $script:PSWriteHTMLFormOkay = $false
+            if ($script:ComputerList.count -ne 1 -and $PSWriteHTMLCheckedListBox.CheckedItems -Contains 'Endpoint Data Deep Dive') {                       
+                [System.Windows.Forms.MessageBox]::Show("Endpoint Data Deep Dive can only be ran against one endpoint at a time.`n`nEnsure to checkbox only one endpoint.",'PoSh-EasyWin')
+            }
+            elseif ($script:ComputerList.count -ge 1) {
                 $script:PSWriteHTMLFormOkay = $true
                 $PSWriteHTMLForm.Close()    
             }
@@ -218,7 +222,7 @@ $PSWriteHTMLForm.Showdialog()
 
 
 
-if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 -and $PSWriteHTMLCheckedListBox.CheckedItems -Contains 'Endpoint Data Deep Dive (Under Development)') {                       
+if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -eq 1 -and $PSWriteHTMLCheckedListBox.CheckedItems -Contains 'Endpoint Data Deep Dive') {                       
                         $PSWriteHTMLSelectCommandsForm = New-Object System.Windows.Forms.Form -Property @{
                             Text            = "Select Data to Collect"
                             StartPosition   = "CenterScreen"
@@ -572,11 +576,11 @@ if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 
 
 
 ####################################################################################################
-# Endpoint Data Deep Dive (Under Development)                                                      #
+# Endpoint Data Deep Dive                                                      #
 ####################################################################################################
-if ($PSWriteHTMLCheckedListBox.CheckedItems -contains 'Endpoint Data Deep Dive (Under Development)') {
+if ($script:PSWriteHTMLFormOkay -eq $true -and $PSWriteHTMLCheckedListBox.CheckedItems -contains 'Endpoint Data Deep Dive') {
     $StatusListBox.Items.Clear()
-    $StatusListBox.Items.Add("Endpoint Data Deep Dive (Under Development)")
+    $StatusListBox.Items.Add("Endpoint Data Deep Dive")
 
     $CollectionName = 'Endpoint Analysis'
 
@@ -622,7 +626,7 @@ if ($PSWriteHTMLCheckedListBox.CheckedItems -contains 'Endpoint Data Deep Dive (
 ####################################################################################################
 # Process Data                                                                                     #
 ####################################################################################################
-if ($PSWriteHTMLCheckedListBox.CheckedItems -contains 'Endpoint Process Data') {
+if ($script:PSWriteHTMLFormOkay -eq $true -and $PSWriteHTMLCheckedListBox.CheckedItems -contains 'Endpoint Process Data') {
     $StatusListBox.Items.Clear()
     $StatusListBox.Items.Add("Query: Endpoint Process Data")
 
@@ -1053,7 +1057,7 @@ if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 
 
 
 
-    if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
+    if ($script:PSWriteHTMLFormOkay -eq $true -and $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
         foreach ($TargetComputer in $script:ComputerList) {
             if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
                 if (!$script:Credential) { Create-NewCredentials }
@@ -1283,7 +1287,7 @@ if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 
     }
 
 
-    if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
+    if ($script:PSWriteHTMLFormOkay -eq $true -and $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
         foreach ($TargetComputer in $script:ComputerList) {
             if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
                 if (!$script:Credential) { Create-NewCredentials }

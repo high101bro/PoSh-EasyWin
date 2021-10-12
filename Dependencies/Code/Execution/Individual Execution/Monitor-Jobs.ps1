@@ -1057,6 +1057,45 @@ if ($MonitorMode) {
             }
 "@    
         }
+        elseif ($PSWriteHTMLSwitch) {
+            Invoke-Expression @"
+            `$script:ProcmonLocalPath$JobId = "$ProcmonLocalPath"
+            
+            `$script:MonitorJobsButtonOne$JobId = New-Object System.Windows.Forms.Button -Property @{
+                text      = 'Open In Browser'
+                Left      = `$script:Section3MonitorJobProgressBar$JobId.Left + `$script:Section3MonitorJobProgressBar$JobId.Width + (`$FormScale * 5)
+                Top       = `$script:Section3MonitorJobLabel$JobId.Top - (`$FormScale * 1)
+                Width     = `$FormScale * 125
+                Height    = `$FormScale * 21
+                Font      = New-Object System.Drawing.Font('Courier New',`$(`$FormScale * 8),1,2,1)
+                Add_click = {
+                    if (`$This.BackColor -ne 'LightGray') {
+                        `$This.BackColor = 'LightGray'
+                    }
+                    `$script:PSWriteHTMLResults$JobId = `$script:CurrentJobs$JobId | Receive-Job -Keep
+                    if (`$script:PSWriteHTMLResults$JobId) {
+                        if ("$PSWriteHTML" -eq 'EndpointDataSystemSnapshot') {                            
+                            script:Individual-PSWriteHTML -Title 'Endpoint Snapshot' -Data { script:Invoke-PSWriteHTMLEndpointSnapshot -InputData `$script:PSWriteHTMLResults$JobId -CheckedItems `$script:PSWriteHTMLOptions$JobId -MenuPrompt }
+                        }
+                        elseif ("$PSWriteHTML" -eq 'EndpointDataNetworkConnections') {
+                            `$script:PSWriteHTMLResults$JobId = `$script:CurrentJobs$JobId | Receive-Job -Keep
+                            script:Individual-PSWriteHTML -Title 'Network Connections' -Data {                         
+                                script:Invoke-PSWriteHTMLNetworkConnections -InputData `$script:PSWriteHTMLResults$JobId -MenuPrompt
+                            }
+                        }
+                        Invoke-Item `$script:PSWriteHTMLFilePath$JobId
+                    }
+                    elseif ((Test-Path "`$script:PSWriteHTMLFilePath$JobId")) {
+                        Invoke-Item `$script:PSWriteHTMLFilePath$JobId                    
+                    }
+                    else {
+                        [System.Windows.Forms.MessageBox]::Show("There is currently on data available.",'PoSh-EasyWin - Console')
+                    }
+                    [System.GC]::Collect()
+                }
+            }
+"@    
+        }
         elseif ("$JobsExportFiles" -eq "false" -and "$FileExtension" -like 'txt') {
             Invoke-Expression @"
             `$script:MonitorJobsButtonOne$JobId = New-Object System.Windows.Forms.Button -Property @{
@@ -1178,8 +1217,6 @@ if ($MonitorMode) {
                     [System.GC]::Collect()
                 }
             }
-            `$script:Section3MonitorJobPanel$JobId.Controls.Add(`$script:MonitorJobsButtonTwo$JobId)
-            Apply-CommonButtonSettings -Button `$script:MonitorJobsButtonTwo$JobId    
 "@
         }
         elseif ($SmithFlag -eq 'RetrieveADS') {
@@ -1212,8 +1249,17 @@ if ($MonitorMode) {
                     [System.GC]::Collect()
                 }
             }
-            `$script:Section3MonitorJobPanel$JobId.Controls.Add(`$script:MonitorJobsButtonTwo$JobId)
-            Apply-CommonButtonSettings -Button `$script:MonitorJobsButtonTwo$JobId    
+"@
+        }
+        elseif ($PSWriteHTMLSwitch) {
+                Invoke-Expression @"
+                `$script:MonitorJobsButtonTwo$JobId = New-Object System.Windows.Forms.Button -Property @{
+                    Left   = `$script:MonitorJobsButtonOne$JobId.Left + `$script:MonitorJobsButtonOne$JobId.Width + (`$FormScale * 5)
+                    Top    = `$script:MonitorJobsButtonOne$JobId.Top
+                    Width  = `$FormScale * 60
+                    Height = `$FormScale * 21
+                    Font   = New-Object System.Drawing.Font('Courier New',`$(`$FormScale * 8),1,2,1)
+                }
 "@
         }
         elseif ($SMITH) {
@@ -1243,8 +1289,6 @@ if ($MonitorMode) {
                             [System.GC]::Collect()
                         }
                     }
-                    `$script:Section3MonitorJobPanel$JobId.Controls.Add(`$script:MonitorJobsButtonTwo$JobId)
-                    Apply-CommonButtonSettings -Button `$script:MonitorJobsButtonTwo$JobId    
                 }
                 elseif ((Test-Path -Path "`$Dependencies\Modules\PSWriteHTML") -and (Get-Content "`$PoShHome\Settings\PSWriteHTML Module Install.txt") -match 'Yes') {
                     `$script:MonitorJobsButtonTwo$JobId = New-Object System.Windows.Forms.Button -Property @{
@@ -1284,18 +1328,16 @@ if ($MonitorMode) {
                             [System.GC]::Collect()
                         }
                     }
-                    `$script:Section3MonitorJobPanel$JobId.Controls.Add(`$script:MonitorJobsButtonTwo$JobId)
-                    Apply-CommonButtonSettings -Button `$script:MonitorJobsButtonTwo$JobId    
                 }
 
                 
-                `$script:MonitorJobsButtonStatus$JobId.Left      = `$script:MonitorJobsButtonTwo$JobId.Left + `$script:MonitorJobsButtonTwo$JobId.Width + (`$FormScale * 5)
-                `$script:MonitorJobsButtonDetails$JobId.Left      = `$script:MonitorJobsButtonStatus$JobId.Left
-                `$script:MonitorJobsButtonRemove$JobId.Left       = `$script:MonitorJobsButtonStatus$JobId.Left + `$script:MonitorJobsButtonStatus$JobId.Width + (`$FormScale * 5)
-                `$script:Section3MonitorJobOptionsButton$JobId.Left      = `$script:MonitorJobsButtonRemove$JobId.Left    
-                `$script:Section3MonitorJobKeepDataCheckbox$JobId.Left   = `$script:MonitorJobsButtonRemove$JobId.Left + `$script:MonitorJobsButtonRemove$JobId.Width + (`$FormScale * 5)
-                `$script:MonitorJobsButtonMonitor$JobId.Left = `$script:Section3MonitorJobKeepDataCheckbox$JobId.Left
-                `$script:Section3MonitorJobNotifyCheckbox$JobId.Left     = `$script:Section3MonitorJobKeepDataCheckbox$JobId.Left
+                # `$script:MonitorJobsButtonStatus$JobId.Left      = `$script:MonitorJobsButtonTwo$JobId.Left + `$script:MonitorJobsButtonTwo$JobId.Width + (`$FormScale * 5)
+                # `$script:MonitorJobsButtonDetails$JobId.Left      = `$script:MonitorJobsButtonStatus$JobId.Left
+                # `$script:MonitorJobsButtonRemove$JobId.Left       = `$script:MonitorJobsButtonStatus$JobId.Left + `$script:MonitorJobsButtonStatus$JobId.Width + (`$FormScale * 5)
+                # `$script:Section3MonitorJobOptionsButton$JobId.Left      = `$script:MonitorJobsButtonRemove$JobId.Left    
+                # `$script:Section3MonitorJobKeepDataCheckbox$JobId.Left   = `$script:MonitorJobsButtonRemove$JobId.Left + `$script:MonitorJobsButtonRemove$JobId.Width + (`$FormScale * 5)
+                # `$script:MonitorJobsButtonMonitor$JobId.Left = `$script:Section3MonitorJobKeepDataCheckbox$JobId.Left
+                # `$script:Section3MonitorJobNotifyCheckbox$JobId.Left     = `$script:Section3MonitorJobKeepDataCheckbox$JobId.Left
 "@
             }
         }
@@ -1373,7 +1415,6 @@ Start-Process 'PowerShell' -ArgumentList '-NoProfile',
             Invoke-Expression @"
             `$script:ComputerName$JobId = "$ComputerName"
             `$script:SendFilePath$JobId = "$SendFilePath"
-            
             
             `$script:MonitorJobsButtonThree$JobId = New-Object System.Windows.Forms.Button -Property @{
                 text      = 'Remove Files'
@@ -1467,42 +1508,54 @@ Start-Process 'PowerShell' -ArgumentList '-NoProfile',
 "@    
         }
         elseif ($PSWriteHTMLSwitch) {
-        Invoke-Expression @"
+            Invoke-Expression @"
             `$script:MonitorJobsButtonThree$JobId = New-Object System.Windows.Forms.Button -Property @{
-                text     = 'Browser'
-                Left     = `$script:Section3MonitorJobProgressBar$JobId.Left + `$script:Section3MonitorJobProgressBar$JobId.Width + (`$FormScale * 5)
-                Top      = `$script:MonitorJobsButtonOne$JobId.Top + `$script:MonitorJobsButtonOne$JobId.Height + (`$FormScale * 5)
-                Width    = `$FormScale * 60
-                Height   = `$FormScale * 21
-                Font     = New-Object System.Drawing.Font('Courier New',`$(`$FormScale * 8),1,2,1)
+                text      = 'GridView'
+                Left      = `$script:Section3MonitorJobProgressBar$JobId.Left + `$script:Section3MonitorJobProgressBar$JobId.Width + (`$FormScale * 5)
+                Top       = `$script:MonitorJobsButtonOne$JobId.Top + `$script:MonitorJobsButtonOne$JobId.Height + (`$FormScale * 5)
+                Width     = `$FormScale * 60
+                Height    = `$FormScale * 21
+                Font      = New-Object System.Drawing.Font('Courier New',`$(`$FormScale * 8),1,2,1)
                 Add_click = {
                     if (`$This.BackColor -ne 'LightGray') {
                         `$This.BackColor = 'LightGray'
                     }
-                    `$script:PSWriteHTMLResults$JobId = `$script:CurrentJobs$JobId | Receive-Job -Keep
-                    if (`$script:PSWriteHTMLResults$JobId) {
-                        if ("$PSWriteHTML" -eq 'EndpointDataSystemSnapshot') {                            
-                            script:Individual-PSWriteHTML -Title 'Endpoint Snapshot' -Data { script:Invoke-PSWriteHTMLEndpointSnapshot -InputData `$script:PSWriteHTMLResults$JobId -CheckedItems `$script:PSWriteHTMLOptions$JobId -MenuPrompt }
+                    
+                    if ((Test-Path "`$(`$script:CollectionSavedDirectoryTextBox.Text)\`$script:JobName$JobId (`$(`$JobStartTimeFileFriendly$JobId)).$FileExtension")) {
+                        `$script:JobCSVResults$JobId = $ImportDataCmd "`$(`$script:CollectionSavedDirectoryTextBox.Text)\`$script:JobName$JobId (`$(`$JobStartTimeFileFriendly$JobId)).$FileExtension"
+                        if ("$FileExtension" -like 'txt') {
+                            [System.Windows.Forms.MessageBox]::Show("It is recommended to use the Text button to view flat text results. The following results have been parsed from flat text into a csv format.`n`nText with two or more spaces between them normally indicate separate fields. That said, linux systems are not very consistent with their CLI output. Results returned sometimes don't have headers or some fields are separated by as little as a single space which result in frequent formatting issues.`n`nThis section should only be used for reference and is useful for column searching/filtering, but should be verified against accompanied flat text results.","PoSh-EasyWin - `$(`$script:JobName$JobId)")
+                            Import-Csv "`$(`$script:CollectionSavedDirectoryTextBox.Text)\`$script:JobName$JobId (`$(`$JobStartTimeFileFriendly$JobId)).csv" | Out-GridView -Title "PoSh-EasyWin: `$(`$script:JobName$JobId) (`$(`$JobStartTimeFileFriendly$JobId))"
                         }
-                        elseif ("$PSWriteHTML" -eq 'EndpointDataNetworkConnections') {
+                        elseif ("$FileExtension" -like 'xml') {
                             `$script:PSWriteHTMLResults$JobId = `$script:CurrentJobs$JobId | Receive-Job -Keep
-                            script:Individual-PSWriteHTML -Title 'Network Connections' -Data {                         
-                                script:Invoke-PSWriteHTMLNetworkConnections -InputData `$script:PSWriteHTMLResults$JobId -MenuPrompt
+                            (`$script:PSWriteHTMLResults$JobId | Out-GridView -Title "`$script:JobName$JobId (`$(`$JobStartTimeFileFriendly$JobId))" -PassThru).Value | Out-GridView -Title "`$script:JobName$JobId (`$(`$JobStartTimeFileFriendly$JobId))"
+                        }
+                        else {
+                            if (`$script:JobCSVResults$JobId) {
+                                `$script:JobCSVResults$JobId  | Out-GridView -Title "PoSh-EasyWin: `$(`$script:JobName$JobId) (`$(`$JobStartTimeFileFriendly$JobId))"
+                            }
+                            else {
+                                [System.Windows.Forms.MessageBox]::Show("There are no results avaiable.",'PoSh-EasyWin - View Progress')
                             }
                         }
-                        Invoke-Item `$script:PSWriteHTMLFilePath$JobId
-                    }
-                    elseif ((Test-Path "`$script:PSWriteHTMLFilePath$JobId")) {
-                        Invoke-Item `$script:PSWriteHTMLFilePath$JobId                    
                     }
                     else {
-                        [System.Windows.Forms.MessageBox]::Show("There is currently on data available.",'PoSh-EasyWin - Console')
+                        `$script:CurrentJobsWithComputerName$JobId = @()
+                        foreach (`$Job in `$script:CurrentJobs$JobId) {
+                            `$script:CurrentJobsWithComputerName$JobId += `$Job | Receive-Job -Keep | Select-Object @{n='ComputerName';e={"`$((`$Job.Name -split ' ')[-1])"}},* -ErrorAction SilentlyContinue
+                        }
+                        if (`$script:CurrentJobsWithComputerName$JobId.count -ge 1) {
+                            `$script:CurrentJobsWithComputerName$JobId | Out-GridView -Title "PoSh-EasyWin: `$(`$script:JobName$JobId) (`$(`$JobStartTimeFileFriendly$JobId))"
+                        }
+                        else {
+                            [System.Windows.Forms.MessageBox]::Show("`$(`$script:JobName$JobId)`n`nThere are currently no results available.",'PoSh-EasyWin - View Progress')
+                        }
                     }
+                    Remove-Variable -Name JobCSVResults$JobId -Scope script
+                    Remove-Variable -Name CurrentJobsWithComputerName$JobId -Scope script
                     [System.GC]::Collect()
                 }
-            }
-            if (`$OptionSaveCliXmlDataCheckBox.checked -eq `$false) {
-                `$script:MonitorJobsButtonThree$JobId.Text = 'Browser'
             }
 "@
         }
@@ -1566,6 +1619,26 @@ Start-Process 'PowerShell' -ArgumentList '-NoProfile',
             }
 "@            
         }
+        elseif ($PSWriteHTMLSwitch) {
+            Invoke-Expression @"
+            `$script:FolderPath$JobId = "`$(`$script:CollectionSavedDirectoryTextBox.Text)"
+
+            `$script:MonitorJobsButtonFour$JobId = New-Object System.Windows.Forms.Button -Property @{
+                Text     = 'Folder'
+                Left     = `$script:MonitorJobsButtonThree$JobId.Left + `$script:MonitorJobsButtonThree$JobId.Width + (`$FormScale * 5)
+                Top      = `$script:MonitorJobsButtonOne$JobId.Top + `$script:MonitorJobsButtonOne$JobId.Height + (`$FormScale * 5)
+                Width    = `$FormScale * 60
+                Height   = `$FormScale * 21
+                Font     = New-Object System.Drawing.Font('Courier New',`$(`$FormScale * 8),1,2,1)
+                Add_Click = {
+                    if (`$This.BackColor -ne 'LightGray') {
+                        `$This.BackColor = 'LightGray'
+                    }
+                    Invoke-Item "`$script:FolderPath$JobId"
+                }
+            }
+"@
+        }
         elseif ($SmithFlag -eq 'RetrieveFile') {
             Invoke-Expression @"
             `$script:MonitorJobsButtonFour$JobId = New-Object System.Windows.Forms.Button -Property @{
@@ -1579,7 +1652,7 @@ Start-Process 'PowerShell' -ArgumentList '-NoProfile',
                     if (`$This.BackColor -ne 'LightGray') {
                         `$This.BackColor = 'LightGray'
                     }
-                    Invoke-Item "`$(`$script:CollectionSavedDirectoryTextBox.Text)\`$(`$script:JobName$JobId)\"
+                    Invoke-Item "`$(`$script:CollectionSavedDirectoryTextBox.Text)"
                 }
             }
 "@
@@ -1597,7 +1670,7 @@ Start-Process 'PowerShell' -ArgumentList '-NoProfile',
                     if (`$This.BackColor -ne 'LightGray') {
                         `$This.BackColor = 'LightGray'
                     }
-                    Invoke-Item "`$(`$script:CollectionSavedDirectoryTextBox.Text)\`$(`$script:JobName$JobId)\"
+                    Invoke-Item "`$(`$script:CollectionSavedDirectoryTextBox.Text)"
                 }
             }
 "@
@@ -2616,6 +2689,7 @@ Start-Process 'PowerShell' -ArgumentList '-NoProfile',
             `$script:Section3MonitorJobTransparentLabel$JobId,
             `$script:Section3MonitorJobProgressBar$JobId,
             `$script:MonitorJobsButtonOne$JobId,
+            `$script:MonitorJobsButtonTwo$JobId,
             `$script:MonitorJobsButtonThree$JobId,
             `$script:MonitorJobsButtonFour$JobId,
             `$script:MonitorJobsButtonRemove$JobId,
@@ -2629,6 +2703,7 @@ Start-Process 'PowerShell' -ArgumentList '-NoProfile',
         Apply-CommonButtonSettings -Button `$script:MonitorJobsButtonStatus$JobId
         Apply-CommonButtonSettings -Button `$script:MonitorJobsButtonDetails$JobId
         Apply-CommonButtonSettings -Button `$script:MonitorJobsButtonOne$JobId
+        Apply-CommonButtonSettings -Button `$script:MonitorJobsButtonTwo$JobId
         Apply-CommonButtonSettings -Button `$script:MonitorJobsButtonThree$JobId
         Apply-CommonButtonSettings -Button `$script:MonitorJobsButtonFour$JobId
         Apply-CommonButtonSettings -Button `$script:MonitorJobsButtonRemove$JobId
@@ -2778,7 +2853,6 @@ Start-Process 'PowerShell' -ArgumentList '-NoProfile',
                 `$script:Section3MonitorJobLabel$JobId.ForeColor = 'Black'
                 `$script:Section3MonitorJobTransparentLabel$JobId.ForeColor = 'Black'
                 `$script:Section3MonitorJobProgressBar$JobId.ForeColor = 'LightGreen'
-                `$script:MonitorJobsButtonOne$JobId.Text = 'View Results'
                 `$script:MonitorJobsButtonOne$JobId.BackColor = 'LightGreen'
                 
                 #if (`$OptionSaveCliXmlDataCheckBox.checked -eq `$false) { `$script:MonitorJobsButtonThree$JobId.BackColor = 'LightCoral' }
