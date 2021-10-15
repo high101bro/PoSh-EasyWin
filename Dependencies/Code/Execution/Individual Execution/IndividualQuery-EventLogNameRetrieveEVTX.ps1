@@ -12,7 +12,7 @@ $EventLogNameEVTXStartTimePickerChecked = $script:EventLogNameEVTXStartTimePicke
 $EventLogNameEVTXStopTimePickerChecked = $script:EventLogNameEVTXStopTimePicker.Checked
 $EventLogNameEVTXStartTimePickerValue = $script:EventLogNameEVTXStartTimePicker.Value
 $EventLogNameEVTXStopTimePickerValue = $script:EventLogNameEVTXStopTimePicker.Value
-$EventLogNameEVTXEventIDsManualEntryTextboxFilter = $EventLogNameEVTXEventIDsManualEntryTextbox.Textbox
+$EventLogNameEVTXEventIDsManualEntryTextboxFilter = $script:EventLogNameEVTXEventIDsManualEntryTextbox.Text
 $EndpointSavePath = "C:\windows\temp\$($EventLogNameEVTXLogNameSelectionComboBoxSelectedItem.replace('/','-')).evtx"
 
 if ($EventLogNameEVTXWinRMRadioButton.Checked) {
@@ -39,7 +39,7 @@ foreach ($TargetComputer in $script:ComputerList) {
             $EventLogNameEVTXStopTimePickerChecked,
             $EventLogNameEVTXStartTimePickerValue,
             $EventLogNameEVTXStopTimePickerValue,
-            $EventLogNameEVTXEventIDsManualEntryTextboxFilter = $null,
+            $EventLogNameEVTXEventIDsManualEntryTextboxFilter,
             $EndpointSavePath,
             $LocalSavePath
         )
@@ -62,9 +62,7 @@ foreach ($TargetComputer in $script:ComputerList) {
         #$DateTimeStop = (get-date).ToString('yyyy-MM-ddThh:mm:ss')
         $DateTimeStop = $EventLogNameEVTXStopTimePickerValue.ToString('yyyy-MM-ddThh:mm:ss')
 
-        if ($EventLogNameEVTXEventIDsManualEntryTextboxFilter) {
-            $Filter = $EventLogNameEVTXEventIDsManualEntryTextboxFilter.split("`r`n")
-        }
+        $IdFilterList = $EventLogNameEVTXEventIDsManualEntryTextboxFilter.split("`r`n") | Where-Object {$_ -ne '' -and $_ -ne $null}
 
         $OverWrite = $true
 
@@ -73,14 +71,31 @@ foreach ($TargetComputer in $script:ComputerList) {
         $EventLogQueryCommand = @"
 wevtutil export-log '$EventLog' '$EndpointSavePath' /q:"* 
 "@
-#         $EventLogQueryCommand += '[System '
+         $EventLogQueryCommand += '[System '
 
-#         # Note: Not implemented yet
-#         #$EventLogNameEVTXMaximumCollectionTextBoxText
+        # Note: Not implemented yet
+        #$EventLogNameEVTXMaximumCollectionTextBoxText
         
-#         if ($EventLogNameEVTXEventIDsManualEntryTextboxFilter) {
-#             $EventLogQueryCommand += '[(EventID=4624) or (EventID=4634)] '
-#         }
+        if ($IdFilterList.count -gt 0) {
+
+            $EventLogQueryCommand += '[ '
+            if ($IdFilterList.count -eq 1) {
+                $EventLogQueryCommand += "(EventID=$($IdFilterList))"
+            }
+            elseif ($IdFilterList.count -gt 1) {
+                $FirstID = $true
+                foreach ($Id in $IdFilterList) {
+                    if ($FirstID) {
+                        $EventLogQueryCommand += "(EventID=$($Id))"
+                        $FirstID = $false
+                    }
+                    else {
+                        $EventLogQueryCommand += " or (EventID=$($Id))"
+                    }
+                }
+            }
+            $EventLogQueryCommand += ' ]'
+        }
 
 #         if ( $EventLogNameEVTXStartTimePickerChecked -and $EventLogNameEVTXStopTimePickerChecked ) {
 #             $EventLogQueryCommand += @'
@@ -88,7 +103,7 @@ wevtutil export-log '$EventLog' '$EndpointSavePath' /q:"*
 # '@
 #         }
 
-#         $EventLogQueryCommand += ']'
+         $EventLogQueryCommand += ']'
 
         $EventLogQueryCommand += '" '
 
@@ -126,6 +141,7 @@ wevtutil export-log '$EventLog' '$EndpointSavePath' /q:"*
         $LocalSavePath
     )
 
+    
     
     $InputValues = @"
 ===========================================================================
@@ -166,7 +182,7 @@ $EventLogNameEVTXLogNameSelectionComboBoxSelectedItem
 ===========================================================================
 Filters:
 ===========================================================================
-$EventLogNameEVTXEventIDsManualEntryTextboxFilter
+$($script:EventLogNameEVTXEventIDsManualEntryTextbox.Text)
 
 "@
 

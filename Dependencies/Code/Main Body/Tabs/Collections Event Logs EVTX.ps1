@@ -207,7 +207,7 @@ $Section1EventLogNameEVTXTab.Controls.Add($EventLogNameEVTXOptionsGroupBox)
 #============================================================================================================================================================
 
 $EventLogNameEVTXLogNameSelectionCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
-    Text   = "Log Name Selection (ChainSaw Integration Under Development)"
+    Text   = "Log Name Selection"
     Left   = $FormScale * 7
     Top    = $EventLogNameEVTXOptionsGroupBox.Top + $EventLogNameEVTXOptionsGroupBox.Height + $($FormScale * 5)
     Width  = $FormScale * 400
@@ -230,10 +230,22 @@ $EventLogNameEVTXLogNameSelectionCheckbox = New-Object System.Windows.Forms.Chec
 $Section1EventLogNameEVTXTab.Controls.Add( $EventLogNameEVTXLogNameSelectionCheckbox )
 
 
-$EventLogNameEVTXLogNameSelectionComboBox = New-Object -TypeName System.Windows.Forms.ComboBox -Property @{
-    Text   = "Event Log Selection"
+$EventLogNameEVTXLogNameNoteLabel = New-Object System.Windows.Forms.Label -Property @{
+    Text   = "This section pulls have Event Logs as .evtx files for viewing with Window Event Viewer and processing with 3rd party tools. (ChainSaw integration under dev)"
     Left   = $EventLogNameEVTXLogNameSelectionCheckbox.Left
     Top    = $EventLogNameEVTXLogNameSelectionCheckbox.Top + $EventLogNameEVTXLogNameSelectionCheckbox.Height + $($FormScale * 5)
+    Width  = $FormScale * 400
+    Height = $FormScale * 30
+    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    ForeColor = 'black'
+}
+$Section1EventLogNameEVTXTab.Controls.Add( $EventLogNameEVTXLogNameNoteLabel )
+
+
+$EventLogNameEVTXLogNameSelectionComboBox = New-Object -TypeName System.Windows.Forms.ComboBox -Property @{
+    Text   = "Event Log Selection"
+    Left   = $EventLogNameEVTXLogNameNoteLabel.Left
+    Top    = $EventLogNameEVTXLogNameNoteLabel.Top + $EventLogNameEVTXLogNameNoteLabel.Height + $($FormScale * 5)
     Width  = $FormScale * 250
     Height = $FormScale * 350
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
@@ -280,12 +292,11 @@ $EventLogNameEVTXEventIDsManualEntrySelectionButton = New-Object System.Windows.
     Top    = $EventLogNameEVTXEventIDsManualEntryLabel.Top + $EventLogNameEVTXEventIDsManualEntryLabel.Height
     Width  = $FormScale * 170
     Height = $FormScale * 20
-    Enabled = $false
     Add_Click = {
         Import-Csv $EventIDsFile | Out-GridView  -Title 'Windows Event IDs' -OutputMode Multiple | Set-Variable -Name EventCodeManualEntrySelectionContents
         $EventIDColumn = $EventCodeManualEntrySelectionContents | Select-Object -ExpandProperty "Event ID"
         Foreach ($EventID in $EventIDColumn) {
-            $EventLogNameEVTXEventIDsManualEntryTextbox.Text += "$EventID`r`n"
+            $script:EventLogNameEVTXEventIDsManualEntryTextbox.Text += "$EventID`r`n"
         }
     }
 }
@@ -299,20 +310,18 @@ $EventLogNameEVTXEventIDsManualEntryClearButton = New-Object System.Windows.Form
     Top    = $EventLogNameEVTXEventIDsManualEntryLabel.Top + $EventLogNameEVTXEventIDsManualEntryLabel.Height
     Width  = $FormScale * 75
     Height = $FormScale * 20
-    Add_Click = { $EventLogNameEVTXEventIDsManualEntryTextbox.Text = "" }
-    enabled = $false
+    Add_Click = { $script:EventLogNameEVTXEventIDsManualEntryTextbox.Text = "" }
 }
 $Section1EventLogNameEVTXTab.Controls.Add($EventLogNameEVTXEventIDsManualEntryClearButton)
 Apply-CommonButtonSettings -Button $EventLogNameEVTXEventIDsManualEntryClearButton
 
 
-$EventLogNameEVTXEventIDsManualEntryTextbox = New-Object System.Windows.Forms.TextBox -Property @{
+$script:EventLogNameEVTXEventIDsManualEntryTextbox = New-Object System.Windows.Forms.TextBox -Property @{
     Lines  = $null
     Left   = $EventLogNameEVTXEventIDsManualEntryLabel.Left
     Top    = $EventLogNameEVTXEventIDsManualEntryClearButton.Top + $EventLogNameEVTXEventIDsManualEntryClearButton.Height + $($FormScale * 5)
     Width  = $FormScale * 250
-    Height = $FormScale * 300
-    Enabled = $false
+    Height = $FormScale * 265
     MultiLine     = $True
     WordWrap      = $True
     AcceptsTab    = $false
@@ -320,6 +329,6 @@ $EventLogNameEVTXEventIDsManualEntryTextbox = New-Object System.Windows.Forms.Te
     ScrollBars    = "Vertical"
     Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
 }
-$Section1EventLogNameEVTXTab.Controls.Add($EventLogNameEVTXEventIDsManualEntryTextbox)
+$Section1EventLogNameEVTXTab.Controls.Add($script:EventLogNameEVTXEventIDsManualEntryTextbox)
 
 

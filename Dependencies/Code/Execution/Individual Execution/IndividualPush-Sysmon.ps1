@@ -228,6 +228,7 @@ elseif ($ExternalProgramsWinRMRadioButton.checked) {
                 $TimeOutTimer++
 
                 if (( Invoke-Command -ScriptBlock { Get-Service "$SysmonName" } -Session $Session )) {
+                    Start-Sleep -Seconds 1
                     Invoke-Command -ScriptBlock {
                         param(
                             $TargetFolder,

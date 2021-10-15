@@ -23,6 +23,19 @@ Writing Daily Tips...
 	- WHen using the "Retrieve Files" button, you must select any pre-exiting results from a "Directory Listing" or "File Search".
 
 ==================================================
+v6.6.4 - 15 OCT 2021
+==================================================
+
+Updated Event Logs Tab
+	- Added Note: This section pulls back event logs as evtx files, rather than csv or xml
+	- Enabled the following
+		- Select Event IDS to Filter button
+		- clear button
+		- Event ID Filter In entry textbox
+	- tested and verified filter
+		- Able to filter-in one or more event ids
+
+==================================================
 v6.5.4 - 11 OCT 2021
 ==================================================
 

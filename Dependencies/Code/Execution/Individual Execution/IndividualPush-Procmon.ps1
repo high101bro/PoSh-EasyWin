@@ -301,6 +301,7 @@ elseif ($ExternalProgramsWinRMRadioButton.checked) {
     
                     
                     if ( (Invoke-Command -ScriptBlock { param($RemoteTargetDirectory,$ProcmonName);  (-not $(Get-Process $ProcmonName -ea SilentlyContinue) -and $(Get-Item "$RemoteTargetDirectory\$ProcmonName.pml"  -ea SilentlyContinue) ) } -ArgumentList @($RemoteTargetDirectory,$ProcmonName)  -Session $Session) ) {
+                        Start-Sleep -Seconds 1
 
                         Copy-Item -Path "$RemoteTargetDirectory\$ProcmonName.pml" -Destination "$LocalSavePath\Procmon-$($TargetComputer).pml" -FromSession $Session -Force
 
