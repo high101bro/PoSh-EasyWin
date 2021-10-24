@@ -406,18 +406,11 @@ Endpoints:
 $($EndpointString.trim())
 
 ===========================================================================
-Regular Expression:
-===========================================================================
-$NetworkConnectionRegex
-
-===========================================================================
 Remote IP Address:
 ===========================================================================
 $($SearchString.trim())
 
 "@
-
-                            #Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript ${function:MonitorJobScriptBlock} -ArgumentList @($ExecutionStartTime,$CollectionName,$NetworkConnectionSearchExecutablePath) -InputValues $InputValues
 
                             if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
                                 Monitor-Jobs -CollectionName $CollectionName -MonitorMode -InputValues $InputValues -SendFileSwitch -SendFilePath "$($script:FileTransferDestinationPathRichTextBox.text)" -ComputerName $script:ComputerList

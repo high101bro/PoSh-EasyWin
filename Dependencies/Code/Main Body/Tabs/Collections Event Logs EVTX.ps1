@@ -44,11 +44,11 @@ $EventLogNameEVTXOptionsGroupBox = New-Object System.Windows.Forms.GroupBox -Pro
                     $ExternalProgramsWinRMRadioButton.checked = $true
                 }
                 Add_MouseHover = {
-                    Show-ToolTip -Title "WinRM" -Icon "Info" -Message @"
-+  Invoke-Command -ComputerName <Endpoint> -ScriptBlock {
-Get-WmiObject -Class Win32_NTLogEvent -Filter "(((EventCode='4624') OR (EventCode='4634')) and `
-(TimeGenerated>='20190313180030.000000-300') and (TimeGenerated<='20190314180030.000000-300')) }"
-"@
+#                     Show-ToolTip -Title "WinRM" -Icon "Info" -Message @"
+# +  Invoke-Command -ComputerName <Endpoint> -ScriptBlock {
+# Get-WmiObject -Class Win32_NTLogEvent -Filter "(((EventCode='4624') OR (EventCode='4634')) and `
+# (TimeGenerated>='20190313180030.000000-300') and (TimeGenerated<='20190314180030.000000-300')) }"
+# "@
                 }
             }
 
@@ -65,11 +65,11 @@ Get-WmiObject -Class Win32_NTLogEvent -Filter "(((EventCode='4624') OR (EventCod
                 ForeColor = 'Black'
                 Add_Click = {}
                 Add_MouseHover = {
-                    Show-ToolTip -Title "RPC" -Icon "Info" -Message @"
-+  Get-WmiObject -Class Win32_NTLogEvent -Filter "(((EventCode='4624') OR (EventCode='4634')) and `
- (TimeGenerated>='$([System.Management.ManagementDateTimeConverter]::ToDmtfDateTime(($script:EventLogNameEVTXStartTimePicker.Value)))') and (TimeGenerated<='20190314180030.000000-300'))"
-"@
-}
+#                     Show-ToolTip -Title "RPC" -Icon "Info" -Message @"
+# +  Get-WmiObject -Class Win32_NTLogEvent -Filter "(((EventCode='4624') OR (EventCode='4634')) and `
+#  (TimeGenerated>='$([System.Management.ManagementDateTimeConverter]::ToDmtfDateTime(($script:EventLogNameEVTXStartTimePicker.Value)))') and (TimeGenerated<='20190314180030.000000-300'))"
+# "@
+                }
             }
 
 
@@ -83,15 +83,15 @@ Get-WmiObject -Class Win32_NTLogEvent -Filter "(((EventCode='4624') OR (EventCod
                 ForeColor = "Black"
                 Enabled = $false
                 Add_MouseHover = {
-                    Show-ToolTip -Title "Max Collection" -Icon "Info" -Message @"
-+  Enter the maximum number of Event Logs to return
-+  This can be used with the datatime picker
-+  If left blank, it will collect all available Event Logs
-+  An entry of 0 (zero) will return no Event Logs
+#                     Show-ToolTip -Title "Max Collection" -Icon "Info" -Message @"
+# +  Enter the maximum number of Event Logs to return
+# +  This can be used with the datatime picker
+# +  If left blank, it will collect all available Event Logs
+# +  An entry of 0 (zero) will return no Event Logs
 
-+  This only applies to PowerShell object data retireved, not .evtx files
-"@
-}
+# +  This only applies to PowerShell object data retireved, not .evtx files
+# "@
+                }
             }
 
 
@@ -113,7 +113,7 @@ Get-WmiObject -Class Win32_NTLogEvent -Filter "(((EventCode='4624') OR (EventCod
 
 +  This only applies to PowerShell object data retireved, not .evtx files
 "@
-}
+                }
             }
 
 
@@ -156,7 +156,7 @@ Get-WmiObject -Class Win32_NTLogEvent -Filter "(((EventCode='4624') OR (EventCod
 +  If left blank, it will collect all available Event Logs
 +  If used, you must select both a start and end datetime
 "@
-}
+                }
             }
             # Wednesday, June 5, 2019 10:27:40 PM
             # $TimePicker.Value
@@ -197,7 +197,7 @@ Get-WmiObject -Class Win32_NTLogEvent -Filter "(((EventCode='4624') OR (EventCod
 +  If left blank, it will collect all available Event Logs
 +  If used, you must select both a start and end datetime
 "@
-}
+                }
             }
             $EventLogNameEVTXOptionsGroupBox.Controls.AddRange(@($EventLogProtocolRadioButtonLabel,$EventLogNameEVTXRPCRadioButton,$EventLogNameEVTXWinRMRadioButton,$EventLogNameEVTXDatetimeStartLabel,$script:EventLogNameEVTXStartTimePicker,$EventLogNameEVTXDatetimeStopLabel,$script:EventLogNameEVTXStopTimePicker,$EventLogNameEVTXMaximumCollectionLabel,$script:EventLogNameEVTXMaximumCollectionTextBox))
 $Section1EventLogNameEVTXTab.Controls.Add($EventLogNameEVTXOptionsGroupBox)

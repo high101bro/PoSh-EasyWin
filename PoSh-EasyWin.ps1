@@ -554,26 +554,6 @@ $QueryAndCollectionPanel = New-Object System.Windows.Forms.Panel -Property @{
             }
             # Added/Removed by Set-GuiLayout
 
-            $High101BroPictureBox = New-Object Windows.Forms.PictureBox -Property @{
-                Text   = "high101bro"
-                Left   = $PoShEasyWinPictureBox.Left + $PoShEasyWinPictureBox.Width + ($FormScale * 10)
-                Top    = $PoShEasyWinPictureBox.Top
-                Width  = $FormScale * 45
-                Height = $FormScale * 45
-                Image  = [System.Drawing.Image]::Fromfile($high101bro_image)
-                SizeMode = 'StretchImage'
-                Add_Click = {
-                    $Verify = [System.Windows.Forms.MessageBox]::Show(
-                        "Do you want to navigate to PoSh-EasyWin's GitHub page?",
-                        "PoSh-EasyWin - high101bro",
-                        'YesNo',
-                        "Warning")
-                    switch ($Verify) {
-                        'Yes'{Start-Process "https://www.github.com/high101bro/PoSh-EasyWin"}
-                        'No' {continue}
-                    }                    
-                }
-            }
 
 
             $MainLeftTabControlImageList = New-Object System.Windows.Forms.ImageList -Property @{
@@ -1400,6 +1380,9 @@ Update-FormProgress "$Dependencies\Code\Execution\Search-Registry.ps1"
 # Required for Query-NetworkConnectionRemoteIPAddress, Query-NetworkConnectionRemotePort, and Query-NetworkConnectionProcess
 Update-FormProgress "$Dependencies\Code\Execution\Query-NetworkConnection.ps1"
 . "$Dependencies\Code\Execution\Query-NetworkConnection.ps1"
+Update-FormProgress "$Dependencies\Code\Execution\Query-NetworkConnectionWithinSysmon.ps1"
+. "$Dependencies\Code\Execution\Query-NetworkConnectionWithinSysmon.ps1"
+
 
 # Compiles the .csv files in the collection directory then saves the combined file to the partent directory
 # The first line (collumn headers) is only copied once from the first file compiled, then skipped for the rest
@@ -1589,14 +1572,22 @@ $ExecuteScriptHandler = {
         if ($FileSearchAlternateDataStreamCheckbox.Checked)             { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
 
         if ($NetworkEndpointPacketCaptureCheckBox.Checked)              { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
-        if ($NetworkConnectionSearchRemoteIPAddressCheckbox.checked)    { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
-        if ($NetworkConnectionSearchRemotePortCheckbox.checked)         { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
-        if ($NetworkConnectionSearchLocalPortCheckbox.checked)          { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
-        if ($NetworkConnectionSearchProcessCheckbox.checked)            { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
-        if ($NetworkConnectionSearchDNSCacheCheckbox.checked)           { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
-        if ($NetworkConnectionSearchCommandLineCheckbox.checked)        { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
-        if ($NetworkConnectionSearchExecutablePathCheckbox.checked)     { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
-    
+        
+        if ($NetworkLiveSearchRemoteIPAddressCheckbox.checked)    { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
+        if ($NetworkLiveSearchRemotePortCheckbox.checked)         { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
+        if ($NetworkLiveSearchLocalPortCheckbox.checked)          { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
+        if ($NetworkLiveSearchProcessCheckbox.checked)            { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
+        if ($NetworkLiveSearchDNSCacheCheckbox.checked)           { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
+        if ($NetworkLiveSearchCommandLineCheckbox.checked)        { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
+        if ($NetworkLiveSearchExecutablePathCheckbox.checked)     { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
+       
+        if ($NetworkSysmonRegexCheckbox.checked)                      { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
+        if ($NetworkSysmonSearchSourceIPAddressCheckbox.checked)      { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
+        if ($NetworkSysmonSearchSourcePortCheckbox.checked)           { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
+        if ($NetworkSysmonSearchDestinationIPAddressCheckbox.checked) { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
+        if ($NetworkSysmonSearchDestinationPortCheckbox.checked)      { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
+        if ($NetworkSysmonSearchAccountCheckbox.checked)              { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
+        if ($NetworkSysmonSearchExecutablePathCheckbox.checked)       { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
 
         if ($ExternalProgramsWinRMRadioButton.checked -and $SysinternalsSysmonCheckbox.Checked)                        { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
         if ($ExternalProgramsWinRMRadioButton.checked -and $SysinternalsProcessMonitorCheckbox.Checked)                { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
@@ -1731,34 +1722,46 @@ $ExecuteScriptHandler = {
                     if ($NetworkEndpointPacketCaptureCheckBox.Checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualCapture-EndpointPacketCaptureNetSh.ps1" }
                 }
 
-                # Network Connection Search Remote IP Address
-                # Checks network connections for remote ip addresses and only returns those that match
-                if ($NetworkConnectionSearchRemoteIPAddressCheckbox.checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-NetworkConnectionRemoteIPAddress.ps1" }
+                # Live Network Connection Search Remote IP Address
+                if ($NetworkLiveSearchRemoteIPAddressCheckbox.checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-NetworkLiveRemoteIPAddress.ps1" }
 
-                # Network Connection Search Remote Port
-                # Checks network connections for remote ports and only returns those that match
-                if ($NetworkConnectionSearchRemotePortCheckbox.checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-NetworkConnectionRemotePort.ps1" }
+                # Live Network Connection Search Remote Port
+                if ($NetworkLiveSearchRemotePortCheckbox.checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-NetworkLiveRemotePort.ps1" }
 
-                # Network Connection Search Local Port
-                # Checks network connections for remote ports and only returns those that match
-                if ($NetworkConnectionSearchLocalPortCheckbox.checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-NetworkConnectionLocalPort.ps1" }
+                # Live Network Connection Search Local Port
+                if ($NetworkLiveSearchLocalPortCheckbox.checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-NetworkLiveLocalPort.ps1" }
 
-                # Network Connection Search Remote Process
-                # Checks network connections for those started by a specified process name and only returns those that match
-                if ($NetworkConnectionSearchProcessCheckbox.checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-NetworkConnectionProcess.ps1" }
+                # Live Network Connection Search Command Line
+                if ($NetworkLiveSearchCommandLineCheckbox.checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-NetworkLiveSearchCommandLine.ps1" }
 
-                # Network Connection Search DNS Cache
-                # Checks dns cache for the provided search terms and only returns those that match
-                if ($NetworkConnectionSearchDNSCacheCheckbox.checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-NetworkConnectionSearchDNSCache.ps1" }
+                # Live Network Connection Search Execution Full Path
+                if ($NetworkLiveSearchExecutablePathCheckbox.checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-NetworkLiveSearchExecutablePath.ps1" }
 
-                # Network Connection Search Command Line
-                # Checks network connection for command line arguments and only returns those that match
-                if ($NetworkConnectionSearchCommandLineCheckbox.checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-NetworkConnectionSearchCommandLine.ps1" }
+                # Live Network Connection Search Remote Process
+                if ($NetworkLiveSearchProcessCheckbox.checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-NetworkLiveProcess.ps1" }
+
+                # Live Network Connection Search DNS Cache
+                if ($NetworkLiveSearchDNSCacheCheckbox.checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-NetworkLiveSearchDNSCache.ps1" }
+                
+
+                # Searches for Sysmon Event ID 3 for Network Connections for Source IP Addresses
+                if ($NetworkSysmonSearchSourceIPAddressCheckbox.checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-NetworkSysmonSourceIPAddress.ps1" }
+
+                #  Searches for Sysmon Event ID 3 for Network Connections for Source Ports
+                if ($NetworkSysmonSearchSourcePortCheckbox.checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-NetworkSysmonSourcePort.ps1" }
+
+                # Searches for Sysmon Event ID 3 for Network Connections for Destination IP Addresses
+                if ($NetworkSysmonSearchDestinationIPAddressCheckbox.checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-NetworkSysmonDestinationIPAddress.ps1" }
+
+                # Searches for Sysmon Event ID 3 for Network Connections for Destination Ports
+                if ($NetworkSysmonSearchDestinationPortCheckbox.checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-NetworkSysmonDestinationPort.ps1" }
+
+                #  Searches for Sysmon Event ID 3 for Network Connections for connections started by particular Users
+                if ($NetworkSysmonSearchAccountCheckbox.checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-NetworkSysmonSearchAccount.ps1" }
 
                 # Network Connection Search Execution Full Path
-                # Checks network connection for those with execution full paths and only returns those that match
-                if ($NetworkConnectionSearchExecutablePathCheckbox.checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-NetworkConnectionSearchExecutablePath.ps1" }
-        
+                if ($NetworkSysmonSearchExecutablePathCheckbox.checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-NetworkSysmonSearchExecutablePath.ps1" }       
+
                 # Sysmon
                 # Pushes Sysmon to remote hosts and configure it with the selected config .xml file
                 # If sysmon is already installed, it will update the config .xml file instead
@@ -1899,33 +1902,46 @@ $ExecuteScriptHandler = {
                 if ($NetworkEndpointPacketCaptureCheckBox.Checked) { . "$Dependencies\Code\Execution\Session Based\SessionQuery-EndpointPacketCapture.ps1" }
 
                 # Network Connection Search Remote IP Address
-                # Checks network connections for remote ip addresses and only returns those that match
-                if ($NetworkConnectionSearchRemoteIPAddressCheckbox.checked) { . "$Dependencies\Code\Execution\Session Based\SessionQuery-NetworkConnectionSearchRemoteIPAddress.ps1" }
+                if ($NetworkLiveSearchRemoteIPAddressCheckbox.checked) { . "$Dependencies\Code\Execution\Session Based\SessionQuery-NetworkConnectionSearchRemoteIPAddress.ps1" }
 
                 # Network Connection Search Remote Port
-                # Checks network connections for remote ports and only returns those that match
-                if ($NetworkConnectionSearchRemotePortCheckbox.checked) { . "$Dependencies\Code\Execution\Session Based\SessionQuery-NetworkConnectionSearchRemotePort.ps1" }
+                if ($NetworkLiveSearchRemotePortCheckbox.checked) { . "$Dependencies\Code\Execution\Session Based\SessionQuery-NetworkConnectionSearchRemotePort.ps1" }
 
                 # Network Connection Search Local Port
-                # Checks network connections for Local ports and only returns those that match
-                if ($NetworkConnectionSearchLocalPortCheckbox.checked) { . "$Dependencies\Code\Execution\Session Based\SessionQuery-NetworkConnectionSearchLocalPort.ps1" }
+                if ($NetworkLiveSearchLocalPortCheckbox.checked) { . "$Dependencies\Code\Execution\Session Based\SessionQuery-NetworkConnectionSearchLocalPort.ps1" }
 
                 # Network Connection Search Process
-                # Checks network connections for those started by a specified process name and only returns those that match
-                if ($NetworkConnectionSearchProcessCheckbox.checked) { . "$Dependencies\Code\Execution\Session Based\SessionQuery-NetworkConnectionSearchProcess.ps1" }
-
-                # Network Connection Search DNS Check
-                # Checks dns cache for the provided search terms and only returns those that match
-                if ($NetworkConnectionSearchDNSCacheCheckbox.checked) { . "$Dependencies\Code\Execution\Session Based\SessionQuery-NetworkConnectionSearchDNSCache.ps1" }
-
-                # Network Connection Search Command Line
-                # Checks network connection for command line arguments and only returns those that match
-                if ($NetworkConnectionSearchCommandLineCheckbox.checked) { . "$Dependencies\Code\Execution\Session Based\SessionQuery-NetworkConnectionSearchCommandLine.ps1" }
+                if ($NetworkLiveSearchProcessCheckbox.checked) { . "$Dependencies\Code\Execution\Session Based\SessionQuery-NetworkConnectionSearchProcess.ps1" }
 
                 # Network Connection Search Execution Full Path
-                # Checks network connection for those with execution full paths and only returns those that match
-                if ($NetworkConnectionSearchExecutablePathCheckbox.checked) { . "$Dependencies\Code\Execution\Session Based\SessionQuery-NetworkConnectionSearchExecutablePath.ps1" }
+                if ($NetworkLiveSearchExecutablePathCheckbox.checked) { . "$Dependencies\Code\Execution\Session Based\SessionQuery-NetworkConnectionSearchExecutablePath.ps1" }
 
+                # Network Connection Search DNS Check
+                if ($NetworkLiveSearchDNSCacheCheckbox.checked) { . "$Dependencies\Code\Execution\Session Based\SessionQuery-NetworkConnectionSearchDNSCache.ps1" }
+
+                # Network Connection Search Command Line
+                if ($NetworkLiveSearchCommandLineCheckbox.checked) { . "$Dependencies\Code\Execution\Session Based\SessionQuery-NetworkConnectionSearchCommandLine.ps1" }
+
+
+                # Searches for Sysmon Event ID 3 for Network Connections for Source IP Addresses
+                if ($NetworkSysmonSearchSourceIPAddressCheckbox.checked) { [System.Windows.Forms.MessageBox]::Show("Network Sysmon Remote IP search is not compatible with the Session based execution mode","PoSh-EasyWin",'Ok',"Warning") }
+
+                #  Searches for Sysmon Event ID 3 for Network Connections for Source Ports
+                if ($NetworkSysmonSearchSourcePortCheckbox.checked) { [System.Windows.Forms.MessageBox]::Show("Network Sysmon Local Port search is not compatible with the Session based execution mode","PoSh-EasyWin",'Ok',"Warning") }
+
+                # Searches for Sysmon Event ID 3 for Network Connections for Destination IP Addresses
+                if ($NetworkSysmonSearchDestinationIPAddressCheckbox.checked) { [System.Windows.Forms.MessageBox]::Show("Network Sysmon Remote IP search is not compatible with the Session based execution mode","PoSh-EasyWin",'Ok',"Warning") }
+
+                # Searches for Sysmon Event ID 3 for Network Connections for Destination Ports
+                if ($NetworkSysmonSearchDestinationPortCheckbox.checked) { [System.Windows.Forms.MessageBox]::Show("Network Sysmon Remote Port search is not compatible with the Session based execution mode","PoSh-EasyWin",'Ok',"Warning") }
+
+                #  Searches for Sysmon Event ID 3 for Network Connections for connections started by particular Users
+                if ($NetworkSysmonSearchAccountCheckbox.checked) { [System.Windows.Forms.MessageBox]::Show("Network Sysmon User search is not compatible with the Session based execution mode","PoSh-EasyWin",'Ok',"Warning") }
+
+                # Network Connection Search Execution Full Path
+                if ($NetworkSysmonSearchExecutablePathCheckbox.checked) { [System.Windows.Forms.MessageBox]::Show("Network Sysmon Ececutable Path search is not compatible with the Session based execution mode","PoSh-EasyWin",'Ok',"Warning") }
+                
+                
                 # Sysmon
                 # Pushes Sysmon to remote hosts and configure it with the selected config .xml file
                 # If sysmon is already installed, it will update the config .xml file instead

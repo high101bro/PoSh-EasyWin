@@ -36,13 +36,21 @@ function Deselect-AllCommands {
     $FileSearchFileSearchCheckbox.checked                        = $false
     $FileSearchAlternateDataStreamCheckbox.checked               = $false
     $NetworkEndpointPacketCaptureCheckBox.checked                = $false
-    $NetworkConnectionSearchRemoteIPAddressCheckbox.checked      = $false
-    $NetworkConnectionSearchRemotePortCheckbox.checked           = $false
-    $NetworkConnectionSearchLocalPortCheckbox.checked            = $false
-    $NetworkConnectionSearchProcessCheckbox.checked              = $false
-    $NetworkConnectionSearchDNSCacheCheckbox.checked             = $false
-    $NetworkConnectionSearchCommandLineCheckbox.checked          = $false
-    $NetworkConnectionSearchExecutablePathCheckbox.checked       = $false
+    $NetworkLiveSearchRemoteIPAddressCheckbox.checked            = $false
+    $NetworkLiveSearchRemotePortCheckbox.checked                 = $false
+    $NetworkLiveSearchLocalPortCheckbox.checked                  = $false
+    $NetworkLiveSearchCommandLineCheckbox.checked                = $false
+    $NetworkLiveSearchExecutablePathCheckbox.checked             = $false
+    $NetworkLiveSearchProcessCheckbox.checked                    = $false
+    $NetworkLiveSearchDNSCacheCheckbox.checked                   = $false
+
+    $NetworkSysmonSearchSourceIPAddressCheckbox.checked          = $false
+    $NetworkSysmonSearchSourcePortCheckbox.checked               = $false
+    $NetworkSysmonSearchDestinationIPAddressCheckbox.checked     = $false
+    $NetworkSysmonSearchDestinationPortCheckbox.checked          = $false
+    $NetworkSysmonSearchAccountCheckbox.checked                  = $false
+    $NetworkSysmonSearchExecutablePathCheckbox.checked           = $false
+
     $SysinternalsSysmonCheckbox.checked                          = $false
     $SysinternalsProcessMonitorCheckbox.checked                  = $false
     $ExeScriptUserSpecifiedExecutableAndScriptCheckbox.checked   = $false
@@ -64,13 +72,22 @@ function Deselect-AllCommands {
     $FileSearchFileSearchCheckbox.ForeColor                      = 'Blue'
     $FileSearchAlternateDataStreamCheckbox.ForeColor             = 'Blue'
     $NetworkEndpointPacketCaptureCheckBox.ForeColor              = 'Blue'
-    $NetworkConnectionSearchRemoteIPAddressCheckbox.ForeColor    = 'Blue'
-    $NetworkConnectionSearchRemotePortCheckbox.ForeColor         = 'Blue'
-    $NetworkConnectionSearchLocalPortCheckbox.ForeColor          = 'Blue'
-    $NetworkConnectionSearchProcessCheckbox.ForeColor            = 'Blue'
-    $NetworkConnectionSearchDNSCacheCheckbox.ForeColor           = 'Blue'
-    $NetworkConnectionSearchCommandLineCheckbox.ForeColor        = 'Blue'
-    $NetworkConnectionSearchExecutablePathCheckbox.ForeColor     = 'Blue'
+
+    $NetworkLiveSearchRemoteIPAddressCheckbox.ForeColor          = 'Blue'
+    $NetworkLiveSearchRemotePortCheckbox.ForeColor               = 'Blue'
+    $NetworkLiveSearchLocalPortCheckbox.ForeColor                = 'Blue'
+    $NetworkLiveSearchCommandLineCheckbox.ForeColor              = 'Blue'
+    $NetworkLiveSearchExecutablePathCheckbox.ForeColor           = 'Blue'
+    $NetworkLiveSearchProcessCheckbox.ForeColor                  = 'Blue'
+    $NetworkLiveSearchDNSCacheCheckbox.ForeColor                 = 'Blue'
+
+    $NetworkSysmonSearchSourceIPAddressCheckbox.ForeColor        = 'Blue'
+    $NetworkSysmonSearchSourcePortCheckbox.ForeColor             = 'Blue'
+    $NetworkSysmonSearchDestinationIPAddressCheckbox.ForeColor   = 'Blue'
+    $NetworkSysmonSearchDestinationPortCheckbox.ForeColor        = 'Blue'
+    $NetworkSysmonSearchAccountCheckbox.ForeColor                = 'Blue'
+    $NetworkSysmonSearchExecutablePathCheckbox.ForeColor         = 'Blue'
+
     $SysinternalsSysmonCheckbox.ForeColor                        = 'Blue'
     $SysinternalsProcessMonitorCheckbox.ForeColor                = 'Blue'
     $ExeScriptUserSpecifiedExecutableAndScriptCheckbox.ForeColor = 'Blue'

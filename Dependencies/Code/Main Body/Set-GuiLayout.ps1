@@ -9,8 +9,6 @@ function Set-GuiLayout {
 
         $QueryAndCollectionPanel.Controls.Remove($PoShEasyWinPictureBox)
         $Section3AboutTab.Controls.Add($PoShEasyWinPictureBox)
-        $QueryAndCollectionPanel.Controls.Remove($High101BroPictureBox)
-        $Section3AboutTab.Controls.Add($High101BroPictureBox)
 
         $MainLeftTabControl.Top = 0
 
@@ -99,8 +97,6 @@ function Set-GuiLayout {
 
         $Section3AboutTab.Controls.Remove($PoShEasyWinPictureBox)
         $QueryAndCollectionPanel.Controls.Add($PoShEasyWinPictureBox)
-        $Section3AboutTab.Controls.Remove($High101BroPictureBox)
-        $QueryAndCollectionPanel.Controls.Add($High101BroPictureBox)
 
         $MainLeftTabControl.Top = $PoShEasyWinPictureBox.Top + $PoShEasyWinPictureBox.Height
 

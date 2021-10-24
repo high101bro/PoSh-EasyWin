@@ -43,7 +43,6 @@ foreach ($TargetComputer in $script:ComputerList) {
 $EndpointString = ''
 foreach ($item in $script:ComputerList) {$EndpointString += "$item`n"}
 $SearchString = ''
-#foreach ($item in $NetworkConnectionSearchDNSCache) {$SearchString += "$item`n" }
 
 $InputValues = @"
 ===========================================================================

@@ -687,6 +687,72 @@ $EndpointDataSystemSnapshotScriptBlock = {
         $CompiledResults.add('Event Logs - Security (Last 1000)',$(
             Get-WinEvent -LogName Security -MaxEvents 1000 | Select-Object -Property LogName, TimeCreated, TaskDisplayName, KeyWordsDisplayNames, ProcessId, ThreadId, Id, Version, LevelDisplayName, Level, Task, ContainerLog, OpCode, OpCodeDisplayName, KeyWords, RecordId, ProviderName, ProviderId, ActivityId, Qualifiers, MachineName, UserId, @{n='Properties';e={$_.Properties.Value}}, Message -ExcludeProperty _*, Cim*
         ))
+
+        #####################
+        #####################
+        $CompiledResults.add('Event Logs - Security (Last 1000)',$(
+            Get-WinEvent -LogName Security -MaxEvents 1000 | Select-Object -Property LogName, TimeCreated, TaskDisplayName, KeyWordsDisplayNames, ProcessId, ThreadId, Id, Version, LevelDisplayName, Level, Task, ContainerLog, OpCode, OpCodeDisplayName, KeyWords, RecordId, ProviderName, ProviderId, ActivityId, Qualifiers, MachineName, UserId, @{n='Properties';e={$_.Properties.Value}}, Message -ExcludeProperty _*, Cim*
+        ))
+
+        <# BATMAN - investigate and add
+        Failed Login 
+        Get-WinEvent -FilterHashtable @{LogName='Security';Id=4625,529,530,531,532,533,534,535,536,537,538,539}
+
+        Failed Kerberos Pre-Authentication
+        Get-WinEvent -FilterHashtable @{LogName='Security';Id=4771}
+
+        SID History Added To An Account / Failed
+        Get-WinEvent -FilterHashtable @{LogName='Security';Id=4765,4766}
+
+        Attempt Made To Set DSRM Password
+        Get-WinEvent -FilterHashtable @{LogName='Security';Id=4794}
+
+        Policy Changes
+        Get-WinEvent -FilterHashtable @{LogName='Security';Id=4793,643,4713,617,4719,612}
+
+        Security Enabled Group Changed
+        Get-WinEvent -FilterHashtable @{LogName='Security';Id=4735,639,4737,641,4755,659}
+
+        User Added To Security Enabled Group
+        Get-WinEvent -FilterHashtable @{LogName='Security';Id=4728,632,4732,636,4756,660}
+
+        Audit Log Cleared
+        Get-WinEvent -FilterHashtable @{LogName='Security';Id=1102,517}
+
+        Logon Attempted using Explicit Credentials
+        Get-WinEvent -FilterHashtable @{LogName='Security';Id=4648,552}
+
+        Service Installed
+        Get-WinEvent -FilterHashtable @{LogName='Security';Id=4697,601}
+
+        Process Creation
+        Get-WinEvent -FilterHashtable @{LogName='Security';Id=4688,592}
+
+        SPECIAL PRIVILEGES ASSIGNED TO NEW LOGON
+        Get-WinEvent -FilterHashtable @{LogName='Security';Id=4672,576}
+
+        Scheduled Task Created / Updated
+        Get-WinEvent -FilterHashtable @{LogName='Security';Id=4698,4702,602}
+
+        Local User Account Creation
+        Get-WinEvent -FilterHashtable @{LogName='Security';Id=4720,624}
+
+        Permissions on an Object were Changed
+        Get-WinEvent -FilterHashtable @{LogName='Security';Id=4670}
+
+        Group Policy Failed
+        Get-WinEvent -FilterHashtable @{LogName='Microsoft-Windows-GroupPolicy';Id=1125}
+        
+        Windows Defender
+        Get-WinEvent -FilterHashtable @{Id=1006,1007}
+
+
+        Sysinternals Sysmon
+        Get-WinEvent -FilterHashtable @{LogName='Microsoft-Windows-Sysmon/Operational'}
+        #>
+
+
+
     }
 
      #########################

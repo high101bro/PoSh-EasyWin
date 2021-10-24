@@ -549,13 +549,28 @@ function Update-TreeViewData {
         if ($EventLogsQuickPickSelectionCheckbox.Checked)               { $script:TreeeViewCommandsCount++ }
         if ($EventLogNameEVTXLogNameSelectionCheckbox.Checked)          { $script:TreeeViewCommandsCount++ }                
         if ($NetworkEndpointPacketCaptureCheckBox.Checked)              { $script:TreeeViewCommandsCount++ }
-        if ($NetworkConnectionSearchRemoteIPAddressCheckbox.checked)    { $script:TreeeViewCommandsCount++ }
-        if ($NetworkConnectionSearchRemotePortCheckbox.checked)         { $script:TreeeViewCommandsCount++ }
-        if ($NetworkConnectionSearchLocalPortCheckbox.checked)          { $script:TreeeViewCommandsCount++ }
-        if ($NetworkConnectionSearchProcessCheckbox.checked)            { $script:TreeeViewCommandsCount++ }
-        if ($NetworkConnectionSearchDNSCacheCheckbox.checked)           { $script:TreeeViewCommandsCount++ }
-        if ($NetworkConnectionSearchCommandLineCheckbox.checked)        { $script:TreeeViewCommandsCount++ }
-        if ($NetworkConnectionSearchExecutablePathCheckbox.checked)     { $script:TreeeViewCommandsCount++ }
+
+        if ($NetworkLiveSearchRemoteIPAddressCheckbox.checked)          { $script:TreeeViewCommandsCount++ }
+        if ($NetworkLiveSearchRemotePortCheckbox.checked)               { $script:TreeeViewCommandsCount++ }
+        if ($NetworkLiveSearchLocalPortCheckbox.checked)                { $script:TreeeViewCommandsCount++ }
+        if ($NetworkLiveSearchCommandLineCheckbox.checked)              { $script:TreeeViewCommandsCount++ }
+        if ($NetworkLiveSearchExecutablePathCheckbox.checked)           { $script:TreeeViewCommandsCount++ }
+        if ($NetworkLiveSearchProcessCheckbox.checked)                  { $script:TreeeViewCommandsCount++ }
+        if ($NetworkLiveSearchDNSCacheCheckbox.checked)                 { $script:TreeeViewCommandsCount++ }
+
+        if ($NetworkSysmonRegexCheckbox.checked)                        { $script:TreeeViewCommandsCount++ }
+        if ($NetworkSysmonSearchSourceIPAddressCheckbox.checked)        { $script:TreeeViewCommandsCount++ }
+        if ($NetworkSysmonSearchSourcePortCheckbox.checked)             { $script:TreeeViewCommandsCount++ }
+        if ($NetworkSysmonSearchDestinationIPAddressCheckbox.checked)   { $script:TreeeViewCommandsCount++ }
+        if ($NetworkSysmonSearchDestinationPortCheckbox.checked)        { $script:TreeeViewCommandsCount++ }
+        if ($NetworkSysmonSearchAccountCheckbox.checked)                { $script:TreeeViewCommandsCount++ }
+        if ($NetworkSysmonSearchExecutablePathCheckbox.checked)         { $script:TreeeViewCommandsCount++ }
+
+        if ($NetworkSysmonSearchDestinationIPAddressCheckbox.checked)   { $script:TreeeViewCommandsCount++ }
+        if ($NetworkSysmonSearchDestinationPortCheckbox.checked)        { $script:TreeeViewCommandsCount++ }
+        if ($NetworkSysmonSearchSourcePortCheckbox.checked)             { $script:TreeeViewCommandsCount++ }
+        if ($NetworkSysmonSearchAccountCheckbox.checked)                { $script:TreeeViewCommandsCount++ }
+        if ($NetworkSysmonSearchExecutablePathCheckbox.checked)         { $script:TreeeViewCommandsCount++ }
         if ($FileSearchDirectoryListingCheckbox.Checked)                { $script:TreeeViewCommandsCount++ }
         if ($FileSearchFileSearchCheckbox.Checked)                      { $script:TreeeViewCommandsCount++ }
         if ($FileSearchAlternateDataStreamCheckbox.Checked)             { $script:TreeeViewCommandsCount++ }

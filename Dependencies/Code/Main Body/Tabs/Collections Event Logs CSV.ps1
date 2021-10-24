@@ -98,7 +98,7 @@ Get-WmiObject -Class Win32_NTLogEvent -Filter "(((EventCode='4624') OR (EventCod
 +  Get-WmiObject -Class Win32_NTLogEvent -Filter "(((EventCode='4624') OR (EventCode='4634')) and `
  (TimeGenerated>='$([System.Management.ManagementDateTimeConverter]::ToDmtfDateTime(($script:EventLogsStartTimePicker.Value)))') and (TimeGenerated<='20190314180030.000000-300'))"
 "@
-}
+                }
             }
 
 
@@ -119,7 +119,7 @@ Get-WmiObject -Class Win32_NTLogEvent -Filter "(((EventCode='4624') OR (EventCod
 
 +  This only applies to PowerShell object data retireved, not .evtx files
 "@
-}
+                }
             }
 
 
@@ -141,7 +141,7 @@ Get-WmiObject -Class Win32_NTLogEvent -Filter "(((EventCode='4624') OR (EventCod
 
 +  This only applies to PowerShell object data retireved, not .evtx files
 "@
-}
+                }
             }
 
 
@@ -184,7 +184,7 @@ Get-WmiObject -Class Win32_NTLogEvent -Filter "(((EventCode='4624') OR (EventCod
 +  If left blank, it will collect all available Event Logs
 +  If used, you must select both a start and end datetime
 "@
-}
+                }
             }
             # Wednesday, June 5, 2019 10:27:40 PM
             # $TimePicker.Value
@@ -225,7 +225,7 @@ Get-WmiObject -Class Win32_NTLogEvent -Filter "(((EventCode='4624') OR (EventCod
 +  If left blank, it will collect all available Event Logs
 +  If used, you must select both a start and end datetime
 "@
-}
+                }
             }
             $EventLogsOptionsGroupBox.Controls.AddRange(@($EventLogProtocolRadioButtonLabel,$EventLogRPCRadioButton,$EventLogWinRMRadioButton,$EventLogsDatetimeStartLabel,$script:EventLogsStartTimePicker,$EventLogsDatetimeStopLabel,$script:EventLogsStopTimePicker,$EventLogsMaximumCollectionLabel,$script:EventLogsMaximumCollectionTextBox))
 $Section1EventLogsTab.Controls.Add($EventLogsOptionsGroupBox)
