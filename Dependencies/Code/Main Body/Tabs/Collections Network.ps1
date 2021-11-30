@@ -17,9 +17,9 @@ $MainLeftNetworkTabControlImageList = New-Object System.Windows.Forms.ImageList 
         Height = $FormScale * 16
     }
 }
-# Index 0 = Live Network
+# Index 0 = Live 
 $MainLeftNetworkTabControlImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Live-Network.png"))
-# Index 1 = Sysmon
+# Index 1 = Sysinternals
 $MainLeftNetworkTabControlImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Sysinternals.png"))
 
 
@@ -82,7 +82,7 @@ $NetworkLiveSearchGroupBox = New-Object System.Windows.Forms.GroupBox -Property 
                 Height = $FormScale * 25
                 Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
                 ForeColor = "Black"
-                Checked = $false
+                Checked = $true
             }
             $NetworkLiveSearchGroupBox.Controls.Add($NetworkLiveRegexCheckbox)
 
@@ -484,7 +484,7 @@ $NetworkSysmonSearchGroupBox = New-Object System.Windows.Forms.GroupBox -Propert
                 Height = $FormScale * 25
                 Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
                 ForeColor = "Black"
-                Checked = $false
+                Checked = $true
             }
             $NetworkSysmonSearchGroupBox.Controls.Add($NetworkSysmonRegexCheckbox)
 
@@ -956,3 +956,36 @@ $Section1NetworkSysmonSearchTab.Controls.Add($NetworkSysmonSearchAccountCheckbox
                 }
             }
             $Section1NetworkSysmonSearchTab.Controls.Add($NetworkSysmonSearchAccountRichTextbox)
+# SIG # Begin signature block
+# MIIFuAYJKoZIhvcNAQcCoIIFqTCCBaUCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
+# gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUZPFuomUmyRdQY3p60F7g1t6H
+# t7qgggM6MIIDNjCCAh6gAwIBAgIQVnYuiASKXo9Gly5kJ70InDANBgkqhkiG9w0B
+# AQUFADAzMTEwLwYDVQQDDChQb1NoLUVhc3lXaW4gQnkgRGFuIEtvbW5pY2sgKGhp
+# Z2gxMDFicm8pMB4XDTIxMTEyOTIzNDA0NFoXDTMxMTEyOTIzNTA0M1owMzExMC8G
+# A1UEAwwoUG9TaC1FYXN5V2luIEJ5IERhbiBLb21uaWNrIChoaWdoMTAxYnJvKTCC
+# ASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANUnnNeIFC/eQ11BjDFsIHp1
+# 2HkKgnRRV07Kqsl4/fibnbOclptJbeKBDQT3iG5csb31s9NippKfzZmXfi69gGE6
+# v/L3X4Zb/10SJdFLstfT5oUD7UdiOcfcNDEiD+8OpZx4BWl5SNWuSv0wHnDSIyr1
+# 2M0oqbq6WA2FqO3ETpdhkK22N3C7o+U2LeuYrGxWOi1evhIHlnRodVSYcakmXIYh
+# pnrWeuuaQk+b5fcWEPClpscI5WiQh2aohWcjSlojsR+TiWG/6T5wKFxSJRf6+exu
+# C0nhKbyoY88X3y/6qCBqP6VTK4C04tey5z4Ux4ibuTDDePqH5WpRFMo9Vie1nVkC
+# AwEAAaNGMEQwDgYDVR0PAQH/BAQDAgeAMBMGA1UdJQQMMAoGCCsGAQUFBwMDMB0G
+# A1UdDgQWBBS2KLS0Frf3zyJTbQ4WsZXtnB9SFDANBgkqhkiG9w0BAQUFAAOCAQEA
+# s/TfP54uPmv+yGI7wnusq3Y8qIgFpXhQ4K6MmnTUpZjbGc4K3DRJyFKjQf8MjtZP
+# s7CxvS45qLVrYPqnWWV0T5NjtOdxoyBjAvR/Mhj+DdptojVMMp2tRNPSKArdyOv6
+# +yHneg5PYhsYjfblzEtZ1pfhQXmUZo/rW2g6iCOlxsUDr4ZPEEVzpVUQPYzmEn6B
+# 7IziXWuL31E90TlgKb/JtD1s1xbAjwW0s2s1E66jnPgBA2XmcfeAJVpp8fw+OFhz
+# Q4lcUVUoaMZJ3y8MfS+2Y4ggsBLEcWOK4vGWlAvD5NB6QNvouND1ku3z94XmRO8v
+# bqpyXrCbeVHascGVDU3UWTGCAegwggHkAgEBMEcwMzExMC8GA1UEAwwoUG9TaC1F
+# YXN5V2luIEJ5IERhbiBLb21uaWNrIChoaWdoMTAxYnJvKQIQVnYuiASKXo9Gly5k
+# J70InDAJBgUrDgMCGgUAoHgwGAYKKwYBBAGCNwIBDDEKMAigAoAAoQKAADAZBgkq
+# hkiG9w0BCQMxDAYKKwYBBAGCNwIBBDAcBgorBgEEAYI3AgELMQ4wDAYKKwYBBAGC
+# NwIBFTAjBgkqhkiG9w0BCQQxFgQU1B4RwznZrKKB1eWePoh42w0KP5AwDQYJKoZI
+# hvcNAQEBBQAEggEAduPlmODyNW+Bl3Yba64wWUZtzO7uLsHK1Oi3sA3XY+2PxBWP
+# /A5l2FCZa68/SHtLB+hbJD0ezftAMd0rf85id+FgvNyi5oP4HanfUOq1mn5XBzFs
+# rpp5PrFqq5ReXgLf9YmWjcPDSGrt6OUrKOTwhWtMrHh2pAub7y9CTbDUVqMvoeDs
+# AEqD1MfcdtTBpF8y/pj7kiU4aI0OTRv4EOTrTVE8X2TQ8QFPAZFTfrOZ+oUdfdAx
+# jaIQz4breOTEtoBhWrLCN2tzgPmAGUVENXUwy2ZtjZx/NA+y9VQXtMDDBRGfFq/6
+# nLApy4BjkE+kHujNxwW4GjSFgfwZoPWdAGwzRA==
+# SIG # End signature block

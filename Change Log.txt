@@ -15,12 +15,35 @@ TODO:
 [ ] Looking the Network Connection execution path search... not sure if its working
 
 [ ] Processes tab.. the one that broke down each process
+[ ] need to fix bugs with tagging... it's not saving correctly, previous notes are being overwriten to make all data the same
+	Search "tag node" and "tag nodes"
+[ ] Active endpoint note saving... should I add an option to toggle if there's performance issues?
 
 Writing Daily Tips...
 	- The "Directory Listing (WinRM)" query within the "File Search" tab provides you with a "Get File" button that allows you to easily download multiple files from multiple hosts.
 	- Retrieved files from endpoints have additional data collected from them like Signer Certificates and File Hashes, then are zipped before being downloaded to the localhost.
 	- Only unique files, based on their MD5 file hash, are kept when retrieved from a single endpoint, though files with maching hashes are kept for each endpoint when downloading from multiple endpoints.
 	- WHen using the "Retrieve Files" button, you must select any pre-exiting results from a "Directory Listing" or "File Search".
+
+
+==================================================
+v6.7.4 - 
+==================================================
+
+Updated ReadMe.md to include information about how to run PoSh-EasyWin.ps1
+
+Signed each .ps1 script within PoSh-EasyWin
+
+Fixed computer treeview population when importing new hosts
+	- nodes now appear with the correct icons
+
+Fixed default account icons upon importing new accounts
+
+Endpoints notes now populate with entries when commands are executed
+	- includes a timestamp and short command description
+
+Issues with tagging accounts and endpoints with metadata
+	- disable for now by commenting out dropdown
 
 ==================================================
 v6.6.4 - 15 OCT 2021

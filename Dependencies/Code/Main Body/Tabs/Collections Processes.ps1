@@ -1,18 +1,70 @@
-
-$Section1ProcessesSearchTab = New-Object System.Windows.Forms.TabPage -Property @{
-    Text   = "Processes (Under Dev)"
+$Section1ProcessesConnectionsSearchTab = New-Object System.Windows.Forms.TabPage -Property @{
+    Text   = "Processes"
     Left   = $FormScale * 3
     Top    = $FormScale * -10
     Width  = $FormScale * 450
     Height = $FormScale * 22
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     UseVisualStyleBackColor = $True
-    ImageIndex = 7
+    ImageIndex = 5
 }
-$MainLeftCollectionsTabControl.Controls.Add($Section1ProcessesSearchTab)
+$MainLeftCollectionsTabControl.Controls.Add($Section1ProcessesConnectionsSearchTab)
 
 
-$ProcessesSearchGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
+$MainLeftProcessesTabControlImageList = New-Object System.Windows.Forms.ImageList -Property @{
+    ImageSize = @{
+        Width  = $FormScale * 16
+        Height = $FormScale * 16
+    }
+}
+# Index 0 = Live 
+$MainLeftProcessesTabControlImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Process.png"))
+# Index 1 = Sysinternals
+$MainLeftProcessesTabControlImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Sysinternals.png"))
+
+
+$CollectionsProcessesTabControl = New-Object System.Windows.Forms.TabControl -Property @{
+    Location = @{ X = $FormScale * 3
+                  Y = $FormScale * 3 }
+    Size     = @{ Width  = $FormScale * 446
+                  Height = $FormScale * (557 + 5)}
+    ShowToolTips  = $True
+    SelectedIndex = 0
+    ImageList     = $MainLeftProcessesTabControlImageList
+    Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    Multiline = $true
+}
+$Section1ProcessesConnectionsSearchTab.Controls.Add($CollectionsProcessesTabControl)
+
+
+
+
+
+################################################################################################################
+################################################################################################################
+################################################################################################################
+################################################################################################################
+################################################################################################################
+
+
+
+
+
+$Section1ProcessesLiveSearchTab = New-Object System.Windows.Forms.TabPage -Property @{
+    Text   = "Active Processes"
+    Left   = $FormScale * 3
+    Top    = $FormScale * -10
+    Width  = $FormScale * 450
+    Height = $FormScale * 22
+    Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    ForeColor = 'Blue'
+    UseVisualStyleBackColor = $True
+    ImageIndex = 0
+}
+$CollectionsProcessesTabControl.Controls.Add($Section1ProcessesLiveSearchTab)
+
+
+$ProcessesLiveSearchGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
     Text   = "Collection Options"
     Left   = $FormScale * 3
     Top    = $FormScale * 5
@@ -22,7 +74,7 @@ $ProcessesSearchGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
     ForeColor = "Blue"
 }
 
-            $ProcessesRegexCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
+            $ProcessesLiveRegexCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
                 Text   = "Use Regular Expression. Note: The backslash is the escape character, ex: c:\\Windows\\System32"
                 Left   = $FormScale * 7
                 Top    = $FormScale * 18
@@ -30,386 +82,877 @@ $ProcessesSearchGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
                 Height = $FormScale * 25
                 Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
                 ForeColor = "Black"
-                Checked = $false
+                Checked = $true
             }
-            $ProcessesSearchGroupBox.Controls.Add($ProcessesRegexCheckbox)
+            $ProcessesLiveSearchGroupBox.Controls.Add($ProcessesLiveRegexCheckbox)
 
 
             $SupportsRegexButton = New-Object System.Windows.Forms.Button -Property @{
                 Text   = "Regex Examples"
-                Left   = $ProcessesRegexCheckbox.Left + $ProcessesRegexCheckbox.Width + $($FormScale * 28)
-                Top    = $ProcessesRegexCheckbox.Top
+                Left   = $ProcessesLiveRegexCheckbox.Left + $ProcessesLiveRegexCheckbox.Width + $($FormScale * 28)
+                Top    = $ProcessesLiveRegexCheckbox.Top
                 Width  = $FormScale * 115
                 Height = $FormScale * 22
                 Add_Click = { Import-Csv "$Dependencies\Reference RegEx Examples.csv" | Out-GridView }
             }
-            $ProcessesSearchGroupBox.Controls.Add($SupportsRegexButton)
+            $ProcessesLiveSearchGroupBox.Controls.Add($SupportsRegexButton)
             Apply-CommonButtonSettings -Button $SupportsRegexButton
-$Section1ProcessesSearchTab.Controls.Add($ProcessesSearchGroupBox)
+$Section1ProcessesLiveSearchTab.Controls.Add($ProcessesLiveSearchGroupBox)
 
-
-
-
-
-
-$ProcessesSearchRemoteIPAddressCheckbox = New-Object System.Windows.Forms.Label -Property @{
-    Text   = "Under development... It will be very similar to the Network Tab."
+$ProcessLiveSearchNameCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
+    Text   = "Process Name" #Image
     Left   = $FormScale * 3
-    Top    = $ProcessesSearchGroupBox.Top + $ProcessesSearchGroupBox.Height + $($FormScale * 10)
-    Width  = $FormScale * 420
+    Top    = $ProcessesLiveSearchGroupBox.Top + $ProcessesLiveSearchGroupBox.Height + $($FormScale * 5)
+    Width  = $FormScale * 210
     Height = $FormScale * 22
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
-    ForeColor = 'DarkRed'
+    ForeColor = 'Blue'
+    Add_Click = {
+        Update-QueryCount
+        
+        Update-TreeViewData -Commands -TreeView $script:CommandsTreeView.Nodes
+        if ($this.checked){$this.ForeColor = 'Red'} else {$this.ForeColor = 'Blue'}
+    }
 }
-$Section1ProcessesSearchTab.Controls.Add($ProcessesSearchRemoteIPAddressCheckbox)
+$Section1ProcessesLiveSearchTab.Controls.Add($ProcessLiveSearchNameCheckbox)
 
-# $ProcessesSearchRemoteIPAddressCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
-#     Text   = "Processes with Network Connections"
-#     Left   = $FormScale * 3
-#     Top    = $ProcessesSearchGroupBox.Top + $ProcessesSearchGroupBox.Height + $($FormScale * 10)
-#     Width  = $FormScale * 180
-#     Height = $FormScale * 22
-#     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
-#     ForeColor = 'Blue'
-#     Add_Click = {
-#         Update-QueryCount
+
+        $ProcessLiveSearchNameRichTextBox = New-Object System.Windows.Forms.RichTextBox -Property @{
+            Lines  = "Enter one Process Name; One Per Line"
+            Left   = $ProcessLiveSearchNameCheckbox.Left
+            Top    = $ProcessLiveSearchNameCheckbox.Top + $ProcessLiveSearchNameCheckbox.Height + $($FormScale * 5)
+            Width  = $FormScale * 210
+            Height = $FormScale * 75
+            Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+            MultiLine  = $True
+            ScrollBars = "Vertical"
+            WordWrap   = $True
+            ShortcutsEnabled = $true
+            Add_MouseEnter = {if ($this.text -eq "Enter one Process Name; One Per Line"){$this.text = ""}}
+            Add_MouseLeave = {if ($this.text -eq "") {$this.text = "Enter one Process Name; One Per Line"}}
+            Add_MouseHover = {
+                Show-ToolTip -Title "Source IP Address" -Icon "Info" -Message @"
++  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
++  Enter one Process Name
++  One Per Line
+"@  
+            }
+        }
+        $Section1ProcessesLiveSearchTab.Controls.Add($ProcessLiveSearchNameRichTextBox)
+
+
+$ProcessLiveSearchCommandlineCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
+    Text   = "Process Command Line" #CommandLine
+    Left   = $ProcessLiveSearchNameCheckbox.Left + $ProcessLiveSearchNameCheckbox.Width + $($FormScale * 10)
+    Top    = $ProcessLiveSearchNameCheckbox.Top
+    Width  = $FormScale * 210
+    Height = $FormScale * 22
+    Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
+    ForeColor = 'Blue'
+    Add_Click = {
+        Update-QueryCount
         
-#         Update-TreeViewData -Commands -TreeView $script:CommandsTreeView.Nodes
-#         if ($this.checked){$this.ForeColor = 'Red'} else {$this.ForeColor = 'Blue'}
-#     }
-# }
-# $Section1ProcessesSearchTab.Controls.Add($ProcessesSearchRemoteIPAddressCheckbox)
+        Update-TreeViewData -Commands -TreeView $script:CommandsTreeView.Nodes
+        if ($this.checked){$this.ForeColor = 'Red'} else {$this.ForeColor = 'Blue'}
+    }
+}
+$Section1ProcessesLiveSearchTab.Controls.Add($ProcessLiveSearchCommandlineCheckbox)
 
 
-#         Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\ProcessesSearchRemoteIPAddressSelectionButton.ps1"
-#         . "$Dependencies\Code\System.Windows.Forms\Button\ProcessesSearchRemoteIPAddressSelectionButton.ps1"
-#         $ProcessesSearchRemoteIPAddressSelectionButton = New-Object System.Windows.Forms.Button -Property @{
-#             Text   = "Select IP Addresses"
-#             Left   = $ProcessesSearchRemoteIPAddressCheckbox.Left
-#             Top    = $ProcessesSearchRemoteIPAddressCheckbox.Top + $ProcessesSearchRemoteIPAddressCheckbox.Height + $($FormScale * 3)
-#             Width  = $FormScale * 180
-#             Height = $FormScale * 20
-#             Add_Click = $ProcessesSearchRemoteIPAddressSelectionButtonAdd_Click
-#         }
-#         $Section1ProcessesSearchTab.Controls.Add($ProcessesSearchRemoteIPAddressSelectionButton)
-#         Apply-CommonButtonSettings -Button $ProcessesSearchRemoteIPAddressSelectionButton
+        $ProcessLiveSearchCommandlineRichTextBox = New-Object System.Windows.Forms.RichTextBox -Property @{
+            Lines  = "Enter Process Command Line; One Per Line"
+            Left   = $ProcessLiveSearchCommandlineCheckbox.Left
+            Top    = $ProcessLiveSearchCommandlineCheckbox.Top + $ProcessLiveSearchCommandlineCheckbox.Height + $($FormScale * 5)
+            Width  = $FormScale * 210
+            Height = $FormScale * 75
+            Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+            MultiLine  = $True
+            ScrollBars = "Vertical"
+            WordWrap   = $True
+            ShortcutsEnabled = $true
+            Add_MouseEnter = {if ($this.text -eq "Enter Process Command Line; One Per Line"){$this.text = ""}}
+            Add_MouseLeave = {if ($this.text -eq "") {$this.text = "Enter Process Command Line; One Per Line"}}
+            Add_MouseHover = {
+                Show-ToolTip -Title "Source IP Address" -Icon "Info" -Message @"
++  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
++  Enter Process Command Line
++  One Per Line
+"@  
+            }
+        }
+        $Section1ProcessesLiveSearchTab.Controls.Add($ProcessLiveSearchCommandlineRichTextBox)
 
 
-#         Update-FormProgress "$Dependencies\Code\System.Windows.Forms\RichTextBox\ProcessesSearchRemoteIPAddressRichTextbox.ps1"
-#         . "$Dependencies\Code\System.Windows.Forms\RichTextBox\ProcessesSearchRemoteIPAddressRichTextbox.ps1"
-#         $ProcessesSearchRemoteIPAddressRichTextbox = New-Object System.Windows.Forms.RichTextBox -Property @{
-#             Lines  = "Enter Remote IPs; One Per Line"
-#             Left   = $ProcessesSearchRemoteIPAddressSelectionButton.Left
-#             Top    = $ProcessesSearchRemoteIPAddressSelectionButton.Top + $ProcessesSearchRemoteIPAddressSelectionButton.Height + $($FormScale * 5)
-#             Width  = $FormScale * 180
-#             Height = $FormScale * 115
-#             Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-#             MultiLine  = $True
-#             ScrollBars = "Vertical"
-#             WordWrap   = $True
-#             ShortcutsEnabled = $true
-#             Add_MouseEnter = $ProcessesSearchRemoteIPAddressRichTextboxAdd_MouseEnter
-#             Add_MouseLeave = $ProcessesSearchRemoteIPAddressRichTextboxAdd_MouseLeave
-#             Add_MouseHover = $ProcessesSearchRemoteIPAddressRichTextboxAdd_MouseHover
-#         }
-#         $Section1ProcessesSearchTab.Controls.Add($ProcessesSearchRemoteIPAddressRichTextbox)
-
-
-# $ProcessesSearchRemotePortCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
-#     Text     = "Remote Port"
-#     Left = $ProcessesSearchRemoteIPAddressCheckbox.Left + $ProcessesSearchRemoteIPAddressCheckbox.Width + $($FormScale * 10)
-#     Top = $ProcessesSearchRemoteIPAddressCheckbox.Top
-#     Width  = $FormScale * 115
-#     Height = $FormScale * 22
-#     Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
-#     ForeColor = 'Blue'
-#     Add_Click = { 
-#         Update-QueryCount
+$ProcessLiveSearchParentNameCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
+    Text   = "Parent Process Name" #ParentImage
+    Left   = $ProcessLiveSearchNameRichTextBox.Left 
+    Top    = $ProcessLiveSearchNameRichTextBox.Top+ $ProcessLiveSearchNameRichTextBox.Height + $($FormScale * 5)
+    Width  = $FormScale * 210
+    Height = $FormScale * 22
+    Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
+    ForeColor = 'Blue'
+    Add_Click = {
+        Update-QueryCount
         
-#         Update-TreeViewData -Commands -TreeView $script:CommandsTreeView.Nodes
-#         if ($this.checked){$this.ForeColor = 'Red'} else {$this.ForeColor = 'Blue'}
-#     }
-# }
-# $Section1ProcessesSearchTab.Controls.Add($ProcessesSearchRemotePortCheckbox)
+        Update-TreeViewData -Commands -TreeView $script:CommandsTreeView.Nodes
+        if ($this.checked){$this.ForeColor = 'Red'} else {$this.ForeColor = 'Blue'}
+    }
+}
+$Section1ProcessesLiveSearchTab.Controls.Add($ProcessLiveSearchParentNameCheckbox)
 
 
-#         Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\ProcessesSearchRemotePortSelectionButton.ps1"
-#         . "$Dependencies\Code\System.Windows.Forms\Button\ProcessesSearchRemotePortSelectionButton.ps1"
-#         $ProcessesSearchRemotePortSelectionButton = New-Object System.Windows.Forms.Button -Property @{
-#             Text   = "Select Ports"
-#             Left   = $ProcessesSearchRemotePortCheckbox.Left
-#             Top    = $ProcessesSearchRemotePortCheckbox.Top + $ProcessesSearchRemotePortCheckbox.Height + $($FormScale * 3)
-#             Width  = $FormScale * 115
-#             Height = $FormScale * 20
-#             Add_Click = $ProcessesSearchRemotePortSelectionButtonAdd_Click
-#         }
-#         $Section1ProcessesSearchTab.Controls.Add($ProcessesSearchRemotePortSelectionButton)
-#         Apply-CommonButtonSettings -Button $ProcessesSearchRemotePortSelectionButton
+        $ProcessLiveSearchParentNameRichTextBox = New-Object System.Windows.Forms.RichTextBox -Property @{
+            Lines  = "Enter one Parent Process Name; One Per Line"
+            Left   = $ProcessLiveSearchParentNameCheckbox.Left
+            Top    = $ProcessLiveSearchParentNameCheckbox.Top + $ProcessLiveSearchParentNameCheckbox.Height + $($FormScale * 5)
+            Width  = $FormScale * 210
+            Height = $FormScale * 75
+            Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+            MultiLine  = $True
+            ScrollBars = "Vertical"
+            WordWrap   = $True
+            ShortcutsEnabled = $true
+            Add_MouseEnter = {if ($this.text -eq "Enter one Parent Process Name; One Per Line"){$this.text = ""}}
+            Add_MouseLeave = {if ($this.text -eq "") {$this.text = "Enter one Parent Process Name; One Per Line"}}
+            Add_MouseHover = {
+                Show-ToolTip -Title "Source IP Address" -Icon "Info" -Message @"
++  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
++  Enter one Parent Process Name
++  One Per Line
+"@  
+            }
+        }
+        $Section1ProcessesLiveSearchTab.Controls.Add($ProcessLiveSearchParentNameRichTextBox)
 
 
-#         Update-FormProgress "$Dependencies\Code\System.Windows.Forms\RichTextBox\ProcessesSearchRemotePortRichTextbox.ps1"
-#         . "$Dependencies\Code\System.Windows.Forms\RichTextBox\ProcessesSearchRemotePortRichTextbox.ps1"
-#         $ProcessesSearchRemotePortRichTextbox = New-Object System.Windows.Forms.RichTextBox -Property @{
-#             Lines  = "Enter Remote Ports; One Per Line"
-#             Left   = $ProcessesSearchRemotePortSelectionButton.Left
-#             Top    = $ProcessesSearchRemotePortSelectionButton.Top + $ProcessesSearchRemotePortSelectionButton.Height + $($FormScale * 5)
-#             Width  = $FormScale * 115
-#             Height = $FormScale * 115
-#             Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-#             MultiLine  = $True
-#             ScrollBars = "Vertical"
-#             WordWrap   = $True
-#             ShortcutsEnabled = $true
-#             Add_MouseEnter = $ProcessesSearchRemotePortRichTextboxAdd_MouseEnter
-#             Add_MouseLeave = $ProcessesSearchRemotePortRichTextboxAdd_MouseLeave
-#             Add_MouseHover = $ProcessesSearchRemotePortRichTextboxAdd_MouseHover
-#         }
-#         $Section1ProcessesSearchTab.Controls.Add($ProcessesSearchRemotePortRichTextbox)
-
-
-# $ProcessesSearchLocalPortCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
-#     Text   = "Local Port"
-#     Left   = $ProcessesSearchRemotePortCheckbox.Left + $ProcessesSearchRemotePortCheckbox.Width + $($FormScale * 10)
-#     Top    = $ProcessesSearchRemotePortCheckbox.Top
-#     Width  = $FormScale * 115
-#     Height = $FormScale * 22
-#     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
-#     ForeColor = 'Blue'
-#     Add_Click = { 
-#         Update-QueryCount
+$ProcessLiveSearchOwnerSIDCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
+    Text   = "Process Owner / SID" #ParentCommandLine
+    Left   = $ProcessLiveSearchParentNameCheckbox.Left + $ProcessLiveSearchParentNameCheckbox.Width + $($FormScale * 10)
+    Top    = $ProcessLiveSearchParentNameCheckbox.Top
+    Width  = $FormScale * 210
+    Height = $FormScale * 22
+    Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
+    ForeColor = 'Blue'
+    Add_Click = {
+        Update-QueryCount
         
-#         Update-TreeViewData -Commands -TreeView $script:CommandsTreeView.Nodes
-#         if ($this.checked){$this.ForeColor = 'Red'} else {$this.ForeColor = 'Blue'}
-#     }
-# }
-# $Section1ProcessesSearchTab.Controls.Add($ProcessesSearchLocalPortCheckbox)
+        Update-TreeViewData -Commands -TreeView $script:CommandsTreeView.Nodes
+        if ($this.checked){$this.ForeColor = 'Red'} else {$this.ForeColor = 'Blue'}
+    }
+}
+$Section1ProcessesLiveSearchTab.Controls.Add($ProcessLiveSearchOwnerSIDCheckbox)
 
 
-#         Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\ProcessesSearchLocalPortSelectionButton.ps1"
-#         . "$Dependencies\Code\System.Windows.Forms\Button\ProcessesSearchLocalPortSelectionButton.ps1"
-#         $ProcessesSearchLocalPortSelectionButton = New-Object System.Windows.Forms.Button -Property @{
-#             Text   = "Select Ports"
-#             Left   = $ProcessesSearchLocalPortCheckbox.Left
-#             Top    = $ProcessesSearchLocalPortCheckbox.Top + $ProcessesSearchLocalPortCheckbox.Height + $($FormScale * 3)
-#             Width  = $FormScale * 115
-#             Height = $FormScale * 20
-#             Add_Click = $ProcessesSearchLocalPortSelectionButtonAdd_Click
-#         }
-#         $Section1ProcessesSearchTab.Controls.Add($ProcessesSearchLocalPortSelectionButton)
-#         Apply-CommonButtonSettings -Button $ProcessesSearchLocalPortSelectionButton
+        $ProcessLiveSearchOwnerSIDRichTextBox = New-Object System.Windows.Forms.RichTextBox -Property @{
+            Lines  = "Enter Process Owner / SID; One Per Line"
+            Left   = $ProcessLiveSearchOwnerSIDCheckbox.Left
+            Top    = $ProcessLiveSearchOwnerSIDCheckbox.Top + $ProcessLiveSearchOwnerSIDCheckbox.Height + $($FormScale * 5)
+            Width  = $FormScale * 210
+            Height = $FormScale * 75
+            Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+            MultiLine  = $True
+            ScrollBars = "Vertical"
+            WordWrap   = $True
+            ShortcutsEnabled = $true
+            Add_MouseEnter = {if ($this.text -eq "Enter Process Owner / SID; One Per Line"){$this.text = ""}}
+            Add_MouseLeave = {if ($this.text -eq "") {$this.text = "Enter Process Owner / SID; One Per Line"}}
+            Add_MouseHover = {
+                Show-ToolTip -Title "Source IP Address" -Icon "Info" -Message @"
++  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
++  Enter Process Owner
++  One Per Line
+"@  
+            }
+        }
+        $Section1ProcessesLiveSearchTab.Controls.Add($ProcessLiveSearchOwnerSIDRichTextBox)
 
 
-#         Update-FormProgress "$Dependencies\Code\System.Windows.Forms\RichTextBox\ProcessesSearchLocalPortRichTextbox.ps1"
-#         . "$Dependencies\Code\System.Windows.Forms\RichTextBox\ProcessesSearchLocalPortRichTextbox.ps1"
-#         $ProcessesSearchLocalPortRichTextbox = New-Object System.Windows.Forms.RichTextBox -Property @{
-#             Lines  = "Enter Local Ports; One Per Line"
-#             Left   = $ProcessesSearchLocalPortSelectionButton.Left
-#             Top    = $ProcessesSearchLocalPortSelectionButton.Top  + $ProcessesSearchLocalPortSelectionButton.Height + $($FormScale * 5)
-#             Width  = $FormScale * 115
-#             Height = $FormScale * 115
-#             Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-#             MultiLine  = $True
-#             ScrollBars = "Vertical"
-#             WordWrap   = $True
-#             #BorderStyle = 'Fixed3d' #Fixed3D, FixedSingle, none
-#             ShortcutsEnabled = $true
-#             Add_MouseEnter = $ProcessesSearchLocalPortRichTextboxAdd_MouseEnter
-#             Add_MouseLeave = $ProcessesSearchLocalPortRichTextboxAdd_MouseLeave
-#             Add_MouseHover = $ProcessesSearchLocalPortRichTextboxAdd_MouseHover
-#         }
-#         $Section1ProcessesSearchTab.Controls.Add($ProcessesSearchLocalPortRichTextbox)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# $ProcessesSearchCommandLineCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
-#     Text   = "Command Line (WinRM)"
-#     Left   = $FormScale * 3
-#     Top    = $ProcessesSearchRemoteIPAddressRichTextbox.Top + $ProcessesSearchRemoteIPAddressRichTextbox.Height + $($FormScale * 5)
-#     Width  = $FormScale * 210 #430
-#     Height = $FormScale * 22
-#     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
-#     ForeColor = 'Blue'
-#     Add_Click = {
-#         Update-QueryCount
+$ProcessLiveSearchServiceInfoCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
+    Text   = "Service Info"
+    Left   = $FormScale * 3
+    Top    = $ProcessLiveSearchParentNameRichTextBox.Top + $ProcessLiveSearchParentNameRichTextBox.Height + $($FormScale * 5)
+    Width  = $FormScale * 210
+    Height = $FormScale * 22
+    Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
+    ForeColor = 'Blue'
+    Add_Click = {
+        Update-QueryCount
         
-#         Update-TreeViewData -Commands -TreeView $script:CommandsTreeView.Nodes
-#         if ($this.checked){$this.ForeColor = 'Red'} else {$this.ForeColor = 'Blue'}
-#     }
-# }
-# $Section1ProcessesSearchTab.Controls.Add($ProcessesSearchCommandLineCheckbox)
+        Update-TreeViewData -Commands -TreeView $script:CommandsTreeView.Nodes
+        if ($this.checked){$this.ForeColor = 'Red'} else {$this.ForeColor = 'Blue'}
+    }
+}
+$Section1ProcessesLiveSearchTab.Controls.Add($ProcessLiveSearchServiceInfoCheckbox)
 
 
-#             $ProcessesSearchCommandLineRichTextbox = New-Object System.Windows.Forms.RichTextBox -Property @{
-#                 Lines  = "Enter Command; One Per Line"
-#                 Left   = $FormScale * 3
-#                 Top    = $ProcessesSearchCommandLineCheckbox.Top + $ProcessesSearchCommandLineCheckbox.Height + $($FormScale * 5)
-#                 Width  = $FormScale * 210 #430
-#                 Height = $FormScale * 100
+        $ProcessLiveSearchServiceInfoRichTextbox = New-Object System.Windows.Forms.RichTextBox -Property @{
+            Lines  = "Enter one Service Info; One Per Line"
+            Left   = $ProcessLiveSearchServiceInfoCheckbox.Left
+            Top    = $ProcessLiveSearchServiceInfoCheckbox.Top + $ProcessLiveSearchServiceInfoCheckbox.Height + $($FormScale * 5)
+            Width  = $FormScale * 210
+            Height = $FormScale * 75
+            Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+            MultiLine  = $True
+            ScrollBars = "Vertical"
+            WordWrap   = $True
+            ShortcutsEnabled = $true
+            Add_MouseEnter = {if ($this.text -eq "Enter one Service Info; One Per Line"){$this.text = ""}}
+            Add_MouseLeave = {if ($this.text -eq "") {$this.text = "Enter one Service Info; One Per Line"}}
+            Add_MouseHover = {
+                Show-ToolTip -Title "Source IP Address" -Icon "Info" -Message @"
++  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
++  Enter one Service Info
++  One Per Line
+"@  
+            }
+        }
+        $Section1ProcessesLiveSearchTab.Controls.Add($ProcessLiveSearchServiceInfoRichTextbox)
+
+
+$ProcessLiveSearchNetworkConnectionsCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
+    Text   = "Network Connections"
+    Left   = $ProcessLiveSearchServiceInfoCheckbox.Left + $ProcessLiveSearchServiceInfoCheckbox.Width + $($FormScale * 10)
+    Top    = $ProcessLiveSearchServiceInfoCheckbox.Top
+    Width  = $FormScale * 210
+    Height = $FormScale * 22
+    Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
+    ForeColor = 'Blue'
+    Add_Click = {
+        Update-QueryCount
+        
+        Update-TreeViewData -Commands -TreeView $script:CommandsTreeView.Nodes
+        if ($this.checked){$this.ForeColor = 'Red'} else {$this.ForeColor = 'Blue'}
+    }
+}
+$Section1ProcessesLiveSearchTab.Controls.Add($ProcessLiveSearchNetworkConnectionsCheckbox)
+
+
+        $ProcessLiveSearchNetworkConnectionsRichTextBox = New-Object System.Windows.Forms.RichTextBox -Property @{
+            Lines  = "Enter Network Connections; One Per Line"
+            Left   = $ProcessLiveSearchNetworkConnectionsCheckbox.Left
+            Top    = $ProcessLiveSearchNetworkConnectionsCheckbox.Top + $ProcessLiveSearchNetworkConnectionsCheckbox.Height + $($FormScale * 5)
+            Width  = $FormScale * 210
+            Height = $FormScale * 75
+            Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+            MultiLine  = $True
+            ScrollBars = "Vertical"
+            WordWrap   = $True
+            ShortcutsEnabled = $true
+            Add_MouseEnter = {if ($this.text -eq "Enter Network Connections; One Per Line"){$this.text = ""}}
+            Add_MouseLeave = {if ($this.text -eq "") {$this.text = "Enter Network Connections; One Per Line"}}
+            Add_MouseHover = {
+                Show-ToolTip -Title "Source IP Address" -Icon "Info" -Message @"
++  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
++  Enter Network Connections
++  One Per Line
+"@  
+            }
+        }
+        $Section1ProcessesLiveSearchTab.Controls.Add($ProcessLiveSearchNetworkConnectionsRichTextBox)
+
+
+$ProcessLiveSearchHashesSignerCertsCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
+    Text   = "MD5 Hash / Signer Certificate"
+    Left   = $FormScale * 3
+    Top    = $ProcessLiveSearchServiceInfoRichTextbox.Top + $ProcessLiveSearchServiceInfoRichTextbox.Height + $($FormScale * 5)
+    Width  = $FormScale * 210
+    Height = $FormScale * 22
+    Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
+    ForeColor = 'Blue'
+    Add_Click = {
+        Update-QueryCount
+        
+        Update-TreeViewData -Commands -TreeView $script:CommandsTreeView.Nodes
+        if ($this.checked){$this.ForeColor = 'Red'} else {$this.ForeColor = 'Blue'}
+    }
+}
+$Section1ProcessesLiveSearchTab.Controls.Add($ProcessLiveSearchHashesSignerCertsCheckbox)
+
+
+        $ProcessLiveSearchHashesSignerCertsRichTextBox = New-Object System.Windows.Forms.RichTextBox -Property @{
+            Lines  = "Enter Hashes/Certificate; One Per Line"
+            Left   = $ProcessLiveSearchHashesSignerCertsCheckbox.Left
+            Top    = $ProcessLiveSearchHashesSignerCertsCheckbox.Top + $ProcessLiveSearchHashesSignerCertsCheckbox.Height + $($FormScale * 5)
+            Width  = $FormScale * 210
+            Height = $FormScale * 75
+            Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+            MultiLine  = $True
+            ScrollBars = "Vertical"
+            WordWrap   = $True
+            ShortcutsEnabled = $true
+            Add_MouseEnter = {if ($this.text -eq "Enter Hashes/Certificate; One Per Line"){$this.text = ""}}
+            Add_MouseLeave = {if ($this.text -eq "") {$this.text = "Enter Hashes/Certificate; One Per Line"}}
+            Add_MouseHover = {
+                Show-ToolTip -Title "Source IP Address" -Icon "Info" -Message @"
++  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
++  Enter Hashes
++  One Per Line
+"@  
+            }
+        }
+        $Section1ProcessesLiveSearchTab.Controls.Add($ProcessLiveSearchHashesSignerCertsRichTextBox)
+
+
+$ProcessLiveSearchCompanyProductCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
+    Text   = "Company / Product"
+    Left   = $ProcessLiveSearchHashesSignerCertsCheckbox.Left + $ProcessLiveSearchHashesSignerCertsCheckbox.Width + $($FormScale * 10)
+    Top    = $ProcessLiveSearchHashesSignerCertsCheckbox.Top
+    Width  = $FormScale * 210
+    Height = $FormScale * 22
+    Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
+    ForeColor = 'Blue'
+    Add_Click = {
+        Update-QueryCount
+        
+        Update-TreeViewData -Commands -TreeView $script:CommandsTreeView.Nodes
+        if ($this.checked){$this.ForeColor = 'Red'} else {$this.ForeColor = 'Blue'}
+    }
+}
+$Section1ProcessesLiveSearchTab.Controls.Add($ProcessLiveSearchCompanyProductCheckbox)
+
+
+        $ProcessLiveSearchCompanyProductRichTextBox = New-Object System.Windows.Forms.RichTextBox -Property @{
+            Lines  = "Enter Company/Product; One Per Line"
+            Left   = $ProcessLiveSearchCompanyProductCheckbox.Left
+            Top    = $ProcessLiveSearchCompanyProductCheckbox.Top + $ProcessLiveSearchCompanyProductCheckbox.Height + $($FormScale * 5)
+            Width  = $FormScale * 210
+            Height = $FormScale * 75
+            Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+            MultiLine  = $True
+            ScrollBars = "Vertical"
+            WordWrap   = $True
+            ShortcutsEnabled = $true
+            Add_MouseEnter = {if ($this.text -eq "Enter Company/Product; One Per Line"){$this.text = ""}}
+            Add_MouseLeave = {if ($this.text -eq "") {$this.text = "Enter Company/Product; One Per Line"}}
+            Add_MouseHover = {
+                Show-ToolTip -Title "Source IP Address" -Icon "Info" -Message @"
++  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
++  Enter Company/Product
++  One Per Line
+"@  
+            }
+        }
+        $Section1ProcessesLiveSearchTab.Controls.Add($ProcessLiveSearchCompanyProductRichTextBox)
+
+
+
+
+
+################################################################################################################
+################################################################################################################
+################################################################################################################
+################################################################################################################
+################################################################################################################
+
+
+
+
+
+$Section1ProcessCreationSysmonSearchTab = New-Object System.Windows.Forms.TabPage -Property @{
+    Text   = "Logged Events (Sysmon)"
+    Left   = $FormScale * 3
+    Top    = $FormScale * -10
+    Width  = $FormScale * 450
+    Height = $FormScale * 22
+    Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    ForeColor = 'Blue'
+    UseVisualStyleBackColor = $True
+    ImageIndex = 1
+}
+$CollectionsProcessesTabControl.Controls.Add($Section1ProcessCreationSysmonSearchTab)
+
+
+
+$ProcessCreationSysmonSearchGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
+    Text   = "Collection Options"
+    Left   = $FormScale * 3
+    Top    = $FormScale * 5
+    Width  = $FormScale * 435
+    Height = $FormScale * 50 #100
+    Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
+    ForeColor = "Blue"
+}
+
+            $ProcessCreationSysmonRegexCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
+                Text   = "Use Regular Expression. Note: The backslash is the escape character, ex: c:\\Windows\\System32"
+                Left   = $FormScale * 7
+                Top    = $FormScale * 18
+                Width  = $FormScale * 280 #430
+                Height = $FormScale * 25
+                Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+                ForeColor = "Black"
+                Checked = $true
+            }
+            $ProcessCreationSysmonSearchGroupBox.Controls.Add($ProcessCreationSysmonRegexCheckbox)
+
+
+            $SupportsRegexButton = New-Object System.Windows.Forms.Button -Property @{
+                Text   = "Regex Examples"
+                Left   = $ProcessCreationSysmonRegexCheckbox.Left + $ProcessCreationSysmonRegexCheckbox.Width + $($FormScale * 28)
+                Top    = $ProcessCreationSysmonRegexCheckbox.Top
+                Width  = $FormScale * 115
+                Height = $FormScale * 22
+                Add_Click = { Import-Csv "$Dependencies\Reference RegEx Examples.csv" | Out-GridView }
+            }
+            $ProcessCreationSysmonSearchGroupBox.Controls.Add($SupportsRegexButton)
+            Apply-CommonButtonSettings -Button $SupportsRegexButton
+
+
+#             $ProcessCreationSysmonDatetimeStartLabel = New-Object System.Windows.Forms.Label -Property @{
+#                 Text   = "DateTime Start:"
+#                 Left   = $FormScale * 77
+#                 Top    = $ProcessCreationSysmonRegexCheckbox.Top + $ProcessCreationSysmonRegexCheckbox.Height + $($FormScale * 10)
+#                 Width  = $FormScale * 90
+#                 Height = $FormScale * 22
 #                 Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-#                 MultiLine  = $True
-#                 ScrollBars = "Vertical"
-#                 WordWrap   = $True
-#                 ShortcutsEnabled = $true
-#                 #Add_MouseHover   = $ProcessesSearchCommandLineRichTextboxAdd_MouseHover
-#                 Add_MouseEnter   = { if ($this.text -eq "Enter Command; One Per Line"){ $this.text = "" } }
-#                 Add_MouseLeave   = { if ($this.text -eq "") { $this.text = "Enter Command; One Per Line" } }
+#                 ForeColor = "Black"
 #             }
-#             $Section1ProcessesSearchTab.Controls.Add($ProcessesSearchCommandLineRichTextbox)
+#             $ProcessCreationSysmonSearchGroupBox.Controls.Add($ProcessCreationSysmonDatetimeStartLabel)
 
 
-# $ProcessesSearchExecutablePathCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
-#     Text   = "Executable Path (WinRM)"
-#     Left   = $ProcessesSearchCommandLineRichTextbox.Left + $ProcessesSearchCommandLineRichTextbox.Width + $($FormScale * 5)
-#     Top    = $ProcessesSearchCommandLineCheckbox.Top
-#     Width  = $FormScale * 210 #430
-#     Height = $FormScale * 22
-#     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
-#     ForeColor = 'Blue'
-#     Add_Click = {
-#         Update-QueryCount
-        
-#         Update-TreeViewData -Commands -TreeView $script:CommandsTreeView.Nodes
-#         if ($this.checked){$this.ForeColor = 'Red'} else {$this.ForeColor = 'Blue'}
-#     }
-# }
-# $Section1ProcessesSearchTab.Controls.Add($ProcessesSearchExecutablePathCheckbox)
-
-
-#             $ProcessesSearchExecutablePathTextbox = New-Object System.Windows.Forms.RichTextBox -Property @{
-#                 Lines  = "Enter full paths; One Per Line"
-#                 Left   = $ProcessesSearchExecutablePathCheckbox.Left
-#                 Top    = $ProcessesSearchExecutablePathCheckbox.Top + $ProcessesSearchExecutablePathCheckbox.Height + $($FormScale * 5)
-#                 Width  = $FormScale * 210 #430
-#                 Height = $FormScale * 100
-#                 Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-#                 MultiLine  = $True
-#                 ScrollBars = "Vertical"
-#                 WordWrap   = $True
-#                 ShortcutsEnabled = $true
-#                 Add_MouseEnter   = { if ($this.text -eq "Enter full paths; One Per Line"){ $this.text = "" } }
-#                 Add_MouseLeave   = { if ($this.text -eq "") { $this.text = "Enter full paths; One Per Line" } }
-#                 #Add_MouseHover = $ProcessesSearchExecutablePathTextboxAdd_MouseHover
-#             }
-#             $Section1ProcessesSearchTab.Controls.Add($ProcessesSearchExecutablePathTextbox)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# $ProcessesSearchProcessCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
-#     Text   = "Process Name (WinRM)"
-#     Left   = $FormScale * 3
-#     Top    = $ProcessesSearchCommandLineRichTextbox.Top + $ProcessesSearchCommandLineRichTextbox.Height + $($FormScale * 5)
-#     Width  = $FormScale * 210 #430
-#     Height = $FormScale * 22
-#     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
-#     ForeColor = 'Blue'
-#     Add_Click = {
-#         Update-QueryCount
-        
-#         Update-TreeViewData -Commands -TreeView $script:CommandsTreeView.Nodes
-#         if ($this.checked){$this.ForeColor = 'Red'} else {$this.ForeColor = 'Blue'}
-#     }
-# }
-# $Section1ProcessesSearchTab.Controls.Add($ProcessesSearchProcessCheckbox)
-
-
-#             Update-FormProgress "$Dependencies\Code\System.Windows.Forms\RichTextBox\ProcessesSearchProcessRichTextbox.ps1"
-#             . "$Dependencies\Code\System.Windows.Forms\RichTextBox\ProcessesSearchProcessRichTextbox.ps1"
-#             $ProcessesSearchProcessRichTextbox = New-Object System.Windows.Forms.RichTextBox -Property @{
-#                 Lines  = "Enter Process Names; One Per Line"
-#                 Left   = $FormScale * 3
-#                 Top    = $ProcessesSearchProcessCheckbox.Top + $ProcessesSearchProcessCheckbox.Height + $($FormScale * 5)
-#                 Width  = $FormScale * 210 #430
-#                 Height = $FormScale * 100
-#                 Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-#                 MultiLine  = $True
-#                 ScrollBars = "Vertical"
-#                 WordWrap   = $True
-#                 ShortcutsEnabled = $true
-#                 Add_MouseHover   = $ProcessesSearchProcessRichTextboxAdd_MouseHover
-#                 Add_MouseEnter   = $ProcessesSearchProcessRichTextboxAdd_MouseEnter
-#                 Add_MouseLeave   = $ProcessesSearchProcessRichTextboxAdd_MouseLeave
-#             }
-#             $Section1ProcessesSearchTab.Controls.Add($ProcessesSearchProcessRichTextbox)
-
-
-# Update-FormProgress "$Dependencies\Code\Main Body\Get-DNSCache.ps1"
-# . "$Dependencies\Code\Main Body\Get-DNSCache.ps1"
-# $ProcessesSearchDNSCacheCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
-#     Text   = "DNS Cache Entry (WinRM)"
-#     Left   = $ProcessesSearchProcessRichTextbox.Left + $ProcessesSearchProcessRichTextbox.Width + $($FormScale * 5)
-#     Top    = $ProcessesSearchProcessCheckbox.Top
-#     Width  = $FormScale * 210 #430
-#     Height = $FormScale * 22
-#     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
-#     ForeColor = 'Blue'
-#     Add_Click = {
-#         Update-QueryCount
-        
-#         Update-TreeViewData -Commands -TreeView $script:CommandsTreeView.Nodes
-#         if ($this.checked){$this.ForeColor = 'Red'} else {$this.ForeColor = 'Blue'}
-#     }
-# }
-# $Section1ProcessesSearchTab.Controls.Add($ProcessesSearchDNSCacheCheckbox)
-
-
-#             $ProcessesSearchDNSCacheRichTextbox = New-Object System.Windows.Forms.RichTextBox -Property @{
-#                 Lines  = "Enter DNS query info or IP addresses; One Per Line"
-#                 Left   = $ProcessesSearchDNSCacheCheckbox.Left
-#                 Top    = $ProcessesSearchDNSCacheCheckbox.Top + $ProcessesSearchDNSCacheCheckbox.Height + $($FormScale * 5)
-#                 Width  = $FormScale * 210 #430
-#                 Height = $FormScale * 100
-#                 Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-#                 MultiLine  = $True
-#                 ScrollBars = "Vertical"
-#                 WordWrap   = $True
-#                 ShortcutsEnabled = $true
-#                 Add_MouseEnter = { if ($this.text -eq "Enter DNS query info or IP addresses; One Per Line") { $this.text = "" } }
-#                 Add_MouseLeave = { if ($this.text -eq "") { $this.text = "Enter DNS query info or IP addresses; One Per Line" } }                
+#             $script:ProcessCreationSysmonStartTimePicker = New-Object System.Windows.Forms.DateTimePicker -Property @{
+#                 Left         = $ProcessCreationSysmonDatetimeStartLabel.Left + $ProcessCreationSysmonDatetimeStartLabel.Width
+#                 Top          = $ProcessCreationSysmonRegexCheckbox.Top + $ProcessCreationSysmonRegexCheckbox.Height + $($FormScale * 10)
+#                 Width        = $FormScale * 265
+#                 Height       = $FormScale * 100
+#                 Font         = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+#                 Format       = [windows.forms.datetimepickerFormat]::custom
+#                 CustomFormat = "dddd MMM dd, yyyy hh:mm tt"
+#                 Checked      = $True
+#                 ShowCheckBox = $True
+#                 ShowUpDown   = $False
+#                 AutoSize     = $true
+#                 #MinDate      = (Get-Date -Month 1 -Day 1 -Year 2000).DateTime
+#                 #MaxDate      = (Get-Date).DateTime
+#                 Value         = (Get-Date).AddDays(-1).DateTime
+#                 Add_Click = {
+#                     if ($script:ProcessCreationSysmonStopTimePicker.checked -eq $false) {
+#                         $script:ProcessCreationSysmonStopTimePicker.checked = $true
+#                     }
+#                 }
 #                 Add_MouseHover = {
-#                     Show-ToolTip -Title "Remote DNS Cache Entry (WinRM)" -Icon "Info" -Message @"
-#                     +  Check hosts' DNS Cache for entries that match given criteria
-#                     +  The DNS Cache is not persistence on systems
-#                     +  By default, Windows stores positive responses in the DNS Cache for 86,400 seconds (1 day)
-#                     +  By default, Windows stores negative responses in the DNS Cache for 300 seconds (5 minutes)
-#                     +  The default DNS Cache time limits can be changed within the registry
-#                     +  Enter DNS query information or IP addresses
-#                     +  One Per Line
-# "@                    
+#                     Show-ToolTip -Title "DateTime - Starting" -Icon "Info" -Message @"
+# +  Select the starting datetime to filter Event Logs
+# +  This can be used with the Max Collection field
+# +  If left blank, it will collect all available Event Logs
+# +  If used, you must select both a start and end datetime
+# "@
 #                 }
 #             }
-#             $Section1ProcessesSearchTab.Controls.Add($ProcessesSearchDNSCacheRichTextbox)
+#             # Wednesday, June 5, 2019 10:27:40 PM
+#             # $TimePicker.Value
+#             # 20190605162740.383143-240
+#             # [System.Management.ManagementDateTimeConverter]::ToDmtfDateTime(($script:ProcessCreationSysmonStartTimePicker.Value))
+#             $ProcessCreationSysmonSearchGroupBox.Controls.Add($script:ProcessCreationSysmonStartTimePicker)
+
+            
+#             $ProcessCreationSysmonDatetimeStopLabel = New-Object System.Windows.Forms.Label -Property @{
+#                 Text   = "DateTime Stop:"
+#                 Left   = $ProcessCreationSysmonDatetimeStartLabel.Left
+#                 Top    = $ProcessCreationSysmonDatetimeStartLabel.Top + $ProcessCreationSysmonDatetimeStartLabel.Height
+#                 Width  = $ProcessCreationSysmonDatetimeStartLabel.Width
+#                 Height = $FormScale * 22
+#                 Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+#                 ForeColor = "Black"
+#             }
+#             $ProcessCreationSysmonSearchGroupBox.Controls.Add($ProcessCreationSysmonDatetimeStopLabel)
+
+
+#             $script:ProcessCreationSysmonStopTimePicker = New-Object System.Windows.Forms.DateTimePicker -Property @{
+#                 Left         = $ProcessCreationSysmonDatetimeStopLabel.Left + $ProcessCreationSysmonDatetimeStopLabel.Width
+#                 Top          = $ProcessCreationSysmonDatetimeStartLabel.Top + $ProcessCreationSysmonDatetimeStartLabel.Height
+#                 Width        = $script:ProcessCreationSysmonStartTimePicker.Width
+#                 Height       = $FormScale * 100
+#                 Font         = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+#                 Format       = [windows.forms.datetimepickerFormat]::custom
+#                 CustomFormat = "dddd MMM dd, yyyy hh:mm tt"
+#                 Checked      = $True
+#                 ShowCheckBox = $True
+#                 ShowUpDown   = $False
+#                 AutoSize     = $true
+#                 #MinDate      = (Get-Date -Month 1 -Day 1 -Year 2000).DateTime
+#                 #MaxDate      = (Get-Date).DateTime
+#                 Add_MouseHover = {
+#                     Show-ToolTip -Title "DateTime - Ending" -Icon "Info" -Message @"
+# +  Select the ending datetime to filter Event Logs
+# +  This can be used with the Max Collection field
+# +  If left blank, it will collect all available Event Logs
+# +  If used, you must select both a start and end datetime
+# "@
+#                 }
+#             }
+#             $ProcessCreationSysmonSearchGroupBox.Controls.Add($script:ProcessCreationSysmonStopTimePicker)
+
+$Section1ProcessCreationSysmonSearchTab.Controls.Add($ProcessCreationSysmonSearchGroupBox)
+
+
+
+$ProcessCreationSysmonSearchFilePathCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
+    Text   = "Process File Path" #Image
+    Left   = $FormScale * 3
+    Top    = $ProcessCreationSysmonSearchGroupBox.Top + $ProcessCreationSysmonSearchGroupBox.Height + $($FormScale * 5)
+    Width  = $FormScale * 210
+    Height = $FormScale * 22
+    Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
+    ForeColor = 'Blue'
+    Add_Click = {
+        Update-QueryCount
+        
+        Update-TreeViewData -Commands -TreeView $script:CommandsTreeView.Nodes
+        if ($this.checked){$this.ForeColor = 'Red'} else {$this.ForeColor = 'Blue'}
+    }
+}
+$Section1ProcessCreationSysmonSearchTab.Controls.Add($ProcessCreationSysmonSearchFilePathCheckbox)
+
+
+        $ProcessCreationSysmonSearchFilePathRichTextBox = New-Object System.Windows.Forms.RichTextBox -Property @{
+            Lines  = "Enter one Process File Path; One Per Line"
+            Left   = $ProcessCreationSysmonSearchFilePathCheckbox.Left
+            Top    = $ProcessCreationSysmonSearchFilePathCheckbox.Top + $ProcessCreationSysmonSearchFilePathCheckbox.Height + $($FormScale * 5)
+            Width  = $FormScale * 210
+            Height = $FormScale * 75
+            Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+            MultiLine  = $True
+            ScrollBars = "Vertical"
+            WordWrap   = $True
+            ShortcutsEnabled = $true
+            Add_MouseEnter = {if ($this.text -eq "Enter one Process File Path; One Per Line"){$this.text = ""}}
+            Add_MouseLeave = {if ($this.text -eq "") {$this.text = "Enter one Process File Path; One Per Line"}}
+            Add_MouseHover = {
+                Show-ToolTip -Title "Source IP Address" -Icon "Info" -Message @"
++  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
++  Enter one Process File Path
++  One Per Line
+"@  
+            }
+        }
+        $Section1ProcessCreationSysmonSearchTab.Controls.Add($ProcessCreationSysmonSearchFilePathRichTextBox)
+
+
+$ProcessCreationSysmonSearchCommandlineCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
+    Text   = "Process Command Line" #CommandLine
+    Left   = $ProcessCreationSysmonSearchFilePathCheckbox.Left + $ProcessCreationSysmonSearchFilePathCheckbox.Width + $($FormScale * 10)
+    Top    = $ProcessCreationSysmonSearchFilePathCheckbox.Top
+    Width  = $FormScale * 210
+    Height = $FormScale * 22
+    Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
+    ForeColor = 'Blue'
+    Add_Click = {
+        Update-QueryCount
+        
+        Update-TreeViewData -Commands -TreeView $script:CommandsTreeView.Nodes
+        if ($this.checked){$this.ForeColor = 'Red'} else {$this.ForeColor = 'Blue'}
+    }
+}
+$Section1ProcessCreationSysmonSearchTab.Controls.Add($ProcessCreationSysmonSearchCommandlineCheckbox)
+
+
+        $ProcessCreationSysmonSearchCommandlineRichTextBox = New-Object System.Windows.Forms.RichTextBox -Property @{
+            Lines  = "Enter Process Command Line; One Per Line"
+            Left   = $ProcessCreationSysmonSearchCommandlineCheckbox.Left
+            Top    = $ProcessCreationSysmonSearchCommandlineCheckbox.Top + $ProcessCreationSysmonSearchCommandlineCheckbox.Height + $($FormScale * 5)
+            Width  = $FormScale * 210
+            Height = $FormScale * 75
+            Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+            MultiLine  = $True
+            ScrollBars = "Vertical"
+            WordWrap   = $True
+            ShortcutsEnabled = $true
+            Add_MouseEnter = {if ($this.text -eq "Enter Process Command Line; One Per Line"){$this.text = ""}}
+            Add_MouseLeave = {if ($this.text -eq "") {$this.text = "Enter Process Command Line; One Per Line"}}
+            Add_MouseHover = {
+                Show-ToolTip -Title "Source IP Address" -Icon "Info" -Message @"
++  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
++  Enter Process Command Line
++  One Per Line
+"@  
+            }
+        }
+        $Section1ProcessCreationSysmonSearchTab.Controls.Add($ProcessCreationSysmonSearchCommandlineRichTextBox)
+
+
+$ProcessCreationSysmonSearchParentFilePathCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
+    Text   = "Parent Process File Path" #ParentImage
+    Left   = $ProcessCreationSysmonSearchFilePathRichTextBox.Left 
+    Top    = $ProcessCreationSysmonSearchFilePathRichTextBox.Top+ $ProcessCreationSysmonSearchFilePathRichTextBox.Height + $($FormScale * 5)
+    Width  = $FormScale * 210
+    Height = $FormScale * 22
+    Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
+    ForeColor = 'Blue'
+    Add_Click = {
+        Update-QueryCount
+        
+        Update-TreeViewData -Commands -TreeView $script:CommandsTreeView.Nodes
+        if ($this.checked){$this.ForeColor = 'Red'} else {$this.ForeColor = 'Blue'}
+    }
+}
+$Section1ProcessCreationSysmonSearchTab.Controls.Add($ProcessCreationSysmonSearchParentFilePathCheckbox)
+
+
+        $ProcessCreationSysmonSearchParentFilePathRichTextBox = New-Object System.Windows.Forms.RichTextBox -Property @{
+            Lines  = "Enter one Parent Process File Path; One Per Line"
+            Left   = $ProcessCreationSysmonSearchParentFilePathCheckbox.Left
+            Top    = $ProcessCreationSysmonSearchParentFilePathCheckbox.Top + $ProcessCreationSysmonSearchParentFilePathCheckbox.Height + $($FormScale * 5)
+            Width  = $FormScale * 210
+            Height = $FormScale * 75
+            Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+            MultiLine  = $True
+            ScrollBars = "Vertical"
+            WordWrap   = $True
+            ShortcutsEnabled = $true
+            Add_MouseEnter = {if ($this.text -eq "Enter one Parent Process File Path; One Per Line"){$this.text = ""}}
+            Add_MouseLeave = {if ($this.text -eq "") {$this.text = "Enter one Parent Process File Path; One Per Line"}}
+            Add_MouseHover = {
+                Show-ToolTip -Title "Source IP Address" -Icon "Info" -Message @"
++  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
++  Enter one Parent Process File Path
++  One Per Line
+"@  
+            }
+        }
+        $Section1ProcessCreationSysmonSearchTab.Controls.Add($ProcessCreationSysmonSearchParentFilePathRichTextBox)
+
+
+$ProcessCreationSysmonSearchParentCommandlineCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
+    Text   = "Parent Process Command Line" #ParentCommandLine
+    Left   = $ProcessCreationSysmonSearchParentFilePathCheckbox.Left + $ProcessCreationSysmonSearchParentFilePathCheckbox.Width + $($FormScale * 10)
+    Top    = $ProcessCreationSysmonSearchParentFilePathCheckbox.Top
+    Width  = $FormScale * 210
+    Height = $FormScale * 22
+    Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
+    ForeColor = 'Blue'
+    Add_Click = {
+        Update-QueryCount
+        
+        Update-TreeViewData -Commands -TreeView $script:CommandsTreeView.Nodes
+        if ($this.checked){$this.ForeColor = 'Red'} else {$this.ForeColor = 'Blue'}
+    }
+}
+$Section1ProcessCreationSysmonSearchTab.Controls.Add($ProcessCreationSysmonSearchParentCommandlineCheckbox)
+
+
+        $ProcessCreationSysmonSearchParentCommandlineRichTextBox = New-Object System.Windows.Forms.RichTextBox -Property @{
+            Lines  = "Enter Parent Process Command Line; One Per Line"
+            Left   = $ProcessCreationSysmonSearchParentCommandlineCheckbox.Left
+            Top    = $ProcessCreationSysmonSearchParentCommandlineCheckbox.Top + $ProcessCreationSysmonSearchParentCommandlineCheckbox.Height + $($FormScale * 5)
+            Width  = $FormScale * 210
+            Height = $FormScale * 75
+            Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+            MultiLine  = $True
+            ScrollBars = "Vertical"
+            WordWrap   = $True
+            ShortcutsEnabled = $true
+            Add_MouseEnter = {if ($this.text -eq "Enter Parent Process Command Line; One Per Line"){$this.text = ""}}
+            Add_MouseLeave = {if ($this.text -eq "") {$this.text = "Enter Parent Process Command Line; One Per Line"}}
+            Add_MouseHover = {
+                Show-ToolTip -Title "Source IP Address" -Icon "Info" -Message @"
++  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
++  Enter Parent Process Command Line
++  One Per Line
+"@  
+            }
+        }
+        $Section1ProcessCreationSysmonSearchTab.Controls.Add($ProcessCreationSysmonSearchParentCommandlineRichTextBox)
+
+
+$ProcessCreationSysmonSearchOriginalFileNameCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
+    Text   = "Rule Name"
+    Left   = $FormScale * 3
+    Top    = $ProcessCreationSysmonSearchParentFilePathRichTextBox.Top + $ProcessCreationSysmonSearchParentFilePathRichTextBox.Height + $($FormScale * 5)
+    Width  = $FormScale * 210
+    Height = $FormScale * 22
+    Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
+    ForeColor = 'Blue'
+    Add_Click = {
+        Update-QueryCount
+        
+        Update-TreeViewData -Commands -TreeView $script:CommandsTreeView.Nodes
+        if ($this.checked){$this.ForeColor = 'Red'} else {$this.ForeColor = 'Blue'}
+    }
+}
+$Section1ProcessCreationSysmonSearchTab.Controls.Add($ProcessCreationSysmonSearchOriginalFileNameCheckbox)
+
+
+        $ProcessCreationSysmonSearchOriginalFileNameRichTextbox = New-Object System.Windows.Forms.RichTextBox -Property @{
+            Lines  = "Enter one Rule Name; One Per Line"
+            Left   = $ProcessCreationSysmonSearchOriginalFileNameCheckbox.Left
+            Top    = $ProcessCreationSysmonSearchOriginalFileNameCheckbox.Top + $ProcessCreationSysmonSearchOriginalFileNameCheckbox.Height + $($FormScale * 5)
+            Width  = $FormScale * 210
+            Height = $FormScale * 75
+            Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+            MultiLine  = $True
+            ScrollBars = "Vertical"
+            WordWrap   = $True
+            ShortcutsEnabled = $true
+            Add_MouseEnter = {if ($this.text -eq "Enter one Rule Name; One Per Line"){$this.text = ""}}
+            Add_MouseLeave = {if ($this.text -eq "") {$this.text = "Enter one Rule Name; One Per Line"}}
+            Add_MouseHover = {
+                Show-ToolTip -Title "Source IP Address" -Icon "Info" -Message @"
++  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
++  Enter one Rule Name
++  One Per Line
+"@  
+            }
+        }
+        $Section1ProcessCreationSysmonSearchTab.Controls.Add($ProcessCreationSysmonSearchOriginalFileNameRichTextbox)
+
+
+$ProcessCreationSysmonSearchUserCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
+    Text   = "User Account"
+    Left   = $ProcessCreationSysmonSearchOriginalFileNameCheckbox.Left + $ProcessCreationSysmonSearchOriginalFileNameCheckbox.Width + $($FormScale * 10)
+    Top    = $ProcessCreationSysmonSearchOriginalFileNameCheckbox.Top
+    Width  = $FormScale * 210
+    Height = $FormScale * 22
+    Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
+    ForeColor = 'Blue'
+    Add_Click = {
+        Update-QueryCount
+        
+        Update-TreeViewData -Commands -TreeView $script:CommandsTreeView.Nodes
+        if ($this.checked){$this.ForeColor = 'Red'} else {$this.ForeColor = 'Blue'}
+    }
+}
+$Section1ProcessCreationSysmonSearchTab.Controls.Add($ProcessCreationSysmonSearchUserCheckbox)
+
+
+        $ProcessCreationSysmonSearchUserRichTextBox = New-Object System.Windows.Forms.RichTextBox -Property @{
+            Lines  = "Enter User Account; One Per Line"
+            Left   = $ProcessCreationSysmonSearchUserCheckbox.Left
+            Top    = $ProcessCreationSysmonSearchUserCheckbox.Top + $ProcessCreationSysmonSearchUserCheckbox.Height + $($FormScale * 5)
+            Width  = $FormScale * 210
+            Height = $FormScale * 75
+            Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+            MultiLine  = $True
+            ScrollBars = "Vertical"
+            WordWrap   = $True
+            ShortcutsEnabled = $true
+            Add_MouseEnter = {if ($this.text -eq "Enter User Account; One Per Line"){$this.text = ""}}
+            Add_MouseLeave = {if ($this.text -eq "") {$this.text = "Enter User Account; One Per Line"}}
+            Add_MouseHover = {
+                Show-ToolTip -Title "Source IP Address" -Icon "Info" -Message @"
++  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
++  Enter User Account
++  One Per Line
+"@  
+            }
+        }
+        $Section1ProcessCreationSysmonSearchTab.Controls.Add($ProcessCreationSysmonSearchUserRichTextBox)
+
+
+$ProcessCreationSysmonSearchHashesCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
+    Text   = "Hashes: MD5/SHA1/SHA256/IMP"
+    Left   = $FormScale * 3
+    Top    = $ProcessCreationSysmonSearchOriginalFileNameRichTextbox.Top + $ProcessCreationSysmonSearchOriginalFileNameRichTextbox.Height + $($FormScale * 5)
+    Width  = $FormScale * 210
+    Height = $FormScale * 22
+    Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
+    ForeColor = 'Blue'
+    Add_Click = {
+        Update-QueryCount
+        
+        Update-TreeViewData -Commands -TreeView $script:CommandsTreeView.Nodes
+        if ($this.checked){$this.ForeColor = 'Red'} else {$this.ForeColor = 'Blue'}
+    }
+}
+$Section1ProcessCreationSysmonSearchTab.Controls.Add($ProcessCreationSysmonSearchHashesCheckbox)
+
+
+        $ProcessCreationSysmonSearchHashesRichTextBox = New-Object System.Windows.Forms.RichTextBox -Property @{
+            Lines  = "Enter Hashes; One Per Line"
+            Left   = $ProcessCreationSysmonSearchHashesCheckbox.Left
+            Top    = $ProcessCreationSysmonSearchHashesCheckbox.Top + $ProcessCreationSysmonSearchHashesCheckbox.Height + $($FormScale * 5)
+            Width  = $FormScale * 210
+            Height = $FormScale * 75
+            Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+            MultiLine  = $True
+            ScrollBars = "Vertical"
+            WordWrap   = $True
+            ShortcutsEnabled = $true
+            Add_MouseEnter = {if ($this.text -eq "Enter Hashes; One Per Line"){$this.text = ""}}
+            Add_MouseLeave = {if ($this.text -eq "") {$this.text = "Enter Hashes; One Per Line"}}
+            Add_MouseHover = {
+                Show-ToolTip -Title "Source IP Address" -Icon "Info" -Message @"
++  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
++  Enter Hashes
++  One Per Line
+"@  
+            }
+        }
+        $Section1ProcessCreationSysmonSearchTab.Controls.Add($ProcessCreationSysmonSearchHashesRichTextBox)
+
+
+$ProcessCreationSysmonSearchCompanyProductCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
+    Text   = "Company / Product"
+    Left   = $ProcessCreationSysmonSearchHashesCheckbox.Left + $ProcessCreationSysmonSearchHashesCheckbox.Width + $($FormScale * 10)
+    Top    = $ProcessCreationSysmonSearchHashesCheckbox.Top
+    Width  = $FormScale * 210
+    Height = $FormScale * 22
+    Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
+    ForeColor = 'Blue'
+    Add_Click = {
+        Update-QueryCount
+        
+        Update-TreeViewData -Commands -TreeView $script:CommandsTreeView.Nodes
+        if ($this.checked){$this.ForeColor = 'Red'} else {$this.ForeColor = 'Blue'}
+    }
+}
+$Section1ProcessCreationSysmonSearchTab.Controls.Add($ProcessCreationSysmonSearchCompanyProductCheckbox)
+
+
+        $ProcessCreationSysmonSearchCompanyProductRichTextBox = New-Object System.Windows.Forms.RichTextBox -Property @{
+            Lines  = "Enter Company/Product; One Per Line"
+            Left   = $ProcessCreationSysmonSearchCompanyProductCheckbox.Left
+            Top    = $ProcessCreationSysmonSearchCompanyProductCheckbox.Top + $ProcessCreationSysmonSearchCompanyProductCheckbox.Height + $($FormScale * 5)
+            Width  = $FormScale * 210
+            Height = $FormScale * 75
+            Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+            MultiLine  = $True
+            ScrollBars = "Vertical"
+            WordWrap   = $True
+            ShortcutsEnabled = $true
+            Add_MouseEnter = {if ($this.text -eq "Enter Company/Product; One Per Line"){$this.text = ""}}
+            Add_MouseLeave = {if ($this.text -eq "") {$this.text = "Enter Company/Product; One Per Line"}}
+            Add_MouseHover = {
+                Show-ToolTip -Title "Source IP Address" -Icon "Info" -Message @"
++  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
++  Enter Company/Product
++  One Per Line
+"@  
+            }
+        }
+        $Section1ProcessCreationSysmonSearchTab.Controls.Add($ProcessCreationSysmonSearchCompanyProductRichTextBox)
+
+
+# SIG # Begin signature block
+# MIIFuAYJKoZIhvcNAQcCoIIFqTCCBaUCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
+# gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUHDQGodsEJyRBoXS64NxpY052
+# dj2gggM6MIIDNjCCAh6gAwIBAgIQVnYuiASKXo9Gly5kJ70InDANBgkqhkiG9w0B
+# AQUFADAzMTEwLwYDVQQDDChQb1NoLUVhc3lXaW4gQnkgRGFuIEtvbW5pY2sgKGhp
+# Z2gxMDFicm8pMB4XDTIxMTEyOTIzNDA0NFoXDTMxMTEyOTIzNTA0M1owMzExMC8G
+# A1UEAwwoUG9TaC1FYXN5V2luIEJ5IERhbiBLb21uaWNrIChoaWdoMTAxYnJvKTCC
+# ASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANUnnNeIFC/eQ11BjDFsIHp1
+# 2HkKgnRRV07Kqsl4/fibnbOclptJbeKBDQT3iG5csb31s9NippKfzZmXfi69gGE6
+# v/L3X4Zb/10SJdFLstfT5oUD7UdiOcfcNDEiD+8OpZx4BWl5SNWuSv0wHnDSIyr1
+# 2M0oqbq6WA2FqO3ETpdhkK22N3C7o+U2LeuYrGxWOi1evhIHlnRodVSYcakmXIYh
+# pnrWeuuaQk+b5fcWEPClpscI5WiQh2aohWcjSlojsR+TiWG/6T5wKFxSJRf6+exu
+# C0nhKbyoY88X3y/6qCBqP6VTK4C04tey5z4Ux4ibuTDDePqH5WpRFMo9Vie1nVkC
+# AwEAAaNGMEQwDgYDVR0PAQH/BAQDAgeAMBMGA1UdJQQMMAoGCCsGAQUFBwMDMB0G
+# A1UdDgQWBBS2KLS0Frf3zyJTbQ4WsZXtnB9SFDANBgkqhkiG9w0BAQUFAAOCAQEA
+# s/TfP54uPmv+yGI7wnusq3Y8qIgFpXhQ4K6MmnTUpZjbGc4K3DRJyFKjQf8MjtZP
+# s7CxvS45qLVrYPqnWWV0T5NjtOdxoyBjAvR/Mhj+DdptojVMMp2tRNPSKArdyOv6
+# +yHneg5PYhsYjfblzEtZ1pfhQXmUZo/rW2g6iCOlxsUDr4ZPEEVzpVUQPYzmEn6B
+# 7IziXWuL31E90TlgKb/JtD1s1xbAjwW0s2s1E66jnPgBA2XmcfeAJVpp8fw+OFhz
+# Q4lcUVUoaMZJ3y8MfS+2Y4ggsBLEcWOK4vGWlAvD5NB6QNvouND1ku3z94XmRO8v
+# bqpyXrCbeVHascGVDU3UWTGCAegwggHkAgEBMEcwMzExMC8GA1UEAwwoUG9TaC1F
+# YXN5V2luIEJ5IERhbiBLb21uaWNrIChoaWdoMTAxYnJvKQIQVnYuiASKXo9Gly5k
+# J70InDAJBgUrDgMCGgUAoHgwGAYKKwYBBAGCNwIBDDEKMAigAoAAoQKAADAZBgkq
+# hkiG9w0BCQMxDAYKKwYBBAGCNwIBBDAcBgorBgEEAYI3AgELMQ4wDAYKKwYBBAGC
+# NwIBFTAjBgkqhkiG9w0BCQQxFgQUcLsP3L4dsQxHWjFx3TXxAJariiwwDQYJKoZI
+# hvcNAQEBBQAEggEAOTbQiV4ZbVyBcWUP7/Q7T5Hpe9T2asdKRP8nLp8w6gYLi7pL
+# n+VEZOsPV8l3QOmpTyvlhVWzDh9g4hhq+1HawUTVlJ3yNgNGR7Sje/GTD7U0lkZM
+# mEGfsUL+WfGZIgtyP4HWfiw9rs/GFgXHKRALEdHqPYMhiQLlC/DW6v5HLIIsdHgf
+# E79lm3hjxDdaRyIHh0iptWlg512ZEfFPgyNMgtmPdqv1CV51DhOlXdVaT3b7O0TK
+# INES/aoO9l8k15vD9YLEAou9w76ZrwKtnJFRjg61F6wXsxkEJRFeLha+VoXpBRhf
+# MwZPnOdD2O7rE09kRO7mXV0ZSKa0b8JcbeUGuw==
+# SIG # End signature block

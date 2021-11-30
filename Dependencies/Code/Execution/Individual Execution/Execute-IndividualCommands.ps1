@@ -47,7 +47,6 @@
 
 #     $CommandsToExecuteScriptBlock = $Script:CommandsToExecute
 #     #[Scriptblock]::Create($Script:CommandsToExecute)
-#     $Script:CommandsToExecute | ogv
 
 
 #     if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
@@ -200,6 +199,12 @@
 
         $script:ProgressBarEndpointsProgressBar.Maximum = $script:ComputerList.count
 
+        #batman
+        
+
+        $script:Section3AccountDataNotesRichTextBoxPreSave = $Section3HostDataNotesRichTextBox.text
+        $Section3HostDataNotesRichTextBox.text = 
+        $script:Section3AccountDataNotesRichTextBoxSaveCheck = $Section3HostDataNotesRichTextBox.text
 
         function MonitorJobScriptBlock {
             param(
@@ -623,14 +628,60 @@ $script:commandstring
                 Remove-Item $File -Force
             }
         }
+
+        # Updates endpoint notes with timestamp and command executed
+        $script:ComputerTreeViewSelected = @()
+        [System.Windows.Forms.TreeNodeCollection]$AllTreeViewNodes = $script:ComputerTreeView.Nodes
+        foreach ($root in $AllTreeViewNodes) {
+            foreach ($Category in $root.Nodes) {
+                foreach ($Entry in $Category.Nodes) {
+                    Foreach ($Computer in $script:ComputerTreeViewData) {
+                        if ($entry.checked -and $entry.text -eq $Computer.Name) {
+                            $script:ComputerTreeViewSelected += $Entry.Text
+                            $UpdatedNotes = "$(Get-Date) -- Executed Command: $CollectionName`n$($Computer.Notes)"
+                            $Computer | Add-Member -MemberType NoteProperty -Name Notes -Value $UpdatedNotes -Force
+                        }
+                    }
+                }
+            }
+        }
+        Save-TreeViewData -Endpoint -SkipTextFieldSave
     }
 
 
 
-
-
-
-
-
-
 # }
+
+# SIG # Begin signature block
+# MIIFuAYJKoZIhvcNAQcCoIIFqTCCBaUCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
+# gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUHI3RMQ9U4RkJqfz5SzCPiChs
+# 8PmgggM6MIIDNjCCAh6gAwIBAgIQVnYuiASKXo9Gly5kJ70InDANBgkqhkiG9w0B
+# AQUFADAzMTEwLwYDVQQDDChQb1NoLUVhc3lXaW4gQnkgRGFuIEtvbW5pY2sgKGhp
+# Z2gxMDFicm8pMB4XDTIxMTEyOTIzNDA0NFoXDTMxMTEyOTIzNTA0M1owMzExMC8G
+# A1UEAwwoUG9TaC1FYXN5V2luIEJ5IERhbiBLb21uaWNrIChoaWdoMTAxYnJvKTCC
+# ASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANUnnNeIFC/eQ11BjDFsIHp1
+# 2HkKgnRRV07Kqsl4/fibnbOclptJbeKBDQT3iG5csb31s9NippKfzZmXfi69gGE6
+# v/L3X4Zb/10SJdFLstfT5oUD7UdiOcfcNDEiD+8OpZx4BWl5SNWuSv0wHnDSIyr1
+# 2M0oqbq6WA2FqO3ETpdhkK22N3C7o+U2LeuYrGxWOi1evhIHlnRodVSYcakmXIYh
+# pnrWeuuaQk+b5fcWEPClpscI5WiQh2aohWcjSlojsR+TiWG/6T5wKFxSJRf6+exu
+# C0nhKbyoY88X3y/6qCBqP6VTK4C04tey5z4Ux4ibuTDDePqH5WpRFMo9Vie1nVkC
+# AwEAAaNGMEQwDgYDVR0PAQH/BAQDAgeAMBMGA1UdJQQMMAoGCCsGAQUFBwMDMB0G
+# A1UdDgQWBBS2KLS0Frf3zyJTbQ4WsZXtnB9SFDANBgkqhkiG9w0BAQUFAAOCAQEA
+# s/TfP54uPmv+yGI7wnusq3Y8qIgFpXhQ4K6MmnTUpZjbGc4K3DRJyFKjQf8MjtZP
+# s7CxvS45qLVrYPqnWWV0T5NjtOdxoyBjAvR/Mhj+DdptojVMMp2tRNPSKArdyOv6
+# +yHneg5PYhsYjfblzEtZ1pfhQXmUZo/rW2g6iCOlxsUDr4ZPEEVzpVUQPYzmEn6B
+# 7IziXWuL31E90TlgKb/JtD1s1xbAjwW0s2s1E66jnPgBA2XmcfeAJVpp8fw+OFhz
+# Q4lcUVUoaMZJ3y8MfS+2Y4ggsBLEcWOK4vGWlAvD5NB6QNvouND1ku3z94XmRO8v
+# bqpyXrCbeVHascGVDU3UWTGCAegwggHkAgEBMEcwMzExMC8GA1UEAwwoUG9TaC1F
+# YXN5V2luIEJ5IERhbiBLb21uaWNrIChoaWdoMTAxYnJvKQIQVnYuiASKXo9Gly5k
+# J70InDAJBgUrDgMCGgUAoHgwGAYKKwYBBAGCNwIBDDEKMAigAoAAoQKAADAZBgkq
+# hkiG9w0BCQMxDAYKKwYBBAGCNwIBBDAcBgorBgEEAYI3AgELMQ4wDAYKKwYBBAGC
+# NwIBFTAjBgkqhkiG9w0BCQQxFgQUF3tVDEvDSFr/9kJ4TizCDCk6gFUwDQYJKoZI
+# hvcNAQEBBQAEggEAlD9sIiweb3FjV8Hv+QOWQULAqzaFDwTMTaKvP4WrmfqcLDjI
+# Rx4l7gVoBG4t1MzkFCZnsT+IZD010mBF9EbrFmlINUWsZgPlXY6icWXk8zm3o0gc
+# t/pMEhlS8Iljxg/vmbaDh2pmw5q6ZWy0DtV+E6OEHM9hW4fNoj86tGqw1Ry3pNDM
+# KGiwd2XwtnnFm24Ws7UwG2qCx6XimCGMVLxXvzSHsVgq4COCIj4wdni5IBb32lnI
+# 98BHLs30eFNfmzMw20k3ZCEyw7PXVv1us72spBA0n3LjKMa0S8G4iNK7st9nMwM9
+# TGnKMeuv/xive1v8LQ3HLqEFxPCNliC3nDBolw==
+# SIG # End signature block

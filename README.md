@@ -38,9 +38,31 @@ PoSh-EasyWin is a Graphical User Interface (GUI) that uses PowerShell with the .
 5. the ability to effortlessly connect to an endpoint via a Remote Desktop, PSSession, PSExec, or explore Event Logs. 
 6. a method to analyze data/results from numerous systems natively without external 3rd party applications.
 
+
 ***
 ***
-### Browser View - Searching, Tables, Panels, Charts, and Graphs (Beta Release)
+### How to Run PoSh-EasyWin.ps1
+Microsoft included some security features to protect the average user from unknowingly running PowerShell (.ps1) scripts. This is accomplished through blocking .ps1 scripts that are downloaded from the internet as well as having a default script execution policy of restricted. Oftentimes, users just Unblock-File ".\PoSh-EasyWin" and Set-ExecutionPolicy ByPass. While this works, it isn't best practice. Rather, all PoSh-EasyWin scripts have been signed, thus it is preferrable to do the following:
+# Note: The script will normally be blocked from execution. 
+PS C:\PoSh-EasyWin> .\PoSh-EasyWin.ps1
+# Note: How to check the execution policy.
+PS C:\PoSh-EasyWin> Get-ExecutionPolicy
+# Note: How to import the certificate to allow for exection of signed scripts
+PS C:\PoSh-EasyWin> Import-Certificate -FilePath ".\PoSh-EasyWin_Public_Certificate.cer" -CertStoreLocation Cert:\CurrentUser\Root
+# Note: How to check the authenticode signature.
+PS C:\PoSh-EasyWin> Get-AuthenticodeSignature .\PoSh-EasyWin.ps1
+# Note: How to set the execution policy to either RemoteSigned or AllSigned. Either method will work, though AllSigned will prompt you with info.
+PS C:\Users\danie\Documents\GitHub\PoSh-EasyWin> Set-ExecutionPolicy -ExecutionPolicy RemoteSigned
+PS C:\Users\danie\Documents\GitHub\PoSh-EasyWin> Set-ExecutionPolicy -ExecutionPolicy AllSigned
+# Note: The script should run now. 
+PS C:\PoSh-EasyWin> .\PoSh-EasyWin.ps1
+## Example Screenshot:
+![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/HowToRunPoSh-EasyWin.png)
+
+
+***
+***
+### Browser View - Searching, Tables, Panels, Charts, and Graphs
 
 | ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/Graph02.jpg)  | ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/Graph04.jpg) | ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/Graph03-ProcessTree.jpg) | 
 |:----------------------:|:-----------------:|:---------------------:|
@@ -48,11 +70,11 @@ PoSh-EasyWin is a Graphical User Interface (GUI) that uses PowerShell with the .
 | ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/PSWriteHTML-Sheet01.jpg)  | ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/PSWriteHTML-Panel01.jpg) | ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/PSWriteHTML-Chart01.jpg) | 
 |  Table Search w/ Details  |  Panel Breakout Filtering  |  Pies & Bar Charts   |
 
-New Beta Feature (Work in Progress) - Currently refining code to best display data. Also, looking into other data that is useful to visualize in graphs. You're able to view data collected from endpoints or from Active Directory and their relationships as well as investigate more details by looking at the accompanying data within the spreadsheets in the browser. This features uses the PSWriteHTML module which can be installed separately, but a specific version has been packaged with PoSh-EasyWin that has been vetted for compatibliity.
+Relatively new feature, undergoing regular updates - Currently refining code to best display data. Also, looking into other data that is useful to visualize in graphs. You're able to view data collected from endpoints or from Active Directory and their relationships as well as investigate more details by looking at the accompanying data within the spreadsheets in the browser. This features uses the PSWriteHTML module which can be installed separately, but a specific version has been packaged with PoSh-EasyWin that has been vetted for compatibliity.
 
 ***
 ***
-### Monitor Jobs Tab (Beta Release)
+### Monitor Jobs Tab
 
 | ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/MonitorJobs01.jpg)  | ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/MonitorJobs02.jpg) | ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/PSWriteHTML-Notify02.jpg) | 
 |:----------------------:|:-----------------:|:---------------------:|

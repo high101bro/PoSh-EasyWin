@@ -1204,8 +1204,8 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel
                     $AccountsTreeviewImageHashTable['1'] = "$Dependencies\Images\Icons\Icon OU LightYellow.png"
                     
                     # Position 2 = used as the default image for the computer/account/entry node. Normalize-TreeViewData.ps1 populates it by default if an imageindex number doesn't exist for it already
-                    $AccountsTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\OU-Default.png"))
-                    $AccountsTreeviewImageHashTable['2'] = "$Dependencies\Images\Icons\OU-Default.png"
+                    $AccountsTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Account-Default.png"))
+                    $AccountsTreeviewImageHashTable['2'] = "$Dependencies\Images\Icons\Account-Default.png"
                     
                     $AccountsTreeviewImageHashTableCount = 2
                     foreach ($Image in $script:AccountsTreeViewIconList.FullName) {
@@ -1380,9 +1380,6 @@ Update-FormProgress "$Dependencies\Code\Execution\Search-Registry.ps1"
 # Required for Query-NetworkConnectionRemoteIPAddress, Query-NetworkConnectionRemotePort, and Query-NetworkConnectionProcess
 Update-FormProgress "$Dependencies\Code\Execution\Query-NetworkConnection.ps1"
 . "$Dependencies\Code\Execution\Query-NetworkConnection.ps1"
-Update-FormProgress "$Dependencies\Code\Execution\Query-NetworkConnectionWithinSysmon.ps1"
-. "$Dependencies\Code\Execution\Query-NetworkConnectionWithinSysmon.ps1"
-
 
 # Compiles the .csv files in the collection directory then saves the combined file to the partent directory
 # The first line (collumn headers) is only copied once from the first file compiled, then skipped for the rest
@@ -1434,6 +1431,14 @@ Update-FormProgress "$Dependencies\Code\Execution\Execute-TextToSpeach.ps1"
 # The code that is to run after execution is complete
 Update-FormProgress "$Dependencies\Code\Execution\Completed-QueryExecution.ps1"
 . "$Dependencies\Code\Execution\Completed-QueryExecution.ps1"
+
+# Loads the function used to query for various Sysmon Event ID 1 Process Creation logs
+Update-FormProgress "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-ProcessCreationSysmon.ps1"
+. "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-ProcessCreationSysmon.ps1"
+
+# Loads the function used to query for various Sysmon Event ID 3 Network Connections logs
+Update-FormProgress "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-NetworkConnectionSysmon.ps1"
+. "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-NetworkConnectionSysmon.ps1"
 
 
 # Sets the GUI layout
@@ -1491,18 +1496,20 @@ $ExecuteScriptHandler = {
     if ($script:ComputerListProvideCredentialsCheckBox.Checked) { $Username = $script:Credential.UserName}
     else {$Username = $PoShEasyWinAccountLaunch }
 
+    Update-TreeViewData -Commands -TreeView $script:CommandsTreeView.Nodes
+
     # Clears previous and generates new computerlist
     $script:ComputerList = @()
     Generate-ComputerList
+
+    # This function compiles the selected treeview comamnds, placing the proper command type and protocol into a variable list to be executed.
+    Compile-SelectedCommandTreeNode
 
     # Assigns the path to save the Collections to
     $script:CollectedDataTimeStampDirectory = $script:CollectionSavedDirectoryTextBox.Text
 
     # Location of Uncompiled Results
     $script:IndividualHostResults = "$script:CollectedDataTimeStampDirectory"
-
-    # This function compiles the selected treeview comamnds, placing the proper command type and protocol into a variable list to be executed.
-    Compile-SelectedCommandTreeNode
 
     if ($script:EventLogsStartTimePicker.Checked -xor $script:EventLogsStopTimePicker.Checked) {
         # This brings specific tabs to the forefront/front view
@@ -1547,69 +1554,30 @@ $ExecuteScriptHandler = {
         }
 
         # Adds section checkboxes to the command count
-        if ($CustomQueryScriptBlockCheckBox.checked)                                                    { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
+        foreach ($Checkbbox in $script:AllCheckBoxesList) {
+            if     ($AccountsWinRMRadioButton.Checked -and $Checkbbox.Checked) { $script:WinRMCommandCount++ }
+            elseif ($AccountsRpcRadioButton.Checked   -and $Checkbbox.Checked) { $script:RpcCommandCount++ }
+            elseif ($EventLogWinRMRadioButton.Checked -and $Checkbbox.Checked) { $script:WinRMCommandCount++ }
+            elseif ($EventLogRpcRadioButton.Checked   -and $Checkbbox.Checked) { $script:RpcCommandCount++ }
+            elseif ($ExternalProgramsWinRMRadioButton.checked -and $Checkbbox.checked) { $script:WinRMCommandCount++ }
+            elseif ($ExternalProgramsRpcRadioButton.checked   -and $Checkbbox.checked) { $script:RpcCommandCount++ }    
+            elseif ($Checkbbox.checked) { $script:WinRMCommandCount++ }
+        }
 
-        if ($AccountsWinRMRadioButton.Checked -and $AccountsCurrentlyLoggedInConsoleCheckbox.Checked)   { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
-        if ($AccountsWinRMRadioButton.Checked -and $AccountsCurrentlyLoggedInPSSessionCheckbox.Checked) { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
-        if ($AccountsWinRMRadioButton.Checked -and $AccountActivityCheckbox.Checked)                    { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
-        if ($AccountsRpcRadioButton.Checked   -and $AccountsCurrentlyLoggedInConsoleCheckbox.Checked)   { $CountCommandQueries++ ; $script:RpcCommandCount++ }
-        if ($AccountsRpcRadioButton.Checked   -and $AccountsCurrentlyLoggedInPSSessionCheckbox.Checked) { $CountCommandQueries++ ; $script:RpcCommandCount++ }
-        if ($AccountsRpcRadioButton.Checked   -and $AccountActivityCheckbox.Checked)                    { $CountCommandQueries++ ; $script:RpcCommandCount++ }
 
-        if ($EventLogWinRMRadioButton.Checked -and $EventLogsEventIDsManualEntryCheckbox.Checked)       { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
-        if ($EventLogRpcRadioButton.Checked   -and $EventLogsEventIDsManualEntryCheckbox.Checked)       { $CountCommandQueries++ ; $script:RpcCommandCount++ }
         if ($EventLogsQuickPickSelectionCheckbox.Checked) {
+            # This is subtracted one because it get's added to the count because it's in the $script:AllCheckBoxesList list
+            $CountCommandQueries--
+
             foreach ($Query in $script:EventLogQueries) {
                 if ($EventLogWinRMRadioButton.Checked -and $EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match $Query.Name) { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
                 if ($EventLogRpcRadioButton.Checked   -and $EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match $Query.Name) { $CountCommandQueries++ ; $script:RpcCommandCount++ }
             }
         }
-        if ($EventLogNameEVTXLogNameSelectionCheckbox.Checked)          { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
-        if ($RegistrySearchCheckbox.checked)                            { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
 
-        if ($FileSearchDirectoryListingCheckbox.Checked)                { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
-        if ($FileSearchFileSearchCheckbox.Checked)                      { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
-        if ($FileSearchAlternateDataStreamCheckbox.Checked)             { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
+        $QueryCount = $CountCommandQueries + $script:TreeeViewCommandsCount
 
-        if ($NetworkEndpointPacketCaptureCheckBox.Checked)              { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
-        
-        if ($NetworkLiveSearchRemoteIPAddressCheckbox.checked)    { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
-        if ($NetworkLiveSearchRemotePortCheckbox.checked)         { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
-        if ($NetworkLiveSearchLocalPortCheckbox.checked)          { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
-        if ($NetworkLiveSearchProcessCheckbox.checked)            { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
-        if ($NetworkLiveSearchDNSCacheCheckbox.checked)           { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
-        if ($NetworkLiveSearchCommandLineCheckbox.checked)        { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
-        if ($NetworkLiveSearchExecutablePathCheckbox.checked)     { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
-       
-        if ($NetworkSysmonRegexCheckbox.checked)                      { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
-        if ($NetworkSysmonSearchSourceIPAddressCheckbox.checked)      { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
-        if ($NetworkSysmonSearchSourcePortCheckbox.checked)           { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
-        if ($NetworkSysmonSearchDestinationIPAddressCheckbox.checked) { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
-        if ($NetworkSysmonSearchDestinationPortCheckbox.checked)      { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
-        if ($NetworkSysmonSearchAccountCheckbox.checked)              { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
-        if ($NetworkSysmonSearchExecutablePathCheckbox.checked)       { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
-
-        if ($ExternalProgramsWinRMRadioButton.checked -and $SysinternalsSysmonCheckbox.Checked)                        { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
-        if ($ExternalProgramsWinRMRadioButton.checked -and $SysinternalsProcessMonitorCheckbox.Checked)                { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
-        if ($ExternalProgramsWinRMRadioButton.checked -and $ExeScriptUserSpecifiedExecutableAndScriptCheckbox.checked) { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
-        if ($ExternalProgramsRpcRadioButton.checked   -and $SysinternalsSysmonCheckbox.Checked)                        { $CountCommandQueries++ ; $script:RpcCommandCount++ }
-        if ($ExternalProgramsRpcRadioButton.checked   -and $SysinternalsProcessMonitorCheckbox.Checked)                { $CountCommandQueries++ ; $script:RpcCommandCount++ }
-        if ($ExternalProgramsRpcRadioButton.checked   -and $ExeScriptUserSpecifiedExecutableAndScriptCheckbox.checked) { $CountCommandQueries++ ; $script:RpcCommandCount++ }
-
-        $CommandsCheckedBoxesSelectedTemp  = @()
-        $CommandsCheckedBoxesSelectedDedup = @()
-        foreach ($Command in $script:CommandsCheckedBoxesSelected) {
-            if ($CommandsCheckedBoxesSelectedTemp -notcontains $Command.command) {
-                $CommandsCheckedBoxesSelectedTemp  += "$($Command.command)"
-                $CommandsCheckedBoxesSelectedDedup += $command
-                $CountCommandQueries++
-            }
-        }
-        $script:CommandsCheckedBoxesSelected = $CommandsCheckedBoxesSelectedDedup
-        #[int]$script:RpcCommandCount + [int]$script:SmbCommandCount + [int]$script:WinRMCommandCount
-        $QueryCount = $script:CommandsCheckedBoxesSelectedDedup.count + $CountCommandQueries
         $script:ProgressBarQueriesProgressBar.Maximum = $QueryCount
-
 
         # This is Execution Start Time is just a catch all
         # Each script/code within the execution modes should set this before they run
@@ -1722,52 +1690,37 @@ $ExecuteScriptHandler = {
                     if ($NetworkEndpointPacketCaptureCheckBox.Checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualCapture-EndpointPacketCaptureNetSh.ps1" }
                 }
 
-                # Live Network Connection Search Remote IP Address
+                # Live Network Connection Search for various data
                 if ($NetworkLiveSearchRemoteIPAddressCheckbox.checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-NetworkLiveRemoteIPAddress.ps1" }
-
-                # Live Network Connection Search Remote Port
-                if ($NetworkLiveSearchRemotePortCheckbox.checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-NetworkLiveRemotePort.ps1" }
-
-                # Live Network Connection Search Local Port
-                if ($NetworkLiveSearchLocalPortCheckbox.checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-NetworkLiveLocalPort.ps1" }
-
-                # Live Network Connection Search Command Line
-                if ($NetworkLiveSearchCommandLineCheckbox.checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-NetworkLiveSearchCommandLine.ps1" }
-
-                # Live Network Connection Search Execution Full Path
-                if ($NetworkLiveSearchExecutablePathCheckbox.checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-NetworkLiveSearchExecutablePath.ps1" }
-
-                # Live Network Connection Search Remote Process
-                if ($NetworkLiveSearchProcessCheckbox.checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-NetworkLiveProcess.ps1" }
-
-                # Live Network Connection Search DNS Cache
-                if ($NetworkLiveSearchDNSCacheCheckbox.checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-NetworkLiveSearchDNSCache.ps1" }
+                if ($NetworkLiveSearchRemotePortCheckbox.checked)      { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-NetworkLiveRemotePort.ps1" }
+                if ($NetworkLiveSearchLocalPortCheckbox.checked)       { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-NetworkLiveLocalPort.ps1" }
+                if ($NetworkLiveSearchCommandLineCheckbox.checked)     { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-NetworkLiveSearchCommandLine.ps1" }
+                if ($NetworkLiveSearchExecutablePathCheckbox.checked)  { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-NetworkLiveSearchExecutablePath.ps1" }
+                if ($NetworkLiveSearchProcessCheckbox.checked)         { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-NetworkLiveProcess.ps1" }
+                if ($NetworkLiveSearchDNSCacheCheckbox.checked)        { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-NetworkLiveSearchDNSCache.ps1" }
                 
+                # Searches for Sysmon Event ID 1 for various Process Creation data
+                if ($ProcessCreationSysmonSearchOriginalFileNameCheckbox.checked)  { IndividualQuery-ProcessCreationSysmon -ProcessCreationSysmonSearchOriginalFileNameCheckbox }
+                if ($ProcessCreationSysmonSearchUserCheckbox.checked)              { IndividualQuery-ProcessCreationSysmon -ProcessCreationSysmonSearchUserCheckbox }
+                if ($ProcessCreationSysmonSearchHashesCheckbox.checked)            { IndividualQuery-ProcessCreationSysmon -ProcessCreationSysmonSearchHashesCheckbox }
+                if ($ProcessCreationSysmonSearchFilePathCheckbox.checked)          { IndividualQuery-ProcessCreationSysmon -ProcessCreationSysmonSearchFilePathCheckbox }
+                if ($ProcessCreationSysmonSearchCommandlineCheckbox.checked)       { IndividualQuery-ProcessCreationSysmon -ProcessCreationSysmonSearchCommandlineCheckbox }
+                if ($ProcessCreationSysmonSearchParentFilePathCheckbox.checked)    { IndividualQuery-ProcessCreationSysmon -ProcessCreationSysmonSearchParentFilePathCheckbox }
+                if ($ProcessCreationSysmonSearchParentCommandlineCheckbox.checked) { IndividualQuery-ProcessCreationSysmon -ProcessCreationSysmonSearchParentCommandlineCheckbox }
 
-                # Searches for Sysmon Event ID 3 for Network Connections for Source IP Addresses
-                if ($NetworkSysmonSearchSourceIPAddressCheckbox.checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-NetworkSysmonSourceIPAddress.ps1" }
-
-                #  Searches for Sysmon Event ID 3 for Network Connections for Source Ports
-                if ($NetworkSysmonSearchSourcePortCheckbox.checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-NetworkSysmonSourcePort.ps1" }
-
-                # Searches for Sysmon Event ID 3 for Network Connections for Destination IP Addresses
-                if ($NetworkSysmonSearchDestinationIPAddressCheckbox.checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-NetworkSysmonDestinationIPAddress.ps1" }
-
-                # Searches for Sysmon Event ID 3 for Network Connections for Destination Ports
-                if ($NetworkSysmonSearchDestinationPortCheckbox.checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-NetworkSysmonDestinationPort.ps1" }
-
-                #  Searches for Sysmon Event ID 3 for Network Connections for connections started by particular Users
-                if ($NetworkSysmonSearchAccountCheckbox.checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-NetworkSysmonSearchAccount.ps1" }
-
-                # Network Connection Search Execution Full Path
-                if ($NetworkSysmonSearchExecutablePathCheckbox.checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-NetworkSysmonSearchExecutablePath.ps1" }       
+                # Searches for Sysmon Event ID 3 for various Network Connections data
+                if ($NetworkSysmonSearchSourceIPAddressCheckbox.checked)      { IndividualQuery-NetworkConnectionSysmon -NetworkSysmonSearchSourceIPAddressCheckbox }
+                if ($NetworkSysmonSearchSourcePortCheckbox.checked)           { IndividualQuery-NetworkConnectionSysmon -NetworkSysmonSearchSourcePortCheckbox }
+                if ($NetworkSysmonSearchDestinationIPAddressCheckbox.checked) { IndividualQuery-NetworkConnectionSysmon -NetworkSysmonSearchDestinationIPAddressCheckbox }
+                if ($NetworkSysmonSearchDestinationPortCheckbox.checked)      { IndividualQuery-NetworkConnectionSysmon -NetworkSysmonSearchDestinationPortCheckbox }
+                if ($NetworkSysmonSearchAccountCheckbox.checked)              { IndividualQuery-NetworkConnectionSysmon -NetworkSysmonSearchAccountCheckbox }
+                if ($NetworkSysmonSearchExecutablePathCheckbox.checked)       { IndividualQuery-NetworkConnectionSysmon -NetworkSysmonSearchExecutablePathCheckbox }
 
                 # Sysmon
                 # Pushes Sysmon to remote hosts and configure it with the selected config .xml file
                 # If sysmon is already installed, it will update the config .xml file instead
                 # Symon and its supporting files are removed afterwards        
                 if ($SysinternalsSysmonCheckbox.Checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualPush-Sysmon.ps1" }
-
 
                 # Procmon
                 # Pushes Process Monitor to remote hosts and pulls back the procmon results to be opened locally
@@ -1851,7 +1804,7 @@ $ExecuteScriptHandler = {
             }
             $PoShEasyWin.Refresh()
 
-            $script:ProgressBarQueriesProgressBar.Maximum   = $CountCommandQueries
+            $script:ProgressBarQueriesProgressBar.Maximum   = $QueryCount
             $script:ProgressBarEndpointsProgressBar.Maximum = ($PSSession.ComputerName).Count
 
 
@@ -1901,46 +1854,22 @@ $ExecuteScriptHandler = {
                 # Conducts a packet capture on the endpoints using netsh
                 if ($NetworkEndpointPacketCaptureCheckBox.Checked) { . "$Dependencies\Code\Execution\Session Based\SessionQuery-EndpointPacketCapture.ps1" }
 
-                # Network Connection Search Remote IP Address
+                # Network Connection Search for various data
                 if ($NetworkLiveSearchRemoteIPAddressCheckbox.checked) { . "$Dependencies\Code\Execution\Session Based\SessionQuery-NetworkConnectionSearchRemoteIPAddress.ps1" }
-
-                # Network Connection Search Remote Port
                 if ($NetworkLiveSearchRemotePortCheckbox.checked) { . "$Dependencies\Code\Execution\Session Based\SessionQuery-NetworkConnectionSearchRemotePort.ps1" }
-
-                # Network Connection Search Local Port
                 if ($NetworkLiveSearchLocalPortCheckbox.checked) { . "$Dependencies\Code\Execution\Session Based\SessionQuery-NetworkConnectionSearchLocalPort.ps1" }
-
-                # Network Connection Search Process
                 if ($NetworkLiveSearchProcessCheckbox.checked) { . "$Dependencies\Code\Execution\Session Based\SessionQuery-NetworkConnectionSearchProcess.ps1" }
-
-                # Network Connection Search Execution Full Path
                 if ($NetworkLiveSearchExecutablePathCheckbox.checked) { . "$Dependencies\Code\Execution\Session Based\SessionQuery-NetworkConnectionSearchExecutablePath.ps1" }
-
-                # Network Connection Search DNS Check
                 if ($NetworkLiveSearchDNSCacheCheckbox.checked) { . "$Dependencies\Code\Execution\Session Based\SessionQuery-NetworkConnectionSearchDNSCache.ps1" }
-
-                # Network Connection Search Command Line
                 if ($NetworkLiveSearchCommandLineCheckbox.checked) { . "$Dependencies\Code\Execution\Session Based\SessionQuery-NetworkConnectionSearchCommandLine.ps1" }
 
-
-                # Searches for Sysmon Event ID 3 for Network Connections for Source IP Addresses
+                # Searches for Sysmon Event ID 3 for Network Connections for data
                 if ($NetworkSysmonSearchSourceIPAddressCheckbox.checked) { [System.Windows.Forms.MessageBox]::Show("Network Sysmon Remote IP search is not compatible with the Session based execution mode","PoSh-EasyWin",'Ok',"Warning") }
-
-                #  Searches for Sysmon Event ID 3 for Network Connections for Source Ports
                 if ($NetworkSysmonSearchSourcePortCheckbox.checked) { [System.Windows.Forms.MessageBox]::Show("Network Sysmon Local Port search is not compatible with the Session based execution mode","PoSh-EasyWin",'Ok',"Warning") }
-
-                # Searches for Sysmon Event ID 3 for Network Connections for Destination IP Addresses
                 if ($NetworkSysmonSearchDestinationIPAddressCheckbox.checked) { [System.Windows.Forms.MessageBox]::Show("Network Sysmon Remote IP search is not compatible with the Session based execution mode","PoSh-EasyWin",'Ok',"Warning") }
-
-                # Searches for Sysmon Event ID 3 for Network Connections for Destination Ports
                 if ($NetworkSysmonSearchDestinationPortCheckbox.checked) { [System.Windows.Forms.MessageBox]::Show("Network Sysmon Remote Port search is not compatible with the Session based execution mode","PoSh-EasyWin",'Ok',"Warning") }
-
-                #  Searches for Sysmon Event ID 3 for Network Connections for connections started by particular Users
                 if ($NetworkSysmonSearchAccountCheckbox.checked) { [System.Windows.Forms.MessageBox]::Show("Network Sysmon User search is not compatible with the Session based execution mode","PoSh-EasyWin",'Ok',"Warning") }
-
-                # Network Connection Search Execution Full Path
                 if ($NetworkSysmonSearchExecutablePathCheckbox.checked) { [System.Windows.Forms.MessageBox]::Show("Network Sysmon Ececutable Path search is not compatible with the Session based execution mode","PoSh-EasyWin",'Ok',"Warning") }
-                
                 
                 # Sysmon
                 # Pushes Sysmon to remote hosts and configure it with the selected config .xml file
@@ -2036,3 +1965,37 @@ if ((Test-Path "$PoShHome\Settings\User Notice And Acknowledgement.txt")) {
     Launch-ProgressBarForm -FormTitle "PoSh-EasyWin  [$InitialScriptLoadTime]" -ShowImage -ScriptBlockProgressBarInput $ScriptBlockProgressBarInput
     $script:ProgressBarSelectionForm.Topmost = $false
 }
+
+# SIG # Begin signature block
+# MIIFuAYJKoZIhvcNAQcCoIIFqTCCBaUCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
+# gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUPe2s+rgDOdTSLje/zs0YzE+V
+# f+igggM6MIIDNjCCAh6gAwIBAgIQVnYuiASKXo9Gly5kJ70InDANBgkqhkiG9w0B
+# AQUFADAzMTEwLwYDVQQDDChQb1NoLUVhc3lXaW4gQnkgRGFuIEtvbW5pY2sgKGhp
+# Z2gxMDFicm8pMB4XDTIxMTEyOTIzNDA0NFoXDTMxMTEyOTIzNTA0M1owMzExMC8G
+# A1UEAwwoUG9TaC1FYXN5V2luIEJ5IERhbiBLb21uaWNrIChoaWdoMTAxYnJvKTCC
+# ASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANUnnNeIFC/eQ11BjDFsIHp1
+# 2HkKgnRRV07Kqsl4/fibnbOclptJbeKBDQT3iG5csb31s9NippKfzZmXfi69gGE6
+# v/L3X4Zb/10SJdFLstfT5oUD7UdiOcfcNDEiD+8OpZx4BWl5SNWuSv0wHnDSIyr1
+# 2M0oqbq6WA2FqO3ETpdhkK22N3C7o+U2LeuYrGxWOi1evhIHlnRodVSYcakmXIYh
+# pnrWeuuaQk+b5fcWEPClpscI5WiQh2aohWcjSlojsR+TiWG/6T5wKFxSJRf6+exu
+# C0nhKbyoY88X3y/6qCBqP6VTK4C04tey5z4Ux4ibuTDDePqH5WpRFMo9Vie1nVkC
+# AwEAAaNGMEQwDgYDVR0PAQH/BAQDAgeAMBMGA1UdJQQMMAoGCCsGAQUFBwMDMB0G
+# A1UdDgQWBBS2KLS0Frf3zyJTbQ4WsZXtnB9SFDANBgkqhkiG9w0BAQUFAAOCAQEA
+# s/TfP54uPmv+yGI7wnusq3Y8qIgFpXhQ4K6MmnTUpZjbGc4K3DRJyFKjQf8MjtZP
+# s7CxvS45qLVrYPqnWWV0T5NjtOdxoyBjAvR/Mhj+DdptojVMMp2tRNPSKArdyOv6
+# +yHneg5PYhsYjfblzEtZ1pfhQXmUZo/rW2g6iCOlxsUDr4ZPEEVzpVUQPYzmEn6B
+# 7IziXWuL31E90TlgKb/JtD1s1xbAjwW0s2s1E66jnPgBA2XmcfeAJVpp8fw+OFhz
+# Q4lcUVUoaMZJ3y8MfS+2Y4ggsBLEcWOK4vGWlAvD5NB6QNvouND1ku3z94XmRO8v
+# bqpyXrCbeVHascGVDU3UWTGCAegwggHkAgEBMEcwMzExMC8GA1UEAwwoUG9TaC1F
+# YXN5V2luIEJ5IERhbiBLb21uaWNrIChoaWdoMTAxYnJvKQIQVnYuiASKXo9Gly5k
+# J70InDAJBgUrDgMCGgUAoHgwGAYKKwYBBAGCNwIBDDEKMAigAoAAoQKAADAZBgkq
+# hkiG9w0BCQMxDAYKKwYBBAGCNwIBBDAcBgorBgEEAYI3AgELMQ4wDAYKKwYBBAGC
+# NwIBFTAjBgkqhkiG9w0BCQQxFgQUL66A0fdAsdDMAy7iEQsK9365JcEwDQYJKoZI
+# hvcNAQEBBQAEggEAVBLgovnl2xuT+oT3wkClEjHcLEp6evmpnvdRJF1xWC0IdIYm
+# 7QdYPI+cHQ1smgBXb8eWADYdYyOTVASNjZp+1CA/KBgQisaGP07s2DKVXUH6FCr6
+# nPSo4lc1f4JGP6MF6frrq9mCk5tUTIzgR/1XZYuV1O0zSQ36QFXesUaq5/8GjJBV
+# hCQbkaTuKnMpN5ffLPrRPsO8pLXuCJEHewKw/mXMEHfxwxljZ45s1tN7OYmDkL39
+# RPf+G1IOmL4YQ4YI7J6GYhrr6MNeYba0gs/OfWiYi69nHH1fNxROSUHhVllfXdqn
+# K9WQy8HpyO6SOVvXw3hcQyAPtNSDnAXz375few==
+# SIG # End signature block

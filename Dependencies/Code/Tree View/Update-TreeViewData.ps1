@@ -201,9 +201,9 @@ function Update-TreeViewData {
                                 }
                             }
 
-                            if ($Commands) { $script:TreeeViewCommandsCount++ }
-                            if ($Accounts) { $script:TreeeViewAccountsCount++ }
-                            if ($Endpoint) { $script:TreeeViewEndpointCount++ }
+                            # if ($Commands) { $script:TreeeViewCommandsCount++ }
+                            # if ($Accounts) { $script:TreeeViewAccountsCount++ }
+                            # if ($Endpoint) { $script:TreeeViewEndpointCount++ }
                             $EntryNodeCheckedCountforCategory++
                             $EntryNodeCheckedCountforRoot++
                             $Entry.NodeFont  = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,1,1)
@@ -539,44 +539,59 @@ function Update-TreeViewData {
         $script:PreviousQueryCount = $SectionQueryTempCount
         $script:SectionQueryCount += $script:PreviousQueryCount
 
+
+        # List of all checkboxes - used to check if they're checkboxed and managing their color and checked state 
+        $script:AllCheckBoxesList = @(
+            $CustomQueryScriptBlockCheckBox,
+
+            $AccountsCurrentlyLoggedInConsoleCheckbox,
+            $AccountsCurrentlyLoggedInPSSessionCheckbox,
+            $AccountActivityCheckbox,
+
+            $EventLogsEventIDsManualEntryCheckbox,
+            $EventLogsQuickPickSelectionCheckbox,
+            $EventLogNameEVTXLogNameSelectionCheckbox,
+
+            $FileSearchFileSearchCheckbox,            
+            $FileSearchDirectoryListingCheckbox,
+            $FileSearchAlternateDataStreamCheckbox,
+
+            $ProcessCreationSysmonSearchOriginalFileNameCheckbox,
+            $ProcessCreationSysmonSearchUserCheckbox,
+            $ProcessCreationSysmonSearchHashesCheckbox,
+            $ProcessCreationSysmonSearchFilePathCheckbox,
+            $ProcessCreationSysmonSearchCommandlineCheckbox,
+            $ProcessCreationSysmonSearchParentFilePathCheckbox,
+            $ProcessCreationSysmonSearchParentCommandlineCheckbox,
+
+            $NetworkEndpointPacketCaptureCheckBox,
+
+            $NetworkLiveSearchRemoteIPAddressCheckbox,
+            $NetworkLiveSearchRemotePortCheckbox,
+            $NetworkLiveSearchLocalPortCheckbox,
+            $NetworkLiveSearchCommandLineCheckbox
+            $NetworkLiveSearchExecutablePathCheckbox,
+            $NetworkLiveSearchProcessCheckbox,
+            $NetworkLiveSearchDNSCacheCheckbox,
+
+            $NetworkSysmonSearchSourceIPAddressCheckbox,
+            $NetworkSysmonSearchSourcePortCheckbox,
+            $NetworkSysmonSearchDestinationIPAddressCheckbox,
+            $NetworkSysmonSearchDestinationPortCheckbox,
+            $NetworkSysmonSearchAccountCheckbox,
+            $NetworkSysmonSearchExecutablePathCheckbox,
+
+            $ExeScriptUserSpecifiedExecutableAndScriptCheckbox,
+
+            $SysinternalsSysmonCheckbox,
+            $SysinternalsProcessMonitorCheckbox,
+
+            $RegistrySearchCheckbox
+        )
         
-        if ($CustomQueryScriptBlockCheckBox.checked)                    { $script:TreeeViewCommandsCount++ }
-        if ($RegistrySearchCheckbox.checked)                            { $script:TreeeViewCommandsCount++ }
-        if ($AccountsCurrentlyLoggedInConsoleCheckbox.checked)          { $script:TreeeViewCommandsCount++ }
-        if ($AccountsCurrentlyLoggedInPSSessionCheckbox.checked)        { $script:TreeeViewCommandsCount++ }
-        if ($AccountActivityCheckbox.checked)                           { $script:TreeeViewCommandsCount++ }
-        if ($EventLogsEventIDsManualEntryCheckbox.Checked)              { $script:TreeeViewCommandsCount++ }
-        if ($EventLogsQuickPickSelectionCheckbox.Checked)               { $script:TreeeViewCommandsCount++ }
-        if ($EventLogNameEVTXLogNameSelectionCheckbox.Checked)          { $script:TreeeViewCommandsCount++ }                
-        if ($NetworkEndpointPacketCaptureCheckBox.Checked)              { $script:TreeeViewCommandsCount++ }
-
-        if ($NetworkLiveSearchRemoteIPAddressCheckbox.checked)          { $script:TreeeViewCommandsCount++ }
-        if ($NetworkLiveSearchRemotePortCheckbox.checked)               { $script:TreeeViewCommandsCount++ }
-        if ($NetworkLiveSearchLocalPortCheckbox.checked)                { $script:TreeeViewCommandsCount++ }
-        if ($NetworkLiveSearchCommandLineCheckbox.checked)              { $script:TreeeViewCommandsCount++ }
-        if ($NetworkLiveSearchExecutablePathCheckbox.checked)           { $script:TreeeViewCommandsCount++ }
-        if ($NetworkLiveSearchProcessCheckbox.checked)                  { $script:TreeeViewCommandsCount++ }
-        if ($NetworkLiveSearchDNSCacheCheckbox.checked)                 { $script:TreeeViewCommandsCount++ }
-
-        if ($NetworkSysmonRegexCheckbox.checked)                        { $script:TreeeViewCommandsCount++ }
-        if ($NetworkSysmonSearchSourceIPAddressCheckbox.checked)        { $script:TreeeViewCommandsCount++ }
-        if ($NetworkSysmonSearchSourcePortCheckbox.checked)             { $script:TreeeViewCommandsCount++ }
-        if ($NetworkSysmonSearchDestinationIPAddressCheckbox.checked)   { $script:TreeeViewCommandsCount++ }
-        if ($NetworkSysmonSearchDestinationPortCheckbox.checked)        { $script:TreeeViewCommandsCount++ }
-        if ($NetworkSysmonSearchAccountCheckbox.checked)                { $script:TreeeViewCommandsCount++ }
-        if ($NetworkSysmonSearchExecutablePathCheckbox.checked)         { $script:TreeeViewCommandsCount++ }
-
-        if ($NetworkSysmonSearchDestinationIPAddressCheckbox.checked)   { $script:TreeeViewCommandsCount++ }
-        if ($NetworkSysmonSearchDestinationPortCheckbox.checked)        { $script:TreeeViewCommandsCount++ }
-        if ($NetworkSysmonSearchSourcePortCheckbox.checked)             { $script:TreeeViewCommandsCount++ }
-        if ($NetworkSysmonSearchAccountCheckbox.checked)                { $script:TreeeViewCommandsCount++ }
-        if ($NetworkSysmonSearchExecutablePathCheckbox.checked)         { $script:TreeeViewCommandsCount++ }
-        if ($FileSearchDirectoryListingCheckbox.Checked)                { $script:TreeeViewCommandsCount++ }
-        if ($FileSearchFileSearchCheckbox.Checked)                      { $script:TreeeViewCommandsCount++ }
-        if ($FileSearchAlternateDataStreamCheckbox.Checked)             { $script:TreeeViewCommandsCount++ }
-        if ($SysinternalsSysmonCheckbox.Checked)                        { $script:TreeeViewCommandsCount++ }
-        if ($SysinternalsProcessMonitorCheckbox.Checked)                { $script:TreeeViewCommandsCount++ }
-        if ($ExeScriptUserSpecifiedExecutableAndScriptCheckbox.checked) { $script:TreeeViewCommandsCount++ }
+        foreach ($CheckBox in $script:AllCheckBoxesList) {
+            if ($CheckBox.checked -eq $true) { $script:TreeeViewCommandsCount++ }
+        }
     }
 
     # Updates the color of the button if there is at least one query and endpoint selected
@@ -621,3 +636,37 @@ function Update-TreeViewData {
 }
 
 
+
+# SIG # Begin signature block
+# MIIFuAYJKoZIhvcNAQcCoIIFqTCCBaUCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
+# gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUhequugf9m9I1ZbV1S+NdXsSt
+# unKgggM6MIIDNjCCAh6gAwIBAgIQVnYuiASKXo9Gly5kJ70InDANBgkqhkiG9w0B
+# AQUFADAzMTEwLwYDVQQDDChQb1NoLUVhc3lXaW4gQnkgRGFuIEtvbW5pY2sgKGhp
+# Z2gxMDFicm8pMB4XDTIxMTEyOTIzNDA0NFoXDTMxMTEyOTIzNTA0M1owMzExMC8G
+# A1UEAwwoUG9TaC1FYXN5V2luIEJ5IERhbiBLb21uaWNrIChoaWdoMTAxYnJvKTCC
+# ASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANUnnNeIFC/eQ11BjDFsIHp1
+# 2HkKgnRRV07Kqsl4/fibnbOclptJbeKBDQT3iG5csb31s9NippKfzZmXfi69gGE6
+# v/L3X4Zb/10SJdFLstfT5oUD7UdiOcfcNDEiD+8OpZx4BWl5SNWuSv0wHnDSIyr1
+# 2M0oqbq6WA2FqO3ETpdhkK22N3C7o+U2LeuYrGxWOi1evhIHlnRodVSYcakmXIYh
+# pnrWeuuaQk+b5fcWEPClpscI5WiQh2aohWcjSlojsR+TiWG/6T5wKFxSJRf6+exu
+# C0nhKbyoY88X3y/6qCBqP6VTK4C04tey5z4Ux4ibuTDDePqH5WpRFMo9Vie1nVkC
+# AwEAAaNGMEQwDgYDVR0PAQH/BAQDAgeAMBMGA1UdJQQMMAoGCCsGAQUFBwMDMB0G
+# A1UdDgQWBBS2KLS0Frf3zyJTbQ4WsZXtnB9SFDANBgkqhkiG9w0BAQUFAAOCAQEA
+# s/TfP54uPmv+yGI7wnusq3Y8qIgFpXhQ4K6MmnTUpZjbGc4K3DRJyFKjQf8MjtZP
+# s7CxvS45qLVrYPqnWWV0T5NjtOdxoyBjAvR/Mhj+DdptojVMMp2tRNPSKArdyOv6
+# +yHneg5PYhsYjfblzEtZ1pfhQXmUZo/rW2g6iCOlxsUDr4ZPEEVzpVUQPYzmEn6B
+# 7IziXWuL31E90TlgKb/JtD1s1xbAjwW0s2s1E66jnPgBA2XmcfeAJVpp8fw+OFhz
+# Q4lcUVUoaMZJ3y8MfS+2Y4ggsBLEcWOK4vGWlAvD5NB6QNvouND1ku3z94XmRO8v
+# bqpyXrCbeVHascGVDU3UWTGCAegwggHkAgEBMEcwMzExMC8GA1UEAwwoUG9TaC1F
+# YXN5V2luIEJ5IERhbiBLb21uaWNrIChoaWdoMTAxYnJvKQIQVnYuiASKXo9Gly5k
+# J70InDAJBgUrDgMCGgUAoHgwGAYKKwYBBAGCNwIBDDEKMAigAoAAoQKAADAZBgkq
+# hkiG9w0BCQMxDAYKKwYBBAGCNwIBBDAcBgorBgEEAYI3AgELMQ4wDAYKKwYBBAGC
+# NwIBFTAjBgkqhkiG9w0BCQQxFgQUVx0a7oXHzRhUJN6927V3BnWE+0EwDQYJKoZI
+# hvcNAQEBBQAEggEATVHVDB6BqWohSKiLIgzDepA+jS2qo2g229OQelxaeC7oH+8p
+# 8qzX0n4ddsda/R1eYGtJV99tDv0dF3k4y7QQ0Pi6XT1N5geOcQlHpCRHjyYkMk0T
+# BjiD7FdTGHH5tCtSuqZ4fbtA1KLJdkc/lJL5BN13f5/85bQ7uF03t+ipKWjHmgrs
+# 0g8CbjhBW5M3fmvViVUrJOuGKrbqduHbJpy3yZ+s5Hg06gFUqo5msiSXNa00I2zA
+# 5FEHScUoEU9f0sbitOTz8/w9ll4lRDVp6rSpZ11LATWn5pcgg6k+fotW+Vj6QaEK
+# 8B34tnaBmyBI49n2QNMzQFv4JrBtA0Q+o2oo+Q==
+# SIG # End signature block

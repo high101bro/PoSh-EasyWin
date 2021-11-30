@@ -520,7 +520,7 @@ Command:
         }
     }
     $ComputerListSelectedNodeActionsToolStripComboBox.Items.Add(" - Add New Endpoint Node")
-    $ComputerListSelectedNodeActionsToolStripComboBox.Items.Add(" - Tag Node With Metadata")
+    # $ComputerListSelectedNodeActionsToolStripComboBox.Items.Add(" - Tag Node With Metadata")
     $ComputerListSelectedNodeActionsToolStripComboBox.Items.Add(" - Move Node To New OU/CN")
     $ComputerListSelectedNodeActionsToolStripComboBox.Items.Add(" - Delete Selected Node")
     $ComputerListSelectedNodeActionsToolStripComboBox.Items.Add(" - Rename Selected Node")
@@ -1010,19 +1010,20 @@ function:MultiEndpoint-PSSession -ComputerName <endpoints(s)> -Credential <`$cre
                                         foreach ($Entry in $Category.Nodes) {
                                             if ($Entry.Checked -and $Entry.Text -notin $ComputerListMassTagArray) {
                                                 $ComputerListMassTagArray += $Entry.Text
-                                                $script:Section3HostDataNameTextBox.Text = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).Name
-                                                $Section3HostDataOSTextBox.Text          = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).OperatingSystem
-                                                $Section3HostDataOUTextBox.Text          = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).CanonicalName
-                                                $Section3HostDataIPTextBox.Text          = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).IPv4Address
-                                                $Section3HostDataMACTextBox.Text         = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).MACAddress
-                                                $Section3HostDataNotesRichTextBox.Text   = "[$($script:ComputerListMassTagValue)] " + $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).Notes
+                                                #$script:Section3HostDataNameTextBox.Text = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).Name
+                                                #$Section3HostDataOSTextBox.Text          = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).OperatingSystem
+                                                #$Section3HostDataOUTextBox.Text          = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).CanonicalName
+                                                #$Section3HostDataIPTextBox.Text          = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).IPv4Address
+                                                #$Section3HostDataMACTextBox.Text         = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).MACAddress
+                                                $Section3HostDataNotesRichTextBox.Text   = "$(Get-Date) -- [Tag] $($script:ComputerListMassTagValue)`n" + $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).Notes
+                                                #$Section3HostDataNotesRichTextBox.Text   = "[$($script:ComputerListMassTagValue)] " + $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).Notes
                                             }
                                             $script:ProgressBarEndpointsProgressBar.Value += 1
                                         }
                                     }
                                 }
+                                Save-TreeViewData -Endpoint -SaveAllChecked
                             }
-                            Save-TreeViewData -Endpoint -SaveAllChecked
                             $StatusListBox.Items.clear()
                             $StatusListBox.Items.Add("Tag Complete: $($script:ComputerTreeViewSelected.count) Endpoints")
                         }
@@ -1151,7 +1152,7 @@ function:MultiEndpoint-PSSession -ComputerName <endpoints(s)> -Credential <`$cre
         }
     }
     $ComputerListCheckedNodeActionsToolStripComboBox.Items.Add(' - NSLookup (Hostname to IP)')
-    $ComputerListCheckedNodeActionsToolStripComboBox.Items.Add(' - Tag Nodes With Metadata')
+#    $ComputerListCheckedNodeActionsToolStripComboBox.Items.Add(' - Tag Nodes With Metadata')
     $ComputerListCheckedNodeActionsToolStripComboBox.Items.Add(' - Move Nodes To New OU/CN')
     $ComputerListCheckedNodeActionsToolStripComboBox.Items.Add(' - Delete Checked Nodes')
     $script:ComputerListContextMenuStrip.Items.Add($ComputerListCheckedNodeActionsToolStripComboBox)
@@ -1352,3 +1353,37 @@ function:MultiEndpoint-PSSession -ComputerName <endpoints(s)> -Credential <`$cre
 }
 
 
+
+# SIG # Begin signature block
+# MIIFuAYJKoZIhvcNAQcCoIIFqTCCBaUCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
+# gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUhvNMU8BgYM9xv5wTfUY4HKDC
+# kv6gggM6MIIDNjCCAh6gAwIBAgIQVnYuiASKXo9Gly5kJ70InDANBgkqhkiG9w0B
+# AQUFADAzMTEwLwYDVQQDDChQb1NoLUVhc3lXaW4gQnkgRGFuIEtvbW5pY2sgKGhp
+# Z2gxMDFicm8pMB4XDTIxMTEyOTIzNDA0NFoXDTMxMTEyOTIzNTA0M1owMzExMC8G
+# A1UEAwwoUG9TaC1FYXN5V2luIEJ5IERhbiBLb21uaWNrIChoaWdoMTAxYnJvKTCC
+# ASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANUnnNeIFC/eQ11BjDFsIHp1
+# 2HkKgnRRV07Kqsl4/fibnbOclptJbeKBDQT3iG5csb31s9NippKfzZmXfi69gGE6
+# v/L3X4Zb/10SJdFLstfT5oUD7UdiOcfcNDEiD+8OpZx4BWl5SNWuSv0wHnDSIyr1
+# 2M0oqbq6WA2FqO3ETpdhkK22N3C7o+U2LeuYrGxWOi1evhIHlnRodVSYcakmXIYh
+# pnrWeuuaQk+b5fcWEPClpscI5WiQh2aohWcjSlojsR+TiWG/6T5wKFxSJRf6+exu
+# C0nhKbyoY88X3y/6qCBqP6VTK4C04tey5z4Ux4ibuTDDePqH5WpRFMo9Vie1nVkC
+# AwEAAaNGMEQwDgYDVR0PAQH/BAQDAgeAMBMGA1UdJQQMMAoGCCsGAQUFBwMDMB0G
+# A1UdDgQWBBS2KLS0Frf3zyJTbQ4WsZXtnB9SFDANBgkqhkiG9w0BAQUFAAOCAQEA
+# s/TfP54uPmv+yGI7wnusq3Y8qIgFpXhQ4K6MmnTUpZjbGc4K3DRJyFKjQf8MjtZP
+# s7CxvS45qLVrYPqnWWV0T5NjtOdxoyBjAvR/Mhj+DdptojVMMp2tRNPSKArdyOv6
+# +yHneg5PYhsYjfblzEtZ1pfhQXmUZo/rW2g6iCOlxsUDr4ZPEEVzpVUQPYzmEn6B
+# 7IziXWuL31E90TlgKb/JtD1s1xbAjwW0s2s1E66jnPgBA2XmcfeAJVpp8fw+OFhz
+# Q4lcUVUoaMZJ3y8MfS+2Y4ggsBLEcWOK4vGWlAvD5NB6QNvouND1ku3z94XmRO8v
+# bqpyXrCbeVHascGVDU3UWTGCAegwggHkAgEBMEcwMzExMC8GA1UEAwwoUG9TaC1F
+# YXN5V2luIEJ5IERhbiBLb21uaWNrIChoaWdoMTAxYnJvKQIQVnYuiASKXo9Gly5k
+# J70InDAJBgUrDgMCGgUAoHgwGAYKKwYBBAGCNwIBDDEKMAigAoAAoQKAADAZBgkq
+# hkiG9w0BCQMxDAYKKwYBBAGCNwIBBDAcBgorBgEEAYI3AgELMQ4wDAYKKwYBBAGC
+# NwIBFTAjBgkqhkiG9w0BCQQxFgQUaW6stnUIF+ysq/tjCs6rfa/8+7YwDQYJKoZI
+# hvcNAQEBBQAEggEAdZ9lKRikB7QFeM8l6YRceqNzv5Kq6yfrBu8n1qo9YHIZSCLR
+# Rx8ZggO/zTAPkCSGi12BWT7FyibKmmNkSHlkbsusc1StG3wEKRM/+ixwgKUgSuDL
+# Hs/b47ebRscoPOZPVKdDBMwzwYlxV1nQf2AAaGgIV1+1JOZJH5B1lCtl8oucWl+i
+# CVZDvQuETVh9eqDnijbT01qm5YUH100UDWF55Tei17sGnfSKBgmz04wxQZ13hS0P
+# dFL446+RlN5PgyVYaSDrZuACclF77RhnEKjFsk7PDVb6VGwXFLgEoq5/Ey7+YLN2
+# MsNpeAuM54AVIFSxYXu8U4omJ6dnE05CRPSGpA==
+# SIG # End signature block

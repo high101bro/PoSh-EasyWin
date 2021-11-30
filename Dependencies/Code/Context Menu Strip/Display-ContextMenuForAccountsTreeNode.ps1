@@ -142,7 +142,7 @@ function Display-ContextMenuForAccountsTreeNode {
                         $Section3AccountDataOUTextBox.Text          = $($script:AccountsTreeViewData | Where-Object {$_.Name -eq $script:EntrySelected.Text}).CanonicalName
                         $Section3AccountDataIPTextBox.Text          = $($script:AccountsTreeViewData | Where-Object {$_.Name -eq $script:EntrySelected.Text}).IPv4Address
                         $Section3AccountDataMACTextBox.Text         = $($script:AccountsTreeViewData | Where-Object {$_.Name -eq $script:EntrySelected.Text}).MACAddress
-                        $script:Section3AccountDataNotesRichTextBox.Text   = "[$($script:AccountsListMassTagValue)] " + $($script:AccountsTreeViewData | Where-Object {$_.Name -eq $script:EntrySelected.Text}).Notes
+                        $Section3AccountDataNotesRichTextBox.Text   = "$(Get-Date) -- [Tag] $($script:AccountsListMassTagValue)`n" + $($script:AccountsTreeViewData | Where-Object {$_.Name -eq $script:EntrySelected.Text}).Notes
                         Save-TreeViewData -Accounts
                         $StatusListBox.Items.clear()
                         $StatusListBox.Items.Add("Tag applied to: $($script:EntrySelected.text)")
@@ -280,7 +280,7 @@ function Display-ContextMenuForAccountsTreeNode {
         }
     }
     $AccountsListSelectedNodeActionsToolStripComboBox.Items.Add(" - Add New Account Node")
-    $AccountsListSelectedNodeActionsToolStripComboBox.Items.Add(" - Tag Node With Metadata")
+#    $AccountsListSelectedNodeActionsToolStripComboBox.Items.Add(" - Tag Node With Metadata")
     $AccountsListSelectedNodeActionsToolStripComboBox.Items.Add(" - Move Node To New OU/CN")
     $AccountsListSelectedNodeActionsToolStripComboBox.Items.Add(" - Delete Selected Node")
     $AccountsListSelectedNodeActionsToolStripComboBox.Items.Add(" - Rename Selected Node")
@@ -352,20 +352,21 @@ function Display-ContextMenuForAccountsTreeNode {
                                         foreach ($Entry in $Category.Nodes) {
                                             if ($Entry.Checked -and $Entry.Text -notin $AccountsListMassTagArray) {
                                                 $AccountsListMassTagArray += $Entry.Text
-                                                #batman
-                                                $script:Section3AccountDataNameTextBox.Text = $($script:AccountsTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).Name
-                                                $Section3AccountDataOSTextBox.Text          = $($script:AccountsTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).OperatingSystem
-                                                $Section3AccountDataOUTextBox.Text          = $($script:AccountsTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).CanonicalName
-                                                $Section3AccountDataIPTextBox.Text          = $($script:AccountsTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).IPv4Address
-                                                $Section3AccountDataMACTextBox.Text         = $($script:AccountsTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).MACAddress
-                                                $script:Section3AccountDataNotesRichTextBox.Text   = "[$($script:AccountsListMassTagValue)] " + $($script:AccountsTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).Notes
+                                                # [System.Windows.Forms.MessageBox]::Show("$($Entry.Text) ","test",'Ok',"Info")
+                                                # [System.Windows.Forms.MessageBox]::Show("$($Section3AccountDataNotesRichTextBox.Text) ","test",'Ok',"Info")
+                                                # $script:Section3AccountDataNameTextBox.Text = $($script:AccountsTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).Name
+                                                # $Section3AccountDataOSTextBox.Text          = $($script:AccountsTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).OperatingSystem
+                                                # $Section3AccountDataOUTextBox.Text          = $($script:AccountsTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).CanonicalName
+                                                # $Section3AccountDataIPTextBox.Text          = $($script:AccountsTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).IPv4Address
+                                                # $Section3AccountDataMACTextBox.Text         = $($script:AccountsTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).MACAddress
+                                                $Section3AccountDataNotesRichTextBox.Text   = "$(Get-Date) -- [Tag] $($script:AccountsListMassTagValue)`n" + $($script:AccountsTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).Notes
                                             }
                                             $script:ProgressBarAccountsProgressBar.Value += 1
                                         }
                                     }
                                 }
                             }
-                            Save-TreeViewData -Accounts -SaveAllChecked
+                            Save-TreeViewData -Accounts
                             $StatusListBox.Items.clear()
                             $StatusListBox.Items.Add("Tag Complete: $($script:AccountsTreeViewSelected.count) Accounts")
                         }
@@ -493,7 +494,7 @@ function Display-ContextMenuForAccountsTreeNode {
             }
         }
     }
-    $AccountsListCheckeddNodeActionsToolStripComboBox.Items.Add(" - Tag Nodes With Metadata")
+#    $AccountsListCheckeddNodeActionsToolStripComboBox.Items.Add(" - Tag Nodes With Metadata")
     $AccountsListCheckeddNodeActionsToolStripComboBox.Items.Add(" - Move Nodes To New OU/CN")
     $AccountsListCheckeddNodeActionsToolStripComboBox.Items.Add(" - Delete Checked Nodes")
     $script:AccountsListContextMenuStrip.Items.Add($AccountsListCheckeddNodeActionsToolStripComboBox)
@@ -726,3 +727,37 @@ function Display-ContextMenuForAccountsTreeNode {
 }
 
 
+
+# SIG # Begin signature block
+# MIIFuAYJKoZIhvcNAQcCoIIFqTCCBaUCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
+# gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUQCSkLc0KSQcpd0aitqI0wzut
+# JGigggM6MIIDNjCCAh6gAwIBAgIQVnYuiASKXo9Gly5kJ70InDANBgkqhkiG9w0B
+# AQUFADAzMTEwLwYDVQQDDChQb1NoLUVhc3lXaW4gQnkgRGFuIEtvbW5pY2sgKGhp
+# Z2gxMDFicm8pMB4XDTIxMTEyOTIzNDA0NFoXDTMxMTEyOTIzNTA0M1owMzExMC8G
+# A1UEAwwoUG9TaC1FYXN5V2luIEJ5IERhbiBLb21uaWNrIChoaWdoMTAxYnJvKTCC
+# ASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANUnnNeIFC/eQ11BjDFsIHp1
+# 2HkKgnRRV07Kqsl4/fibnbOclptJbeKBDQT3iG5csb31s9NippKfzZmXfi69gGE6
+# v/L3X4Zb/10SJdFLstfT5oUD7UdiOcfcNDEiD+8OpZx4BWl5SNWuSv0wHnDSIyr1
+# 2M0oqbq6WA2FqO3ETpdhkK22N3C7o+U2LeuYrGxWOi1evhIHlnRodVSYcakmXIYh
+# pnrWeuuaQk+b5fcWEPClpscI5WiQh2aohWcjSlojsR+TiWG/6T5wKFxSJRf6+exu
+# C0nhKbyoY88X3y/6qCBqP6VTK4C04tey5z4Ux4ibuTDDePqH5WpRFMo9Vie1nVkC
+# AwEAAaNGMEQwDgYDVR0PAQH/BAQDAgeAMBMGA1UdJQQMMAoGCCsGAQUFBwMDMB0G
+# A1UdDgQWBBS2KLS0Frf3zyJTbQ4WsZXtnB9SFDANBgkqhkiG9w0BAQUFAAOCAQEA
+# s/TfP54uPmv+yGI7wnusq3Y8qIgFpXhQ4K6MmnTUpZjbGc4K3DRJyFKjQf8MjtZP
+# s7CxvS45qLVrYPqnWWV0T5NjtOdxoyBjAvR/Mhj+DdptojVMMp2tRNPSKArdyOv6
+# +yHneg5PYhsYjfblzEtZ1pfhQXmUZo/rW2g6iCOlxsUDr4ZPEEVzpVUQPYzmEn6B
+# 7IziXWuL31E90TlgKb/JtD1s1xbAjwW0s2s1E66jnPgBA2XmcfeAJVpp8fw+OFhz
+# Q4lcUVUoaMZJ3y8MfS+2Y4ggsBLEcWOK4vGWlAvD5NB6QNvouND1ku3z94XmRO8v
+# bqpyXrCbeVHascGVDU3UWTGCAegwggHkAgEBMEcwMzExMC8GA1UEAwwoUG9TaC1F
+# YXN5V2luIEJ5IERhbiBLb21uaWNrIChoaWdoMTAxYnJvKQIQVnYuiASKXo9Gly5k
+# J70InDAJBgUrDgMCGgUAoHgwGAYKKwYBBAGCNwIBDDEKMAigAoAAoQKAADAZBgkq
+# hkiG9w0BCQMxDAYKKwYBBAGCNwIBBDAcBgorBgEEAYI3AgELMQ4wDAYKKwYBBAGC
+# NwIBFTAjBgkqhkiG9w0BCQQxFgQUBATmUJ/T8FiY4U09MSet853F/ekwDQYJKoZI
+# hvcNAQEBBQAEggEAVy6p1FoXE3Er+3wL3ayY3g7I8sSPUpkJgcON9evc6mqG/rOA
+# IzIaQVBorUVyAzxRRWLX+xMSVMNEjgWzAzW1mpXmcD0ulmsP+PKdGRL+64JVyZ9q
+# tf6Uw3ojApsUaX5Ls/MBk7M3L+PT1yh/Z0RzllZQN98WlsijpmpARDT6amTEIQBI
+# 6F8Wmp1XLyxbzowXeIkOpEEilsg+sn/g3PSfBZhlSpsuwptmWdcGbyPpraZHIMPi
+# 0xWx0rDOkGuZ8wdV5Q4xEpL/FfMubbM3QGt1iOoTCkfI+uOYYUef6wieHHf2Y4eO
+# jivFUkMDvIKEfhxO0VON53zphmuW0Pyk7A+CPA==
+# SIG # End signature block
