@@ -43,26 +43,26 @@ PoSh-EasyWin is a Graphical User Interface (GUI) that uses PowerShell with the .
 ***
 ## How to Run PoSh-EasyWin.ps1
 Microsoft included some security features to protect the average user from unknowingly running PowerShell (.ps1) scripts. This is accomplished through blocking .ps1 scripts that are downloaded from the internet as well as having a default script execution policy of restricted. Oftentimes, users just Unblock-File ".\PoSh-EasyWin" and Set-ExecutionPolicy ByPass. While this works, it isn't best practice. Rather, all PoSh-EasyWin scripts have been signed, thus it is preferrable to do the following:
-
-\# The script will normally be blocked from execution. 
+```
+# The script will normally be blocked from execution. 
 PS C:\PoSh-EasyWin> .\PoSh-EasyWin.ps1
 
-\# How to check the execution policy.
+# How to check the execution policy.
 PS C:\PoSh-EasyWin> Get-ExecutionPolicy
 
-\# How to import the certificate to allow for exection of signed scripts
+# How to import the certificate to allow for exection of signed scripts
 PS C:\PoSh-EasyWin> Import-Certificate -FilePath ".\PoSh-EasyWin_Public_Certificate.cer" -CertStoreLocation Cert:\CurrentUser\Root
 
-\# How to check the authenticode signature.
+# How to check the authenticode signature.
 PS C:\PoSh-EasyWin> Get-AuthenticodeSignature .\PoSh-EasyWin.ps1
 
-\# How to set the execution policy to either RemoteSigned or AllSigned. Either method will work, though AllSigned will prompt you with info.
+# How to set the execution policy to either RemoteSigned or AllSigned. Either method will work, though AllSigned will prompt you with info.
 PS C:\Users\danie\Documents\GitHub\PoSh-EasyWin> Set-ExecutionPolicy -ExecutionPolicy RemoteSigned
 PS C:\Users\danie\Documents\GitHub\PoSh-EasyWin> Set-ExecutionPolicy -ExecutionPolicy AllSigned
 
-\# The script should run now. 
+# The script should run now. 
 PS C:\PoSh-EasyWin> .\PoSh-EasyWin.ps1
-
+```
 ### Example Screenshot:
 ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/6.3.2/Images/HowToRunPoSh-EasyWin.png)
 ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/HowToRunPoSh-EasyWin.png)
