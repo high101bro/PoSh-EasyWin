@@ -840,11 +840,11 @@ $script:Section3AccountDataNotesRichTextBox = New-Object System.Windows.Forms.Ri
     Left       = 0
     Top        = $Section3AccountDataLastBadPasswordAttemptTextBox.Top + $Section3AccountDataLastBadPasswordAttemptTextBox.Height + $($FormScale * 6)
     Width      = $FormScale * 740
-    Height     = $FormScale * 200
+    Height     = $FormScale * 194
     Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     BackColor  = 'White'
     Multiline  = $True
-    ScrollBars = 'Vertical'
+    ScrollBars = 'ForcedVertical'
     WordWrap   = $True
     ReadOnly   = $false
     Add_MouseHover = {
@@ -880,7 +880,7 @@ $Section3AccountDataTab.ForcedVertical()
 
 $Section3AccountDataUpdateDataButton = New-Object System.Windows.Forms.Button -Property @{
     Text      = "Update Data"
-    Left      = $script:Section3AccountDataNotesRichTextBox.Left + $script:Section3AccountDataNotesRichTextBox.Width - $($FormScale * 100 + 5)
+    Left      = $script:Section3AccountDataNotesRichTextBox.Left + $script:Section3AccountDataNotesRichTextBox.Width - $($FormScale * 114 + 5)
     Top       = $script:Section3AccountDataNotesRichTextBox.Top + $script:Section3AccountDataNotesRichTextBox.Height - $($FormScale * 22 + 5)
     Width     = $FormScale * 100
     Height    = $FormScale * 22

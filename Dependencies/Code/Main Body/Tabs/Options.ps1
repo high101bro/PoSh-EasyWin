@@ -16,13 +16,6 @@ $OptionTextToSpeachButton = New-Object System.Windows.Forms.Button -Property @{
     Height = $FormScale * 22
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     Add_Click = {
-        if ($script:ExtendedViewRadioButton.checked -eq $true) {
-            script:Launch-FormScaleGUI -Relaunch -Extended
-        }
-        elseif ($script:CompactViewRadioButton.checked -eq $true) {
-            script:Launch-FormScaleGUI -Relaunch -Compact
-        }
-
         If ($script:RelaunchEasyWin){
             $PoSHEasyWin.Close()
             Start-Process PowerShell.exe -Verb runAs -ArgumentList $ThisScript
@@ -66,7 +59,8 @@ $OptionSearchComputersForPreviouslyCollectedDataProcessesGroupBox = New-Object S
     Text   = "Search Endpoints for Previously Collected Data"
     Top    = $OptionTextToSpeachButton.Top + $OptionTextToSpeachButton.Height + $($FormScale * 5)
     Left   = $FormScale * 3 
-    Width  = $FormScale * 352
+    # Width  = $FormScale * 352
+    Width  = $FormScale * 590
     Height = $FormScale * 100
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),1,2,1)
 }
@@ -180,42 +174,28 @@ $OptionMonitorJobsDefaultRestartTimeLabel = New-Object System.Windows.Forms.Labe
 $Section2OptionsTab.Controls.Add($OptionMonitorJobsDefaultRestartTimeLabel)
 
 
-$script:GuiLayout = Get-Content "$PoShHome\Settings\GUI Layout.txt"
-$script:CompactViewRadioButton = New-Object System.Windows.Forms.RadioButton -Property @{
-    Text   = "Compact View"
+$script:LogCommandsInEndpointNotes = New-Object System.Windows.Forms.Checkbox -Property @{
+    Text   = "Log Commands in Endpoint Notes"
     Left   = $script:OptionMonitorJobsDefaultRestartTimeCombobox.Left
     Top    = $script:OptionMonitorJobsDefaultRestartTimeCombobox.Top + $script:OptionMonitorJobsDefaultRestartTimeCombobox.Height + ($FormScale * 5)
-    Width  = $FormScale * 100
+    Width  = $FormScale * 210
     Height = $FormScale * 18
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     Checked = $true
-    Add_Click = { 
-        Set-GuiLayout -Compact 
-        'GUI Layout = Compact' | Set-Content "$PoShHome\Settings\GUI Layout.txt"
-    }
+    Add_Click = { $This.Checked | Set-Content "$PoShHome\Settings\Log Commands in Endpoint Notes.txt" -Force }
 }
-$Section2OptionsTab.Controls.Add($script:CompactViewRadioButton)
-
-
-$script:ExtendedViewRadioButton = New-Object System.Windows.Forms.RadioButton -Property @{
-    Text   = "Extended View"
-    Left   = $script:CompactViewRadioButton.Left + $script:CompactViewRadioButton.Width + $($FormScale + 5)
-    Top    = $script:CompactViewRadioButton.Top
-    Width  = $FormScale * 100
-    Height = $FormScale * 18
-    Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    Add_Click = {
-        Set-GuiLayout -Extended
-        'GUI Layout = Extended' | Set-Content "$PoShHome\Settings\GUI Layout.txt"
-    }
+if (Test-Path "$PoShHome\Settings\Log Commands in Endpoint Notes.txt") { 
+    if ((Get-Content "$PoShHome\Settings\Log Commands in Endpoint Notes.txt") -eq 'True'){$script:LogCommandsInEndpointNotes.checked = $true}
+    else {$script:LogCommandsInEndpointNotes.checked = $false}
 }
-$Section2OptionsTab.Controls.Add($script:ExtendedViewRadioButton)
+
+$Section2OptionsTab.Controls.Add($script:LogCommandsInEndpointNotes)
 
 
                 $OptionGUITopWindowCheckBox = New-Object System.Windows.Forms.Checkbox -Property @{
                     Text    = "GUI always on top"
                     Left    = $FormScale * 300
-                    Top     = $script:ExtendedViewRadioButton.Top
+                    Top     = $script:LogCommandsInEndpointNotes.Top
                     Width   = $FormScale * 200
                     Height  = $FormScale * 22
                     Enabled = $true
@@ -281,7 +261,7 @@ $Section2OptionsTab.Controls.Add($script:ExtendedViewRadioButton)
 $OptionTextToSpeachCheckBox = New-Object System.Windows.Forms.Checkbox -Property @{
     Text    = "Audible Completion Message"
     Left    = $FormScale * 3
-    Top     = $script:CompactViewRadioButton.Top + $script:CompactViewRadioButton.Height
+    Top     = $script:LogCommandsInEndpointNotes.Top + $script:LogCommandsInEndpointNotes.Height
     Width   = $FormScale * 225
     Height  = $FormScale * 22
     Enabled = $true

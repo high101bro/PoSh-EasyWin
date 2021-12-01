@@ -115,7 +115,7 @@ $script:Section3MonitorJobRemoveButton = New-Object System.Windows.Forms.Button 
             $RemoveAllJobsVerify = [System.Windows.Forms.MessageBox]::Show("Do you want to stop and remove all jobs?`n`nThis method currently only stops running jobs and removes them from view; it will not delete the files regardless if their 'keep data' box is not checked.",'PoSh-EasyWin','YesNo','Warning')
             switch ($RemoveAllJobsVerify) {
                 'Yes'{
-                    $InformationPanel.Top    = $InformationTabControlOriginalTop
+                    $InformationPanel.Top    = $MainCenterPanel.Top + $MainCenterPanel.Height + ($FormScale * 5)
                     $InformationPanel.Height = $InformationTabControlOriginalHeight    
             
                     Get-Variable | Where-Object {$_.Name -match 'Section3MonitorJobPanel'} | Foreach-Object {

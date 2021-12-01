@@ -425,6 +425,23 @@ function Set-CheckState {
         ForEach-Object { $CheckedListBox.SetItemChecked($_, $Check) }
 }
 
+
+function script:Maximize-MonitorJobsTab {
+    $script:Section3MonitorJobsResizeButton.text = "v Minimize Tab"
+    $InformationPanel.Top    = $ComputerAndAccountTreeNodeViewPanel.Top
+    $InformationPanel.Height = $FormScale * 655
+    $InformationPanel.bringtofront()
+    $InformationTabControl.Height = $ComputerAndAccountTreeNodeViewPanel.Height
+}            
+function script:Minimize-MonitorJobsTab {
+    $script:Section3MonitorJobsResizeButton.text = "^ Maximize Tab"
+    $InformationPanel.Top    = $MainCenterPanel.Top + $MainCenterPanel.Height + ($FormScale * 5)
+    $InformationPanel.Height = $FormScale * 352
+    $InformationPanel.bringtofront()
+    $InformationTabControl.Height = $InformationPanel.Height
+}
+
+
 # Launches the accompanying Notifications Icon helper in the  System Tray
 Update-FormProgress "$Dependencies\Code\Main Body\Launch-SystemTrayNotifyIcon.ps1"
 . "$Dependencies\Code\Main Body\Launch-SystemTrayNotifyIcon.ps1"
@@ -441,6 +458,8 @@ $PoShEasyWinAccountLaunch = [System.Security.Principal.WindowsIdentity]::GetCurr
 $PoShEasyWin = New-Object System.Windows.Forms.Form -Property @{
     Text    = "PoSh-EasyWin   ($PoShEasyWinAccountLaunch)  [$InitialScriptLoadTime]"
     Icon    = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
+    Width = $FormScale * 1470
+    Height = $FormScale * 695
     TopMost = $true
     AutoScroll  = $True
     ControlBox  = $true
@@ -542,20 +561,9 @@ Update-FormProgress "$Dependencies\Code\Main Body\Show-ToolTip.ps1"
 $QueryAndCollectionPanel = New-Object System.Windows.Forms.Panel -Property @{
     Left   = $FormScale * 5
     Top    = $FormScale * 5
+    Width  = $FormScale * 460
+    Height = $FormScale * 645
 }
-            $PoShEasyWinPictureBox = New-Object Windows.Forms.PictureBox -Property @{
-                Text   = "PowerShell Charts"
-                Left   = 0
-                Top    = 0
-                Width  = $FormScale * 400
-                Height = $FormScale * 45
-                Image  = [System.Drawing.Image]::Fromfile("$Dependencies\Images\PoSh-EasyWin Image 01.png")
-                SizeMode = 'StretchImage'
-            }
-            # Added/Removed by Set-GuiLayout
-
-
-
             $MainLeftTabControlImageList = New-Object System.Windows.Forms.ImageList -Property @{
                 ImageSize = @{
                     Width  = $FormScale * 16
@@ -616,52 +624,12 @@ $QueryAndCollectionPanel = New-Object System.Windows.Forms.Panel -Property @{
 $PoShEasyWin.Controls.Add($QueryAndCollectionPanel)
 
 
-$MainCenterPanel = New-Object System.Windows.Forms.Panel
-
-            $MainCenterTabControlImageList = New-Object System.Windows.Forms.ImageList -Property @{
-                ImageSize = @{
-                    Width  = $FormScale * 16
-                    Height = $FormScale * 16
-                }
-            }
-            # Index 0 = Main
-            $MainCenterTabControlImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Home-Main.png"))
-            # Index 1 = Options
-            $MainCenterTabControlImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Options.png"))
-            # Index 2 = Statistics
-            $MainCenterTabControlImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Statistics.png"))
-
-
-            $MainCenterTabControl = New-Object System.Windows.Forms.TabControl -Property @{
-                Left   = 0
-                Top    = 0
-                Width  = $FormScale * 370
-                Height = $FormScale * 278 
-                SelectedIndex  = 0
-                ShowToolTips   = $True
-                Font           = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-                Add_MouseHover = $MainCenterTabControlAdd_MouseHover
-                ImageList = $MainCenterTabControlImageList
-            }
-            $MainCenterPanel.Controls.Add($MainCenterTabControl)
-
-            # Main Tab
-            Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Main Tab.ps1"
-            . "$Dependencies\Code\Main Body\Tabs\Main Tab.ps1"
-
-            # Options Tab
-            Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Options.ps1"
-            . "$Dependencies\Code\Main Body\Tabs\Options.ps1"
-
-            # Statistics Tab
-            Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Statistics.ps1"
-            . "$Dependencies\Code\Main Body\Tabs\Statistics.ps1"
-
-$PoShEasyWin.Controls.Add($MainCenterPanel)
-
-
-$ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel
-
+$ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel -Property @{
+    Left   = $FormScale * 472
+    Top    = $FormScale * 5
+    Width  = $FormScale * 200
+    Height = $FormScale * 635    
+}
             Update-FormProgress "$Dependencies\Code\Context Menu Strip\Display-ContextMenuForAccountsTreeNode.ps1"
             . "$Dependencies\Code\Context Menu Strip\Display-ContextMenuForAccountsTreeNode.ps1"
             Display-ContextMenuForAccountsTreeNode -ClickedOnArea
@@ -680,6 +648,8 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel
             $ComputerAndAccountTreeViewTabControl = New-Object System.Windows.Forms.TabControl -Property @{
                 Left   = 0
                 Top    = 0
+                Width  = $FormScale * 192
+                Height = $FormScale * 635
                 Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
                 Add_Click = {
                     if ($This.SelectedTab -eq $ComputerTreeviewTab) {
@@ -806,7 +776,7 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel
 
                     $ComputerTreeNodeSearchGreedyCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
                         Text    = "Greedy"
-                        Left    = $script:ComputerTreeNodeComboBox.Left + $script:ComputerTreeNodeComboBox.Width + ($FormScale * 5)
+                        Left    = $script:ComputerTreeNodeComboBox.Left + $script:ComputerTreeNodeComboBox.Width + $($FormScale * 5)
                         Top     = $script:ComputerTreeNodeComboBox.Top - ($FormScale * 6)
                         Height  = $FormScale * 25
                         Width   = $FormScale * 65
@@ -1021,9 +991,10 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel
                     Update-FormProgress "$Dependencies\Code\System.Windows.Forms\TreeView\ComputerTreeView.ps1"
                     . "$Dependencies\Code\System.Windows.Forms\TreeView\ComputerTreeView.ps1"
                     $script:ComputerTreeView = New-Object System.Windows.Forms.TreeView -Property @{
-                        Left   = $ComputerTreeNodeSearchComboBox.Left
-                        Top    = $ComputerTreeNodeSearchButton.Top + $ComputerTreeNodeSearchButton.Height + ($FormScale * 5)
-                        Width  = $ComputerTreeNodeSearchComboBox.Width + $ComputerTreeNodeSearchButton.Width + ($FormScale * 5)
+                        Left = $ComputerTreeNodeSearchComboBox.Left
+                        Top = $ComputerTreeNodeSearchButton.Top + $ComputerTreeNodeSearchButton.Height + ($FormScale * 5)
+                        Width = $FormScale * 180
+                        # Width  = $ComputerTreeNodeSearchComboBox.Width + $ComputerTreeNodeSearchButton.Width + ($FormScale * 5)
                         Height = $FormScale * 558
                         # Note: size and location properties are are managed by 
                         Font              = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
@@ -1035,20 +1006,28 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel
                         ShowNodeToolTips  = $True
                         Add_Click         = $ComputerTreeViewAdd_Click
                         Add_AfterSelect   = $ComputerTreeViewAdd_AfterSelect
-                        #Add_MouseHover    = $ComputerTreeViewAdd_MouseHover
+                        Add_MouseHover = {
+                            $ComputerAndAccountTreeNodeViewPanel.Height = $FormScale * 635
+                            $ComputerAndAccountTreeViewTabControl.Height = $FormScale * 635
+                            $script:ComputerTreeView.Height = $FormScale * 558
+                        }
+                        Add_MouseLeave = {
+                            $ComputerAndAccountTreeNodeViewPanel.Height = $FormScale * 635
+                            $ComputerAndAccountTreeViewTabControl.Height = $FormScale * 635
+                            $script:ComputerTreeView.Height = $FormScale * 558
+                        }
                         Add_MouseEnter    = {
                             $ComputerAndAccountTreeNodeViewPanel.bringtofront()
                             $ComputerAndAccountTreeViewTabControl.bringtofront()
                             $script:ComputerTreeView.bringtofront()
                         }
-                        Add_MouseLeave    = $ComputerTreeViewAdd_MouseLeave
                         #ShortcutsEnabled  = $false                                #Used for ContextMenuStrip
                         ContextMenuStrip  = $ComputerListContextMenuStrip      #Ref Add_click
                         ShowPlusMinus     = $true
                         HideSelection     = $false
                         #not working #AfterSelect       = {}
                         ImageList         = $ComputerTreeviewImageList
-                        ImageIndex        = 1 # the default image 
+                        ImageIndex        = 1 # the default image             
                     }
                     $script:ComputerTreeView.Sort()
                     $ComputerTreeviewTab.Controls.Add($script:ComputerTreeView)
@@ -1279,8 +1258,63 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel
 $PoShEasyWin.Controls.Add($ComputerAndAccountTreeNodeViewPanel)
 
 
-$ExecutionButtonPanel = New-Object System.Windows.Forms.Panel
 
+$MainCenterPanel = New-Object System.Windows.Forms.Panel -Property @{
+    Left   = $ComputerAndAccountTreeNodeViewPanel.Left + $ComputerAndAccountTreeNodeViewPanel.Width + ($FormScale * 2)
+    Top    = $FormScale * 5
+    Width  = $FormScale * 607
+    Height = $FormScale * 278     
+}
+
+            $MainCenterTabControlImageList = New-Object System.Windows.Forms.ImageList -Property @{
+                ImageSize = @{
+                    Width  = $FormScale * 16
+                    Height = $FormScale * 16
+                }
+            }
+            # Index 0 = Main
+            $MainCenterTabControlImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Home-Main.png"))
+            # Index 1 = Options
+            $MainCenterTabControlImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Options.png"))
+            # Index 2 = Statistics
+            $MainCenterTabControlImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Statistics.png"))
+
+
+            $MainCenterTabControl = New-Object System.Windows.Forms.TabControl -Property @{
+                Left   = 0
+                Top    = 0
+                #Width  = $FormScale * 370
+                Width = $FormScale * 607
+                Height = $FormScale * 278 
+                SelectedIndex  = 0
+                ShowToolTips   = $True
+                Font           = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+                Add_MouseHover = $MainCenterTabControlAdd_MouseHover
+                ImageList = $MainCenterTabControlImageList
+            }
+            $MainCenterPanel.Controls.Add($MainCenterTabControl)
+
+            # Main Tab
+            Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Main Tab.ps1"
+            . "$Dependencies\Code\Main Body\Tabs\Main Tab.ps1"
+
+            # Options Tab
+            Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Options.ps1"
+            . "$Dependencies\Code\Main Body\Tabs\Options.ps1"
+
+            # Statistics Tab
+            Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Statistics.ps1"
+            . "$Dependencies\Code\Main Body\Tabs\Statistics.ps1"
+
+$PoShEasyWin.Controls.Add($MainCenterPanel)
+
+
+$ExecutionButtonPanel = New-Object System.Windows.Forms.Panel -Property @{
+    Left   = $MainCenterPanel.Left + $MainCenterPanel.Width + ($FormScale * 5)
+    Top    = $FormScale * 10
+    Height = $FormScale * 273
+    Width  = $FormScale * 140
+}
             $MainRightTabControlImageList = New-Object System.Windows.Forms.ImageList -Property @{
                 ImageSize = @{
                     Width  = $FormScale * 16
@@ -1294,6 +1328,7 @@ $ExecutionButtonPanel = New-Object System.Windows.Forms.Panel
                 Name   = "Main Tab Window for Computer List"
                 Left   = 0
                 Top    = 0
+                Height = $FormScale * 273
                 Width  = $FormScale * 140
                 ShowToolTips = $True
                 Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
@@ -1308,7 +1343,12 @@ $ExecutionButtonPanel = New-Object System.Windows.Forms.Panel
 $PoShEasyWin.Controls.Add($ExecutionButtonPanel)
 
 
-$InformationPanel = New-Object System.Windows.Forms.Panel
+$InformationPanel = New-Object System.Windows.Forms.Panel -Property @{
+    Left   = $MainCenterPanel.Left
+    Top    = $MainCenterPanel.Top + $MainCenterPanel.Height + ($FormScale * 5)
+    Width  = $FormScale * 752
+    Height = $FormScale * 352
+}
 
             $InformationPanelImageList = New-Object System.Windows.Forms.ImageList -Property @{
                 ImageSize = @{
@@ -1333,6 +1373,7 @@ $InformationPanel = New-Object System.Windows.Forms.Panel
             $InformationTabControl = New-Object System.Windows.Forms.TabControl -Property @{
                 Left   = 0
                 Top    = 0
+                Height = $FormScale * 352
                 Width  = $FormScale * 752
                 Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
                 ShowToolTips = $True
@@ -1439,27 +1480,6 @@ Update-FormProgress "$Dependencies\Code\Execution\Individual Execution\Individua
 # Loads the function used to query for various Sysmon Event ID 3 Network Connections logs
 Update-FormProgress "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-NetworkConnectionSysmon.ps1"
 . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-NetworkConnectionSysmon.ps1"
-
-
-# Sets the GUI layout
-Update-FormProgress "$Dependencies\Code\Main Body\Set-GuiLayout.ps1"
-. "$Dependencies\Code\Main Body\Set-GuiLayout.ps1"
-        if ( $script:GuiLayout -match 'Compact' ) {
-            Set-GuiLayout -Compact
-            $script:CompactViewRadioButton.checked = $true
-        }
-        elseif ( $script:GuiLayout -match 'Extended' ) {
-            Set-GuiLayout -Extended
-            $script:ExtendedViewRadioButton.checked = $true
-            $MainCenterMainTab.Controls.Add($PowerShellTerminalButton)
-        }
-        else {
-            Set-GuiLayout -Extended
-            $script:ExtendedViewRadioButton.checked = $true
-            $MainCenterMainTab.Controls.Add($PowerShellTerminalButton)
-        }
-        $InformationTabControlOriginalTop    = $InformationPanel.Top
-        $InformationTabControlOriginalHeight = $InformationPanel.Height
 
 
 #============================================================================================================================================================

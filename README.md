@@ -57,8 +57,8 @@ PS C:\PoSh-EasyWin> Import-Certificate -FilePath ".\PoSh-EasyWin_Public_Certific
 PS C:\PoSh-EasyWin> Get-AuthenticodeSignature .\PoSh-EasyWin.ps1
 
 # How to set the execution policy to either RemoteSigned or AllSigned. Either method will work, though AllSigned will prompt you with info.
-PS C:\Users\danie\Documents\GitHub\PoSh-EasyWin> Set-ExecutionPolicy -ExecutionPolicy RemoteSigned
-PS C:\Users\danie\Documents\GitHub\PoSh-EasyWin> Set-ExecutionPolicy -ExecutionPolicy AllSigned
+PS C:\PoSh-EasyWin> Set-ExecutionPolicy -ExecutionPolicy RemoteSigned
+PS C:\PoSh-EasyWin> Set-ExecutionPolicy -ExecutionPolicy AllSigned
 
 # The script should run now. 
 PS C:\PoSh-EasyWin> .\PoSh-EasyWin.ps1

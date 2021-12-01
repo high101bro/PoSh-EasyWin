@@ -14,7 +14,8 @@ Load-Code "$Dependencies\Code\System.Windows.Forms\Button\ResultsTabOpNotesAddBu
 . "$Dependencies\Code\System.Windows.Forms\Button\ResultsTabOpNotesAddButton.ps1"
 $ResultsTabOpNotesAddButton = New-Object System.Windows.Forms.Button -Property @{
     Text   = "Add Selected To OpNotes"
-    Top    = $FormScale * 300
+    # Top    = $FormScale * 300
+    Top    = $FormScale * 296
     Left   = $FormScale * 553
     Width  = $FormScale * 175
     Height = $FormScale * 25
@@ -30,6 +31,7 @@ $ResultsListBox = New-Object System.Windows.Forms.ListBox -Property @{
     Name   = "ResultsListBox"
     Left   = $FormScale * 3
     Top    = $FormScale * 10
+    Height = $FormScale * 317
     Width  = $FormScale * 742
     FormattingEnabled   = $True
     SelectionMode       = 'MultiExtended'

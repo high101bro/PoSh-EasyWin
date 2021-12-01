@@ -48,6 +48,7 @@ $PoshEasyWinStatistics = New-Object System.Windows.Forms.Textbox -Property @{
     Left   = $FormScale * 3
     Top    = $FormScale * 32
     Height = $FormScale * 215
+    Width  = $FormScale * 590
     Font   = New-Object System.Drawing.Font("Courier new",$($FormScale * 11),0,0,0)
     Multiline  = $true
     Enabled    = $true

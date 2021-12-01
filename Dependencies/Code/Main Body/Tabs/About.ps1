@@ -12,6 +12,8 @@ $InformationTabControl.Controls.Add($Section3AboutTab)
 $Section1AboutSubTabRichTextBox = New-Object System.Windows.Forms.TextBox -Property @{
     Text   = $(Get-Content "$Dependencies\About PoSh-EasyWin.txt" -raw)
     Font   = New-Object System.Drawing.Font("Courier New",$($FormScale * 11),0,0,0)
+    Top = $FormScale * 10
+    Height = $FormScale * 317
     Left   = $FormScale * 3
     Width  = $FormScale * 742
     MultiLine  = $True

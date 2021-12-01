@@ -23,7 +23,7 @@ if (-not $FilePath) {
     $FilePath = Get-ChildItem . -Recurse
 }
 if (-not $Certificate) {
-    $Certificate = Get-ChildItem -Path 'Cert:\CurrentUser\My\' -CodeSigningCert | Where-Object {$_.Thumbprint -eq 'D78BFEBE3F975656E6200FED8521A1815C41327A'}
+    $Certificate = Get-ChildItem -Path 'Cert:\CurrentUser\Root\' | Where-Object {$_.Thumbprint -eq 'D78BFEBE3F975656E6200FED8521A1815C41327A'}
 }
 
 Write-Host "[!] " -ForegroundColor Red -NoNewline

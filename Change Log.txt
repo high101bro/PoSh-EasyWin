@@ -5,6 +5,7 @@ v{Major}.{Minor}.{HotFix} - {Day} {Month} {Year}
 To Do List:
 ==================================================
 TODO:
+[ ] Small bug, when you click on a node headed in the commands treeview, the commands are counted twice when notifiying you - but they're only executed once.
 [ ] Some users show up with 1 group when they have none
 [ ] Reintegrate other dashboards like . "$Dependencies\Code\System.Windows.Forms\ComboBox\AutoChartSelectChartComboBoxSelectedItem_Services.ps1"
 [ ] Add Get-Help (comment based help) support for each script so they populate a description
@@ -30,9 +31,8 @@ Writing Daily Tips...
 v6.7.4 - 
 ==================================================
 
-Updated ReadMe.md to include information about how to run PoSh-EasyWin.ps1
-
 Signed each .ps1 script within PoSh-EasyWin
+	- Updated ReadMe.md to include information about how to run PoSh-EasyWin.ps1
 
 Fixed computer treeview population when importing new hosts
 	- nodes now appear with the correct icons
@@ -41,9 +41,16 @@ Fixed default account icons upon importing new accounts
 
 Endpoints notes now populate with entries when commands are executed
 	- includes a timestamp and short command description
+	- Added option to enable/disable this feature
+		- Is enabled by default
+		- Note: The primary main log always logs everything regardless if the is enabled/disabled
 
 Issues with tagging accounts and endpoints with metadata
 	- disable for now by commenting out dropdown
+
+Removed Set-GuiLayout feature
+	- No longer able to toggle between Extended and Compact View
+	- Determined that it was too much of a pain to maintain
 
 ==================================================
 v6.6.4 - 15 OCT 2021

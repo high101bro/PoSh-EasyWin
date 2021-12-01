@@ -629,27 +629,27 @@ $script:commandstring
             }
         }
 
-        # Updates endpoint notes with timestamp and command executed
-        $script:ComputerTreeViewSelected = @()
-        [System.Windows.Forms.TreeNodeCollection]$AllTreeViewNodes = $script:ComputerTreeView.Nodes
-        foreach ($root in $AllTreeViewNodes) {
-            foreach ($Category in $root.Nodes) {
-                foreach ($Entry in $Category.Nodes) {
-                    Foreach ($Computer in $script:ComputerTreeViewData) {
-                        if ($entry.checked -and $entry.text -eq $Computer.Name) {
-                            $script:ComputerTreeViewSelected += $Entry.Text
-                            $UpdatedNotes = "$(Get-Date) -- Executed Command: $CollectionName`n$($Computer.Notes)"
-                            $Computer | Add-Member -MemberType NoteProperty -Name Notes -Value $UpdatedNotes -Force
+
+        if ($script:LogCommandsInEndpointNotes.checked) {
+            # Updates endpoint notes with timestamp and command executed
+            $script:ComputerTreeViewSelected = @()
+            [System.Windows.Forms.TreeNodeCollection]$AllTreeViewNodes = $script:ComputerTreeView.Nodes
+            foreach ($root in $AllTreeViewNodes) {
+                foreach ($Category in $root.Nodes) {
+                    foreach ($Entry in $Category.Nodes) {
+                        Foreach ($Computer in $script:ComputerTreeViewData) {
+                            if ($entry.checked -and $entry.text -eq $Computer.Name) {
+                                $script:ComputerTreeViewSelected += $Entry.Text
+                                $UpdatedNotes = "$(Get-Date) -- Executed Command: $CollectionName`n$($Computer.Notes)"
+                                $Computer | Add-Member -MemberType NoteProperty -Name Notes -Value $UpdatedNotes -Force
+                            }
                         }
                     }
                 }
-            }
+            } 
+            Save-TreeViewData -Endpoint -SkipTextFieldSave
         }
-        Save-TreeViewData -Endpoint -SkipTextFieldSave
     }
-
-
-
 # }
 
 # SIG # Begin signature block

@@ -29,7 +29,8 @@ $script:CollectionSavedDirectoryTextBox = New-Object System.Windows.Forms.TextBo
     Text   = $SaveLocation
     Left   = $DirectoryListLabel.Left
     Top    = $DirectoryListLabel.Top + $DirectoryListLabel.Height + ($FormScale * 1)
-    Width  = $FormScale * 354
+    #Width  = $FormScale * 354
+    Width  = $FormScale * 595
     Height = $FormScale * 22
     WordWrap   = $false
     AcceptsTab = $true
@@ -47,6 +48,7 @@ $MainCenterMainTab.Controls.Add($script:CollectionSavedDirectoryTextBox)
 $ResultsFolderAutoTimestampCheckbox = New-Object System.Windows.Forms.Checkbox -Property @{
     Text   = "Auto Timestamp"
     Top    = $script:CollectionSavedDirectoryTextBox.Top + $script:CollectionSavedDirectoryTextBox.Height + $($FormScale * 5)
+    Left   = $script:CollectionSavedDirectoryTextBox.Left + ($FormScale * 240)
     Width  = $FormScale * 115
     Height = $FormScale * 22
     Checked = $true
@@ -59,6 +61,8 @@ Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\DirectoryUpd
 $DirectoryUpdateButton = New-Object System.Windows.Forms.Button -Property @{
     Text   = "New Timestamp"
     Top    = $ResultsFolderAutoTimestampCheckbox.Top
+    # Left   = $DirectoryOpenButton.Left + $DirectoryOpenButton.width + ($FormScale * 5)
+    Left   = $ResultsFolderAutoTimestampCheckbox.Left + $ResultsFolderAutoTimestampCheckbox.Width + $($FormScale * 5)
     Width  = $FormScale * 115
     Height = $FormScale * 22
     Add_Click      = $DirectoryUpdateButtonAdd_Click
@@ -73,6 +77,8 @@ Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\DirectoryOpe
 $DirectoryOpenButton = New-Object System.Windows.Forms.Button -Property @{
     Text   = "Open Folder"
     Top    = $DirectoryUpdateButton.Top
+    # Left   = $script:CollectionSavedDirectoryTextBox.Width - ($FormScale * 232)
+    Left   = $DirectoryUpdateButton.Left + $DirectoryUpdateButton.Width + $($FormScale * 5)
     Width  = $FormScale * 115
     Height = $FormScale * 22
     Add_Click      = $DirectoryOpenButtonAdd_Click
@@ -179,7 +185,7 @@ $PowerShellTerminalButton = New-Object System.Windows.Forms.Button -Property @{
         Start-Process PowerShell.exe
     }
 }
-#$MainCenterMainTab.Controls.Add($PowerShellTerminalButton)
+$MainCenterMainTab.Controls.Add($PowerShellTerminalButton)
 Apply-CommonButtonSettings -Button $PowerShellTerminalButton
 
 
@@ -255,6 +261,7 @@ $MainCenterMainTab.Controls.Add($StatusLabel)
 $StatusListBox = New-Object System.Windows.Forms.ListBox -Property @{
     Name   = "StatusListBox"
     Left   = $StatusLabel.Left + $StatusLabel.Width
+    Width  = $FormScale * 535
     Top    = $StatusLabel.Top
     Height = $FormScale * 22
     Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
@@ -277,6 +284,7 @@ $MainCenterMainTab.Controls.Add($ProgressBarEndpointsLabel)
 
 $script:ProgressBarEndpointsProgressBar = New-Object System.Windows.Forms.ProgressBar -Property @{
     Left   = $ProgressBarEndpointsLabel.Left + $ProgressBarEndpointsLabel.Width
+    Width = $StatusListBox.Width - ($FormScale * 1)
     Top    = $ProgressBarEndpointsLabel.Top
     Height = $FormScale * 15
     Forecolor = 'LightBlue'
@@ -300,6 +308,7 @@ $MainCenterMainTab.Controls.Add($ProgressBarQueriesLabel)
 
 $script:ProgressBarQueriesProgressBar = New-Object System.Windows.Forms.ProgressBar -Property @{
     Left = $ProgressBarQueriesLabel.Left + $ProgressBarQueriesLabel.Width
+    Width = $StatusListBox.Width - ($FormScale * 1)
     Top = $ProgressBarQueriesLabel.Top
     Height = $FormScale * 15
     Forecolor = 'LightGreen'

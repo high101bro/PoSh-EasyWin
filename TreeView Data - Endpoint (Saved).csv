@@ -1,37 +1,72 @@
 "Name","OperatingSystem","CanonicalName","OperatingSystemHotfix","OperatingSystemServicePack","Enabled","LockedOut","LogonCount","Created","Modified","LastLogonDate","IPv4Address","MACAddress","MemberOf","isCriticalSystemObject","HomedirRequired","Location","ProtectedFromAccidentalDeletion","TrustedForDelegation","SID","PortScan","Notes","ImageIndex"
-"DC01","Windows Server 2012 R2 Standard","/Domain Controllers",,,"True","False","1249","6/28/2020 10:57:02 PM","11/8/2021 12:00:16 PM","12/26/2022 4:48:51 AM","10.100.100.10","No MAC Available",,"True","No Home Dir Required","No Location","False","True","S-1-5-21-3036625279-3127291219-2495432101-1396",,"11/29/2021 14:35:14 -- Executed Command: WSMan Trusted Hosts
-11/29/2021 14:32:05 -- m1
-11/29/2021 03:19:06 -- Executed Command: Host Files
-11/29/2021 03:18:52 -- Executed Command: Services
-11/29/2021 03:18:10 -- this is a custom message
-11/29/2021 03:17:53 -- Executed Command: DNS Cache
-11/29/2021 03:17:27 -- m1
-11/29/2021 03:17:15 -- Executed Command: Host Files
-11/29/2021 03:16:04 -- m1
+"DC01","Windows Server 2012 R2 Standard","/Domain Controllers",,,"True","False","1249","6/28/2020 10:57:02 PM","11/8/2021 12:00:16 PM","12/26/2022 4:48:51 AM","10.100.100.10","No MAC Available",,"True","No Home Dir Required","No Location","False","True","S-1-5-21-3036625279-3127291219-2495432101-1396",,"11/30/2021 21:00:10 -- Executed Command: Services
+11/30/2021 21:00:09 -- Executed Command: Processes
+11/30/2021 20:47:01 -- dc01
+11/30/2021 20:46:32 -- Executed Command: Services
+11/30/2021 20:46:31 -- Executed Command: Processes
+11/30/2021 20:46:29 -- Executed Command: Network Connections TCP
+11/30/2021 20:45:55 -- dc01
 ","4"
-"WSUS","Windows Server 2012 R2 Datacenter","/Servers/Administrative",,,"True","False","0","1/28/2020 8:21:00 PM","6/28/2020 11:12:39 PM","3/7/2020 10:41:32 AM","10.10.10.23","No MAC Available",,"False","No Home Dir Required","No Location","False","False","S-1-5-21-3036625279-3127291219-2495432101-1108",,,"4"
+"WSUS","Windows Server 2012 R2 Datacenter","/Servers/Administrative",,,"True","False","0","1/28/2020 8:21:00 PM","6/28/2020 11:12:39 PM","3/7/2020 10:41:32 AM","10.10.10.23","No MAC Available",,"False","No Home Dir Required","No Location","False","False","S-1-5-21-3036625279-3127291219-2495432101-1108",,"11/30/2021 21:00:10 -- Executed Command: Services
+11/30/2021 21:00:09 -- Executed Command: Processes
+11/30/2021 20:47:05 -- wsus
+11/30/2021 20:46:32 -- Executed Command: Services
+11/30/2021 20:46:31 -- Executed Command: Processes
+11/30/2021 20:46:29 -- Executed Command: Network Connections TCP
+","4"
 "APP","Windows Server 2012 R2 Datacenter","/Servers/Administrative",,,"True","False","0","1/28/2020 8:31:34 PM","6/28/2020 11:12:39 PM","6/16/2020 1:31:34 AM","10.10.10.22","No MAC Available",,"False","No Home Dir Required","No Location","False","False","S-1-5-21-3036625279-3127291219-2495432101-1109",,,"4"
 "WIN81-01","Windows 8.1 Pro","/US Branch/Management",,,"True","False","110","1/29/2020 1:49:18 AM","10/10/2021 1:39:38 PM","10/10/2021 1:39:37 PM","10.10.10.81","No MAC Available",,"False","No Home Dir Required","No Location","False","False","S-1-5-21-3036625279-3127291219-2495432101-1111",,,"10"
 "WIN81-03","Windows 8.1 Pro","/US Branch/Guest",,,"True","False","0","1/29/2020 1:51:41 AM","6/28/2020 11:12:39 PM","3/14/2020 2:26:49 AM","10.10.10.102","No MAC Available",,"False","No Home Dir Required","No Location","False","False","S-1-5-21-3036625279-3127291219-2495432101-1112",,,"10"
 "WIN81-02","Windows 8.1 Pro","/US Branch/Management",,,"True","False","0","1/29/2020 1:53:42 AM","6/28/2020 11:12:39 PM","3/13/2020 11:19:04 PM","10.10.10.101","No MAC Available",,"False","No Home Dir Required","No Location","False","False","S-1-5-21-3036625279-3127291219-2495432101-1113",,,"10"
 "WIN81-04","Windows 8.1 Pro","/US Branch/Employee",,,"True","False","0","1/29/2020 1:55:04 AM","6/28/2020 11:12:39 PM","3/13/2020 11:36:11 PM","10.10.10.103","No MAC Available",,"False","No Home Dir Required","No Location","False","False","S-1-5-21-3036625279-3127291219-2495432101-1114",,,"10"
-"FILE","Windows Server 2012 R2 Datacenter","/Servers/Business",,,"True","False","0","1/29/2020 2:25:35 AM","6/28/2020 11:12:39 PM","6/25/2020 10:01:32 PM","10.10.10.104","No MAC Available",,"False","No Home Dir Required","No Location","False","False","S-1-5-21-3036625279-3127291219-2495432101-1116",,,"4"
+"FILE","Windows Server 2012 R2 Datacenter","/Servers/Business",,,"True","False","0","1/29/2020 2:25:35 AM","6/28/2020 11:12:39 PM","6/25/2020 10:01:32 PM","10.10.10.104","No MAC Available",,"False","No Home Dir Required","No Location","False","False","S-1-5-21-3036625279-3127291219-2495432101-1116",,"11/30/2021 17:51:28 -- Executed Command: Software Installed
+11/30/2021 17:51:27 -- Executed Command: Get-USBControllerAndDevices
+11/30/2021 17:51:26 -- Executed Command: Get-SystemDateTimes
+11/30/2021 17:51:25 -- Executed Command: Get-ServicesEnriched
+11/30/2021 17:51:24 -- Executed Command: Get-RegistryWirelessNetworks
+11/30/2021 17:51:23 -- Executed Command: Get-RegistryUSBHistory
+11/30/2021 17:51:22 -- Executed Command: Get-RegistryStartupCommands
+11/30/2021 17:51:21 -- Executed Command: Get-RegistrySoftware
+11/30/2021 17:51:20 -- Executed Command: Get-ProcessesEnriched
+11/30/2021 17:51:19 -- Executed Command: Get-PowerShellHistory
+11/30/2021 17:51:18 -- Executed Command: Get-PortProxy
+11/30/2021 17:51:16 -- Executed Command: Get-NetworkConnectionsTCPEnriched
+11/30/2021 17:51:15 -- Executed Command: 
+11/30/2021 17:51:14 -- Executed Command: Get-LogicalDisksEnriched
+11/30/2021 17:51:12 -- Executed Command: Get-LoadedDLLs
+11/30/2021 17:51:11 -- Executed Command: Get-FirewallRulesEnriched
+11/30/2021 17:51:09 -- Executed Command: Get-DriverDetails
+11/30/2021 17:51:07 -- Executed Command: Get-CrashedApplications
+11/30/2021 17:51:06 -- Executed Command: USB History
+11/30/2021 17:51:05 -- Executed Command: System Info
+11/30/2021 17:51:03 -- Executed Command: SMB Shares
+11/30/2021 17:51:02 -- Executed Command: Security Patches
+11/30/2021 17:51:01 -- Executed Command: Prefetch Files
+11/30/2021 17:50:59 -- Executed Command: Plug and Play Devices
+11/30/2021 17:50:58 -- Executed Command: Network Settings
+11/30/2021 17:50:56 -- Executed Command: Logical Drives Mapped
+11/30/2021 17:50:55 -- Executed Command: Groups (Local)
+11/30/2021 17:50:54 -- Executed Command: Firewall Status
+11/30/2021 17:50:52 -- Executed Command: Command Line History
+11/30/2021 17:50:51 -- Executed Command: Accounts (Local Users)
+11/30/2021 17:50:27 -- file
+11/30/2021 17:50:03 -- Executed Command: Services
+11/30/2021 17:50:02 -- Executed Command: Processes
+11/30/2021 17:50:01 -- Executed Command: Network Connections TCP
+","4"
 "WIN81-09A","Windows 8.1 Pro","/US Branch/Employee",,,"True","False","0","2/1/2020 6:00:04 PM","6/28/2020 11:12:39 PM","5/24/2020 9:08:15 PM","10.10.10.111","No MAC Available",,"False","No Home Dir Required","No Location","False","False","S-1-5-21-3036625279-3127291219-2495432101-1118",,,"10"
 "Win81-07","Windows 8.1 Pro","/US Branch/Employee",,,"True","False","0","2/1/2020 6:00:24 PM","2/9/2021 12:45:53 AM","2/9/2021 12:45:53 AM","10.10.10.109","No MAC Available",,"False","No Home Dir Required","No Location","False","False","S-1-5-21-3036625279-3127291219-2495432101-1120",,,"10"
 "Win81-08","Windows 8.1 Pro","/US Branch/Employee",,,"True","False","0","2/1/2020 6:00:13 PM","6/28/2020 11:12:39 PM","6/25/2020 11:26:34 PM","10.10.10.110","No MAC Available",,"False","No Home Dir Required","No Location","False","False","S-1-5-21-3036625279-3127291219-2495432101-1119",,,"10"
 "WIN81-06A","Windows 8.1 Pro","/US Branch/Employee",,,"True","False","0","2/1/2020 6:00:33 PM","6/28/2020 11:12:39 PM","5/24/2020 9:08:12 PM","10.10.10.108","No MAC Available",,"False","No Home Dir Required","No Location","False","False","S-1-5-21-3036625279-3127291219-2495432101-1121",,,"10"
 "WIN81-05A","Windows 8.1 Pro","/US Branch/Employee",,,"False","False","0","2/1/2020 6:00:43 PM","6/28/2020 11:12:39 PM","6/15/2020 9:28:18 PM","No IP Available","No MAC Available",,"False","No Home Dir Required","No Location","False","False","S-1-5-21-3036625279-3127291219-2495432101-1122",,,"10"
 "WIN81-10","Windows 8.1 Pro","/US Branch/Employee",,,"True","False","0","2/4/2020 12:36:58 AM","6/28/2020 11:12:39 PM","6/25/2020 9:35:42 PM","10.10.10.116","No MAC Available",,"False","No Home Dir Required","No Location","False","False","S-1-5-21-3036625279-3127291219-2495432101-1123",,,"10"
-"WIN10-01","Windows 10 Pro","/US Branch/Employee",,,"True","False","1106","2/23/2020 1:17:03 AM","11/29/2021 2:07:49 AM","12/26/2022 4:48:55 AM","10.100.100.101","No MAC Available",,"False","No Home Dir Required","No Location","False","False","S-1-5-21-3036625279-3127291219-2495432101-1126",,"11/29/2021 14:35:14 -- Executed Command: WSMan Trusted Hosts
-11/29/2021 14:32:27 -- m2
-11/29/2021 14:32:14 -- m2
-11/29/2021 03:19:06 -- Executed Command: Host Files
-11/29/2021 03:18:33 -- Executed Command: Processes
-11/29/2021 03:18:17 -- this one is different
-11/29/2021 03:17:53 -- Executed Command: DNS Cache
-11/29/2021 03:17:31 -- m2
-11/29/2021 03:17:15 -- Executed Command: Host Files
-11/29/2021 03:16:07 -- m2
+"WIN10-01","Windows 10 Pro","/US Branch/Employee",,,"True","False","1106","2/23/2020 1:17:03 AM","11/29/2021 2:07:49 AM","12/26/2022 4:48:55 AM","10.100.100.101","No MAC Available",,"False","No Home Dir Required","No Location","False","False","S-1-5-21-3036625279-3127291219-2495432101-1126",,"11/30/2021 21:00:10 -- Executed Command: Services
+11/30/2021 21:00:09 -- Executed Command: Processes
+11/30/2021 20:47:09 -- win10-01
+11/30/2021 20:46:32 -- Executed Command: Services
+11/30/2021 20:46:31 -- Executed Command: Processes
+11/30/2021 20:46:29 -- Executed Command: Network Connections TCP
+11/30/2021 20:45:59 -- win10-01
 ","11"
 "WIN10-03","Windows 10 Pro","/US Branch/Employee",,,"True","False","146","2/23/2020 1:19:17 AM","10/10/2021 1:39:09 PM","10/10/2021 1:39:09 PM","10.10.10.103","No MAC Available",,"False","No Home Dir Required","No Location","False","False","S-1-5-21-3036625279-3127291219-2495432101-1127",,,"11"
 "WIN10-04","Windows 10 Pro","/US Branch/Employee",,,"True","False","110","2/23/2020 1:19:54 AM","10/10/2021 1:39:12 PM","10/10/2021 1:39:12 PM","10.10.10.104","No MAC Available",,"False","No Home Dir Required","No Location","False","False","S-1-5-21-3036625279-3127291219-2495432101-1128",,,"11"

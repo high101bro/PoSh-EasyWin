@@ -998,11 +998,11 @@ $Section3HostDataNotesRichTextBox = New-Object System.Windows.Forms.RichTextBox 
     Left       = 0
     Top        = $Section3HostDataMACLabel.Top + $Section3HostDataMACLabel.Height
     Width      = $FormScale * 740
-    Height     = $FormScale * 178
+    Height     = $FormScale * 172
     Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     BackColor  = 'White'
     Multiline  = $True
-    ScrollBars = 'Vertical'
+    ScrollBars = 'ForcedVertical'
     WordWrap   = $True
     ReadOnly   = $false
 
@@ -1039,7 +1039,7 @@ $Section3HostDataTab.ForcedVertical()
 
 $Section3EndpointDataUpdateDataButton = New-Object System.Windows.Forms.Button -Property @{
     Text      = "Update Data"
-    Left      = $Section3HostDataNotesRichTextBox.Left + $Section3HostDataNotesRichTextBox.Width - $($FormScale * 100 + 5)
+    Left      = $Section3HostDataNotesRichTextBox.Left + $Section3HostDataNotesRichTextBox.Width - $($FormScale * 114 + 5)
     Top       = $Section3HostDataNotesRichTextBox.Top + $Section3HostDataNotesRichTextBox.Height - $($FormScale * 22 + 5)
     Width     = $FormScale * 100
     Height    = $FormScale * 22
