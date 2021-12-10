@@ -484,7 +484,7 @@ $NetworkSysmonSearchGroupBox = New-Object System.Windows.Forms.GroupBox -Propert
                 Height = $FormScale * 25
                 Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
                 ForeColor = "Black"
-                Checked = $true
+                Checked = $false
             }
             $NetworkSysmonSearchGroupBox.Controls.Add($NetworkSysmonRegexCheckbox)
 

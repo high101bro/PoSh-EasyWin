@@ -609,8 +609,8 @@ $QueryAndCollectionPanel = New-Object System.Windows.Forms.Panel -Property @{
             . "$Dependencies\Code\Main Body\Tabs\Checklists.ps1"
 
             ### DEPRECATED ###
-            # Processes Tab 
-            #. "$Dependencies\Code\Main Body\Tabs\Processes.ps1"
+            # Processes Reference Tab 
+            #. "$Dependencies\Code\Main Body\Tabs\Processes Reference.ps1"
             ### DEPRECATED ###
 
             # OpNotes Tab
@@ -1473,6 +1473,9 @@ Update-FormProgress "$Dependencies\Code\Execution\Execute-TextToSpeach.ps1"
 Update-FormProgress "$Dependencies\Code\Execution\Completed-QueryExecution.ps1"
 . "$Dependencies\Code\Execution\Completed-QueryExecution.ps1"
 
+# Queries and searches the live processes running on endpoints
+. "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-ProcessLive.ps1"
+
 # Loads the function used to query for various Sysmon Event ID 1 Process Creation logs
 Update-FormProgress "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-ProcessCreationSysmon.ps1"
 . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-ProcessCreationSysmon.ps1"
@@ -1677,9 +1680,11 @@ $ExecuteScriptHandler = {
                 if ($AccountActivityCheckbox.Checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-AccountLogonActivity.ps1" }
 
                 # Event Logs Event IDs Manual Entry
+                # batman - need to code in support for a WinRM check to use Get-WinEvent
                 if ($EventLogsEventIDsManualEntryCheckbox.Checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-EventLogsEventCodeManualEntryCommand.ps1" }
 
                 # Event Logs Event IDs Quick Pick Selection
+                # batman - need to code in support for a WinRM check to use Get-WinEvent
                 if ($EventLogsQuickPickSelectionCheckbox.Checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-EventLogsQuickPick.ps1" }
 
                 # Event Log Names to retrieve .evtx files
@@ -1710,6 +1715,27 @@ $ExecuteScriptHandler = {
                     if ($NetworkEndpointPacketCaptureCheckBox.Checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualCapture-EndpointPacketCaptureNetSh.ps1" }
                 }
 
+                #batman
+                # Live Process Search for various data
+                if ($ProcessLiveSearchNameCheckbox.checked)               { IndividualQuery-ProcessLive -ProcessLiveSearchNameCheckbox }
+                if ($ProcessLiveSearchCommandlineCheckbox.checked)        { IndividualQuery-ProcessLive -ProcessLiveSearchCommandlineCheckbox }
+                if ($ProcessLiveSearchParentNameCheckbox.checked)         { IndividualQuery-ProcessLive -ProcessLiveSearchParentNameCheckbox }
+                if ($ProcessLiveSearchOwnerSIDCheckbox.checked)           { IndividualQuery-ProcessLive -ProcessLiveSearchOwnerSIDCheckbox }
+                if ($ProcessLiveSearchServiceInfoCheckbox.checked)        { IndividualQuery-ProcessLive -ProcessLiveSearchServiceInfoCheckbox }
+                if ($ProcessLiveSearchNetworkConnectionsCheckbox.checked) { IndividualQuery-ProcessLive -ProcessLiveSearchNetworkConnectionsCheckbox }
+                if ($ProcessLiveSearchHashesSignerCertsCheckbox.checked)  { IndividualQuery-ProcessLive -ProcessLiveSearchHashesSignerCertsCheckbox }
+                if ($ProcessLiveSearchCompanyProductCheckbox.checked)     { IndividualQuery-ProcessLive -ProcessLiveSearchCompanyProductCheckbox }
+
+                # Searches for Sysmon Event ID 1 for various Process Creation data
+                if ($ProcessCreationSysmonSearchFilePathCheckbox.checked)          { IndividualQuery-ProcessCreationSysmon -ProcessCreationSysmonSearchFilePathCheckbox }
+                if ($ProcessCreationSysmonSearchCommandlineCheckbox.checked)       { IndividualQuery-ProcessCreationSysmon -ProcessCreationSysmonSearchCommandlineCheckbox }
+                if ($ProcessCreationSysmonSearchParentFilePathCheckbox.checked)    { IndividualQuery-ProcessCreationSysmon -ProcessCreationSysmonSearchParentFilePathCheckbox }
+                if ($ProcessCreationSysmonSearchParentCommandlineCheckbox.checked) { IndividualQuery-ProcessCreationSysmon -ProcessCreationSysmonSearchParentCommandlineCheckbox }
+                if ($ProcessCreationSysmonSearchOriginalFileNameCheckbox.checked)  { IndividualQuery-ProcessCreationSysmon -ProcessCreationSysmonSearchOriginalFileNameCheckbox }
+                if ($ProcessCreationSysmonSearchUserCheckbox.checked)              { IndividualQuery-ProcessCreationSysmon -ProcessCreationSysmonSearchUserCheckbox }
+                if ($ProcessCreationSysmonSearchHashesCheckbox.checked)            { IndividualQuery-ProcessCreationSysmon -ProcessCreationSysmonSearchHashesCheckbox }
+                if ($ProcessCreationSysmonSearchCompanyProductCheckbox.checked)    { IndividualQuery-ProcessCreationSysmon -ProcessCreationSysmonSearchCompanyProductCheckbox }
+
                 # Live Network Connection Search for various data
                 if ($NetworkLiveSearchRemoteIPAddressCheckbox.checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-NetworkLiveRemoteIPAddress.ps1" }
                 if ($NetworkLiveSearchRemotePortCheckbox.checked)      { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-NetworkLiveRemotePort.ps1" }
@@ -1718,15 +1744,6 @@ $ExecuteScriptHandler = {
                 if ($NetworkLiveSearchExecutablePathCheckbox.checked)  { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-NetworkLiveSearchExecutablePath.ps1" }
                 if ($NetworkLiveSearchProcessCheckbox.checked)         { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-NetworkLiveProcess.ps1" }
                 if ($NetworkLiveSearchDNSCacheCheckbox.checked)        { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-NetworkLiveSearchDNSCache.ps1" }
-                
-                # Searches for Sysmon Event ID 1 for various Process Creation data
-                if ($ProcessCreationSysmonSearchOriginalFileNameCheckbox.checked)  { IndividualQuery-ProcessCreationSysmon -ProcessCreationSysmonSearchOriginalFileNameCheckbox }
-                if ($ProcessCreationSysmonSearchUserCheckbox.checked)              { IndividualQuery-ProcessCreationSysmon -ProcessCreationSysmonSearchUserCheckbox }
-                if ($ProcessCreationSysmonSearchHashesCheckbox.checked)            { IndividualQuery-ProcessCreationSysmon -ProcessCreationSysmonSearchHashesCheckbox }
-                if ($ProcessCreationSysmonSearchFilePathCheckbox.checked)          { IndividualQuery-ProcessCreationSysmon -ProcessCreationSysmonSearchFilePathCheckbox }
-                if ($ProcessCreationSysmonSearchCommandlineCheckbox.checked)       { IndividualQuery-ProcessCreationSysmon -ProcessCreationSysmonSearchCommandlineCheckbox }
-                if ($ProcessCreationSysmonSearchParentFilePathCheckbox.checked)    { IndividualQuery-ProcessCreationSysmon -ProcessCreationSysmonSearchParentFilePathCheckbox }
-                if ($ProcessCreationSysmonSearchParentCommandlineCheckbox.checked) { IndividualQuery-ProcessCreationSysmon -ProcessCreationSysmonSearchParentCommandlineCheckbox }
 
                 # Searches for Sysmon Event ID 3 for various Network Connections data
                 if ($NetworkSysmonSearchSourceIPAddressCheckbox.checked)      { IndividualQuery-NetworkConnectionSysmon -NetworkSysmonSearchSourceIPAddressCheckbox }

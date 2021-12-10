@@ -8,11 +8,12 @@ $ResultsListBox.Items.Insert(0,"$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:
 $script:ProgressBarEndpointsProgressBar.Value = 0
 
 $EventLogsEventIDsManualEntryTextboxText = $EventLogsEventIDsManualEntryTextbox.Lines
-$EventLogsMaximumCollectionTextBoxText   = $script:EventLogsMaximumCollectionTextBox.Lines
+$EventLogsMaximumCollectionTextBoxText   = $script:EventLogsMaximumCollectionTextBox.Text
 $EventLogsStartTimePickerChecked         = $script:EventLogsStartTimePicker.Checked
 $EventLogsStopTimePickerChecked          = $script:EventLogsStopTimePicker.Checked
 $EventLogsStartTimePickerValue           = $script:EventLogsStartTimePicker.Value
 $EventLogsStopTimePickerValue            = $script:EventLogsStopTimePicker.Value
+
 
 function Query-EventLogLogsEventIDsManualEntrySessionBased {
     param(
@@ -27,35 +28,35 @@ function Query-EventLogLogsEventIDsManualEntrySessionBased {
         $EventLogsStartTimePickerValue,
         $EventLogsStopTimePickerValue
     )
-    $ManualEntry = $EventLogsEventIDsManualEntryTextboxText
+    $ManualEntry = $EventLogsEventIDsManualEntryTextboxText -replace " ","" -replace "a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|y|z","" | Where-Object {$_.trim() -ne ""}
     #$ManualEntry = ($EventLogsEventIDsManualEntryTextboxText).split("`r`n")
-    $ManualEntry = $ManualEntry -replace " ","" -replace "a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|y|z",""
-    $ManualEntry = $ManualEntry | Where-Object {$_.trim() -ne ""}
 
-    # Variables begins with an open "(
-    $EventLogsEventIDsManualEntryTextboxFilter = '('
+    $EventLogList = Get-ChildItem 'C:\Windows\System32\Winevt\Logs' | Select-Object -ExpandProperty BaseName
 
-    foreach ($EventCode in $ManualEntry) {
-        $EventLogsEventIDsManualEntryTextboxFilter += "(EventCode='$EventCode') OR "
+    $FilterHashtable = @{
+        Logname = $EventLogList
+        Id      = $ManualEntry
     }
-    # Replaces the ' OR ' at the end of the varable with a closing )"
-    $Filter = $EventLogsEventIDsManualEntryTextboxFilter -replace " OR $",")"
 
-    # Builds the Event Log Query Command
-    $EventLogQueryCommand  = "Get-WmiObject -Class Win32_NTLogEvent"
-    if ($EventLogsMaximumCollectionTextBoxText -eq $null -or $EventLogsMaximumCollectionTextBoxText -eq '' -or $EventLogsMaximumCollectionTextBoxText -eq 0) { $EventLogQueryMax = $null}
-    else { $EventLogQueryMax = "-First $($EventLogsMaximumCollectionTextBoxText)" }
-    if ( $EventLogsStartTimePickerChecked -and $EventLogsStopTimePickerChecked ) {
-        $EventLogQueryFilter = @"
--Filter "($Filter and (TimeGenerated>='$([System.Management.ManagementDateTimeConverter]::ToDmtfDateTime(($EventLogsStartTimePickerValue)))') and (TimeGenerated<='$([System.Management.ManagementDateTimeConverter]::ToDmtfDateTime(($EventLogsStopTimePickerValue)))'))"
-"@
+    if ($EventLogsStartTimePickerValue -and $EventLogsStopTimePickerValue) {
+        Get-WinEvent -FilterHashtable $FilterHashtable -Oldest -ErrorAction SilentlyContinue `
+        | Where-Object {$_.TimeCreated -gt $EventLogsStartTimePickerValue -and $_.TimeCreated -lt $EventLogsStopTimePickerValue} `
+        | Select-Object -first $EventLogsMaximumCollectionTextBoxText
     }
-    else { $EventLogQueryFilter = "-Filter `"$Filter`""}
-    $EventLogQueryPipe = @"
-| Select-Object PSComputerName, LogFile, EventIdentifier, CategoryString, @{Name='TimeGenerated';Expression={[Management.ManagementDateTimeConverter]::ToDateTime(`$_.TimeGenerated)}}, Message, Type $EventLogQueryMax
-"@
-    $EventLogQueryBuild = "$EventLogQueryCommand $EventLogQueryFilter $EventLogQueryPipe"
-    Invoke-Expression $EventLogQueryBuild
+    elseif ($EventLogsStartTimePickerValue) {
+        Get-WinEvent -FilterHashtable $FilterHashtable -Oldest -ErrorAction SilentlyContinue `
+        | Where-Object {$_.TimeCreated -gt $EventLogsStartTimePickerValue} `
+        | Select-Object -first $EventLogsMaximumCollectionTextBoxText
+    }
+    elseif ($EventLogsStopTimePickerValue) {
+        Get-WinEvent -FilterHashtable $FilterHashtable -Oldest -ErrorAction SilentlyContinue `
+        | Where-Object {$_.TimeCreated -lt $EventLogsStopTimePickerValue} `
+        | Select-Object -first $EventLogsMaximumCollectionTextBoxText
+    }
+    else {
+        Get-WinEvent -FilterHashtable $FilterHashtable -Oldest -ErrorAction SilentlyContinue `
+        | Select-Object -first $EventLogsMaximumCollectionTextBoxText
+    }
 }
 
 
@@ -72,29 +73,29 @@ function MonitorJobScriptBlock {
         $EventLogsStartTimePickerValue,
         $EventLogsStopTimePickerValue
     )
+    $InvokeCommandArgumentList = @($script:ComputerList,$script:Credential,$ExecutionStartTime,$CollectionName,$EventLogsEventIDsManualEntryTextboxText,$EventLogsMaximumCollectionTextBoxText,$EventLogsStartTimePickerChecked,$EventLogsStopTimePickerChecked,$EventLogsStartTimePickerValue,$EventLogsStopTimePickerValue)
+
     foreach ($TargetComputer in $script:ComputerList) {
         Conduct-PreCommandCheck -CollectedDataTimeStampDirectory $script:CollectedDataTimeStampDirectory `
                                 -IndividualHostResults "$script:IndividualHostResults" -CollectionName $CollectionName `
                                 -TargetComputer $TargetComputer
         Create-LogEntry -TargetComputer $TargetComputer  -LogFile $LogFile -Message $CollectionName
 
-        if ($EventLogWinRMRadioButton.Checked) {
+        if ($EventLogWinRMRadioButton.Checked) {            
+            $InvokeCommandSplat = @{
+                ScriptBlock  = ${function:Query-EventLogLogsEventIDsManualEntrySessionBased}
+                ArgumentList = $InvokeCommandArgumentList
+                ComputerName = $TargetComputer
+                AsJob        = $true
+                JobName      = "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)"
+            }
+
             if ( $script:ComputerListProvideCredentialsCheckBox.Checked ) {
                 if (!$script:Credential) { Create-NewCredentials }
-
-
-                Invoke-Command -ScriptBlock ${function:Query-EventLogLogsEventIDsManualEntrySessionBased} `
-                -ArgumentList @($script:ComputerList,$script:Credential,$ExecutionStartTime,$CollectionName,$EventLogsEventIDsManualEntryTextboxText,$EventLogsMaximumCollectionTextBoxText,$EventLogsStartTimePickerChecked,$EventLogsStopTimePickerChecked,$EventLogsStartTimePickerValue,$EventLogsStopTimePickerValue) `
-                -ComputerName $TargetComputer `
-                -AsJob -JobName "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)" `
-                -Credential $script:Credential
+                $InvokeCommandSplat += @{Credential = $script:Credential}
             }
-            else {
-                Invoke-Command -ScriptBlock ${function:Query-EventLogLogsEventIDsManualEntrySessionBased} `
-                -ArgumentList @($script:ComputerList,$script:Credential,$ExecutionStartTime,$CollectionName,$EventLogsEventIDsManualEntryTextboxText,$EventLogsMaximumCollectionTextBoxText,$EventLogsStartTimePickerChecked,$EventLogsStopTimePickerChecked,$EventLogsStartTimePickerValue,$EventLogsStopTimePickerValue) `
-                -ComputerName $TargetComputer `
-                -AsJob -JobName "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)"
-            }
+
+            Invoke-Command @InvokeCommandSplat | Select-Object PSComputerName, *
         }
         else {
             if ( $script:ComputerListProvideCredentialsCheckBox.Checked ) {
@@ -144,7 +145,7 @@ function MonitorJobScriptBlock {
                     Invoke-Expression -Command "$EventLogQueryCommand -ComputerName $TargetComputer -Credential `$Script:Credential $EventLogQueryFilter $EventLogQueryPipe"
                 } `
                 -Name "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)" `
-                -ArgumentList @($script:ComputerList,$script:Credential,$ExecutionStartTime,$CollectionName,$EventLogsEventIDsManualEntryTextboxText,$EventLogsMaximumCollectionTextBoxText,$EventLogsStartTimePickerChecked,$EventLogsStopTimePickerChecked,$EventLogsStartTimePickerValue,$EventLogsStopTimePickerValue)
+                -ArgumentList @($EventLogsEventIDsManualEntryTextboxText,$EventLogsMaximumCollectionTextBoxText,$EventLogsStartTimePickerChecked,$EventLogsStopTimePickerChecked,$EventLogsStartTimePickerValue,$EventLogsStopTimePickerValue,$TargetComputer,$script:Credential)
             }
             else {
                 Start-Job -ScriptBlock {
@@ -190,7 +191,7 @@ function MonitorJobScriptBlock {
                     Invoke-Expression -Command "$EventLogQueryCommand -ComputerName $TargetComputer $EventLogQueryFilter $EventLogQueryPipe"
                 } `
                 -Name "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)" `
-                -ArgumentList @($script:ComputerList,$script:Credential,$ExecutionStartTime,$CollectionName,$EventLogsEventIDsManualEntryTextboxText,$EventLogsMaximumCollectionTextBoxText,$EventLogsStartTimePickerChecked,$EventLogsStopTimePickerChecked,$EventLogsStartTimePickerValue,$EventLogsStopTimePickerValue)
+                -ArgumentList @($EventLogsEventIDsManualEntryTextboxText,$EventLogsMaximumCollectionTextBoxText,$EventLogsStartTimePickerChecked,$EventLogsStopTimePickerChecked,$EventLogsStartTimePickerValue,$EventLogsStopTimePickerValue,$TargetComputer)
             }
         }
     }

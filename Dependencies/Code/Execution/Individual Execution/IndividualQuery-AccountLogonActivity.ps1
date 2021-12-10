@@ -89,7 +89,7 @@ $SearchString
 "@
 
 if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
-    Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript ${function:MonitorJobScriptBlock} -ArgumentList @($ExecutionStartTime,$CollectionName,$AccountsStartTimePickerValue,$AccountsStopTimePickerValue,$AccountActivityTextboxtext) -InputValues $InputValues
+    Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript ${function:MonitorJobScriptBlock} -ArgumentList @($ExecutionStartTime,$CollectionName,$AccountsStartTimePickerValue,$AccountsStopTimePickerValue,$AccountActivityTextboxtext) -SmithFlag 'RetrieveFile' -InputValues $InputValues
 }
 elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
     Monitor-Jobs -CollectionName $CollectionName

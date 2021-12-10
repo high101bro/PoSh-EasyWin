@@ -872,7 +872,7 @@ if ($MonitorMode) {
         `$script:Section3MonitorJobPanel$JobId = New-Object System.Windows.Forms.panel -Property @{
             Left      = `$script:MonitorJobsLeftPosition
             Top       = `$script:MonitorJobsTopPosition
-            Width     = `$FormScale * 715
+            Width     = `$FormScale * 730
             Height    = `$script:JobsRowHeight + (`$FormScale * 4)
         }
     
@@ -2479,11 +2479,11 @@ Start-Process 'PowerShell' -ArgumentList '-NoProfile',
 
 
                     `$script:Section3MonitorJobViewOptionsMonitorRestartDelayLabel$JobId = New-Object System.Windows.Forms.Label -Property @{
-                        text      = "In seconds, how long to wait until the command is restart after it was last completed.`nNote: You have to uncheck/check the associated Monitor checkbox for this to take affect."
+                        text      = "Monitor Endpoints with Agentless SMITH (System Monitoring Intel-driven Threat Hunting)`nTime is seconds until the command is restarted and runs until an endpoint returns results."
                         left      = `$script:Section3MonitorJobViewOptionsRichTextBox$JobId.Left + `$script:Section3MonitorJobViewOptionsRichTextBox$JobId.Width + (`$FormScale * 5)
                         top       = `$script:Section3MonitorJobViewOptionsRichTextBox$JobId.top - (`$FormScale * 2)
                         Width     = `$FormScale * 490
-                        Height    = `$FormScale * 22
+                        Height    = `$FormScale * 25
                         Font      = New-Object System.Drawing.Font("`$Font",`$(`$FormScale * 11),0,0,0)
                         ForeColor = "Black"
                     }
@@ -2583,12 +2583,9 @@ Start-Process 'PowerShell' -ArgumentList '-NoProfile',
                 if ( `$script:SMITHRunning$JobId -eq `$false -and `$this.checked) {
                     script:Remove-JobsFunction$JobId
 
-                    # Restarts the query, by starting a new job            
+                    # Restarts the query, by starting a new job
                     Invoke-Command -ScriptBlock `$script:SmithScript$JobId -ArgumentList `$script:ArgumentList$JobId
                     Monitor-Jobs -CollectionName `$script:JobName$JobId -MonitorMode -SMITH -SMITHscript `$script:SmithScript$JobId -ArgumentList `$script:ArgumentList$JobId -AutoReRun -RestartTime `$script:RestartTime$JobId -SmithFlag 'RetrieveFile' -InputValues `$script:InputValues$JobId
-                    
-                    # Cleanup
-                    Remove-Variable -Name  "SmithScript$JobId" -Scope script
                 }
 
                 if (`$script:MonitorJobsButtonMonitor$JobId.checked -eq `$false) {
@@ -2611,9 +2608,6 @@ Start-Process 'PowerShell' -ArgumentList '-NoProfile',
                     # Restarts the query, by starting a new job
                     Invoke-Command -ScriptBlock `$script:SmithScript$JobId -ArgumentList `$script:ArgumentList$JobId
                     Monitor-Jobs -CollectionName `$script:JobName$JobId -MonitorMode -SMITH -SMITHscript `$script:SmithScript$JobId -ArgumentList `$script:ArgumentList$JobId -AutoReRun -RestartTime `$script:RestartTime$JobId -SmithFlag 'RetrieveADS' -InputValues `$script:InputValues$JobId
-                    
-                    # Cleanup
-                    Remove-Variable -Name  "SmithScript$JobId" -Scope script
                 }
 
                 if (`$script:MonitorJobsButtonMonitor$JobId.checked -eq `$false) {
@@ -2635,9 +2629,6 @@ Start-Process 'PowerShell' -ArgumentList '-NoProfile',
                     # Restarts the query, by starting a new job
                     Invoke-Command -ScriptBlock `$script:SmithScript$JobId -ArgumentList `$script:ArgumentList$JobId
                     Monitor-Jobs -CollectionName `$script:JobName$JobId -MonitorMode -SMITH -SMITHscript `$script:SmithScript$JobId -ArgumentList `$script:ArgumentList$JobId -AutoReRun -RestartTime `$script:RestartTime$JobId -InputValues `$script:InputValues$JobId
-                    
-                    # Cleanup
-                    Remove-Variable -Name  "SmithScript$JobId" -Scope script
                 }
 
                 if (`$script:MonitorJobsButtonMonitor$JobId.checked -eq `$false) {
@@ -3089,37 +3080,39 @@ Start-Process 'PowerShell' -ArgumentList '-NoProfile',
                         }
                         # Executes the code again when the timer runs out
                         else {
-                            `$script:JobsTimeCompleted$JobId = Get-Date
-                            `$script:Timer$JobId.Stop()
-                            `$script:Timer$JobId = `$null
-                            Remove-Variable -Name Timer$JobId -Scope script
+                            if (-not (`$script:CurrentJobs$JobId | Receive-Job -Keep)) {
+                                `$script:JobsTimeCompleted$JobId = Get-Date
+                                `$script:Timer$JobId.Stop()
+                                `$script:Timer$JobId = `$null
+                                Remove-Variable -Name Timer$JobId -Scope script
                             
-                            script:Remove-JobsFunction$JobId
+                                script:Remove-JobsFunction$JobId
 
-                            # Restarts the query, by starting a new job
-                            Invoke-Command -ScriptBlock `$script:SmithScript$JobId -ArgumentList `$script:ArgumentList$JobId
-                            if ( `$script:SmithFlagRetrieveFile$JobId ) {
-                                Monitor-Jobs -CollectionName `$script:JobName$JobId -MonitorMode -SMITH -SMITHscript `$script:SmithScript$JobId -ArgumentList `$script:ArgumentList$JobId -AutoReRun -RestartTime `$script:RestartTime$JobId -SmithFlag 'RetrieveFile' -InputValues `$script:InputValues$JobId
-                            }
-                            elseif ( `$script:SmithFlagRetrieveADS$JobId ) {
-                                Monitor-Jobs -CollectionName `$script:JobName$JobId -MonitorMode -SMITH -SMITHscript `$script:SmithScript$JobId -ArgumentList `$script:ArgumentList$JobId -AutoReRun -RestartTime `$script:RestartTime$JobId -SmithFlag 'RetrieveFile' -InputValues `$script:InputValues$JobId
+                                # Restarts the query, by starting a new job
+                                Invoke-Command -ScriptBlock `$script:SmithScript$JobId -ArgumentList `$script:ArgumentList$JobId
+                                if ( `$script:SmithFlagRetrieveFile$JobId ) {
+                                    Monitor-Jobs -CollectionName `$script:JobName$JobId -MonitorMode -SMITH -SMITHscript `$script:SmithScript$JobId -ArgumentList `$script:ArgumentList$JobId -AutoReRun -RestartTime `$script:RestartTime$JobId -SmithFlag 'RetrieveFile' -InputValues `$script:InputValues$JobId
+                                }
+                                elseif ( `$script:SmithFlagRetrieveADS$JobId ) {
+                                    Monitor-Jobs -CollectionName `$script:JobName$JobId -MonitorMode -SMITH -SMITHscript `$script:SmithScript$JobId -ArgumentList `$script:ArgumentList$JobId -AutoReRun -RestartTime `$script:RestartTime$JobId -SmithFlag 'RetrieveADS' -InputValues `$script:InputValues$JobId
+                                }
+                                else {
+                                    Monitor-Jobs -CollectionName `$script:JobName$JobId -MonitorMode -SMITH -SMITHscript `$script:SmithScript$JobId -ArgumentList `$script:ArgumentList$JobId -AutoReRun -RestartTime `$script:RestartTime$JobId -InputValues `$script:InputValues$JobId
+                                }
+                                Remove-Variable -Name "SmithScript$JobId" -Scope script
+
+                                # Cleanup
+                                `$script:CurrentJobsWithComputerName$JobId = `$null
+                                Remove-Variable -Name CurrentJobsWithComputerName$JobId -Scope script
+                                `$script:SMITHRunning$JobId = `$false
                             }
                             else {
-                                Monitor-Jobs -CollectionName `$script:JobName$JobId -MonitorMode -SMITH -SMITHscript `$script:SmithScript$JobId -ArgumentList `$script:ArgumentList$JobId -AutoReRun -RestartTime `$script:RestartTime$JobId -InputValues `$script:InputValues$JobId
+                                script:Get-JobsCollectedData$JobId
+
+                                `$script:MonitorJobsButtonMonitor$JobId.checked = `$false
+                                [System.Windows.Forms.MessageBox]::Show("`$(`$script:JobName$JobId)`n`nAgentless SMITH has something to report.`n`nTime Completed:`n     `$(`$script:JobsTimeCompleted$JobId)",'PoSh-EasyWin - Agentless SMITH')
                             }
-                            Remove-Variable -Name "SmithScript$JobId" -Scope script
-
-                            # Cleanup
-                            `$script:CurrentJobsWithComputerName$JobId = `$null
-                            Remove-Variable -Name CurrentJobsWithComputerName$JobId -Scope script
-                            `$script:SMITHRunning$JobId = `$false                            
                         }
-                    }
-                    elseif ( `$script:CurrentJobsWithComputerName$JobId.count -ge 1 -and `$script:MonitorJobsButtonMonitor$JobId.checked -eq `$true ) {
-                        script:Get-JobsCollectedData$JobId
-
-                        `$script:MonitorJobsButtonMonitor$JobId.checked = `$false
-                        [System.Windows.Forms.MessageBox]::Show("`$(`$script:JobName$JobId)`n`nAgentless SMITH has something to report.`n`nTime Completed:`n     `$(`$script:JobsTimeCompleted$JobId)",'PoSh-EasyWin - Agentless SMITH')
                     }
                     elseif ( `$script:MonitorJobsButtonMonitor$JobId.checked -eq `$false ) {
                         script:Get-JobsCollectedData$JobId

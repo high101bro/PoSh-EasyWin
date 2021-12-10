@@ -200,7 +200,7 @@ $($SearchString4.trim())
 "@
 
 if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
-    Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript ${function:MonitorJobScriptBlock} -ArgumentList @($ExecutionStartTime,$CollectionName,$RegistrySearchDirectory,$SearchRegistryKeyName,$SearchRegistryValueName,$SearchRegistryValueData,$SearchRegistryCommand,$SearchRgistryItemProperty,$RegistryKeyItemPropertyNameCheckbox,$SearchRegistryKeyItemPropertyName) -InputValues $InputValues
+    Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript ${function:MonitorJobScriptBlock} -ArgumentList @($ExecutionStartTime,$CollectionName,$RegistrySearchDirectory,$SearchRegistryKeyName,$SearchRegistryValueName,$SearchRegistryValueData,$SearchRegistryCommand,$SearchRgistryItemProperty,$RegistryKeyItemPropertyNameCheckbox,$SearchRegistryKeyItemPropertyName) -SmithFlag 'RetrieveFile' -InputValues $InputValues
 }
 elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
     Monitor-Jobs -CollectionName $CollectionName

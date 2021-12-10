@@ -556,13 +556,23 @@ function Update-TreeViewData {
             $FileSearchDirectoryListingCheckbox,
             $FileSearchAlternateDataStreamCheckbox,
 
-            $ProcessCreationSysmonSearchOriginalFileNameCheckbox,
-            $ProcessCreationSysmonSearchUserCheckbox,
-            $ProcessCreationSysmonSearchHashesCheckbox,
+            $ProcessLiveSearchNameCheckbox,
+            $ProcessLiveSearchCommandlineCheckbox,
+            $ProcessLiveSearchParentNameCheckbox,
+            $ProcessLiveSearchOwnerSIDCheckbox,
+            $ProcessLiveSearchServiceInfoCheckbox,
+            $ProcessLiveSearchNetworkConnectionsCheckbox,
+            $ProcessLiveSearchHashesSignerCertsCheckbox,
+            $ProcessLiveSearchCompanyProductCheckbox,
+
             $ProcessCreationSysmonSearchFilePathCheckbox,
             $ProcessCreationSysmonSearchCommandlineCheckbox,
             $ProcessCreationSysmonSearchParentFilePathCheckbox,
             $ProcessCreationSysmonSearchParentCommandlineCheckbox,
+            $ProcessCreationSysmonSearchOriginalFileNameCheckbox,
+            $ProcessCreationSysmonSearchUserCheckbox,
+            $ProcessCreationSysmonSearchHashesCheckbox,
+            $ProcessCreationSysmonSearchCompanyProductCheckbox,
 
             $NetworkEndpointPacketCaptureCheckBox,
 

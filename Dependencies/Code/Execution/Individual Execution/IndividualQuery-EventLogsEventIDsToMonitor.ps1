@@ -1,252 +1,253 @@
-$ExecutionStartTime = Get-Date
-$CollectionName = "Event Logs - Event IDs To Monitor"
-$StatusListBox.Items.Clear()
-$StatusListBox.Items.Add("Executing: $CollectionName")
-$ResultsListBox.Items.Insert(0,"$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  $CollectionName")
-$PoShEasyWin.Refresh()
+#DEPRECATED
+# $ExecutionStartTime = Get-Date
+# $CollectionName = "Event Logs - Event IDs To Monitor"
+# $StatusListBox.Items.Clear()
+# $StatusListBox.Items.Add("Executing: $CollectionName")
+# $ResultsListBox.Items.Insert(0,"$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  $CollectionName")
+# $PoShEasyWin.Refresh()
 
-$script:ProgressBarEndpointsProgressBar.Value = 0
+# $script:ProgressBarEndpointsProgressBar.Value = 0
 
-$EventLogsEventIDsToMonitorCheckListBoxCheckedItems = $EventLogsEventIDsToMonitorCheckListBox.CheckedItems
-$EventLogsMaximumCollectionTextBoxText = $script:EventLogsMaximumCollectionTextBox.Text
-$EventLogsStartTimePickerChecked       = $script:EventLogsStartTimePicker.Checked
-$EventLogsStopTimePickerChecked        = $script:EventLogsStopTimePicker.Checked
-$EventLogsStartTimePickerValue         = $script:EventLogsStartTimePicker.Value
-$EventLogsStopTimePickerValue          = $script:EventLogsStopTimePicker.Value
-
-
-function Query-EventLogLogsEventIDsIndividualSelectionSessionBased {
-    param(
-        $EventLogsEventIDsToMonitorCheckListBoxCheckedItems,
-        $EventLogsMaximumCollectionTextBoxText,
-        $EventLogsStartTimePickerChecked,
-        $EventLogsStopTimePickerChecked,
-        $EventLogsStartTimePickerValue,
-        $EventLogsStopTimePickerValue,
-        [switch]$RPC,
-        $TargetComputer,
-        $Script:Credential
-    )
-    # Variables begins with an open "(
-    $EventLogsEventIDsToMonitorCheckListBoxFilter = '('
-    foreach ($Checked in $EventLogsEventIDsToMonitorCheckListBoxCheckedItems) {
-        # Get's just the EventID from the checkbox
-        $Checked = $($Checked -split " ")[0]
-
-        $EventLogsEventIDsToMonitorCheckListBoxFilter += "(EventCode='$Checked') OR "
-    }
-    # Replaces the ' OR ' at the end of the varable with a closing )"
-    $Filter = $EventLogsEventIDsToMonitorCheckListBoxFilter -replace " OR $",")"
-
-    # Builds the Event Log Query Command
-    $EventLogQueryCommand  = "Get-WmiObject -Class Win32_NTLogEvent"
-    if ($EventLogsMaximumCollectionTextBoxText -eq $null -or $EventLogsMaximumCollectionTextBoxText -eq '' -or $EventLogsMaximumCollectionTextBoxText -eq 0) { $EventLogQueryMax = $null}
-    else { $EventLogQueryMax = "-First $($EventLogsMaximumCollectionTextBoxText)" }
-    if ( $EventLogsStartTimePickerChecked -and $EventLogsStopTimePickerChecked ) {
-        $EventLogQueryFilter = @"
--Filter "($Filter and (TimeGenerated>='$([System.Management.ManagementDateTimeConverter]::ToDmtfDateTime(($EventLogsStartTimePickerValue)))') and (TimeGenerated<='$([System.Management.ManagementDateTimeConverter]::ToDmtfDateTime(($EventLogsStopTimePickerValue)))'))"
-"@
-    }
-    else { $EventLogQueryFilter = "-Filter `"$Filter`""}
-    $EventLogQueryPipe = @"
-| Select-Object PSComputerName, LogFile, EventIdentifier, CategoryString, @{Name='TimeGenerated';Expression={[Management.ManagementDateTimeConverter]::ToDateTime(`$_.TimeGenerated)}}, Message, Type $EventLogQueryMax
-"@
-
-    if ($RPC){
-        Invoke-Expression -Command "$EventLogQueryCommand -ComputerName $TargetComputer -Credential `$Script:Credential $EventLogQueryFilter $EventLogQueryPipe"
-
-    "$EventLogQueryCommand -ComputerName $TargetComputer -Credential `$Script:Credential $EventLogQueryFilter $EventLogQueryPipe"
-    }
-    else {
-        Invoke-Expression "$EventLogQueryCommand $EventLogQueryFilter $EventLogQueryPipe"
-    }
-}
+# $EventLogsEventIDsToMonitorCheckListBoxCheckedItems = $EventLogsEventIDsToMonitorCheckListBox.CheckedItems
+# $EventLogsMaximumCollectionTextBoxText = $script:EventLogsMaximumCollectionTextBox.Text
+# $EventLogsStartTimePickerChecked       = $script:EventLogsStartTimePicker.Checked
+# $EventLogsStopTimePickerChecked        = $script:EventLogsStopTimePicker.Checked
+# $EventLogsStartTimePickerValue         = $script:EventLogsStartTimePicker.Value
+# $EventLogsStopTimePickerValue          = $script:EventLogsStopTimePicker.Value
 
 
-function MonitorJobScriptBlock {
-    param(
-        $script:ComputerList,
-        $script:Credential,
-        $ExecutionStartTime,
-        $CollectionName,
-        $EventLogsEventIDsToMonitorCheckListBoxCheckedItems,
-        $EventLogsMaximumCollectionTextBoxText,
-        $EventLogsStartTimePickerChecked,
-        $EventLogsStopTimePickerChecked,
-        $EventLogsStartTimePickerValue,
-        $EventLogsStopTimePickerValue
-    )
-    foreach ($TargetComputer in $script:ComputerList) {
-        Conduct-PreCommandCheck -CollectedDataTimeStampDirectory $script:CollectedDataTimeStampDirectory `
-                                -IndividualHostResults "$script:IndividualHostResults" -CollectionName $CollectionName `
-                                -TargetComputer $TargetComputer
-        Create-LogEntry -TargetComputer $TargetComputer  -LogFile $LogFile -Message $CollectionName
+# function Query-EventLogLogsEventIDsIndividualSelectionSessionBased {
+#     param(
+#         $EventLogsEventIDsToMonitorCheckListBoxCheckedItems,
+#         $EventLogsMaximumCollectionTextBoxText,
+#         $EventLogsStartTimePickerChecked,
+#         $EventLogsStopTimePickerChecked,
+#         $EventLogsStartTimePickerValue,
+#         $EventLogsStopTimePickerValue,
+#         [switch]$RPC,
+#         $TargetComputer,
+#         $Script:Credential
+#     )
+#     # Variables begins with an open "(
+#     $EventLogsEventIDsToMonitorCheckListBoxFilter = '('
+#     foreach ($Checked in $EventLogsEventIDsToMonitorCheckListBoxCheckedItems) {
+#         # Get's just the EventID from the checkbox
+#         $Checked = $($Checked -split " ")[0]
 
-        if ($EventLogWinRMRadioButton.Checked) {
-            if ( $script:ComputerListProvideCredentialsCheckBox.Checked ) {
-                if (!$script:Credential) { Create-NewCredentials }
+#         $EventLogsEventIDsToMonitorCheckListBoxFilter += "(EventCode='$Checked') OR "
+#     }
+#     # Replaces the ' OR ' at the end of the varable with a closing )"
+#     $Filter = $EventLogsEventIDsToMonitorCheckListBoxFilter -replace " OR $",")"
 
-                Invoke-Command -ScriptBlock ${function:Query-EventLogLogsEventIDsIndividualSelectionSessionBased} `
-                -ArgumentList @($EventLogsEventIDsToMonitorCheckListBoxCheckedItems,$EventLogsMaximumCollectionTextBoxText,$EventLogsStartTimePickerChecked,$EventLogsStopTimePickerChecked,$EventLogsStartTimePickerValue,$EventLogsStopTimePickerValue) `
-                -ComputerName $TargetComputer `
-                -AsJob -JobName "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)" `
-                -Credential $script:Credential
-            }
-            else {
-                Invoke-Command -ScriptBlock ${function:Query-EventLogLogsEventIDsIndividualSelectionSessionBased} `
-                -ArgumentList @($EventLogsEventIDsToMonitorCheckListBoxCheckedItems,$EventLogsMaximumCollectionTextBoxText,$EventLogsStartTimePickerChecked,$EventLogsStopTimePickerChecked,$EventLogsStartTimePickerValue,$EventLogsStopTimePickerValue) `
-                -ComputerName $TargetComputer `
-                -AsJob -JobName "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)"
-            }
-        }
-        else {
-            if ( $script:ComputerListProvideCredentialsCheckBox.Checked ) {
-                if (!$script:Credential) { Create-NewCredentials }
+#     # Builds the Event Log Query Command
+#     $EventLogQueryCommand  = "Get-WmiObject -Class Win32_NTLogEvent"
+#     if ($EventLogsMaximumCollectionTextBoxText -eq $null -or $EventLogsMaximumCollectionTextBoxText -eq '' -or $EventLogsMaximumCollectionTextBoxText -eq 0) { $EventLogQueryMax = $null}
+#     else { $EventLogQueryMax = "-First $($EventLogsMaximumCollectionTextBoxText)" }
+#     if ( $EventLogsStartTimePickerChecked -and $EventLogsStopTimePickerChecked ) {
+#         $EventLogQueryFilter = @"
+# -Filter "($Filter and (TimeGenerated>='$([System.Management.ManagementDateTimeConverter]::ToDmtfDateTime(($EventLogsStartTimePickerValue)))') and (TimeGenerated<='$([System.Management.ManagementDateTimeConverter]::ToDmtfDateTime(($EventLogsStopTimePickerValue)))'))"
+# "@
+#     }
+#     else { $EventLogQueryFilter = "-Filter `"$Filter`""}
+#     $EventLogQueryPipe = @"
+# | Select-Object PSComputerName, LogFile, EventIdentifier, CategoryString, @{Name='TimeGenerated';Expression={[Management.ManagementDateTimeConverter]::ToDateTime(`$_.TimeGenerated)}}, Message, Type $EventLogQueryMax
+# "@
 
-                Start-Job -ScriptBlock {
-                    param(
-                        $EventLogsEventIDsToMonitorCheckListBoxCheckedItems,
-                        $EventLogsMaximumCollectionTextBoxText,
-                        $EventLogsStartTimePickerChecked,
-                        $EventLogsStopTimePickerChecked,
-                        $EventLogsStartTimePickerValue,
-                        $EventLogsStopTimePickerValue,
-                        $TargetComputer,
-                        $script:Credential
-                    )
+#     if ($RPC){
+#         Invoke-Expression -Command "$EventLogQueryCommand -ComputerName $TargetComputer -Credential `$Script:Credential $EventLogQueryFilter $EventLogQueryPipe"
 
-                    # Variables begins with an open "(
-                    $EventLogsEventIDsToMonitorCheckListBoxFilter = '('
-                    foreach ($Checked in $EventLogsEventIDsToMonitorCheckListBoxCheckedItems) {
-                        # Get's just the EventID from the checkbox
-                        $Checked = $($Checked -split " ")[0]
+#     "$EventLogQueryCommand -ComputerName $TargetComputer -Credential `$Script:Credential $EventLogQueryFilter $EventLogQueryPipe"
+#     }
+#     else {
+#         Invoke-Expression "$EventLogQueryCommand $EventLogQueryFilter $EventLogQueryPipe"
+#     }
+# }
 
-                        $EventLogsEventIDsToMonitorCheckListBoxFilter += "(EventCode='$Checked') OR "
-                    }
-                    # Replaces the ' OR ' at the end of the varable with a closing )"
-                    $Filter = $EventLogsEventIDsToMonitorCheckListBoxFilter -replace " OR $",")"
 
-                    # Builds the Event Log Query Command
-                    $EventLogQueryCommand  = "Get-WmiObject -Class Win32_NTLogEvent"
-                    if ($EventLogsMaximumCollectionTextBoxText -eq $null -or $EventLogsMaximumCollectionTextBoxText -eq '' -or $EventLogsMaximumCollectionTextBoxText -eq 0) { $EventLogQueryMax = $null}
-                    else { $EventLogQueryMax = "-First $($EventLogsMaximumCollectionTextBoxText)" }
-                    if ( $EventLogsStartTimePickerChecked -and $EventLogsStopTimePickerChecked ) {
-                        $EventLogQueryFilter = @"
--Filter "($Filter and (TimeGenerated>='$([System.Management.ManagementDateTimeConverter]::ToDmtfDateTime(($EventLogsStartTimePickerValue)))') and (TimeGenerated<='$([System.Management.ManagementDateTimeConverter]::ToDmtfDateTime(($EventLogsStopTimePickerValue)))'))"
-"@
-                    }
-                    else { $EventLogQueryFilter = "-Filter `"$Filter`""}
-                    $EventLogQueryPipe = @"
-| Select-Object PSComputerName, LogFile, EventIdentifier, CategoryString, @{Name='TimeGenerated';Expression={[Management.ManagementDateTimeConverter]::ToDateTime(`$_.TimeGenerated)}}, Message, Type $EventLogQueryMax
-"@
+# function MonitorJobScriptBlock {
+#     param(
+#         $script:ComputerList,
+#         $script:Credential,
+#         $ExecutionStartTime,
+#         $CollectionName,
+#         $EventLogsEventIDsToMonitorCheckListBoxCheckedItems,
+#         $EventLogsMaximumCollectionTextBoxText,
+#         $EventLogsStartTimePickerChecked,
+#         $EventLogsStopTimePickerChecked,
+#         $EventLogsStartTimePickerValue,
+#         $EventLogsStopTimePickerValue
+#     )
+#     foreach ($TargetComputer in $script:ComputerList) {
+#         Conduct-PreCommandCheck -CollectedDataTimeStampDirectory $script:CollectedDataTimeStampDirectory `
+#                                 -IndividualHostResults "$script:IndividualHostResults" -CollectionName $CollectionName `
+#                                 -TargetComputer $TargetComputer
+#         Create-LogEntry -TargetComputer $TargetComputer  -LogFile $LogFile -Message $CollectionName
 
-                    Invoke-Expression -Command "$EventLogQueryCommand -ComputerName $TargetComputer -Credential `$Script:Credential $EventLogQueryFilter $EventLogQueryPipe"
-                } `
-                -Name "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)" `
-                -ArgumentList @($EventLogsEventIDsToMonitorCheckListBoxCheckedItems,$EventLogsMaximumCollectionTextBoxText,$EventLogsStartTimePickerChecked,$EventLogsStopTimePickerChecked,$EventLogsStartTimePickerValue,$EventLogsStopTimePickerValue,$TargetComputer,$script:Credential)
-            }
-            else {
-                Start-Job -ScriptBlock {
-                    param(
-                        $EventLogsEventIDsToMonitorCheckListBoxCheckedItems,
-                        $EventLogsMaximumCollectionTextBoxText,
-                        $EventLogsStartTimePickerChecked,
-                        $EventLogsStopTimePickerChecked,
-                        $EventLogsStartTimePickerValue,
-                        $EventLogsStopTimePickerValue,
-                        $TargetComputer
-                    )
+#         if ($EventLogWinRMRadioButton.Checked) {
+#             if ( $script:ComputerListProvideCredentialsCheckBox.Checked ) {
+#                 if (!$script:Credential) { Create-NewCredentials }
 
-                    # Variables begins with an open "(
-                    $EventLogsEventIDsToMonitorCheckListBoxFilter = '('
-                    foreach ($Checked in $EventLogsEventIDsToMonitorCheckListBoxCheckedItems) {
-                        # Get's just the EventID from the checkbox
-                        $Checked = $($Checked -split " ")[0]
+#                 Invoke-Command -ScriptBlock ${function:Query-EventLogLogsEventIDsIndividualSelectionSessionBased} `
+#                 -ArgumentList @($EventLogsEventIDsToMonitorCheckListBoxCheckedItems,$EventLogsMaximumCollectionTextBoxText,$EventLogsStartTimePickerChecked,$EventLogsStopTimePickerChecked,$EventLogsStartTimePickerValue,$EventLogsStopTimePickerValue) `
+#                 -ComputerName $TargetComputer `
+#                 -AsJob -JobName "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)" `
+#                 -Credential $script:Credential
+#             }
+#             else {
+#                 Invoke-Command -ScriptBlock ${function:Query-EventLogLogsEventIDsIndividualSelectionSessionBased} `
+#                 -ArgumentList @($EventLogsEventIDsToMonitorCheckListBoxCheckedItems,$EventLogsMaximumCollectionTextBoxText,$EventLogsStartTimePickerChecked,$EventLogsStopTimePickerChecked,$EventLogsStartTimePickerValue,$EventLogsStopTimePickerValue) `
+#                 -ComputerName $TargetComputer `
+#                 -AsJob -JobName "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)"
+#             }
+#         }
+#         else {
+#             if ( $script:ComputerListProvideCredentialsCheckBox.Checked ) {
+#                 if (!$script:Credential) { Create-NewCredentials }
 
-                        $EventLogsEventIDsToMonitorCheckListBoxFilter += "(EventCode='$Checked') OR "
-                    }
-                    # Replaces the ' OR ' at the end of the varable with a closing )"
-                    $Filter = $EventLogsEventIDsToMonitorCheckListBoxFilter -replace " OR $",")"
+#                 Start-Job -ScriptBlock {
+#                     param(
+#                         $EventLogsEventIDsToMonitorCheckListBoxCheckedItems,
+#                         $EventLogsMaximumCollectionTextBoxText,
+#                         $EventLogsStartTimePickerChecked,
+#                         $EventLogsStopTimePickerChecked,
+#                         $EventLogsStartTimePickerValue,
+#                         $EventLogsStopTimePickerValue,
+#                         $TargetComputer,
+#                         $script:Credential
+#                     )
 
-                    # Builds the Event Log Query Command
-                    $EventLogQueryCommand  = "Get-WmiObject -Class Win32_NTLogEvent"
-                    if ($EventLogsMaximumCollectionTextBoxText -eq $null -or $EventLogsMaximumCollectionTextBoxText -eq '' -or $EventLogsMaximumCollectionTextBoxText -eq 0) { $EventLogQueryMax = $null}
-                    else { $EventLogQueryMax = "-First $($EventLogsMaximumCollectionTextBoxText)" }
-                    if ( $EventLogsStartTimePickerChecked -and $EventLogsStopTimePickerChecked ) {
-                        $EventLogQueryFilter = @"
--Filter "($Filter and (TimeGenerated>='$([System.Management.ManagementDateTimeConverter]::ToDmtfDateTime(($EventLogsStartTimePickerValue)))') and (TimeGenerated<='$([System.Management.ManagementDateTimeConverter]::ToDmtfDateTime(($EventLogsStopTimePickerValue)))'))"
-"@
-                    }
-                    else { $EventLogQueryFilter = "-Filter `"$Filter`""}
-                    $EventLogQueryPipe = @"
-| Select-Object PSComputerName, LogFile, EventIdentifier, CategoryString, @{Name='TimeGenerated';Expression={[Management.ManagementDateTimeConverter]::ToDateTime(`$_.TimeGenerated)}}, Message, Type $EventLogQueryMax
-"@
+#                     # Variables begins with an open "(
+#                     $EventLogsEventIDsToMonitorCheckListBoxFilter = '('
+#                     foreach ($Checked in $EventLogsEventIDsToMonitorCheckListBoxCheckedItems) {
+#                         # Get's just the EventID from the checkbox
+#                         $Checked = $($Checked -split " ")[0]
 
-                    Invoke-Expression -Command "$EventLogQueryCommand -ComputerName $TargetComputer $EventLogQueryFilter $EventLogQueryPipe"
-                } `
-                -Name "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)" `
-                -ArgumentList @($EventLogsEventIDsToMonitorCheckListBoxCheckedItems,$EventLogsMaximumCollectionTextBoxText,$EventLogsStartTimePickerChecked,$EventLogsStopTimePickerChecked,$EventLogsStartTimePickerValue,$EventLogsStopTimePickerValue,$TargetComputer)
-            }
-        }
-    }
-}
-Invoke-Command -ScriptBlock ${function:MonitorJobScriptBlock} -ArgumentList @($script:ComputerList,$script:Credential,$ExecutionStartTime,$CollectionName,$EventLogsEventIDsToMonitorCheckListBoxCheckedItems,$EventLogsMaximumCollectionTextBoxText,$EventLogsStartTimePickerChecked,$EventLogsStopTimePickerChecked,$EventLogsStartTimePickerValue,$EventLogsStopTimePickerValue)
+#                         $EventLogsEventIDsToMonitorCheckListBoxFilter += "(EventCode='$Checked') OR "
+#                     }
+#                     # Replaces the ' OR ' at the end of the varable with a closing )"
+#                     $Filter = $EventLogsEventIDsToMonitorCheckListBoxFilter -replace " OR $",")"
 
-$EndpointString = ''
-foreach ($item in $script:ComputerList) {$EndpointString += "$item`n"}
-$SearchString = ''
-foreach ($item in $EventLogsEventIDsToMonitorCheckListBoxCheckedItems) {$SearchString += "$item`n" }
+#                     # Builds the Event Log Query Command
+#                     $EventLogQueryCommand  = "Get-WmiObject -Class Win32_NTLogEvent"
+#                     if ($EventLogsMaximumCollectionTextBoxText -eq $null -or $EventLogsMaximumCollectionTextBoxText -eq '' -or $EventLogsMaximumCollectionTextBoxText -eq 0) { $EventLogQueryMax = $null}
+#                     else { $EventLogQueryMax = "-First $($EventLogsMaximumCollectionTextBoxText)" }
+#                     if ( $EventLogsStartTimePickerChecked -and $EventLogsStopTimePickerChecked ) {
+#                         $EventLogQueryFilter = @"
+# -Filter "($Filter and (TimeGenerated>='$([System.Management.ManagementDateTimeConverter]::ToDmtfDateTime(($EventLogsStartTimePickerValue)))') and (TimeGenerated<='$([System.Management.ManagementDateTimeConverter]::ToDmtfDateTime(($EventLogsStopTimePickerValue)))'))"
+# "@
+#                     }
+#                     else { $EventLogQueryFilter = "-Filter `"$Filter`""}
+#                     $EventLogQueryPipe = @"
+# | Select-Object PSComputerName, LogFile, EventIdentifier, CategoryString, @{Name='TimeGenerated';Expression={[Management.ManagementDateTimeConverter]::ToDateTime(`$_.TimeGenerated)}}, Message, Type $EventLogQueryMax
+# "@
 
-$InputValues = @"
-===========================================================================
-Collection Name:
-===========================================================================
-$CollectionName
+#                     Invoke-Expression -Command "$EventLogQueryCommand -ComputerName $TargetComputer -Credential `$Script:Credential $EventLogQueryFilter $EventLogQueryPipe"
+#                 } `
+#                 -Name "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)" `
+#                 -ArgumentList @($EventLogsEventIDsToMonitorCheckListBoxCheckedItems,$EventLogsMaximumCollectionTextBoxText,$EventLogsStartTimePickerChecked,$EventLogsStopTimePickerChecked,$EventLogsStartTimePickerValue,$EventLogsStopTimePickerValue,$TargetComputer,$script:Credential)
+#             }
+#             else {
+#                 Start-Job -ScriptBlock {
+#                     param(
+#                         $EventLogsEventIDsToMonitorCheckListBoxCheckedItems,
+#                         $EventLogsMaximumCollectionTextBoxText,
+#                         $EventLogsStartTimePickerChecked,
+#                         $EventLogsStopTimePickerChecked,
+#                         $EventLogsStartTimePickerValue,
+#                         $EventLogsStopTimePickerValue,
+#                         $TargetComputer
+#                     )
 
-===========================================================================
-Execution Time:
-===========================================================================
-$ExecutionStartTime
+#                     # Variables begins with an open "(
+#                     $EventLogsEventIDsToMonitorCheckListBoxFilter = '('
+#                     foreach ($Checked in $EventLogsEventIDsToMonitorCheckListBoxCheckedItems) {
+#                         # Get's just the EventID from the checkbox
+#                         $Checked = $($Checked -split " ")[0]
 
-===========================================================================
-Credentials:
-===========================================================================
-$($script:Credential.UserName)
+#                         $EventLogsEventIDsToMonitorCheckListBoxFilter += "(EventCode='$Checked') OR "
+#                     }
+#                     # Replaces the ' OR ' at the end of the varable with a closing )"
+#                     $Filter = $EventLogsEventIDsToMonitorCheckListBoxFilter -replace " OR $",")"
 
-===========================================================================
-Endpoints:
-===========================================================================
-$($EndpointString.trim())
+#                     # Builds the Event Log Query Command
+#                     $EventLogQueryCommand  = "Get-WmiObject -Class Win32_NTLogEvent"
+#                     if ($EventLogsMaximumCollectionTextBoxText -eq $null -or $EventLogsMaximumCollectionTextBoxText -eq '' -or $EventLogsMaximumCollectionTextBoxText -eq 0) { $EventLogQueryMax = $null}
+#                     else { $EventLogQueryMax = "-First $($EventLogsMaximumCollectionTextBoxText)" }
+#                     if ( $EventLogsStartTimePickerChecked -and $EventLogsStopTimePickerChecked ) {
+#                         $EventLogQueryFilter = @"
+# -Filter "($Filter and (TimeGenerated>='$([System.Management.ManagementDateTimeConverter]::ToDmtfDateTime(($EventLogsStartTimePickerValue)))') and (TimeGenerated<='$([System.Management.ManagementDateTimeConverter]::ToDmtfDateTime(($EventLogsStopTimePickerValue)))'))"
+# "@
+#                     }
+#                     else { $EventLogQueryFilter = "-Filter `"$Filter`""}
+#                     $EventLogQueryPipe = @"
+# | Select-Object PSComputerName, LogFile, EventIdentifier, CategoryString, @{Name='TimeGenerated';Expression={[Management.ManagementDateTimeConverter]::ToDateTime(`$_.TimeGenerated)}}, Message, Type $EventLogQueryMax
+# "@
 
-===========================================================================
-Start Time:  [$EventLogsStartTimePickerChecked]
-===========================================================================
-$EventLogsStartTimePickerValue
+#                     Invoke-Expression -Command "$EventLogQueryCommand -ComputerName $TargetComputer $EventLogQueryFilter $EventLogQueryPipe"
+#                 } `
+#                 -Name "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)" `
+#                 -ArgumentList @($EventLogsEventIDsToMonitorCheckListBoxCheckedItems,$EventLogsMaximumCollectionTextBoxText,$EventLogsStartTimePickerChecked,$EventLogsStopTimePickerChecked,$EventLogsStartTimePickerValue,$EventLogsStopTimePickerValue,$TargetComputer)
+#             }
+#         }
+#     }
+# }
+# Invoke-Command -ScriptBlock ${function:MonitorJobScriptBlock} -ArgumentList @($script:ComputerList,$script:Credential,$ExecutionStartTime,$CollectionName,$EventLogsEventIDsToMonitorCheckListBoxCheckedItems,$EventLogsMaximumCollectionTextBoxText,$EventLogsStartTimePickerChecked,$EventLogsStopTimePickerChecked,$EventLogsStartTimePickerValue,$EventLogsStopTimePickerValue)
 
-===========================================================================
-End Time:  [$EventLogsStopTimePickerChecked]
-===========================================================================
-$EventLogsStopTimePickerValue
+# $EndpointString = ''
+# foreach ($item in $script:ComputerList) {$EndpointString += "$item`n"}
+# $SearchString = ''
+# foreach ($item in $EventLogsEventIDsToMonitorCheckListBoxCheckedItems) {$SearchString += "$item`n" }
 
-===========================================================================
-Maximum Logs
-===========================================================================
-$EventLogsMaximumCollectionTextBoxText
+# $InputValues = @"
+# ===========================================================================
+# Collection Name:
+# ===========================================================================
+# $CollectionName
 
-===========================================================================
-Event Logs:
-===========================================================================
-$($SearchString.trim())
+# ===========================================================================
+# Execution Time:
+# ===========================================================================
+# $ExecutionStartTime
 
-"@
+# ===========================================================================
+# Credentials:
+# ===========================================================================
+# $($script:Credential.UserName)
 
-if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
-    Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript ${function:MonitorJobScriptBlock} -ArgumentList @($script:ComputerList,$script:Credential,$ExecutionStartTime,$CollectionName,$EventLogsEventIDsToMonitorCheckListBoxCheckedItems,$EventLogsMaximumCollectionTextBoxText,$EventLogsStartTimePickerChecked,$EventLogsStopTimePickerChecked,$EventLogsStartTimePickerValue,$EventLogsStopTimePickerValue) -DisableReRun -InputValues $InputValues
-}
-elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
-    Monitor-Jobs -CollectionName $CollectionName
-    Post-MonitorJobs -CollectionName $CollectionName -CollectionCommandStartTime $ExecutionStartTime
-}
+# ===========================================================================
+# Endpoints:
+# ===========================================================================
+# $($EndpointString.trim())
+
+# ===========================================================================
+# Start Time:  [$EventLogsStartTimePickerChecked]
+# ===========================================================================
+# $EventLogsStartTimePickerValue
+
+# ===========================================================================
+# End Time:  [$EventLogsStopTimePickerChecked]
+# ===========================================================================
+# $EventLogsStopTimePickerValue
+
+# ===========================================================================
+# Maximum Logs
+# ===========================================================================
+# $EventLogsMaximumCollectionTextBoxText
+
+# ===========================================================================
+# Event Logs:
+# ===========================================================================
+# $($SearchString.trim())
+
+# "@
+
+# if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
+#     Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript ${function:MonitorJobScriptBlock} -ArgumentList @($script:ComputerList,$script:Credential,$ExecutionStartTime,$CollectionName,$EventLogsEventIDsToMonitorCheckListBoxCheckedItems,$EventLogsMaximumCollectionTextBoxText,$EventLogsStartTimePickerChecked,$EventLogsStopTimePickerChecked,$EventLogsStartTimePickerValue,$EventLogsStopTimePickerValue) -DisableReRun -InputValues $InputValues
+# }
+# elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
+#     Monitor-Jobs -CollectionName $CollectionName
+#     Post-MonitorJobs -CollectionName $CollectionName -CollectionCommandStartTime $ExecutionStartTime
+# }
 
 
 

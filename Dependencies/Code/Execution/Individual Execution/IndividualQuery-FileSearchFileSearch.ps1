@@ -32,27 +32,20 @@ function MonitorJobScriptBlock {
                                 -TargetComputer $TargetComputer
         Create-LogEntry -TargetComputer $TargetComputer  -LogFile $LogFile -Message $CollectionName
         
+        $InvokeCommandSplat = @{
+            ScriptBlock  = ${function:Conduct-FileSearch}
+            ArgumentList = @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)
+            ComputerName = $TargetComputer
+            AsJob        = $True
+            JobName      = "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)"
+        }
+
         if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
             if (!$script:Credential) { Create-NewCredentials }
-
-            Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} `
-            -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection) `
-            -ComputerName $TargetComputer `
-            -AsJob -JobName "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)" `
-            -Credential $script:Credential `
-            | Select-Object PSComputerName, Mode, Length, Name, Extension, Attributes, FullName, CreationTime, LastWriteTime, LastAccessTime, BaseName, Directory, PSIsContainer, Filehash, FileHashAlgorithm
-
-            Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock `${function:Conduct-FileSearch} -ArgumentList @(`$DirectoriesToSearch,`$FilesToSearch,`$MaximumDepth,`$GetChildItemDepth,`$GetFileHash,`$FileHashSelection)  -ComputerName $TargetComputer -AsJob -JobName 'PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)' -Credential `$script:Credential"
+            $InvokeCommandSplat += @{Credential = $script:Credential}
         }
-        else {
-            Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} `
-            -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection) `
-            -ComputerName $TargetComputer `
-            -AsJob -JobName "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)" `
-            | Select-Object PSComputerName, Mode, Length, Name, Extension, Attributes, FullName, CreationTime, LastWriteTime, LastAccessTime, BaseName, Directory, PSIsContainer, Filehash, FileHashAlgorithm
 
-            Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock `${function:Conduct-FileSearch} -ArgumentList @(`$DirectoriesToSearch,`$FilesToSearch,`$MaximumDepth,`$GetChildItemDepth,`$GetFileHash,`$FileHashSelection)  -ComputerName $TargetComputer -AsJob -JobName 'PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)'"
-        }
+        Invoke-Command @InvokeCommandSplat | Select-Object PSComputerName, *
     }
 }
 

@@ -143,7 +143,7 @@
 
 #         if ( $script:JobsStarted -eq $true ) {
 #             if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
-#                 Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript ${function:MonitorJobScriptBlock} -ArgumentList @($script:ComputerList,$ExecutionStartTime,$CollectionName,$CollectionSavedDirectory) -InputValues $InputValues -DisableReRun -JobsExportFiles 'true'
+#                 Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript ${function:MonitorJobScriptBlock} -ArgumentList @($script:ComputerList,$ExecutionStartTime,$CollectionName,$CollectionSavedDirectory) -SmithFlag 'RetrieveFile' -InputValues $InputValues -DisableReRun -JobsExportFiles 'true'
 #             }
 #             elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
 #                 Monitor-Jobs -CollectionName $CollectionName
@@ -585,19 +585,19 @@ $script:commandstring
                     # That said, the PSExec commands are currently not monitored, but the Monitor-Jobs function is used to created the buttons to quickly access the data
                     # Also various other button settings are set when each Results Pane created
                     # The -txt switch ...............
-                    Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript ${function:MonitorJobScriptBlock} -ArgumentList @($script:ComputerList,$ExecutionStartTime,$CollectionName,$CollectionSavedDirectory) -InputValues $InputValues -DisableReRun -JobsExportFiles 'false' -txt
+                    Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript ${function:MonitorJobScriptBlock} -ArgumentList @($script:ComputerList,$ExecutionStartTime,$CollectionName,$CollectionSavedDirectory) -SmithFlag 'RetrieveFile' -InputValues $InputValues -DisableReRun -JobsExportFiles 'false' -txt
                 }
                 elseif ( $script:CommandType -eq "(SMB) PoSh" -or $script:CommandType -eq "(SMB) WMI" ) {
                     # Similar to the above reasoning with -JobExportFiles $false
                     # The intent here differs, as this is designed to query systems that support PowerShell commands have SMB available when WinRM and WMI/RPC are NOT
                     # Since it uses PSExec, the Monitor-Jobs doesn't need to out results
-                    Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript ${function:MonitorJobScriptBlock} -ArgumentList @($script:ComputerList,$ExecutionStartTime,$CollectionName,$CollectionSavedDirectory) -InputValues $InputValues -DisableReRun -JobsExportFiles 'false'
+                    Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript ${function:MonitorJobScriptBlock} -ArgumentList @($script:ComputerList,$ExecutionStartTime,$CollectionName,$CollectionSavedDirectory) -SmithFlag 'RetrieveFile' -InputValues $InputValues -DisableReRun -JobsExportFiles 'false'
                 }
                 elseif ($script:CommandType -eq "(SSH) Linux") {
-                    Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript ${function:MonitorJobScriptBlock} -ArgumentList @($script:ComputerList,$ExecutionStartTime,$CollectionName,$CollectionSavedDirectory) -InputValues $InputValues -DisableReRun -JobsExportFiles 'true' -txt
+                    Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript ${function:MonitorJobScriptBlock} -ArgumentList @($script:ComputerList,$ExecutionStartTime,$CollectionName,$CollectionSavedDirectory) -SmithFlag 'RetrieveFile' -InputValues $InputValues -DisableReRun -JobsExportFiles 'true' -txt
                 }
                 else {
-                    Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript ${function:MonitorJobScriptBlock} -ArgumentList @($script:ComputerList,$ExecutionStartTime,$CollectionName,$CollectionSavedDirectory) -InputValues $InputValues -DisableReRun -JobsExportFiles 'true'
+                    Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript ${function:MonitorJobScriptBlock} -ArgumentList @($script:ComputerList,$ExecutionStartTime,$CollectionName,$CollectionSavedDirectory) -SmithFlag 'RetrieveFile' -InputValues $InputValues -DisableReRun -JobsExportFiles 'true'
                 }
             }
             elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
@@ -629,7 +629,7 @@ $script:commandstring
             }
         }
 
-
+        #batman
         if ($script:LogCommandsInEndpointNotes.checked) {
             # Updates endpoint notes with timestamp and command executed
             $script:ComputerTreeViewSelected = @()

@@ -31,6 +31,82 @@ Writing Daily Tips...
 v6.7.4 - 
 ==================================================
 
+        if ($script:LogCommandsInEndpointNotes.checked) {
+            # Updates endpoint notes with timestamp and command executed
+            $script:ComputerTreeViewSelected = @()
+            [System.Windows.Forms.TreeNodeCollection]$AllTreeViewNodes = $script:ComputerTreeView.Nodes
+            foreach ($root in $AllTreeViewNodes) {
+                foreach ($Category in $root.Nodes) {
+                    foreach ($Entry in $Category.Nodes) {
+                        Foreach ($Computer in $script:ComputerTreeViewData) {
+                            if ($entry.checked -and $entry.text -eq $Computer.Name) {
+                                $script:ComputerTreeViewSelected += $Entry.Text
+                                $UpdatedNotes = "$(Get-Date) -- Executed Command: $CollectionName`n$($Computer.Notes)"
+                                $Computer | Add-Member -MemberType NoteProperty -Name Notes -Value $UpdatedNotes -Force
+                            }
+                        }
+                    }
+                }
+            } 
+            Save-TreeViewData -Endpoint -SkipTextFieldSave
+
+==================
+Update-FormProgress "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-ProcessCreationSysmon.ps1"
+. "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-ProcessCreationSysmon.ps1"
+==================
+
+$Section1ProcessesConnectionsSearchTab = New-Object System.Windows.Forms.TabPage -Property @{
+
+==================
+
+
+
+
+
+
+++++++++++++++
+batamn add this
+$Event = Get-WinEvent -LogName 'Windows PowerShell'
+	#$Event.Count
+	#$Event | Group-Object -Property Id -NoElement | Sort-Object -Property Count -Descending
+	#$Event | Group-Object -Property LevelDisplayName -NoElement
+$Event | Group-Object -Property Id, LevelDisplayName -NoElement | Sort-Object -Property Count -Descending
+++++++++++++
+
+Fixed bug with Monitoring of queries aka Agentless SMITH
+
+Identify issue where sysmon event id 15 is not being returned
+	TROUBLESHOOTING:
+	Unable to query for Sysmon (Microsoft-Windows-Sysmon%4Operational) events
+	Returns 'standard' logs as expected
+	Get-WmiObject -Class win32_ntlogevent
+	- Is the base command used to query for events
+	- This older command was chosen because of:
+		- supports WMI queries using RPC protocol if WinRM is not available
+		- backwards compatability with older systems
+		- able to use time filters to narrow down timeframe and reduce logs collected
+		- the process of filtering is done on the endpoint side
+	- Does not return sysmon logs
+		Get-WmiObject -Class win32_ntlogevent -Filter "NOT (logfile='system') AND NOT (logfile='application') AND (EventCode='1') "
+	Get-WmiObject -Class win32_nteventlogfile
+	- Reveals:
+		FileSize LogfileName            Name                                                        NumberOfRecords
+		-------- -----------            ----                                                        ---------------
+		20975616 Application            C:\Windows\System32\Winevt\Logs\Application.evtx                      21639
+		69632 HardwareEvents            C:\Windows\System32\Winevt\Logs\HardwareEvents.evtx                       0
+		69632 Internet Explorer         C:\Windows\System32\Winevt\Logs\Internet Explorer.evtx                    0
+		69632 Key Management Service    C:\Windows\System32\Winevt\Logs\Key Management Service.evtx               0
+		69632 Parameters                C:\Windows\System32\Winevt\Logs\Parameters.evtx                           0
+		20975616 Security               C:\Windows\System32\Winevt\Logs\Security.evtx                         35107
+		69632 State                     C:\Windows\System32\Winevt\Logs\State.evtx                                0
+		10555392 System                 C:\Windows\System32\Winevt\Logs\System.evtx                           19758
+		15732736 Windows PowerShell     C:\Windows\System32\Winevt\Logs\Windows PowerShell.evtx               15052
+	RESOLUTION:
+	- Unable to find a method to add other event logs to the those listed within win32_nteventlogfile
+	- Current solution is to have the tool check if it's using WinRM, and if so, to command issued will use Get-WinEvent
+		- At the time of intial coding, I opted for standardized for that support multiple protocols
+		- ...keep moving forward...
+
 Signed each .ps1 script within PoSh-EasyWin
 	- Updated ReadMe.md to include information about how to run PoSh-EasyWin.ps1
 

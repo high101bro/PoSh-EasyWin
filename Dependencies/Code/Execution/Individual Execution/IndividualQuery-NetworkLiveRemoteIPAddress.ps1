@@ -17,41 +17,26 @@ function MonitorJobScriptBlock {
         $NetworkLiveSearchRemoteIPAddress,
         $NetworkLiveRegex
     )
-
     foreach ($TargetComputer in $script:ComputerList) {
         Conduct-PreCommandCheck -CollectedDataTimeStampDirectory $script:CollectedDataTimeStampDirectory `
                                 -IndividualHostResults "$script:IndividualHostResults" -CollectionName $CollectionName `
                                 -TargetComputer $TargetComputer
         Create-LogEntry -TargetComputer $TargetComputer  -LogFile $LogFile -Message $CollectionName
 
-        if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
-            if (!$script:Credential) { $script:Credential = Get-Credential }
-            $QueryCredentialParam = ", $script:Credential"
-            $QueryCredential      = "-Credential $script:Credential"
+        $InvokeCommandSplat = @{
+            ScriptBlock  = ${function:Query-NetworkConnection}
+            ArgumentList = @($NetworkLiveSearchRemoteIPAddress,$null,$null,$null,$null,$null,$NetworkLiveRegex)
+            ComputerName = $TargetComputer
+            AsJob        = $True
+            JobName      = "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)"
         }
-        else {
-            $QueryCredentialParam = $null
-            $QueryCredential      = $null
-        }
-
 
         if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
             if (!$script:Credential) { Create-NewCredentials }
+            $InvokeCommandSplat += @{Credential = $script:Credential}
+        }
 
-            Invoke-Command -ScriptBlock ${function:Query-NetworkConnection} `
-            -ArgumentList @($NetworkLiveSearchRemoteIPAddress,$null,$null,$null,$null,$null,$NetworkLiveRegex) `
-            -ComputerName $TargetComputer `
-            -AsJob -JobName "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)" `
-            -Credential $script:Credential `
-            | Select-Object PSComputerName, *
-        }
-        else {
-            Invoke-Command -ScriptBlock ${function:Query-NetworkConnection} `
-            -ArgumentList @($NetworkLiveSearchRemoteIPAddress,$null,$null,$null,$null,$null,$NetworkLiveRegex) `
-            -ComputerName $TargetComputer `
-            -AsJob -JobName "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)" `
-            | Select-Object PSComputerName, *
-        }
+        Invoke-Command @InvokeCommandSplat | Select-Object PSComputerName, *
     }
 }
 Invoke-Command -ScriptBlock ${function:MonitorJobScriptBlock} -ArgumentList @($ExecutionStartTime,$CollectionName,$NetworkLiveSearchRemoteIPAddress,$NetworkLiveRegex)
@@ -95,7 +80,7 @@ $($SearchString.trim())
 "@
 
 if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
-    Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript ${function:MonitorJobScriptBlock} -ArgumentList @($ExecutionStartTime,$CollectionName,$NetworkLiveSearchRemoteIPAddress) -InputValues $InputValues
+    Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript ${function:MonitorJobScriptBlock} -ArgumentList @($ExecutionStartTime,$CollectionName,$NetworkLiveSearchRemoteIPAddress,$NetworkLiveRegex) -SmithFlag 'RetrieveFile' -InputValues $InputValues
 }
 elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
     Monitor-Jobs -CollectionName $CollectionName
