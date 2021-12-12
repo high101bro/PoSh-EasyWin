@@ -6,7 +6,7 @@ foreach ($File in $ResourceChecklistFiles) {
     # Creates Tabs From Files
     #-------------------------
     $Section1ChecklistSubTab = New-Object System.Windows.Forms.TabPage -Property @{
-        Text                    = $File.BaseName
+        Text                    = "$($File.BaseName)  "
         AutoScroll              = $True
         UseVisualStyleBackColor = $True
         Font                    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)

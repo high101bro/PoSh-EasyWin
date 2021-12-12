@@ -6,7 +6,7 @@ Add-Type -AssemblyName System.Windows.Forms.DataVisualization
 
 ### Creates Tabs From Each File
 $script:AutoChartsIndividualTab01 = New-Object System.Windows.Forms.TabPage -Property @{
-    Text   = 'Dashboard Overview'
+    Text   = 'Dashboard Overview  '
     Anchor = $AnchorAll
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     UseVisualStyleBackColor = $True

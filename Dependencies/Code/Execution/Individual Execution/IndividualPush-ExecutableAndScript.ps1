@@ -232,7 +232,7 @@ $script:ProgressBarQueriesProgressBar.Value += 1
 $PoShEasyWin.Refresh()
 Start-Sleep -match 500
 
-
+Update-EndpointNotes
 
 
 # SIG # Begin signature block

@@ -9,12 +9,6 @@ function Query-EventLog {
     $ResultsListBox.Items.Insert(0,"$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss')) $CollectionName")
 
 
-
-
-
-
-
-
     function Compiled-EventLogCommand {
         param($script:EventLogsMaximumCollectionTextBox,$script:EventLogsStartTimePicker,$script:EventLogsStopTimePicker,$Filter)
 
@@ -50,16 +44,6 @@ function Query-EventLog {
 
 
 
-
-
-
-
-
-
-
-
-
-
     foreach ($TargetComputer in $script:ComputerList) {
         Conduct-PreCommandCheck -CollectedDataTimeStampDirectory $script:CollectedDataTimeStampDirectory `
                                 -IndividualHostResults "$script:IndividualHostResults" -CollectionName $CollectionName `
@@ -68,45 +52,25 @@ function Query-EventLog {
 
 
         if ($EventLogWinRMRadioButton.Checked) {
-            if ( $script:ComputerListProvideCredentialsCheckBox.Checked ) {
+            $InvokeCommandSplat = @{
+                ScriptBlock  = ${function:Compiled-EventLogCommand}
+                ArgumentList = @($script:EventLogsMaximumCollectionTextBox,$script:EventLogsStartTimePicker,$script:EventLogsStopTimePicker,$Filter)
+                ComputerName = $TargetComputer
+                AsJob        = $true
+                JobName      = "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)"
+            }
+
+            if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
                 if (!$script:Credential) { Create-NewCredentials }
-
-                Invoke-Command -ScriptBlock ${function:Compiled-EventLogCommand} `
-                -ArgumentList @($script:EventLogsMaximumCollectionTextBox,$script:EventLogsStartTimePicker,$script:EventLogsStopTimePicker,$Filter) `
-                -ComputerName $TargetComputer `
-                -AsJob -JobName "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)" `
-                -Credential $script:Credential
-                ${function:Compiled-EventLogCommand}
-                #                 Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock `${function:Get-AccountLogonActivity} -ArgumentList @(`$AccountsStartTimePickerValue,`$AccountsStopTimePickerValue) -ComputerName $TargetComputer -AsJob -JobName 'PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)' -Credential `$script:Credential"
-
-                #$EventLogQueryBuild = "Invoke-Command -Credential $script:Credential $EventLogQueryComputer -ScriptBlock { $EventLogQueryCommand $EventLogQueryFilter } $EventLogQueryPipe"
-                #Start-Job -ScriptBlock {
-                #    param(
-                #        $EventLogQueryBuild,
-                #        $script:Credential
-                #    )
-                #    Invoke-Expression -Command "$EventLogQueryBuild $script:Credential"
-                #} -ArgumentList @($EventLogQueryBuild,$script:Credential) `
-                #-Name "PoSh-EasyWin: $CollectionName -- $TargetComputer"
+                $InvokeCommandSplat += @{ 
+                    Credential = $script:Credential
+                }
             }
-            else {
-                Invoke-Command -ScriptBlock ${function:Compiled-EventLogCommand} `
-                -ArgumentList @($script:EventLogsMaximumCollectionTextBox,$script:EventLogsStartTimePicker,$script:EventLogsStopTimePicker,$Filter) `
-                -ComputerName $TargetComputer `
-                -AsJob -JobName "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)"
-
-                #$EventLogQueryBuild = "Invoke-Command $EventLogQueryComputer -ScriptBlock { $EventLogQueryCommand $EventLogQueryFilter } $EventLogQueryPipe"
-                ##write-host $EventLogQueryBuild
-                #Start-Job -Name "PoSh-EasyWin: $CollectionName -- $TargetComputer" -ScriptBlock {
-                #    param(
-                #        $EventLogQueryBuild
-                #    )
-                #    Invoke-Expression -Command "$EventLogQueryBuild"
-                #} -ArgumentList @($EventLogQueryBuild,$null)
-            }
-            #Create-LogEntry -LogFile $LogFile -TargetComputer $TargetComputer -Message "$EventLogQueryBuild"
+            
+            Invoke-Command @InvokeCommandSplat | Select-Object PSComputerName, *
         }
         elseif ($EventLogRPCRadioButton.Checked) {
+            #batman
             if ( $script:ComputerListProvideCredentialsCheckBox.Checked ) {
                 #$EventLogQueryBuild = "$EventLogQueryCommand $EventLogQueryComputer $EventLogQueryFilter -Credential $script:Credential $EventLogQueryPipe"
                 #Start-Job -Name "PoSh-EasyWin: $CollectionName -- $TargetComputer" -ScriptBlock {
@@ -148,6 +112,7 @@ function Query-EventLog {
     $ResultsListBox.Items.Insert(0,"$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss')) [$CollectionCommandDiffTime]  $CollectionName")
 }
 
+Update-EndpointNotes
 
 # SIG # Begin signature block
 # MIIFuAYJKoZIhvcNAQcCoIIFqTCCBaUCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB

@@ -1,7 +1,7 @@
 # Deprecated
 # Processes Reference
 # $Section1ProcessesTab = New-Object System.Windows.Forms.TabPage -Property @{
-#     Text                    = "Processes"
+#     Text                    = "Processes  "
 #     Name                    = "Processes Tab"
 #     UseVisualStyleBackColor = $True
 #     Font                    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
@@ -16,7 +16,9 @@
 #                   Y = $FormScale * 3 }
 #     Size     = @{ Width  = $FormScale * 446
 #                   Height = $FormScale * 557 }
-#     Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+#     Appearance = [System.Windows.Forms.TabAppearance]::Buttons
+#     Hottrack = $true
+#     Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,2,1)
 #     ShowToolTips  = $True
 #     SelectedIndex = 0
 # }

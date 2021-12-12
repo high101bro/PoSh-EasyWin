@@ -78,7 +78,7 @@ function Update-TreeViewData {
 
             if ($Commands){
                 if ($Category.Checked) {
-                    #$MainLeftTabControl.SelectedTab = $Section1CollectionsTab
+                    #$MainLeftTabControl.SelectedTab = $Section1SearchTab
 
                     #    $Category.Expand()
                     if ($Category.Text -match '[\[(]WinRM[)\]]' ) {
@@ -161,7 +161,7 @@ function Update-TreeViewData {
                     }
                     if ($root.text -match 'Custom Group Commands' -or $root.text -match 'User Added Commands') {
                         $EntryQueryHistoryChecked++
-                        $Section1CommandsTab.Controls.Add($CommandsTreeViewRemoveCommandButton)
+                        $Section1TreeViewCommandsTab.Controls.Add($CommandsTreeViewRemoveCommandButton)
                         $CommandsTreeViewRemoveCommandButton.bringtofront()
                     }
                 }
@@ -216,7 +216,7 @@ function Update-TreeViewData {
                         }    
                     }
                     if ($EntryQueryHistoryChecked -eq 0) {
-                        $Section1CommandsTab.Controls.Remove($CommandsTreeViewRemoveCommandButton)
+                        $Section1TreeViewCommandsTab.Controls.Remove($CommandsTreeViewRemoveCommandButton)
                     }
                 }
                 if ($Category.isselected) {
@@ -356,7 +356,7 @@ function Update-TreeViewData {
 
                     if ($Entry.checked -and $root.text -match 'User Added Commands') {
                         $EntryQueryHistoryChecked++
-                        $Section1CommandsTab.Controls.Add($CommandsTreeViewRemoveCommandButton)
+                        $Section1TreeViewCommandsTab.Controls.Add($CommandsTreeViewRemoveCommandButton)
                         $CommandsTreeViewRemoveCommandButton.bringtofront()
                     }
                     else { 

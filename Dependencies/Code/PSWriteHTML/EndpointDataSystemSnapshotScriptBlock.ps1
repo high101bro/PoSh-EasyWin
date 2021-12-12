@@ -420,7 +420,7 @@ $EndpointDataSystemSnapshotScriptBlock = {
                     $ProcessID             = $Process.ProcessID
                     $ParentProcessID       = $Process.ParentProcessID
                     $ParentProcessName     = $ProcessNamePid[$Process.ParentProcessID]
-                    #$CreationDate          = $([Management.ManagementDateTimeConverter]::ToDateTime($Process.CreationDate))
+                    $CreationDate          = [Management.ManagementDateTimeConverter]::ToDateTime($Process.CreationDate)
         
                     $ServiceInfo           = $ServicePIDs[$Process.ProcessId]
         

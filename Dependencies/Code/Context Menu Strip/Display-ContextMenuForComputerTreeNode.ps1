@@ -1010,13 +1010,7 @@ function:MultiEndpoint-PSSession -ComputerName <endpoints(s)> -Credential <`$cre
                                         foreach ($Entry in $Category.Nodes) {
                                             if ($Entry.Checked -and $Entry.Text -notin $ComputerListMassTagArray) {
                                                 $ComputerListMassTagArray += $Entry.Text
-                                                #$script:Section3HostDataNameTextBox.Text = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).Name
-                                                #$Section3HostDataOSTextBox.Text          = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).OperatingSystem
-                                                #$Section3HostDataOUTextBox.Text          = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).CanonicalName
-                                                #$Section3HostDataIPTextBox.Text          = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).IPv4Address
-                                                #$Section3HostDataMACTextBox.Text         = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).MACAddress
-                                                $Section3HostDataNotesRichTextBox.Text   = "$(Get-Date) -- [Tag] $($script:ComputerListMassTagValue)`n" + $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).Notes
-                                                #$Section3HostDataNotesRichTextBox.Text   = "[$($script:ComputerListMassTagValue)] " + $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).Notes
+                                                $Section3HostDataNotesRichTextBox.Text   = "$(Get-Date) [Tag] $($script:ComputerListMassTagValue)`n" + $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).Notes
                                             }
                                             $script:ProgressBarEndpointsProgressBar.Value += 1
                                         }
@@ -1151,8 +1145,8 @@ function:MultiEndpoint-PSSession -ComputerName <endpoints(s)> -Credential <`$cre
             }
         }
     }
+    $ComputerListCheckedNodeActionsToolStripComboBox.Items.Add(' - Tag Nodes With Metadata')
     $ComputerListCheckedNodeActionsToolStripComboBox.Items.Add(' - NSLookup (Hostname to IP)')
-#    $ComputerListCheckedNodeActionsToolStripComboBox.Items.Add(' - Tag Nodes With Metadata')
     $ComputerListCheckedNodeActionsToolStripComboBox.Items.Add(' - Move Nodes To New OU/CN')
     $ComputerListCheckedNodeActionsToolStripComboBox.Items.Add(' - Delete Checked Nodes')
     $script:ComputerListContextMenuStrip.Items.Add($ComputerListCheckedNodeActionsToolStripComboBox)

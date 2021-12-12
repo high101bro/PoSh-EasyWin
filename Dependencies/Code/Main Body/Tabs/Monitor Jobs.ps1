@@ -1,5 +1,5 @@
 $script:Section3MonitorJobsTab = New-Object System.Windows.Forms.TabPage -Property @{
-    Text = "Monitor Jobs"
+    Text = "Monitor Jobs  "
     Name = "Monitor Jobs Tab"
     Font = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     AutoScroll = $true
@@ -112,12 +112,11 @@ $script:Section3MonitorJobRemoveButton = New-Object System.Windows.Forms.Button 
             [System.Windows.Forms.MessageBox]::Show("None of the jobs will be removed if any of them are being monitored. Uncheck any of the Monitor checkboxes to use this feature or remove them individually.","PoSh-EasyWin")
         }
         else {
-            $RemoveAllJobsVerify = [System.Windows.Forms.MessageBox]::Show("Do you want to stop and remove all jobs?`n`nThis method currently only stops running jobs and removes them from view; it will not delete the files regardless if their 'keep data' box is not checked.",'PoSh-EasyWin','YesNo','Warning')
+            $RemoveAllJobsVerify = [System.Windows.Forms.MessageBox]::Show("Do you want to stop and remove all jobs?`n`nThis method stops running jobs and removes them from view, to include those jobs 'Monitor' checked. It will not delete the files regardless if their 'keep data' box is not checked.",'PoSh-EasyWin','YesNo','Warning')
             switch ($RemoveAllJobsVerify) {
                 'Yes'{
-                    $InformationPanel.Top    = $MainCenterPanel.Top + $MainCenterPanel.Height + ($FormScale * 5)
-                    $InformationPanel.Height = $InformationTabControlOriginalHeight    
-            
+                    script:Minimize-MonitorJobsTab
+
                     Get-Variable | Where-Object {$_.Name -match 'Section3MonitorJobPanel'} | Foreach-Object {
                         Invoke-Expression "`$script:Section3MonitorJobsTab.Controls.Remove(`$script:$($_.Name))"
                     }

@@ -156,7 +156,7 @@ Open Sessions: $($session | Where-Object {$_.State -match 'Open'})
                 `$PktMonRandomId = Get-Random
                 `$script:PktMonFilterTabPage$PktMonRandomId = New-Object System.Windows.Forms.TabPage -Property @{
                     Name   = "`$(`$Session.ComputerName)"
-                    Text   = "`$(`$Session.ComputerName)"
+                    Text   = "`$(`$Session.ComputerName)  "
                     Width  = `$FormScale * 710
                     Height = `$FormScale * 125
                     Font   = New-Object System.Drawing.Font("`$Font",`$(`$FormScale * 11),0,0,0)
@@ -972,7 +972,9 @@ Actual Command Example: pktmon filter add 'SMB SYN Packets' --IP 10.10.10.100  -
         Top    = $PktMonFilterListSelectionAddButton.Top + $PktMonFilterListSelectionAddButton.Height + $($FormScale * 5)
         Width  = $FormScale * 710
         Height = $FormScale * 140
-        Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),1,2,1)
+        Appearance = [System.Windows.Forms.TabAppearance]::Buttons
+        Hottrack   = $true
+        Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,2,1)
     }
     $PktMonPacketCaptureForm.Controls.Add($PktMonFilterTabControl)
 

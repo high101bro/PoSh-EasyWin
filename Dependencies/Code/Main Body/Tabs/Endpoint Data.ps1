@@ -1,5 +1,5 @@
 $Section3HostDataTab = New-Object System.Windows.Forms.TabPage -Property @{
-    Text = "Endpoint Data"
+    Text = "Endpoint Data  "
     Name = "Host Data Tab"
     Font = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     UseVisualStyleBackColor = $True

@@ -1,4 +1,4 @@
-$CollectionName = "Network Connection - Remote Port"
+$CollectionName = "Network Connection (Live) Remote Port"
 $ExecutionStartTime = Get-Date
 $StatusListBox.Items.Clear()
 $StatusListBox.Items.Add("Query: $CollectionName")
@@ -80,7 +80,7 @@ $($SearchString.trim())
 "@
 
 if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
-    Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript ${function:MonitorJobScriptBlock} -ArgumentList @($ExecutionStartTime,$CollectionName,$NetworkLiveSearchRemotePort,$NetworkLiveRegex) -SmithFlag 'RetrieveFile' -InputValues $InputValues
+    Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript ${function:MonitorJobScriptBlock} -ArgumentList @($ExecutionStartTime,$CollectionName,$NetworkLiveSearchRemotePort,$NetworkLiveRegex) -InputValues $InputValues
 }
 elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
     Monitor-Jobs -CollectionName $CollectionName
@@ -93,7 +93,7 @@ $CollectionCommandDiffTime = New-TimeSpan -Start $ExecutionStartTime -End $Colle
 $ResultsListBox.Items.RemoveAt(0)
 $ResultsListBox.Items.Insert(0,"$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss')) [$CollectionCommandDiffTime]  $CollectionName")
 
-
+Update-EndpointNotes
 
 # SIG # Begin signature block
 # MIIFuAYJKoZIhvcNAQcCoIIFqTCCBaUCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB

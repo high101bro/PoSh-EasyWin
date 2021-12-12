@@ -2,8 +2,8 @@ $RetrieveFilesButtonAdd_Click = {
 
     [System.Windows.Forms.MessageBox]::Show("Ensure you execute a recent File Search or Directory Listing Query prior to attempting to retrieve files from one or more endpoints.","PoSh-EasyWin - Retrieve Files",'Ok',"Info")
 
-    $MainLeftTabControl.SelectedTab = $Section1CollectionsTab
-    $MainLeftCollectionsTabControl.SelectedTab = $Section1FileSearchTab
+    $MainLeftTabControl.SelectedTab = $Section1SearchTab
+    $MainLeftSearchTabControl.SelectedTab = $Section1FileSearchTab
     $InformationTabControl.SelectedTab = $Section3ResultsTab
     try {
 #       [System.Reflection.Assembly]::LoadWithPartialName("System .Windows.Forms") | Out-Null

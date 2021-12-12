@@ -82,34 +82,6 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #         $EndpointString = ''
 #         foreach ($item in $script:ComputerList) {$EndpointString += "$item`n"}
 
@@ -143,7 +115,7 @@
 
 #         if ( $script:JobsStarted -eq $true ) {
 #             if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
-#                 Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript ${function:MonitorJobScriptBlock} -ArgumentList @($script:ComputerList,$ExecutionStartTime,$CollectionName,$CollectionSavedDirectory) -SmithFlag 'RetrieveFile' -InputValues $InputValues -DisableReRun -JobsExportFiles 'true'
+#                 Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript ${function:MonitorJobScriptBlock} -ArgumentList @($script:ComputerList,$ExecutionStartTime,$CollectionName,$CollectionSavedDirectory,$Command) -InputValues $InputValues -JobsExportFiles 'true'
 #             }
 #             elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
 #                 Monitor-Jobs -CollectionName $CollectionName
@@ -174,15 +146,6 @@
     
 
 
-
-
-
-
-
-
-
-
-
 # }
 # else {
     Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
@@ -201,7 +164,6 @@
 
         #batman
         
-
         $script:Section3AccountDataNotesRichTextBoxPreSave = $Section3HostDataNotesRichTextBox.text
         $Section3HostDataNotesRichTextBox.text = 
         $script:Section3AccountDataNotesRichTextBoxSaveCheck = $Section3HostDataNotesRichTextBox.text
@@ -211,7 +173,8 @@
                 $script:ComputerList,
                 $ExecutionStartTime,
                 $CollectionName,
-                $CollectionSavedDirectory
+                $CollectionSavedDirectory,
+                $Command
             )
                 # Each command to each target host is executed on it's own process thread, which utilizes more memory overhead on the localhost [running PoSh-EasyWin] and produces many more network connections to targets [noisier on the network].
             Foreach ($TargetComputer in $script:ComputerList) {
@@ -542,7 +505,7 @@
                 Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "$(($CommandString).Trim())"
             }
         }
-        Invoke-Command -ScriptBlock ${function:MonitorJobScriptBlock} -ArgumentList @($script:ComputerList,$ExecutionStartTime,$CollectionName,$CollectionSavedDirectory)
+        Invoke-Command -ScriptBlock ${function:MonitorJobScriptBlock} -ArgumentList @($script:ComputerList,$ExecutionStartTime,$CollectionName,$CollectionSavedDirectory,$Command)
 
         $EndpointString = ''
         foreach ($item in $script:ComputerList) {$EndpointString += "$item`n"}
@@ -585,19 +548,19 @@ $script:commandstring
                     # That said, the PSExec commands are currently not monitored, but the Monitor-Jobs function is used to created the buttons to quickly access the data
                     # Also various other button settings are set when each Results Pane created
                     # The -txt switch ...............
-                    Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript ${function:MonitorJobScriptBlock} -ArgumentList @($script:ComputerList,$ExecutionStartTime,$CollectionName,$CollectionSavedDirectory) -SmithFlag 'RetrieveFile' -InputValues $InputValues -DisableReRun -JobsExportFiles 'false' -txt
+                    Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript ${function:MonitorJobScriptBlock} -ArgumentList @($script:ComputerList,$ExecutionStartTime,$CollectionName,$CollectionSavedDirectory,$Command) -InputValues $InputValues -JobsExportFiles 'false' -txt
                 }
                 elseif ( $script:CommandType -eq "(SMB) PoSh" -or $script:CommandType -eq "(SMB) WMI" ) {
                     # Similar to the above reasoning with -JobExportFiles $false
                     # The intent here differs, as this is designed to query systems that support PowerShell commands have SMB available when WinRM and WMI/RPC are NOT
                     # Since it uses PSExec, the Monitor-Jobs doesn't need to out results
-                    Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript ${function:MonitorJobScriptBlock} -ArgumentList @($script:ComputerList,$ExecutionStartTime,$CollectionName,$CollectionSavedDirectory) -SmithFlag 'RetrieveFile' -InputValues $InputValues -DisableReRun -JobsExportFiles 'false'
+                    Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript ${function:MonitorJobScriptBlock} -ArgumentList @($script:ComputerList,$ExecutionStartTime,$CollectionName,$CollectionSavedDirectory,$Command) -InputValues $InputValues -JobsExportFiles 'false'
                 }
                 elseif ($script:CommandType -eq "(SSH) Linux") {
-                    Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript ${function:MonitorJobScriptBlock} -ArgumentList @($script:ComputerList,$ExecutionStartTime,$CollectionName,$CollectionSavedDirectory) -SmithFlag 'RetrieveFile' -InputValues $InputValues -DisableReRun -JobsExportFiles 'true' -txt
+                    Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript ${function:MonitorJobScriptBlock} -ArgumentList @($script:ComputerList,$ExecutionStartTime,$CollectionName,$CollectionSavedDirectory,$Command) -InputValues $InputValues -JobsExportFiles 'true' -txt
                 }
                 else {
-                    Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript ${function:MonitorJobScriptBlock} -ArgumentList @($script:ComputerList,$ExecutionStartTime,$CollectionName,$CollectionSavedDirectory) -SmithFlag 'RetrieveFile' -InputValues $InputValues -DisableReRun -JobsExportFiles 'true'
+                    Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript ${function:MonitorJobScriptBlock} -ArgumentList @($script:ComputerList,$ExecutionStartTime,$CollectionName,$CollectionSavedDirectory,$Command) -InputValues $InputValues -JobsExportFiles 'true'
                 }
             }
             elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
@@ -622,33 +585,14 @@ $script:commandstring
         $ResultsListBox.Items.Insert(0,"$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss')) [$CollectionCommandDiffTime]  $($Command.Name)")
 
         
-        # Removes any files have are empty
+        # Removes any files that are empty
         foreach ($file in (Get-ChildItem $script:CollectedDataTimeStampDirectory)) {
             if ($File.length -eq 0) {
                 Remove-Item $File -Force
             }
         }
 
-        #batman
-        if ($script:LogCommandsInEndpointNotes.checked) {
-            # Updates endpoint notes with timestamp and command executed
-            $script:ComputerTreeViewSelected = @()
-            [System.Windows.Forms.TreeNodeCollection]$AllTreeViewNodes = $script:ComputerTreeView.Nodes
-            foreach ($root in $AllTreeViewNodes) {
-                foreach ($Category in $root.Nodes) {
-                    foreach ($Entry in $Category.Nodes) {
-                        Foreach ($Computer in $script:ComputerTreeViewData) {
-                            if ($entry.checked -and $entry.text -eq $Computer.Name) {
-                                $script:ComputerTreeViewSelected += $Entry.Text
-                                $UpdatedNotes = "$(Get-Date) -- Executed Command: $CollectionName`n$($Computer.Notes)"
-                                $Computer | Add-Member -MemberType NoteProperty -Name Notes -Value $UpdatedNotes -Force
-                            }
-                        }
-                    }
-                }
-            } 
-            Save-TreeViewData -Endpoint -SkipTextFieldSave
-        }
+        Update-EndpointNotes
     }
 # }
 

@@ -791,7 +791,7 @@ script:Update-MultiSeriesChart
     # Creates Tabs From Each File
     #-----------------------------
     $script:AutoChartsIndividualTabPage         = New-Object System.Windows.Forms.TabPage
-    $script:AutoChartsIndividualTabPage.Text    = "$QueryTabName"
+    $script:AutoChartsIndividualTabPage.Text    = "$QueryTabName  "
     $script:AutoChartsIndividualTabPage.Name    = "$QueryTabName"
     $script:AutoChartsIndividualTabPage.Anchor  = $AnchorAll
     $script:AutoChartsIndividualTabPage.Font    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)

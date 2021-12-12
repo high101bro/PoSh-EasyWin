@@ -12,7 +12,7 @@ Update-FormProgress "$Dependencies\Code\Main Body\Execution\Verify-Action.ps1"
 
 
 $Section3ActionTab = New-Object System.Windows.Forms.TabPage -Property @{
-    Text   = "Action"
+    Text   = "Action  "
     Left   = $FormScale * 3
     Top    = 0
     Height = $FormScale * 124
@@ -157,12 +157,12 @@ $PivotExecutionGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
                         $MainLeftTabControl.Controls.Remove($Section1InteractionsTab)
                         #$MainLeftTabControl.Controls.Remove($Section1EnumerationTab)
 
-                        $MainLeftCollectionsTabControl.Controls.Remove($Section1AccountsTab)
-                        $MainLeftCollectionsTabControl.Controls.Remove($Section1EventLogsTab)
-                        $MainLeftCollectionsTabControl.Controls.Remove($Section1RegistryTab)
-                        $MainLeftCollectionsTabControl.Controls.Remove($Section1FileSearchTab)
-                        $MainLeftCollectionsTabControl.Controls.Remove($Section1NetworkConnectionsSearchTab)
-                        $MainLeftCollectionsTabControl.Controls.Remove($Section1PacketCaptureTab)
+                        $MainLeftSearchTabControl.Controls.Remove($Section1AccountsTab)
+                        $MainLeftSearchTabControl.Controls.Remove($Section1EventLogsTab)
+                        $MainLeftSearchTabControl.Controls.Remove($Section1RegistryTab)
+                        $MainLeftSearchTabControl.Controls.Remove($Section1FileSearchTab)
+                        $MainLeftSearchTabControl.Controls.Remove($Section1NetworkConnectionsSearchTab)
+                        $MainLeftSearchTabControl.Controls.Remove($Section1PacketCaptureTab)
                         Deselect-AllCommands
 
                         $CommandsViewFilterComboBox.text = 'Pivot Thru (WinRM)'
@@ -187,12 +187,12 @@ $PivotExecutionGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
                         $MainLeftTabControl.Controls.Add($Section1OpNotesTab)
                         $MainLeftTabControl.Controls.Add($MainLeftInfoTab)
 
-                        $MainLeftCollectionsTabControl.Controls.Add($Section1AccountsTab)
-                        $MainLeftCollectionsTabControl.Controls.Add($Section1EventLogsTab)
-                        $MainLeftCollectionsTabControl.Controls.Add($Section1RegistryTab)
-                        $MainLeftCollectionsTabControl.Controls.Add($Section1FileSearchTab)
-                        $MainLeftCollectionsTabControl.Controls.Add($Section1NetworkConnectionsSearchTab)
-                        $MainLeftCollectionsTabControl.Controls.Add($Section1PacketCaptureTab)
+                        $MainLeftSearchTabControl.Controls.Add($Section1AccountsTab)
+                        $MainLeftSearchTabControl.Controls.Add($Section1EventLogsTab)
+                        $MainLeftSearchTabControl.Controls.Add($Section1RegistryTab)
+                        $MainLeftSearchTabControl.Controls.Add($Section1FileSearchTab)
+                        $MainLeftSearchTabControl.Controls.Add($Section1NetworkConnectionsSearchTab)
+                        $MainLeftSearchTabControl.Controls.Add($Section1PacketCaptureTab)
 
                         $CommandsViewFilterComboBox.text = 'All (WinRM,RPC,SMB,SSH)'
                         $CommandsViewFilterComboBox.enabled = $true

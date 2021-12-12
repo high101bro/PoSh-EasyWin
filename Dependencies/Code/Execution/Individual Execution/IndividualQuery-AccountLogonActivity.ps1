@@ -22,25 +22,22 @@ function MonitorJobScriptBlock {
     )
 
     foreach ($TargetComputer in $script:ComputerList) {
+        $InvokeCommandSplat = @{
+            ScriptBlock  = ${function:Get-AccountLogonActivity}
+            ArgumentList = @($AccountsStartTimePickerValue,$AccountsStopTimePickerValue,$AccountActivityTextboxtext)
+            ComputerName = $TargetComputer
+            AsJob        = $true
+            JobName      = "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)"
+        }
+
         if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
             if (!$script:Credential) { Create-NewCredentials }
-
-            Invoke-Command -ScriptBlock ${function:Get-AccountLogonActivity} `
-            -ArgumentList @($AccountsStartTimePickerValue,$AccountsStopTimePickerValue,$AccountActivityTextboxtext) `
-            -ComputerName $TargetComputer `
-            -AsJob -JobName "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)" `
-            -Credential $script:Credential
-
-            Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock `${function:Get-AccountLogonActivity} -ArgumentList @(`$AccountsStartTimePickerValue,`$AccountsStopTimePickerValue,`$AccountActivityTextboxtext) -ComputerName $TargetComputer -AsJob -JobName 'PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)' -Credential `$script:Credential"
+            $InvokeCommandSplat += @{ 
+                Credential = $script:Credential
+            }
         }
-        else {
-            Invoke-Command -ScriptBlock ${function:Get-AccountLogonActivity} `
-            -ArgumentList @($AccountsStartTimePickerValue,$AccountsStopTimePickerValue,$AccountActivityTextboxtext) `
-            -ComputerName $TargetComputer `
-            -AsJob -JobName "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)"
-
-            Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock `${function:Get-AccountLogonActivity} -ArgumentList @(`$AccountsStartTimePickerValue,`$AccountsStopTimePickerValue,`$AccountActivityTextboxtext) -ComputerName $TargetComputer -AsJob -JobName 'PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)'"
-        }
+        
+        Invoke-Command @InvokeCommandSplat | Select-Object PSComputerName, *
     }
 }
 Invoke-Command -ScriptBlock ${function:MonitorJobScriptBlock} -ArgumentList @($ExecutionStartTime,$CollectionName,$AccountsStartTimePickerValue,$AccountsStopTimePickerValue,$AccountActivityTextboxtext)
@@ -89,7 +86,7 @@ $SearchString
 "@
 
 if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
-    Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript ${function:MonitorJobScriptBlock} -ArgumentList @($ExecutionStartTime,$CollectionName,$AccountsStartTimePickerValue,$AccountsStopTimePickerValue,$AccountActivityTextboxtext) -SmithFlag 'RetrieveFile' -InputValues $InputValues
+    Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript ${function:MonitorJobScriptBlock} -ArgumentList @($ExecutionStartTime,$CollectionName,$AccountsStartTimePickerValue,$AccountsStopTimePickerValue,$AccountActivityTextboxtext) -InputValues $InputValues
 }
 elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
     Monitor-Jobs -CollectionName $CollectionName
@@ -101,6 +98,8 @@ $CollectionCommandEndTime  = Get-Date
 $CollectionCommandDiffTime = New-TimeSpan -Start $ExecutionStartTime -End $CollectionCommandEndTime
 $ResultsListBox.Items.RemoveAt(0)
 $ResultsListBox.Items.Insert(0,"$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss')) [$CollectionCommandDiffTime]  $CollectionName")
+
+Update-EndpointNotes
 
 # SIG # Begin signature block
 # MIIFuAYJKoZIhvcNAQcCoIIFqTCCBaUCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB

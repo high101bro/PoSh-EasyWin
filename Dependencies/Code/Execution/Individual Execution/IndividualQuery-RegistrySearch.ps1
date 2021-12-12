@@ -1,5 +1,5 @@
 if ($RegistryKeyItemPropertyNameCheckbox.checked) { $CollectionName = "Registry Search - Item Property"  }
-elseif ($RegistryKeyNameCheckbox.checked) { $CollectionName = "Registry Search - Key Name" }
+elseif ($RegistryKeyNameCheckbox.checked)   { $CollectionName = "Registry Search - Key Name" }
 elseif ($RegistryValueNameCheckbox.checked) { $CollectionName = "Registry Search - Value Name" }
 elseif ($RegistryValueDataCheckbox.checked) { $CollectionName = "Registry Search - Value Data" }
 
@@ -11,20 +11,20 @@ $ResultsListBox.Items.Insert(0,"$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:
 
 $RegistrySearchDirectory = ($script:RegistrySearchDirectoryRichTextbox.Text).split("`r`n")
 $SearchRegistryKeyItemPropertyName = ($script:RegistryKeyItemPropertyNameSearchRichTextbox.Text).split("`r`n")
-$SearchRegistryKeyName = ($script:RegistryKeyNameSearchRichTextbox.Text).split("`r`n")
+$SearchRegistryKeyName   = ($script:RegistryKeyNameSearchRichTextbox.Text).split("`r`n")
 $SearchRegistryValueName = ($script:RegistryValueNameSearchRichTextbox.Text).split("`r`n")
 $SearchRegistryValueData = ($script:RegistryValueDataSearchRichTextbox.Text).split("`r`n")
 
 if ($RegistryKeyItemPropertyNameCheckbox.checked)   {
     $CountCommandQueries++
-    if ($RegistrySearchRecursiveCheckbox.checked) {
-        $SearchRegistryCommand = @($RegistrySearchDirectory,$true,$SearchRegistryKeyName,$true,$false,$false)
-    }
-    else {
-        $SearchRegistryCommand = @($RegistrySearchDirectory,$false,$SearchRegistryKeyName,$true,$false,$false)
-    }
+    # if ($RegistrySearchRecursiveCheckbox.checked) {
+    #     $SearchRegistryCommand = @($RegistrySearchDirectory,$true,$SearchRegistryKeyName,$true,$false,$false)
+    # }
+    # else {
+    #     $SearchRegistryCommand = @($RegistrySearchDirectory,$false,$SearchRegistryKeyName,$true,$false,$false)
+    # }
 }
-if ($RegistryKeyNameCheckbox.checked)   {
+if ($RegistryKeyNameCheckbox.checked) {
     $CountCommandQueries++
     if ($RegistrySearchRecursiveCheckbox.checked) {
         $SearchRegistryCommand = @($RegistrySearchDirectory,$true,$SearchRegistryKeyName,$true,$false,$false)
@@ -72,66 +72,44 @@ function MonitorJobScriptBlock {
                                 -TargetComputer $TargetComputer
         Create-LogEntry -TargetComputer $TargetComputer -LogFile $LogFile -Message $CollectionName
 
+        if ($RegistryKeyItemPropertyNameCheckbox.checked) {           
+            $InvokeCommandSplat = @{
+                ScriptBlock  = {
+                    param($RegistrySearchDirectory,$SearchRegistryKeyItemPropertyName)
+                    foreach ($Path in $RegistrySearchDirectory){
+                        foreach ($Item in $SearchRegistryKeyItemPropertyName) {
+                           Get-ItemProperty -Path $Path $Item
+                        }
+                    }
+                }
+                ArgumentList = @($RegistrySearchDirectory,$SearchRegistryKeyItemPropertyName)
+                ComputerName = $TargetComputer
+                AsJob        = $true
+                JobName      = "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)"
+            }
 
-
-        if ($RegistryKeyItemPropertyNameCheckbox.checked) {
             if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
                 if (!$script:Credential) { Create-NewCredentials }
-        
-                Invoke-Command -ScriptBlock {
-                    param($RegistrySearchDirectory,$SearchRegistryKeyItemPropertyName)
-
-                    foreach ($Path in $RegistrySearchDirectory){
-                        foreach ($Item in $SearchRegistryKeyItemPropertyName) {
-                           Get-ItemProperty -Path $Path $Item
-                        }
-                    }
-                } -ArgumentList @($RegistrySearchDirectory,$SearchRegistryKeyItemPropertyName) `
-                -ComputerName $TargetComputer `
-                -AsJob -JobName "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)" `
-                -Credential $script:Credential
-
-                Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock {foreach (`$Path in `$RegistrySearchDirectory) { foreach (`$Item in `$SearchRegistryKeyItemPropertyName) { Get-ItemProperty -Path `$Path `$Item } }} -ArgumentList `$SearchRgistryItemProperty  -ComputerName $TargetComputer -AsJob -JobName 'PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)' -Credential `$script:Credential"
-                $ResultsListBox.Items.Add("$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  $CollectionName -- $TargetComputer")
+                $InvokeCommandSplat += @{Credential = $script:Credential}
             }
-            else {
-                Invoke-Command -ScriptBlock {
-                    param($RegistrySearchDirectory,$SearchRegistryKeyItemPropertyName)
-
-                    foreach ($Path in $RegistrySearchDirectory){
-                        foreach ($Item in $SearchRegistryKeyItemPropertyName) {
-                           Get-ItemProperty -Path $Path $Item
-                        }
-                    }
-                } -ArgumentList @($RegistrySearchDirectory,$SearchRegistryKeyItemPropertyName) `
-                -ComputerName $TargetComputer `
-                -AsJob -JobName "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)"
-                
-                Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock {foreach (`$Path in `$RegistrySearchDirectory) { foreach (`$Item in `$SearchRegistryKeyItemPropertyName) { Get-ItemProperty -Path `$Path `$Item } }} -ArgumentList `$SearchRgistryItemProperty  -ComputerName $TargetComputer -AsJob -JobName 'PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)'"
-                $ResultsListBox.Items.Add("$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  $CollectionName -- $TargetComputer")
-            }            
+            
+            Invoke-Command @InvokeCommandSplat | Select-Object PSComputerName, *
         }
         else {
+            $InvokeCommandSplat = @{
+                ScriptBlock  = $script:QueryRegistryFunction
+                ArgumentList = $SearchRegistryCommand
+                ComputerName = $TargetComputer
+                AsJob        = $true
+                JobName      = "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)"
+            }
+
             if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
                 if (!$script:Credential) { Create-NewCredentials }
-                Invoke-Command -ScriptBlock $script:QueryRegistryFunction `
-                -ArgumentList $SearchRegistryCommand `
-                -ComputerName $TargetComputer `
-                -AsJob -JobName "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)" `
-                -Credential $script:Credential
-
-                Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock `$script:QueryRegistryFunction -ArgumentList `$SearchRegistryCommand  -ComputerName $TargetComputer -AsJob -JobName 'PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)' -Credential `$script:Credential"
-                $ResultsListBox.Items.Add("$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  $CollectionName -- $TargetComputer")
+                $InvokeCommandSplat += @{Credential = $script:Credential}
             }
-            else {
-                Invoke-Command -ScriptBlock $script:QueryRegistryFunction `
-                -ArgumentList $SearchRegistryCommand `
-                -ComputerName $TargetComputer `
-                -AsJob -JobName "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)"
-
-                Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock `$script:QueryRegistryFunction -ArgumentList `$SearchRegistryCommand  -ComputerName $TargetComputer -AsJob -JobName 'PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)''"
-                $ResultsListBox.Items.Add("$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  $CollectionName -- $TargetComputer")
-            }
+            
+            Invoke-Command @InvokeCommandSplat | Select-Object PSComputerName, *
         }
     }
 }
@@ -200,7 +178,7 @@ $($SearchString4.trim())
 "@
 
 if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
-    Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript ${function:MonitorJobScriptBlock} -ArgumentList @($ExecutionStartTime,$CollectionName,$RegistrySearchDirectory,$SearchRegistryKeyName,$SearchRegistryValueName,$SearchRegistryValueData,$SearchRegistryCommand,$SearchRgistryItemProperty,$RegistryKeyItemPropertyNameCheckbox,$SearchRegistryKeyItemPropertyName) -SmithFlag 'RetrieveFile' -InputValues $InputValues
+    Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript ${function:MonitorJobScriptBlock} -ArgumentList @($ExecutionStartTime,$CollectionName,$RegistrySearchDirectory,$SearchRegistryKeyName,$SearchRegistryValueName,$SearchRegistryValueData,$SearchRegistryCommand,$SearchRgistryItemProperty,$RegistryKeyItemPropertyNameCheckbox,$SearchRegistryKeyItemPropertyName) -InputValues $InputValues
 }
 elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
     Monitor-Jobs -CollectionName $CollectionName
@@ -213,7 +191,7 @@ $CollectionCommandDiffTime = New-TimeSpan -Start $ExecutionStartTime -End $Colle
 $ResultsListBox.Items.RemoveAt(0)
 $ResultsListBox.Items.Insert(0,"$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss')) [$CollectionCommandDiffTime]  $CollectionName")
 
-
+Update-EndpointNotes
 
 # SIG # Begin signature block
 # MIIFuAYJKoZIhvcNAQcCoIIFqTCCBaUCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB

@@ -1,6 +1,6 @@
 
 $MainCenterMainTab = New-Object System.Windows.Forms.TabPage -Property @{
-    Text = "Main"
+    Text = "Main  "
     Name = "Main"
     Font = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     UseVisualStyleBackColor = $True
@@ -12,7 +12,7 @@ $MainCenterTabControl.Controls.Add($MainCenterMainTab)
 $DirectoryListLabel = New-Object System.Windows.Forms.Label -Property @{
     Text   = "Results Folder:"
     Left   = $FormScale * 3
-    Top    = $FormScale * 11
+    Top    = $FormScale * 4
     Width  = $FormScale * 120
     Height = $FormScale * 22
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),1,2,1)
@@ -28,7 +28,7 @@ $script:CollectionSavedDirectoryTextBox = New-Object System.Windows.Forms.TextBo
     Name   = "Saved Directory List Box"
     Text   = $SaveLocation
     Left   = $DirectoryListLabel.Left
-    Top    = $DirectoryListLabel.Top + $DirectoryListLabel.Height + ($FormScale * 1)
+    Top    = $DirectoryListLabel.Top + $DirectoryListLabel.Height
     #Width  = $FormScale * 354
     Width  = $FormScale * 595
     Height = $FormScale * 22
@@ -91,7 +91,7 @@ Apply-CommonButtonSettings -Button $DirectoryOpenButton
 $ResultsSectionLabel = New-Object System.Windows.Forms.Label -Property @{
     Text   = "Actions and Analysis:"
     Left   = $CollectionSavedDirectoryTextBox.Left
-    Top    = $DirectoryUpdateButton.Top + $DirectoryUpdateButton.Height + $($FormScale * 10)
+    Top    = $DirectoryUpdateButton.Top + $DirectoryUpdateButton.Height + $($FormScale * 13)
     Width  = $FormScale * 230
     Height = $FormScale * 22
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),1,2,1)
@@ -249,7 +249,7 @@ Update-FormProgress "$Dependencies\Code\Charts\Save-ChartImage.ps1"
 $StatusLabel = New-Object System.Windows.Forms.Label -Property @{
     Text   = "Status:"
     Left   = $RetrieveFilesButton.Left
-    Top    = $RetrieveFilesButton.Top + $RetrieveFilesButton.Height + $FormScale * 25
+    Top    = $RetrieveFilesButton.Top + $RetrieveFilesButton.Height + $FormScale * 28
     Width  = $FormScale * 60
     Height = $FormScale * 20
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)

@@ -76,27 +76,24 @@ function MonitorJobScriptBlock {
 
 
     foreach ($TargetComputer in $script:ComputerList) {
-        if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
+
+        $InvokeCommandSplat = @{
+            ScriptBlock  = $CommandScriptBlock
+            ArgumentList = $null
+            ComputerName = $TargetComputer
+            AsJob        = $True
+            JobName      = "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)"
+        }
+
+        if ( $script:ComputerListProvideCredentialsCheckBox.Checked ) {
             if (!$script:Credential) { Create-NewCredentials }
-
-            Invoke-Command -ScriptBlock $CommandScriptBlock `
-            -ComputerName $TargetComputer `
-            -AsJob -JobName "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)" `
-            -Credential $script:Credential `
-            | Select-Object PSComputerName, *
-
-            Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock `$CommandScriptBlock -ComputerName $TargetComputer -AsJob -JobName 'PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)' -Credential `$script:Credential"
+            $InvokeCommandSplat += @{Credential = $script:Credential}
         }
-        else {
-            Invoke-Command -ScriptBlock $CommandScriptBlock `
-            -ComputerName $TargetComputer `
-            -AsJob -JobName "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)" `
-            | Select-Object PSComputerName, *
 
-            Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock `$CommandScriptBlock -ComputerName $TargetComputer -AsJob -JobName 'PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)'"
-        }
+        Invoke-Command @InvokeCommandSplat | Select-Object PSComputerName, *
     }
 }
+
 Invoke-Command -ScriptBlock ${function:MonitorJobScriptBlock} -ArgumentList @($ExecutionStartTime,$CollectionName)
 
 $EndpointString = ''
@@ -139,7 +136,7 @@ $CollectionCommandDiffTime = New-TimeSpan -Start $ExecutionStartTime -End $Colle
 $ResultsListBox.Items.RemoveAt(0)
 $ResultsListBox.Items.Insert(0,"$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss')) [$CollectionCommandDiffTime]  $CollectionName")
 
-
+Update-EndpointNotes
 
 
 # SIG # Begin signature block

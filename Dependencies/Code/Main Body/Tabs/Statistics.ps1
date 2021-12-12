@@ -1,7 +1,7 @@
 
 $Section2StatisticsTab = New-Object System.Windows.Forms.TabPage -Property @{
-    Text                    = "Statistics"
-    Font                    = New-Object System.Drawing.Font("$Font",$($FormScale * 10),0,0,0)
+    Text = "Statistics  "
+    Font = New-Object System.Drawing.Font("$Font",$($FormScale * 10),0,0,0)
     UseVisualStyleBackColor = $True
     ImageIndex = 2
 }

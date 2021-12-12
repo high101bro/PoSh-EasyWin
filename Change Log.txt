@@ -14,7 +14,8 @@ TODO:
 [ ] Add to add_closing ... This.dispose() gc-clearnup
 [ ] Streamline the updaing of data picture box associate with endpoint/account nodes, remove requirement of needing to click on node over and over...
 [ ] Looking the Network Connection execution path search... not sure if its working
-
+[ ] Add re-run feature, or at least make eveverything compatible with the monitor/rerun
+	[ ] follow up with the event id sections
 [ ] Processes tab.. the one that broke down each process
 [ ] need to fix bugs with tagging... it's not saving correctly, previous notes are being overwriten to make all data the same
 	Search "tag node" and "tag nodes"
@@ -27,51 +28,26 @@ Writing Daily Tips...
 	- WHen using the "Retrieve Files" button, you must select any pre-exiting results from a "Directory Listing" or "File Search".
 
 
-==================================================
-v6.7.4 - 
-==================================================
-
-        if ($script:LogCommandsInEndpointNotes.checked) {
-            # Updates endpoint notes with timestamp and command executed
-            $script:ComputerTreeViewSelected = @()
-            [System.Windows.Forms.TreeNodeCollection]$AllTreeViewNodes = $script:ComputerTreeView.Nodes
-            foreach ($root in $AllTreeViewNodes) {
-                foreach ($Category in $root.Nodes) {
-                    foreach ($Entry in $Category.Nodes) {
-                        Foreach ($Computer in $script:ComputerTreeViewData) {
-                            if ($entry.checked -and $entry.text -eq $Computer.Name) {
-                                $script:ComputerTreeViewSelected += $Entry.Text
-                                $UpdatedNotes = "$(Get-Date) -- Executed Command: $CollectionName`n$($Computer.Notes)"
-                                $Computer | Add-Member -MemberType NoteProperty -Name Notes -Value $UpdatedNotes -Force
-                            }
-                        }
-                    }
-                }
-            } 
-            Save-TreeViewData -Endpoint -SkipTextFieldSave
-
-==================
-Update-FormProgress "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-ProcessCreationSysmon.ps1"
+<#
+Finish up... Update-FormProgress "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-ProcessCreationSysmon.ps1"
 . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-ProcessCreationSysmon.ps1"
-==================
-
-$Section1ProcessesConnectionsSearchTab = New-Object System.Windows.Forms.TabPage -Property @{
-
-==================
-
-
-
+#>
+<#
+#batman add log creations to all of this --Invoke-Command @InvokeCommandSplat
+	Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock {foreach (`$Path in `$RegistrySearchDirectory) { foreach (`$Item in `$SearchRegistryKeyItemPropertyName) { Get-ItemProperty -Path `$Path `$Item } }} -ArgumentList `$SearchRgistryItemProperty  -ComputerName $TargetComputer -AsJob -JobName 'PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)' -Credential `$script:Credential"
+	$ResultsListBox.Items.Add("$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  $CollectionName -- $TargetComputer")
+#>
 
 
-
-++++++++++++++
-batamn add this
-$Event = Get-WinEvent -LogName 'Windows PowerShell'
-	#$Event.Count
-	#$Event | Group-Object -Property Id -NoElement | Sort-Object -Property Count -Descending
-	#$Event | Group-Object -Property LevelDisplayName -NoElement
-$Event | Group-Object -Property Id, LevelDisplayName -NoElement | Sort-Object -Property Count -Descending
-++++++++++++
+==================================================
+v6.7.4 - 12 DEC 2021
+==================================================
+Tweaked GUI
+	- added panel borders/outlines
+	- modified margins in many areas
+	- Changed section tabs to the button variation
+	- Added hottrack property to .tabcontrol
+		- When tabs are scolled over now, they have a dynamic highlight color
 
 Fixed bug with Monitoring of queries aka Agentless SMITH
 

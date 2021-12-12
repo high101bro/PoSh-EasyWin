@@ -12,32 +12,23 @@ foreach ($TargetComputer in $script:ComputerList) {
                             -TargetComputer $TargetComputer
     Create-LogEntry -TargetComputer $TargetComputer  -LogFile $LogFile -Message $CollectionName
 
+    $InvokeCommandSplat = @{
+        ScriptBlock  = {
+            param($script:ShowCommandQueryBuild)
+            Invoke-Expression -Command $script:ShowCommandQueryBuild
+        }
+        ArgumentList = $script:ShowCommandQueryBuild
+        ComputerName = $TargetComputer
+        AsJob        = $true
+        JobName      = "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)"
+    }
 
     if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
         if (!$script:Credential) { Create-NewCredentials }
-
-        Invoke-Command -ScriptBlock {
-            param($script:ShowCommandQueryBuild)
-            Invoke-Expression -Command $script:ShowCommandQueryBuild
-        } `
-        -ArgumentList $script:ShowCommandQueryBuild `
-        -ComputerName $TargetComputer `
-        -AsJob -JobName "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)" `
-        -Credential $script:Credential
-
-        Create-LogEntry -LogFile $LogFile -Message "Invoke-Command -ScriptBlock { param(`$script:ShowCommandQueryBuild) Invoke-Expression -Command $script:ShowCommandQueryBuild } -ComputerName $TargetComputer -ArgumentList `$script:ShowCommandQueryBuild  -Credential `$script:Credential"
+        $InvokeCommandSplat += @{Credential = $script:Credential}
     }
-    else {
-        Invoke-Command -ScriptBlock {
-            param($script:ShowCommandQueryBuild)
-            Invoke-Expression -Command $script:ShowCommandQueryBuild
-        } `
-        -ArgumentList $script:ShowCommandQueryBuild `
-        -ComputerName $TargetComputer `
-        -AsJob -JobName "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)"
-
-        Create-LogEntry -LogFile $LogFile -Message "Invoke-Command -ScriptBlock { param(`$script:ShowCommandQueryBuild) Invoke-Expression -Command $script:ShowCommandQueryBuild } -ComputerName $TargetComputer -ArgumentList `$script:ShowCommandQueryBuild"
-    }
+    
+    Invoke-Command @InvokeCommandSplat | Select-Object PSComputerName, *
 }
 
 $EndpointString = ''
@@ -86,7 +77,7 @@ $CollectionCommandDiffTime = New-TimeSpan -Start $ExecutionStartTime -End $Colle
 $ResultsListBox.Items.RemoveAt(0)
 $ResultsListBox.Items.Insert(0,"$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss')) [$CollectionCommandDiffTime]  $CollectionName")
 
-
+Update-EndpointNotes
 
 # SIG # Begin signature block
 # MIIFuAYJKoZIhvcNAQcCoIIFqTCCBaUCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB

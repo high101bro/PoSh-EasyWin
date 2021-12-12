@@ -142,7 +142,7 @@ function Display-ContextMenuForAccountsTreeNode {
                         $Section3AccountDataOUTextBox.Text          = $($script:AccountsTreeViewData | Where-Object {$_.Name -eq $script:EntrySelected.Text}).CanonicalName
                         $Section3AccountDataIPTextBox.Text          = $($script:AccountsTreeViewData | Where-Object {$_.Name -eq $script:EntrySelected.Text}).IPv4Address
                         $Section3AccountDataMACTextBox.Text         = $($script:AccountsTreeViewData | Where-Object {$_.Name -eq $script:EntrySelected.Text}).MACAddress
-                        $Section3AccountDataNotesRichTextBox.Text   = "$(Get-Date) -- [Tag] $($script:AccountsListMassTagValue)`n" + $($script:AccountsTreeViewData | Where-Object {$_.Name -eq $script:EntrySelected.Text}).Notes
+                        $Section3AccountDataNotesRichTextBox.Text   = "$(Get-Date) [Tag] $($script:AccountsListMassTagValue)`n" + $($script:AccountsTreeViewData | Where-Object {$_.Name -eq $script:EntrySelected.Text}).Notes
                         Save-TreeViewData -Accounts
                         $StatusListBox.Items.clear()
                         $StatusListBox.Items.Add("Tag applied to: $($script:EntrySelected.text)")
@@ -283,7 +283,7 @@ function Display-ContextMenuForAccountsTreeNode {
 #    $AccountsListSelectedNodeActionsToolStripComboBox.Items.Add(" - Tag Node With Metadata")
     $AccountsListSelectedNodeActionsToolStripComboBox.Items.Add(" - Move Node To New OU/CN")
     $AccountsListSelectedNodeActionsToolStripComboBox.Items.Add(" - Delete Selected Node")
-    $AccountsListSelectedNodeActionsToolStripComboBox.Items.Add(" - Rename Selected Node")
+#    $AccountsListSelectedNodeActionsToolStripComboBox.Items.Add(" - Rename Selected Node")
     $script:AccountsListContextMenuStrip.Items.Add($AccountsListSelectedNodeActionsToolStripComboBox)
 
 
@@ -359,7 +359,7 @@ function Display-ContextMenuForAccountsTreeNode {
                                                 # $Section3AccountDataOUTextBox.Text          = $($script:AccountsTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).CanonicalName
                                                 # $Section3AccountDataIPTextBox.Text          = $($script:AccountsTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).IPv4Address
                                                 # $Section3AccountDataMACTextBox.Text         = $($script:AccountsTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).MACAddress
-                                                $Section3AccountDataNotesRichTextBox.Text   = "$(Get-Date) -- [Tag] $($script:AccountsListMassTagValue)`n" + $($script:AccountsTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).Notes
+                                                $Section3AccountDataNotesRichTextBox.Text   = "$(Get-Date) [Tag] $($script:AccountsListMassTagValue)`n" + $($script:AccountsTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).Notes
                                             }
                                             $script:ProgressBarAccountsProgressBar.Value += 1
                                         }

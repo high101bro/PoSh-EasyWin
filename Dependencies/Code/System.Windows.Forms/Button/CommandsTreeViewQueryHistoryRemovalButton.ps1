@@ -35,7 +35,7 @@ $CommandsTreeViewRemoveCommandButtonAdd_Click = {
         }
         
         # removes the button from view
-        $Section1CommandsTab.Controls.Remove($CommandsTreeViewRemoveCommandButton)
+        $Section1TreeViewCommandsTab.Controls.Remove($CommandsTreeViewRemoveCommandButton)
     
         # iterates through the list of non-checked commands and re-adds them to the command treeview
         $QueryHistoryKeepGroupSelected = @()

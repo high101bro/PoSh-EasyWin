@@ -96,99 +96,65 @@ $InputValue
 
 
 if ($EventLogWinRMRadioButton.Checked) {
-    if ( $script:ComputerListProvideCredentialsCheckBox.Checked ) {
-        if (!$script:Credential) { Create-NewCredentials }
+    foreach ($Query in $script:EventLogQueries) {
+        if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match $Query.Name) {
+            $CollectionName = "Event Logs - $($Query.Name)"
 
-        foreach ($Query in $script:EventLogQueries) {
-            if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match $Query.Name) {
-                $script:CollectionName = "Event Logs - $($Query.Name)"
+            $ResultsListBox.Items.Insert(0,"$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  $CollectionName")
 
-                $ResultsListBox.Items.Insert(0,"$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  $script:CollectionName")
-    
-                Conduct-PreCommandCheck -CollectedDataTimeStampDirectory $script:CollectedDataTimeStampDirectory `
-                                        -IndividualHostResults "$script:IndividualHostResults" -CollectionName $script:CollectionName `
-                                        -TargetComputer $TargetComputer
-                Create-LogEntry -TargetComputer $TargetComputer  -LogFile $LogFile -Message $script:CollectionName
+            Conduct-PreCommandCheck -CollectedDataTimeStampDirectory $script:CollectedDataTimeStampDirectory `
+                                    -IndividualHostResults "$script:IndividualHostResults" -CollectionName $CollectionName `
+                                    -TargetComputer $TargetComputer
+            Create-LogEntry -TargetComputer $TargetComputer  -LogFile $LogFile -Message $CollectionName
 
 
-                function MonitorJobScriptBlock {
-                    param(
-                        $script:ComputerList,
-                        $script:Credential,
-                        $ExecutionStartTime,
-                        $CollectionName,
-                        $EventLogsMaximumCollectionTextBoxText,
-                        $EventLogsStartTimePickerChecked,
-                        $EventLogsStopTimePickerChecked,
-                        $EventLogsStartTimePickerValue,
-                        $EventLogsStopTimePickerValue
-                    )
-                    foreach ($TargetComputer in $script:ComputerList) {
-                        Invoke-Command -ScriptBlock ${function:Query-EventLogLogsEventIDsManualEntrySessionBased} `
-                        -ArgumentList @($Query.Filter,$EventLogsMaximumCollectionTextBoxText,$EventLogsStartTimePickerChecked,$EventLogsStopTimePickerChecked,$EventLogsStartTimePickerValue,$EventLogsStopTimePickerValue) `
-                        -ComputerName $TargetComputer `
-                        -AsJob -JobName "PoSh-EasyWin: $($script:CollectionName) -- $($TargetComputer)" `
-                        -Credential $script:Credential
+            function MonitorJobScriptBlock {
+                param(
+                    $script:ComputerList,
+                    $script:Credential,
+                    $ExecutionStartTime,
+                    $CollectionName,
+                    $EventLogsMaximumCollectionTextBoxText,
+                    $EventLogsStartTimePickerChecked,
+                    $EventLogsStopTimePickerChecked,
+                    $EventLogsStartTimePickerValue,
+                    $EventLogsStopTimePickerValue
+                )
+                foreach ($TargetComputer in $script:ComputerList) {
+                    $InvokeCommandSplat = @{
+                        ScriptBlock  = ${function:Query-EventLogLogsEventIDsManualEntrySessionBased}
+                        ArgumentList = @($Query.Filter,$EventLogsMaximumCollectionTextBoxText,$EventLogsStartTimePickerChecked,$EventLogsStopTimePickerChecked,$EventLogsStartTimePickerValue,$EventLogsStopTimePickerValue)
+                        ComputerName = $TargetComputer
+                        AsJob        = $true
+                        JobName      = "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)"
                     }
-                }
-                Invoke-Command -ScriptBlock ${function:MonitorJobScriptBlock} -ArgumentList @($script:ComputerList,$script:Credential,$ExecutionStartTime,$CollectionName,$EventLogsMaximumCollectionTextBoxText,$EventLogsStartTimePickerChecked,$EventLogsStopTimePickerChecked,$EventLogsStartTimePickerValue,$EventLogsStopTimePickerValue)
-
-                String-InputValues -InputValue "$($Query.Name)"
-
-                if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
-                    Monitor-Jobs -CollectionName $script:CollectionName -MonitorMode -SMITH -SmithScript ${function:MonitorJobScriptBlock} -ArgumentList @($script:ComputerList,$script:Credential,$ExecutionStartTime,$CollectionName,$EventLogsMaximumCollectionTextBoxText,$EventLogsStartTimePickerChecked,$EventLogsStopTimePickerChecked,$EventLogsStartTimePickerValue,$EventLogsStopTimePickerValue) -DisableReRun -InputValues $script:InputValues
-                }
-                elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
-                    Monitor-Jobs -CollectionName $script:CollectionName
-                    Post-MonitorJobs -CollectionName $script:CollectionName -CollectionCommandStartTime $ExecutionStartTime
+        
+                    if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
+                        if (!$script:Credential) { Create-NewCredentials }
+                        $InvokeCommandSplat += @{Credential = $script:Credential}
+                    }
+                    
+                    Invoke-Command @InvokeCommandSplat
                 }
             }
-        }
-    }
-    else {
-        foreach ($Query in $script:EventLogQueries) {
-            if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match $Query.Name) {
-                $script:CollectionName = "Event Logs - $($Query.Name)"
 
-                $ResultsListBox.Items.Insert(0,"$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  $script:CollectionName")
-
-                Conduct-PreCommandCheck -CollectedDataTimeStampDirectory $script:CollectedDataTimeStampDirectory `
-                                        -IndividualHostResults "$script:IndividualHostResults" -CollectionName $script:CollectionName `
-                                        -TargetComputer $TargetComputer
-                Create-LogEntry -TargetComputer $TargetComputer  -LogFile $LogFile -Message $script:CollectionName
-
-
-                function MonitorJobScriptBlock {
-                    param(
-                        $script:ComputerList,
-                        $script:Credential,
-                        $ExecutionStartTime,
-                        $CollectionName,
-                        $EventLogsMaximumCollectionTextBoxText,
-                        $EventLogsStartTimePickerChecked,
-                        $EventLogsStopTimePickerChecked,
-                        $EventLogsStartTimePickerValue,
-                        $EventLogsStopTimePickerValue
-                    )
-                    foreach ($TargetComputer in $script:ComputerList) {
-                        Invoke-Command -ScriptBlock ${function:Query-EventLogLogsEventIDsManualEntrySessionBased} `
-                        -ArgumentList @($Query.Filter,$EventLogsMaximumCollectionTextBoxText,$EventLogsStartTimePickerChecked,$EventLogsStopTimePickerChecked,$EventLogsStartTimePickerValue,$EventLogsStopTimePickerValue) `
-                        -ComputerName $TargetComputer `
-                        -AsJob -JobName "PoSh-EasyWin: $($script:CollectionName) -- $($TargetComputer)"
-                    }
-                }
-                Invoke-Command -ScriptBlock ${function:MonitorJobScriptBlock} -ArgumentList @($script:ComputerList,$script:Credential,$ExecutionStartTime,$CollectionName,$EventLogsMaximumCollectionTextBoxText,$EventLogsStartTimePickerChecked,$EventLogsStopTimePickerChecked,$EventLogsStartTimePickerValue,$EventLogsStopTimePickerValue)
-
-                String-InputValues -InputValue "$($Query.Name)"
-
-                if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
-                    Monitor-Jobs -CollectionName $script:CollectionName -MonitorMode -SMITH -SmithScript ${function:MonitorJobScriptBlock} -ArgumentList @($script:ComputerList,$script:Credential,$ExecutionStartTime,$CollectionName,$EventLogsMaximumCollectionTextBoxText,$EventLogsStartTimePickerChecked,$EventLogsStopTimePickerChecked,$EventLogsStartTimePickerValue,$EventLogsStopTimePickerValue) -DisableReRun -InputValues $script:InputValues
-                }
-                elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
-                    Monitor-Jobs -CollectionName $script:CollectionName
-                    Post-MonitorJobs -CollectionName $script:CollectionName -CollectionCommandStartTime $ExecutionStartTime
-                }        
+            $InvokeCommandSplat = @{
+                ScriptBlock  = ${function:MonitorJobScriptBlock}
+                ArgumentList = @($script:ComputerList,$script:Credential,$ExecutionStartTime,$CollectionName,$EventLogsMaximumCollectionTextBoxText,$EventLogsStartTimePickerChecked,$EventLogsStopTimePickerChecked,$EventLogsStartTimePickerValue,$EventLogsStopTimePickerValue)
             }
+            Invoke-Command @InvokeCommandSplat
+
+
+            String-InputValues -InputValue "$($Query.Name)"
+
+            if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
+                Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript ${function:MonitorJobScriptBlock} -ArgumentList @($script:ComputerList,$script:Credential,$ExecutionStartTime,$CollectionName,$EventLogsMaximumCollectionTextBoxText,$EventLogsStartTimePickerChecked,$EventLogsStopTimePickerChecked,$EventLogsStartTimePickerValue,$EventLogsStopTimePickerValue) -DisableReRun -InputValues $script:InputValues
+            }
+            elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
+                Monitor-Jobs -CollectionName $CollectionName
+                Post-MonitorJobs -CollectionName $CollectionName -CollectionCommandStartTime $ExecutionStartTime
+            }
+            Update-EndpointNotes
         }
     }
 }
@@ -198,14 +164,14 @@ else {
 
         foreach ($Query in $script:EventLogQueries) {
             if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match $Query.Name) {
-                $script:CollectionName = "Event Logs - $($Query.Name)"
+                $CollectionName = "Event Logs - $($Query.Name)"
 
-                $ResultsListBox.Items.Insert(0,"$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  $script:CollectionName")
+                $ResultsListBox.Items.Insert(0,"$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  $CollectionName")
 
                 Conduct-PreCommandCheck -CollectedDataTimeStampDirectory $script:CollectedDataTimeStampDirectory `
-                                        -IndividualHostResults "$script:IndividualHostResults" -CollectionName $script:CollectionName `
+                                        -IndividualHostResults "$script:IndividualHostResults" -CollectionName $CollectionName `
                                         -TargetComputer $TargetComputer
-                Create-LogEntry -TargetComputer $TargetComputer  -LogFile $LogFile -Message $script:CollectionName
+                Create-LogEntry -TargetComputer $TargetComputer  -LogFile $LogFile -Message $CollectionName
 
                 function MonitorJobScriptBlock {
                     param(
@@ -250,7 +216,7 @@ else {
 
                             Invoke-Expression -Command "$EventLogQueryCommand -ComputerName $TargetComputer -Credential `$Script:Credential $EventLogQueryFilter $EventLogQueryPipe"
                         } `
-                        -Name "PoSh-EasyWin: $($script:CollectionName) -- $($TargetComputer)" `
+                        -Name "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)" `
                         -ArgumentList $Query.Filter, $EventLogsMaximumCollectionTextBoxText, $EventLogsStartTimePickerChecked,$EventLogsStopTimePickerChecked,$EventLogsStartTimePickerValue,$EventLogsStopTimePickerValue,$TargetComputer,$script:Credential
                     }
                 }
@@ -259,26 +225,27 @@ else {
                 String-InputValues -InputValue "$($Query.Name)"
 
                 if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
-                    Monitor-Jobs -CollectionName $script:CollectionName -MonitorMode -SMITH -SmithScript ${function:MonitorJobScriptBlock} -ArgumentList @($script:ComputerList,$script:Credential,$ExecutionStartTime,$CollectionName,$EventLogsMaximumCollectionTextBoxText,$EventLogsStartTimePickerChecked,$EventLogsStopTimePickerChecked,$EventLogsStartTimePickerValue,$EventLogsStopTimePickerValue) -DisableReRun -InputValues $script:InputValues
+                    Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript ${function:MonitorJobScriptBlock} -ArgumentList @($script:ComputerList,$script:Credential,$ExecutionStartTime,$CollectionName,$EventLogsMaximumCollectionTextBoxText,$EventLogsStartTimePickerChecked,$EventLogsStopTimePickerChecked,$EventLogsStartTimePickerValue,$EventLogsStopTimePickerValue) -InputValues $script:InputValues -DisableReRun
                 }
                 elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
-                    Monitor-Jobs -CollectionName $script:CollectionName
-                    Post-MonitorJobs -CollectionName $script:CollectionName -CollectionCommandStartTime $ExecutionStartTime
-                }    
+                    Monitor-Jobs -CollectionName $CollectionName
+                    Post-MonitorJobs -CollectionName $CollectionName -CollectionCommandStartTime $ExecutionStartTime
+                }
+                Update-EndpointNotes
             }
         }
     }
     else {
         foreach ($Query in $script:EventLogQueries) {
             if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match $Query.Name) {
-                $script:CollectionName = "Event Logs - $($Query.Name)"
+                $CollectionName = "Event Logs - $($Query.Name)"
 
-                $ResultsListBox.Items.Insert(0,"$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  $script:CollectionName")
+                $ResultsListBox.Items.Insert(0,"$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  $CollectionName")
 
                 Conduct-PreCommandCheck -CollectedDataTimeStampDirectory $script:CollectedDataTimeStampDirectory `
-                                        -IndividualHostResults "$script:IndividualHostResults" -CollectionName $script:CollectionName `
+                                        -IndividualHostResults "$script:IndividualHostResults" -CollectionName $CollectionName `
                                         -TargetComputer $TargetComputer
-                Create-LogEntry -TargetComputer $TargetComputer  -LogFile $LogFile -Message $script:CollectionName
+                Create-LogEntry -TargetComputer $TargetComputer  -LogFile $LogFile -Message $CollectionName
 
                 function MonitorJobScriptBlock {
                     param(
@@ -322,7 +289,7 @@ else {
 
                             Invoke-Expression -Command "$EventLogQueryCommand -ComputerName $TargetComputer $EventLogQueryFilter $EventLogQueryPipe"
                         } `
-                        -Name "PoSh-EasyWin: $($script:CollectionName) -- $($TargetComputer)" `
+                        -Name "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)" `
                         -ArgumentList $Query.Filter, $EventLogsMaximumCollectionTextBoxText, $EventLogsStartTimePickerChecked,$EventLogsStopTimePickerChecked,$EventLogsStartTimePickerValue,$EventLogsStopTimePickerValue,$TargetComputer
                     }
                 }
@@ -331,18 +298,17 @@ else {
                 String-InputValues -InputValue "$($Query.Name)"
 
                 if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
-                    Monitor-Jobs -CollectionName $script:CollectionName -MonitorMode -SMITH -SmithScript ${function:MonitorJobScriptBlock} -ArgumentList @($script:ComputerList,$script:Credential,$ExecutionStartTime,$CollectionName,$EventLogsMaximumCollectionTextBoxText,$EventLogsStartTimePickerChecked,$EventLogsStopTimePickerChecked,$EventLogsStartTimePickerValue,$EventLogsStopTimePickerValue) -DisableReRun -InputValues $script:InputValues
+                    Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript ${function:MonitorJobScriptBlock} -ArgumentList @($script:ComputerList,$script:Credential,$ExecutionStartTime,$CollectionName,$EventLogsMaximumCollectionTextBoxText,$EventLogsStartTimePickerChecked,$EventLogsStopTimePickerChecked,$EventLogsStartTimePickerValue,$EventLogsStopTimePickerValue) -DisableReRun -InputValues $script:InputValues
                 }
                 elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
-                    Monitor-Jobs -CollectionName $script:CollectionName
-                    Post-MonitorJobs -CollectionName $script:CollectionName -CollectionCommandStartTime $ExecutionStartTime
-                }    
+                    Monitor-Jobs -CollectionName $CollectionName
+                    Post-MonitorJobs -CollectionName $CollectionName -CollectionCommandStartTime $ExecutionStartTime
+                }
+                Update-EndpointNotes  
             }
         }
     }
 }
-
-
 
 # SIG # Begin signature block
 # MIIFuAYJKoZIhvcNAQcCoIIFqTCCBaUCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB

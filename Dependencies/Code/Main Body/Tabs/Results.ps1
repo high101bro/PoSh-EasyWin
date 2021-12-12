@@ -1,6 +1,6 @@
 
 $Section3ResultsTab = New-Object System.Windows.Forms.TabPage -Property @{
-    Text = "Info / Results"
+    Text = "Info / Results  "
     Name = "Results Tab"
     Font = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     UseVisualStyleBackColor = $True
@@ -14,8 +14,7 @@ Load-Code "$Dependencies\Code\System.Windows.Forms\Button\ResultsTabOpNotesAddBu
 . "$Dependencies\Code\System.Windows.Forms\Button\ResultsTabOpNotesAddButton.ps1"
 $ResultsTabOpNotesAddButton = New-Object System.Windows.Forms.Button -Property @{
     Text   = "Add Selected To OpNotes"
-    # Top    = $FormScale * 300
-    Top    = $FormScale * 296
+    Top    = $FormScale * 305
     Left   = $FormScale * 553
     Width  = $FormScale * 175
     Height = $FormScale * 25
@@ -30,8 +29,8 @@ Apply-CommonButtonSettings -Button $ResultsTabOpNotesAddButton
 $ResultsListBox = New-Object System.Windows.Forms.ListBox -Property @{
     Name   = "ResultsListBox"
     Left   = $FormScale * 3
-    Top    = $FormScale * 10
-    Height = $FormScale * 317
+    Top    = $FormScale * 3
+    Height = $FormScale * 329
     Width  = $FormScale * 742
     FormattingEnabled   = $True
     SelectionMode       = 'MultiExtended'

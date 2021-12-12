@@ -1,6 +1,6 @@
 
 $Section1ActionOnEndpointTab = New-Object System.Windows.Forms.TabPage -Property @{
-    Text   = "Multi-Endpoint Actions"
+    Text   = "Multi-Endpoint Actions  "
     Left   = $FormScale * 3
     Top    = $FormScale * -10
     Width  = $FormScale * 440

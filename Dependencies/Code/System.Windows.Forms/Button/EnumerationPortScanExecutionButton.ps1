@@ -89,214 +89,99 @@ $($EnumerationPortScanTimeoutTextbox.Text)
 "@        
 
         if ($script:ComputerListPivotExecutionCheckbox.checked -eq $false) {
-            #if ($script:EnumerationPortScanMonitorJobsCheckbox.checked -eq $false) {
-                $InformationTabControl.SelectedTab = $Section3ResultsTab
-                
-                # NOTE: Credentials are not necessarily needed to conduct scanning
-                if ($script:EnumerationPortScanSpecificComputerNodeCheckbox.checked -eq $true){
-                    Conduct-PortScan `
-                        -ComputerList $ComputerList `
-                        -EnumerationPortScanPortQuickPickComboBoxSelectedItem $EnumerationPortScanPortQuickPickComboBox.SelectedItem `
-                        -Timeout_ms $EnumerationPortScanTimeoutTextbox.Text `
-                        -TestWithICMPFirst $EnumerationPortScanTestICMPFirstCheckBox.Checked `
-                        -EndpointList `
-                        -SpecificPortsToScan $EnumerationPortScanSpecificPortsTextbox.Text `
-                        -FirstPort $EnumerationPortScanPortRangeFirstTextbox.Text `
-                        -LastPort $EnumerationPortScanPortRangeLastTextbox.Text
-                }
-                elseif ($script:EnumerationPortScanSpecificComputerNodeCheckbox.checked -eq $false){
-                    Conduct-PortScan `
-                        -EnumerationPortScanPortQuickPickComboBoxSelectedItem $EnumerationPortScanPortQuickPickComboBox.SelectedItem `
-                        -Timeout_ms $EnumerationPortScanTimeoutTextbox.Text `
-                        -TestWithICMPFirst $EnumerationPortScanTestICMPFirstCheckBox.Checked `
-                        -SpecificIPsToScan $EnumerationPortScanSpecificIPTextbox.Text `
-                        -SpecificPortsToScan $EnumerationPortScanSpecificPortsTextbox.Text `
-                        -Network $EnumerationPortScanIPRangeNetworkTextbox.Text `
-                        -FirstIP $EnumerationPortScanIPRangeFirstTextbox.Text `
-                        -LastIP $EnumerationPortScanIPRangeLastTextbox.Text `
-                        -FirstPort $EnumerationPortScanPortRangeFirstTextbox.Text `
-                        -LastPort $EnumerationPortScanPortRangeLastTextbox.Text
-                }
-            #}
-            #### ERROR. For some reason the Invoke-Command locally with Monitor-Job version isn't working... maybe I'll work on this later
-            # elseif ($script:EnumerationPortScanMonitorJobsCheckbox.checked -eq $true) {
-            #     $InformationTabControl.SelectedTab = $Section3MonitorJobsTab
-
-            #     $EnumerationPortScanPortQuickPickComboBoxSelectedItem = $EnumerationPortScanPortQuickPickComboBox.SelectedItem
-            #     $EnumerationPortScanTimeoutTextboxtext = $EnumerationPortScanTimeoutTextbox.text
-            #     $EnumerationPortScanTestICMPFirstCheckBoxchecked = $EnumerationPortScanTestICMPFirstCheckBox.checked
-            #     $EnumerationPortScanSpecificPortsTextboxtext = $EnumerationPortScanSpecificPortsTextbox.text
-            #     $EnumerationPortScanPortRangeFirstTextboxtext = $EnumerationPortScanPortRangeFirstTextbox.text
-            #     $EnumerationPortScanPortRangeLastTextboxtext = $EnumerationPortScanPortRangeLastTextbox.text
-                
-            #     # NOTE: Credentials are not necessarily needed to conduct scanning
-            #     if ($script:EnumerationPortScanSpecificComputerNodeCheckbox.checked -eq $true) {
-            #         $ConductPortScan = "function Conduct-PortScan { ${function:Conduct-PortScan} }"
-            #         Invoke-Command -ScriptBlock {
-            #             Param($ConductPortScan,$ComputerList,$EnumerationPortScanPortQuickPickComboBoxSelectedItem,$EnumerationPortScanTimeoutTextbox,$EnumerationPortScanTestICMPFirstCheckBox,$EnumerationPortScanSpecificPortsTextbox,$EnumerationPortScanPortRangeFirstTextbox,$EnumerationPortScanPortRangeLastTextbox)
-            #             $ErrorActionPreference = 'SilentlyContinue'
-            #             . ([ScriptBlock]::Create($ConductPortScan))
-
-            #             Conduct-PortScan `
-            #                 -ComputerList $ComputerList `
-            #                 -EnumerationPortScanPortQuickPickComboBoxSelectedItem $EnumerationPortScanPortQuickPickComboBoxSelectedItem `
-            #                 -Timeout_ms $EnumerationPortScanTimeoutTextbox `
-            #                 -TestWithICMPFirst $EnumerationPortScanTestICMPFirstCheckBox `
-            #                 -EndpointList `
-            #                 -SpecificPortsToScan $EnumerationPortScanSpecificPortsTextbox `
-            #                 -FirstPort $EnumerationPortScanPortRangeFirstTextbox `
-            #                 -LastPort $EnumerationPortScanPortRangeLastTextbox
-            #         } `
-            #         -ArgumentList @($ConductPortScan,$script:ComputerList,$EnumerationPortScanPortQuickPickComboBox.SelectedItem,$EnumerationPortScanTimeoutTextbox.text,$EnumerationPortScanTestICMPFirstCheckBox.checked,$EnumerationPortScanSpecificPortsTextbox.text,$EnumerationPortScanPortRangeFirstTextbox.text,$EnumerationPortScanPortRangeLastTextbox.text) `
-            #         -AsJob -JobName "PoSh-EasyWin: $($CollectionName) -- localhost"
-
-            #         Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript ${function:Conduct-PortScan} -ArgumentList @($ConductPortScan,$script:ComputerList,$EnumerationPortScanPortQuickPickComboBox.SelectedItem,$EnumerationPortScanTimeoutTextbox.text,$EnumerationPortScanTestICMPFirstCheckBox.checked,$EnumerationPortScanSpecificPortsTextbox.text,$EnumerationPortScanPortRangeFirstTextbox.text,$EnumerationPortScanPortRangeLastTextbox.text) -InputValues $InputValues -DisableReRun -JobsExportFiles 'true'
-            #     }
-            #     elseif ($script:EnumerationPortScanSpecificComputerNodeCheckbox.checked -eq $false) {
-            #         $ConductPortScan = "function Conduct-PortScan { ${function:Conduct-PortScan} }"
-            #         Invoke-Command -ScriptBlock {
-            #             Param($ConductPortScan,$EnumerationPortScanPortQuickPickComboBoxSelectedItem,$EnumerationPortScanTimeoutTextboxText,$EnumerationPortScanTestICMPFirstCheckBoxChecked,$EnumerationPortScanSpecificIPTextboxText,$EnumerationPortScanSpecificPortsTextboxText,$EnumerationPortScanIPRangeNetworkTextboxText,$EnumerationPortScanIPRangeFirstTextboxText,$EnumerationPortScanIPRangeLastTextboxText,$EnumerationPortScanPortRangeFirstTextboxText,$EnumerationPortScanPortRangeLastTextboxText)
-    
-            #             . ([ScriptBlock]::Create($ConductPortScan))
-    
-            #             Conduct-PortScan `
-            #                 -EnumerationPortScanPortQuickPickComboBoxSelectedItem $EnumerationPortScanPortQuickPickComboBoxSelectedItem `
-            #                 -Timeout_ms $EnumerationPortScanTimeoutTextboxText `
-            #                 -TestWithICMPFirst $EnumerationPortScanTestICMPFirstCheckBoxChecked `
-            #                 -SpecificIPsToScan $EnumerationPortScanSpecificIPTextboxText `
-            #                 -SpecificPortsToScan $EnumerationPortScanSpecificPortsTextboxText `
-            #                 -Network $EnumerationPortScanIPRangeNetworkTextboxText `
-            #                 -FirstIP $EnumerationPortScanIPRangeFirstTextboxText `
-            #                 -LastIP $EnumerationPortScanIPRangeLastTextboxText `
-            #                 -FirstPort $EnumerationPortScanPortRangeFirstTextboxText `
-            #                 -LastPort $EnumerationPortScanPortRangeLastTextboxText
-            #         } `
-            #         -ArgumentList @($ConductPortScan,$EnumerationPortScanPortQuickPickComboBox.SelectedItem,$EnumerationPortScanTimeoutTextbox.Text,$EnumerationPortScanTestICMPFirstCheckBox.Checked,$EnumerationPortScanSpecificIPTextbox.Text,$EnumerationPortScanSpecificPortsTextbox.Text,$EnumerationPortScanIPRangeNetworkTextbox.Text,$EnumerationPortScanIPRangeFirstTextbox.Text,$EnumerationPortScanIPRangeLastTextbox.Text,$EnumerationPortScanPortRangeFirstTextbox.Text,$EnumerationPortScanPortRangeLastTextbox.Text) `
-            #         -AsJob -JobName "PoSh-EasyWin: $($CollectionName) -- localhost"
-    
-            #         Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript ${function:Conduct-PortScan} -ArgumentList @($ConductPortScan,$EnumerationPortScanPortQuickPickComboBox.SelectedItem,$EnumerationPortScanTimeoutTextbox.Text,$EnumerationPortScanTestICMPFirstCheckBox.Checked,$EnumerationPortScanSpecificIPTextbox.Text,$EnumerationPortScanSpecificPortsTextbox.Text,$EnumerationPortScanIPRangeNetworkTextbox.Text,$EnumerationPortScanIPRangeFirstTextbox.Text,$EnumerationPortScanIPRangeLastTextbox.Text,$EnumerationPortScanPortRangeFirstTextbox.Text,$EnumerationPortScanPortRangeLastTextbox.Text) -InputValues $InputValues -DisableReRun -JobsExportFiles 'true'
-            #     }
-            # }
+            $InformationTabControl.SelectedTab = $Section3ResultsTab
+            
+            # NOTE: Credentials are not necessarily needed to conduct scanning
+            if ($script:EnumerationPortScanSpecificComputerNodeCheckbox.checked -eq $true){
+                Conduct-PortScan `
+                    -ComputerList $ComputerList `
+                    -EnumerationPortScanPortQuickPickComboBoxSelectedItem $EnumerationPortScanPortQuickPickComboBox.SelectedItem `
+                    -Timeout_ms $EnumerationPortScanTimeoutTextbox.Text `
+                    -TestWithICMPFirst $EnumerationPortScanTestICMPFirstCheckBox.Checked `
+                    -EndpointList `
+                    -SpecificPortsToScan $EnumerationPortScanSpecificPortsTextbox.Text `
+                    -FirstPort $EnumerationPortScanPortRangeFirstTextbox.Text `
+                    -LastPort $EnumerationPortScanPortRangeLastTextbox.Text
+            }
+            elseif ($script:EnumerationPortScanSpecificComputerNodeCheckbox.checked -eq $false){
+                Conduct-PortScan `
+                    -EnumerationPortScanPortQuickPickComboBoxSelectedItem $EnumerationPortScanPortQuickPickComboBox.SelectedItem `
+                    -Timeout_ms $EnumerationPortScanTimeoutTextbox.Text `
+                    -TestWithICMPFirst $EnumerationPortScanTestICMPFirstCheckBox.Checked `
+                    -SpecificIPsToScan $EnumerationPortScanSpecificIPTextbox.Text `
+                    -SpecificPortsToScan $EnumerationPortScanSpecificPortsTextbox.Text `
+                    -Network $EnumerationPortScanIPRangeNetworkTextbox.Text `
+                    -FirstIP $EnumerationPortScanIPRangeFirstTextbox.Text `
+                    -LastIP $EnumerationPortScanIPRangeLastTextbox.Text `
+                    -FirstPort $EnumerationPortScanPortRangeFirstTextbox.Text `
+                    -LastPort $EnumerationPortScanPortRangeLastTextbox.Text
+            }
         }
         elseif ($script:ComputerListPivotExecutionCheckbox.checked -eq $true) {
             $InformationTabControl.SelectedTab = $Section3MonitorJobsTab
 
             if ($script:EnumerationPortScanSpecificComputerNodeCheckbox.checked -eq $true) {
+                $InvokeCommandSplat = @{
+                    ScriptBlock = {
+                        Param($ConductPortScan,$ComputerList,$EnumerationPortScanPortQuickPickComboBoxSelectedItem,$EnumerationPortScanTimeoutTextbox,$EnumerationPortScanTestICMPFirstCheckBox,$EnumerationPortScanSpecificPortsTextbox,$EnumerationPortScanPortRangeFirstTextbox,$EnumerationPortScanPortRangeLastTextbox)
+                        . ([ScriptBlock]::Create($ConductPortScan))
+                        Conduct-PortScan `
+                            -ComputerList $ComputerList `
+                            -EnumerationPortScanPortQuickPickComboBoxSelectedItem $EnumerationPortScanPortQuickPickComboBoxSelectedItem `
+                            -Timeout_ms $EnumerationPortScanTimeoutTextbox `
+                            -TestWithICMPFirst $EnumerationPortScanTestICMPFirstCheckBox `
+                            -EndpointList `
+                            -SpecificPortsToScan $EnumerationPortScanSpecificPortsTextbox `
+                            -FirstPort $EnumerationPortScanPortRangeFirstTextbox `
+                            -LastPort $EnumerationPortScanPortRangeLastTextbox
+                    }
+                    ArgumentList = @($ConductPortScan,$script:ComputerList,$EnumerationPortScanPortQuickPickComboBox.SelectedItem,$EnumerationPortScanTimeoutTextbox.text,$EnumerationPortScanTestICMPFirstCheckBox.checked,$EnumerationPortScanSpecificPortsTextbox.text,$EnumerationPortScanPortRangeFirstTextbox.text,$EnumerationPortScanPortRangeLastTextbox.text)
+                    AsJob        = $True
+                    JobName      = "PoSh-EasyWin: $($CollectionName) -- $($script:ComputerListPivotExecutionTextBox.text)"
+                    ComputerName = $script:ComputerListPivotExecutionTextBox.text
+                }
+    
                 if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
                     if (!$script:Credential) { Create-NewCredentials }
-                    $CollectionName = "Enumeration Scanning $($script:ComputerList.count) [Pivot: $($script:ComputerListPivotExecutionTextBox.text)]"
-
-                    $ConductPortScan = "function Conduct-PortScan { ${function:Conduct-PortScan} }"
-                    Invoke-Command -ScriptBlock {
-                        Param($ConductPortScan,$ComputerList,$EnumerationPortScanPortQuickPickComboBoxSelectedItem,$EnumerationPortScanTimeoutTextbox,$EnumerationPortScanTestICMPFirstCheckBox,$EnumerationPortScanSpecificPortsTextbox,$EnumerationPortScanPortRangeFirstTextbox,$EnumerationPortScanPortRangeLastTextbox)
-
-                        . ([ScriptBlock]::Create($ConductPortScan))
-
-                        Conduct-PortScan `
-                            -ComputerList $ComputerList `
-                            -EnumerationPortScanPortQuickPickComboBoxSelectedItem $EnumerationPortScanPortQuickPickComboBoxSelectedItem `
-                            -Timeout_ms $EnumerationPortScanTimeoutTextbox `
-                            -TestWithICMPFirst $EnumerationPortScanTestICMPFirstCheckBox `
-                            -EndpointList `
-                            -SpecificPortsToScan $EnumerationPortScanSpecificPortsTextbox `
-                            -FirstPort $EnumerationPortScanPortRangeFirstTextbox `
-                            -LastPort $EnumerationPortScanPortRangeLastTextbox
-                    } `
-                    -ArgumentList @($ConductPortScan,$script:ComputerList,$EnumerationPortScanPortQuickPickComboBox.SelectedItem,$EnumerationPortScanTimeoutTextbox.text,$EnumerationPortScanTestICMPFirstCheckBox.checked,$EnumerationPortScanSpecificPortsTextbox.text,$EnumerationPortScanPortRangeFirstTextbox.text,$EnumerationPortScanPortRangeLastTextbox.text) `
-                    -AsJob -JobName "PoSh-EasyWin: $($CollectionName) -- $($script:ComputerListPivotExecutionTextBox.text)" `
-                    -ComputerName $script:ComputerListPivotExecutionTextBox.text `
-                    -Credential $script:Credential
-
-                    Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript ${function:Conduct-PortScan} -ArgumentList @($ConductPortScan,$script:ComputerList,$EnumerationPortScanPortQuickPickComboBox.SelectedItem,$EnumerationPortScanTimeoutTextbox.text,$EnumerationPortScanTestICMPFirstCheckBox.checked,$EnumerationPortScanSpecificPortsTextbox.text,$EnumerationPortScanPortRangeFirstTextbox.text,$EnumerationPortScanPortRangeLastTextbox.text) -InputValues $InputValues -DisableReRun -JobsExportFiles 'true'
+                    $InvokeCommandSplat += @{Credential = $script:Credential}
                 }
-                else {
-                    $CollectionName = "Enumeration Scanning $($script:ComputerList.count) Endpoints [Pivot: $($script:ComputerListPivotExecutionTextBox.text)]"
+                
+                Invoke-Command @InvokeCommandSplat | Select-Object PSComputerName, *
 
-                    $ConductPortScan = "function Conduct-PortScan { ${function:Conduct-PortScan} }"
-                    Invoke-Command -ScriptBlock {
-                        Param($ConductPortScan,$ComputerList,$EnumerationPortScanPortQuickPickComboBoxSelectedItem,$EnumerationPortScanTimeoutTextbox,$EnumerationPortScanTestICMPFirstCheckBox,$EnumerationPortScanSpecificPortsTextbox,$EnumerationPortScanPortRangeFirstTextbox,$EnumerationPortScanPortRangeLastTextbox)
-
-                        . ([ScriptBlock]::Create($ConductPortScan))
-
-                        Conduct-PortScan `
-                            -ComputerList $ComputerList `
-                            -EnumerationPortScanPortQuickPickComboBoxSelectedItem $EnumerationPortScanPortQuickPickComboBoxSelectedItem `
-                            -Timeout_ms $EnumerationPortScanTimeoutTextbox `
-                            -TestWithICMPFirst $EnumerationPortScanTestICMPFirstCheckBox `
-                            -EndpointList `
-                            -SpecificPortsToScan $EnumerationPortScanSpecificPortsTextbox `
-                            -FirstPort $EnumerationPortScanPortRangeFirstTextbox `
-                            -LastPort $EnumerationPortScanPortRangeLastTextbox
-                    } `
-                    -ArgumentList @($ConductPortScan,$script:ComputerList,$EnumerationPortScanPortQuickPickComboBox.SelectedItem,$EnumerationPortScanTimeoutTextbox.text,$EnumerationPortScanTestICMPFirstCheckBox.checked,$EnumerationPortScanSpecificPortsTextbox.text,$EnumerationPortScanPortRangeFirstTextbox.text,$EnumerationPortScanPortRangeLastTextbox.text) `
-                    -AsJob -JobName "PoSh-EasyWin: $($CollectionName) -- $($script:ComputerListPivotExecutionTextBox.text)" `
-                    -ComputerName $script:ComputerListPivotExecutionTextBox.text
-
-                    Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript ${function:Conduct-PortScan} -ArgumentList @($ConductPortScan,$script:ComputerList,$EnumerationPortScanPortQuickPickComboBox.SelectedItem,$EnumerationPortScanTimeoutTextbox.text,$EnumerationPortScanTestICMPFirstCheckBox.checked,$EnumerationPortScanSpecificPortsTextbox.text,$EnumerationPortScanPortRangeFirstTextbox.text,$EnumerationPortScanPortRangeLastTextbox.text) -InputValues $InputValues -DisableReRun -JobsExportFiles 'true'
-                }
+                Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript ${function:Conduct-PortScan} -ArgumentList @($ConductPortScan,$script:ComputerList,$EnumerationPortScanPortQuickPickComboBox.SelectedItem,$EnumerationPortScanTimeoutTextbox.text,$EnumerationPortScanTestICMPFirstCheckBox.checked,$EnumerationPortScanSpecificPortsTextbox.text,$EnumerationPortScanPortRangeFirstTextbox.text,$EnumerationPortScanPortRangeLastTextbox.text) -InputValues $InputValues -DisableReRun -JobsExportFiles 'true'
             }
             elseif ($script:EnumerationPortScanSpecificComputerNodeCheckbox.checked -eq $false) {
+
+                $InvokeCommandSplat = @{
+                    ScriptBlock = {
+                        Param($ConductPortScan,$EnumerationPortScanPortQuickPickComboBoxSelectedItem,$EnumerationPortScanTimeoutTextboxText,$EnumerationPortScanTestICMPFirstCheckBoxChecked,$EnumerationPortScanSpecificIPTextboxText,$EnumerationPortScanSpecificPortsTextboxText,$EnumerationPortScanIPRangeNetworkTextboxText,$EnumerationPortScanIPRangeFirstTextboxText,$EnumerationPortScanIPRangeLastTextboxText,$EnumerationPortScanPortRangeFirstTextboxText,$EnumerationPortScanPortRangeLastTextboxText)
+                        . ([ScriptBlock]::Create($ConductPortScan))
+                        Conduct-PortScan `
+                            -EnumerationPortScanPortQuickPickComboBoxSelectedItem $EnumerationPortScanPortQuickPickComboBoxSelectedItem `
+                            -Timeout_ms $EnumerationPortScanTimeoutTextboxText `
+                            -TestWithICMPFirst $EnumerationPortScanTestICMPFirstCheckBoxChecked `
+                            -SpecificIPsToScan $EnumerationPortScanSpecificIPTextboxText `
+                            -SpecificPortsToScan $EnumerationPortScanSpecificPortsTextboxText `
+                            -Network $EnumerationPortScanIPRangeNetworkTextboxText `
+                            -FirstIP $EnumerationPortScanIPRangeFirstTextboxText `
+                            -LastIP $EnumerationPortScanIPRangeLastTextboxText `
+                            -FirstPort $EnumerationPortScanPortRangeFirstTextboxText `
+                            -LastPort $EnumerationPortScanPortRangeLastTextboxText
+                    }
+                    ArgumentList = @($ConductPortScan,$EnumerationPortScanPortQuickPickComboBox.SelectedItem,$EnumerationPortScanTimeoutTextbox.Text,$EnumerationPortScanTestICMPFirstCheckBox.Checked,$EnumerationPortScanSpecificIPTextbox.Text,$EnumerationPortScanSpecificPortsTextbox.Text,$EnumerationPortScanIPRangeNetworkTextbox.Text,$EnumerationPortScanIPRangeFirstTextbox.Text,$EnumerationPortScanIPRangeLastTextbox.Text,$EnumerationPortScanPortRangeFirstTextbox.Text,$EnumerationPortScanPortRangeLastTextbox.Text)
+                    AsJob        = $True
+                    JobName      = "PoSh-EasyWin: $($CollectionName) -- $($script:ComputerListPivotExecutionTextBox.text)"
+                    ComputerName = $script:ComputerListPivotExecutionTextBox.text
+                }
+    
                 if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
                     if (!$script:Credential) { Create-NewCredentials }
-                    $CollectionName = "Enumeration Scanning $(
-                        $(
-                            ([int]$($EnumerationPortScanIPRangeFirstTextbox.Text)..[int]$($EnumerationPortScanIPRangeLastTextbox.Text)).count
-                        ) + $(
-                            ($EnumerationPortScanSpecificIPTextbox.Text).split(',').trim().count
-                        )
-                        ) [Pivot: $($script:ComputerListPivotExecutionTextBox.text)]"
-
-                    $ConductPortScan = "function Conduct-PortScan { ${function:Conduct-PortScan} }"
-                    Invoke-Command -ScriptBlock {
-                        Param($ConductPortScan,$EnumerationPortScanPortQuickPickComboBoxSelectedItem,$EnumerationPortScanTimeoutTextboxText,$EnumerationPortScanTestICMPFirstCheckBoxChecked,$EnumerationPortScanSpecificIPTextboxText,$EnumerationPortScanSpecificPortsTextboxText,$EnumerationPortScanIPRangeNetworkTextboxText,$EnumerationPortScanIPRangeFirstTextboxText,$EnumerationPortScanIPRangeLastTextboxText,$EnumerationPortScanPortRangeFirstTextboxText,$EnumerationPortScanPortRangeLastTextboxText)
-
-                        . ([ScriptBlock]::Create($ConductPortScan))
-
-                        Conduct-PortScan `
-                            -EnumerationPortScanPortQuickPickComboBoxSelectedItem $EnumerationPortScanPortQuickPickComboBoxSelectedItem `
-                            -Timeout_ms $EnumerationPortScanTimeoutTextboxText `
-                            -TestWithICMPFirst $EnumerationPortScanTestICMPFirstCheckBoxChecked `
-                            -SpecificIPsToScan $EnumerationPortScanSpecificIPTextboxText `
-                            -SpecificPortsToScan $EnumerationPortScanSpecificPortsTextboxText `
-                            -Network $EnumerationPortScanIPRangeNetworkTextboxText `
-                            -FirstIP $EnumerationPortScanIPRangeFirstTextboxText `
-                            -LastIP $EnumerationPortScanIPRangeLastTextboxText `
-                            -FirstPort $EnumerationPortScanPortRangeFirstTextboxText `
-                            -LastPort $EnumerationPortScanPortRangeLastTextboxText
-                    } `
-                    -ArgumentList @($ConductPortScan,$EnumerationPortScanPortQuickPickComboBox.SelectedItem,$EnumerationPortScanTimeoutTextbox.Text,$EnumerationPortScanTestICMPFirstCheckBox.Checked,$EnumerationPortScanSpecificIPTextbox.Text,$EnumerationPortScanSpecificPortsTextbox.Text,$EnumerationPortScanIPRangeNetworkTextbox.Text,$EnumerationPortScanIPRangeFirstTextbox.Text,$EnumerationPortScanIPRangeLastTextbox.Text,$EnumerationPortScanPortRangeFirstTextbox.Text,$EnumerationPortScanPortRangeLastTextbox.Text) `
-                    -AsJob -JobName "PoSh-EasyWin: $($CollectionName) -- $($script:ComputerListPivotExecutionTextBox.text)" `
-                    -ComputerName $script:ComputerListPivotExecutionTextBox.text `
-                    -Credential $script:Credential
-
-                    Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript ${function:Conduct-PortScan} -ArgumentList @($ConductPortScan,$EnumerationPortScanPortQuickPickComboBox.SelectedItem,$EnumerationPortScanTimeoutTextbox.Text,$EnumerationPortScanTestICMPFirstCheckBox.Checked,$EnumerationPortScanSpecificIPTextbox.Text,$EnumerationPortScanSpecificPortsTextbox.Text,$EnumerationPortScanIPRangeNetworkTextbox.Text,$EnumerationPortScanIPRangeFirstTextbox.Text,$EnumerationPortScanIPRangeLastTextbox.Text,$EnumerationPortScanPortRangeFirstTextbox.Text,$EnumerationPortScanPortRangeLastTextbox.Text) -InputValues $InputValues -DisableReRun -JobsExportFiles 'true'
+                    $InvokeCommandSplat += @{Credential = $script:Credential}
                 }
-                else {
-                    $ConductPortScan = "function Conduct-PortScan { ${function:Conduct-PortScan} }"
-                    Invoke-Command -ScriptBlock {
-                        Param($ConductPortScan,$EnumerationPortScanPortQuickPickComboBoxSelectedItem,$EnumerationPortScanTimeoutTextboxText,$EnumerationPortScanTestICMPFirstCheckBoxChecked,$EnumerationPortScanSpecificIPTextboxText,$EnumerationPortScanSpecificPortsTextboxText,$EnumerationPortScanIPRangeNetworkTextboxText,$EnumerationPortScanIPRangeFirstTextboxText,$EnumerationPortScanIPRangeLastTextboxText,$EnumerationPortScanPortRangeFirstTextboxText,$EnumerationPortScanPortRangeLastTextboxText)
+                
+                Invoke-Command @InvokeCommandSplat | Select-Object PSComputerName, *
 
-                        . ([ScriptBlock]::Create($ConductPortScan))
-
-                        Conduct-PortScan `
-                            -EnumerationPortScanPortQuickPickComboBoxSelectedItem $EnumerationPortScanPortQuickPickComboBoxSelectedItem `
-                            -Timeout_ms $EnumerationPortScanTimeoutTextboxText `
-                            -TestWithICMPFirst $EnumerationPortScanTestICMPFirstCheckBoxChecked `
-                            -SpecificIPsToScan $EnumerationPortScanSpecificIPTextboxText `
-                            -SpecificPortsToScan $EnumerationPortScanSpecificPortsTextboxText `
-                            -Network $EnumerationPortScanIPRangeNetworkTextboxText `
-                            -FirstIP $EnumerationPortScanIPRangeFirstTextboxText `
-                            -LastIP $EnumerationPortScanIPRangeLastTextboxText `
-                            -FirstPort $EnumerationPortScanPortRangeFirstTextboxText `
-                            -LastPort $EnumerationPortScanPortRangeLastTextboxText
-                    } `
-                    -ArgumentList @($ConductPortScan,$EnumerationPortScanPortQuickPickComboBox.SelectedItem,$EnumerationPortScanTimeoutTextbox.Text,$EnumerationPortScanTestICMPFirstCheckBox.Checked,$EnumerationPortScanSpecificIPTextbox.Text,$EnumerationPortScanSpecificPortsTextbox.Text,$EnumerationPortScanIPRangeNetworkTextbox.Text,$EnumerationPortScanIPRangeFirstTextbox.Text,$EnumerationPortScanIPRangeLastTextbox.Text,$EnumerationPortScanPortRangeFirstTextbox.Text,$EnumerationPortScanPortRangeLastTextbox.Text) `
-                    -AsJob -JobName "PoSh-EasyWin: $($CollectionName) -- $($script:ComputerListPivotExecutionTextBox.text)" `
-                    -ComputerName $script:ComputerListPivotExecutionTextBox.text
-                    
-
-                    Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript ${function:Conduct-PortScan} -ArgumentList @($ConductPortScan,$EnumerationPortScanPortQuickPickComboBox.SelectedItem,$EnumerationPortScanTimeoutTextbox.Text,$EnumerationPortScanTestICMPFirstCheckBox.Checked,$EnumerationPortScanSpecificIPTextbox.Text,$EnumerationPortScanSpecificPortsTextbox.Text,$EnumerationPortScanIPRangeNetworkTextbox.Text,$EnumerationPortScanIPRangeFirstTextbox.Text,$EnumerationPortScanIPRangeLastTextbox.Text,$EnumerationPortScanPortRangeFirstTextbox.Text,$EnumerationPortScanPortRangeLastTextbox.Text) -InputValues $InputValues -DisableReRun -JobsExportFiles 'true'
-                }
+                Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript ${function:Conduct-PortScan} -ArgumentList @($ConductPortScan,$EnumerationPortScanPortQuickPickComboBox.SelectedItem,$EnumerationPortScanTimeoutTextbox.Text,$EnumerationPortScanTestICMPFirstCheckBox.Checked,$EnumerationPortScanSpecificIPTextbox.Text,$EnumerationPortScanSpecificPortsTextbox.Text,$EnumerationPortScanIPRangeNetworkTextbox.Text,$EnumerationPortScanIPRangeFirstTextbox.Text,$EnumerationPortScanIPRangeLastTextbox.Text,$EnumerationPortScanPortRangeFirstTextbox.Text,$EnumerationPortScanPortRangeLastTextbox.Text) -InputValues $InputValues -DisableReRun -JobsExportFiles 'true'
             }
         }
     }

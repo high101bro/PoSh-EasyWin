@@ -1,5 +1,5 @@
 $ExecutionStartTime = Get-Date
-$CollectionName = "Event Logs - Event ID Manual Entry"
+$CollectionName = "Event Logs - Event ID Search"
 
 $StatusListBox.Items.Clear()
 $StatusListBox.Items.Add("Executing: $CollectionName")

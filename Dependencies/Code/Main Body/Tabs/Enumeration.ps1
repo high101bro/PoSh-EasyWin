@@ -5,14 +5,14 @@ $EnumerationLabelHeight       = 25
 $EnumerationGroupGap          = 15
 
 $Section1EnumerationTab = New-Object System.Windows.Forms.TabPage -Property @{
-    Text   = "Enumeration"
+    Text   = "Enumeration  "
     Left   = $FormScale * $EnumerationRightPosition
     Top    = 0
     Width  = $FormScale * $EnumerationLabelWidth
     Height = $FormScale * $EnumerationLabelHeight
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     UseVisualStyleBackColor = $True
-    ImageIndex = 2
+    ImageIndex = 3
 }
 $MainLeftTabControl.Controls.Add($Section1EnumerationTab)
 
@@ -106,7 +106,7 @@ function Check-IfScanExecutionReady {
 $EnumerationPortScanGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
     Text   = "Create List From TCP Port Scan"
     Left   = 0
-    Top    = $FormScale * 13
+    Top    = $FormScale * 7
     Width  = $FormScale * 294
     Height = $FormScale * 350
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)

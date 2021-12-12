@@ -1,6 +1,6 @@
 
 $Section2OptionsTab = New-Object System.Windows.Forms.TabPage -Property @{
-    Text = "Options"
+    Text = "Options  "
     Font = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     UseVisualStyleBackColor = $True
     ImageIndex = 1

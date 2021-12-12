@@ -239,37 +239,37 @@ $($SearchString.trim())
 
     if ($NetworkSysmonSearchSourceIPAddressCheckbox) {
         Invoke-Command -ScriptBlock ${function:MonitorJobScriptBlock} -ArgumentList @($CollectionName,$NetworkSysmonSearchSourceIPAddress,$null,$null,$null,$null,$null,$NetworkSysmonRegex)
-        Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript ${function:MonitorJobScriptBlock} -ArgumentList @($CollectionName,$NetworkSysmonSearchSourceIPAddress,$null,$null,$null,$null,$null,$NetworkSysmonRegex) -SmithFlag 'RetrieveFile' -InputValues $InputValues
+        Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript ${function:MonitorJobScriptBlock} -ArgumentList @($CollectionName,$NetworkSysmonSearchSourceIPAddress,$null,$null,$null,$null,$null,$NetworkSysmonRegex) -InputValues $InputValues
     }
 
 
     if ($NetworkSysmonSearchSourcePortCheckbox) {
         Invoke-Command -ScriptBlock ${function:MonitorJobScriptBlock} -ArgumentList @($CollectionName,$null,$NetworkSysmonSearchSourcePort,$null,$null,$null,$null,$NetworkSysmonRegex)
-        Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript ${function:MonitorJobScriptBlock} -ArgumentList @($CollectionName,$null,$NetworkSysmonSearchSourcePort,$null,$null,$null,$null,$NetworkSysmonRegex) -SmithFlag 'RetrieveFile' -InputValues $InputValues
+        Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript ${function:MonitorJobScriptBlock} -ArgumentList @($CollectionName,$null,$NetworkSysmonSearchSourcePort,$null,$null,$null,$null,$NetworkSysmonRegex) -InputValues $InputValues
     }
 
 
     if ($NetworkSysmonSearchDestinationIPAddressCheckbox) {
         Invoke-Command -ScriptBlock ${function:MonitorJobScriptBlock} -ArgumentList @($CollectionName,$null,$null,$NetworkSysmonSearchDestinationIPAddress,$null,$null,$null,$NetworkSysmonRegex)
-        Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript ${function:MonitorJobScriptBlock} -ArgumentList @($CollectionName,$null,$null,$NetworkSysmonSearchDestinationIPAddress,$null,$null,$null,$NetworkSysmonRegex) -SmithFlag 'RetrieveFile' -InputValues $InputValues
+        Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript ${function:MonitorJobScriptBlock} -ArgumentList @($CollectionName,$null,$null,$NetworkSysmonSearchDestinationIPAddress,$null,$null,$null,$NetworkSysmonRegex) -InputValues $InputValues
     }
 
 
     if ($NetworkSysmonSearchDestinationPortCheckbox) {
         Invoke-Command -ScriptBlock ${function:MonitorJobScriptBlock} -ArgumentList @($CollectionName,$null,$null,$null,$NetworkSysmonSearchDestinationPort,$null,$null,$NetworkSysmonRegex)
-        Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript ${function:MonitorJobScriptBlock} -ArgumentList @($CollectionName,$null,$null,$null,$NetworkSysmonSearchDestinationPort,$null,$null,$NetworkSysmonRegex) -SmithFlag 'RetrieveFile' -InputValues $InputValues
+        Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript ${function:MonitorJobScriptBlock} -ArgumentList @($CollectionName,$null,$null,$null,$NetworkSysmonSearchDestinationPort,$null,$null,$NetworkSysmonRegex) -InputValues $InputValues
     }
 
 
     if ($NetworkSysmonSearchAccountCheckbox) {
         Invoke-Command -ScriptBlock ${function:MonitorJobScriptBlock} -ArgumentList @($CollectionName,$null,$null,$null,$null,$NetworkSysmonSearchAccount,$null,$NetworkSysmonRegex)
-        Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript ${function:MonitorJobScriptBlock} -ArgumentList @($CollectionName,$null,$null,$null,$null,$NetworkSysmonSearchAccount,$null,$NetworkSysmonRegex) -SmithFlag 'RetrieveFile' -InputValues $InputValues
+        Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript ${function:MonitorJobScriptBlock} -ArgumentList @($CollectionName,$null,$null,$null,$null,$NetworkSysmonSearchAccount,$null,$NetworkSysmonRegex) -InputValues $InputValues
     }
 
 
     if ($NetworkSysmonSearchExecutablePathCheckbox) {
         Invoke-Command -ScriptBlock ${function:MonitorJobScriptBlock} -ArgumentList @($CollectionName,$null,$null,$null,$null,$null,$NetworkSysmonSearchExecutablePath,$NetworkSysmonRegex)
-        Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript ${function:MonitorJobScriptBlock} -ArgumentList @($CollectionName,$null,$null,$null,$null,$null,$NetworkSysmonSearchExecutablePath,$NetworkSysmonRegex) -SmithFlag 'RetrieveFile' -InputValues $InputValues
+        Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript ${function:MonitorJobScriptBlock} -ArgumentList @($CollectionName,$null,$null,$null,$null,$null,$NetworkSysmonSearchExecutablePath,$NetworkSysmonRegex) -InputValues $InputValues
     }
 
 
@@ -278,6 +278,7 @@ $($SearchString.trim())
     $ResultsListBox.Items.RemoveAt(0)
     $ResultsListBox.Items.Insert(0,"$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss')) [$CollectionCommandDiffTime]  $CollectionName")
 
+    Update-EndpointNotes
 }
 
 # SIG # Begin signature block

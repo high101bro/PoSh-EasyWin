@@ -109,7 +109,7 @@ function Write-ProcessTree($Process) {
     $ParentProcessID       = $Process.ParentProcessID
     $ParentProcessName     = $(Get-Process -Id $Process.ParentProcessID).Name
     $CommandLine           = $Process.CommandLine
-    #$CreationDate         = $([Management.ManagementDateTimeConverter]::ToDateTime($Process.CreationDate))
+    $CreationDate          = [Management.ManagementDateTimeConverter]::ToDateTime($Process.CreationDate)
 
     $ServiceInfo           = $ServicePIDs[$Process.ProcessId]
 

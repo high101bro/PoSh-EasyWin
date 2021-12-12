@@ -1,5 +1,5 @@
 $Section3AccountDataTab = New-Object System.Windows.Forms.TabPage -Property @{
-    Text = "Account Data"
+    Text = "Account Data  "
     Name = "Account Data Tab"
     Font = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     UseVisualStyleBackColor = $True

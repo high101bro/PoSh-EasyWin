@@ -429,14 +429,14 @@ function Set-CheckState {
 function script:Maximize-MonitorJobsTab {
     $script:Section3MonitorJobsResizeButton.text = "v Minimize Tab"
     $InformationPanel.Top    = $ComputerAndAccountTreeNodeViewPanel.Top
-    $InformationPanel.Height = $FormScale * 655
+    $InformationPanel.Height = $MainCenterPanel.Height + $InformationPanel.Height
     $InformationPanel.bringtofront()
     $InformationTabControl.Height = $ComputerAndAccountTreeNodeViewPanel.Height
 }            
 function script:Minimize-MonitorJobsTab {
     $script:Section3MonitorJobsResizeButton.text = "^ Maximize Tab"
-    $InformationPanel.Top    = $MainCenterPanel.Top + $MainCenterPanel.Height + ($FormScale * 5)
-    $InformationPanel.Height = $FormScale * 352
+    $InformationPanel.Top    = $MainCenterPanel.Top + $MainCenterPanel.Height
+    $InformationPanel.Height = $FormScale * 357
     $InformationPanel.bringtofront()
     $InformationTabControl.Height = $InformationPanel.Height
 }
@@ -458,10 +458,10 @@ $PoShEasyWinAccountLaunch = [System.Security.Principal.WindowsIdentity]::GetCurr
 $PoShEasyWin = New-Object System.Windows.Forms.Form -Property @{
     Text    = "PoSh-EasyWin   ($PoShEasyWinAccountLaunch)  [$InitialScriptLoadTime]"
     Icon    = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
-    Width = $FormScale * 1470
-    Height = $FormScale * 695
+    Width   = $FormScale * 1435
+    Height  = $FormScale * 685
     TopMost = $true
-    AutoScroll  = $True
+    AutoScroll  = $false
     ControlBox  = $true
     MaximizeBox = $false
     MinimizeBox = $true
@@ -547,8 +547,8 @@ $PoShEasyWin = New-Object System.Windows.Forms.Form -Property @{
     
         $script:VerifyCloseForm.ShowDialog()
     }
-    #backgroundimage =  [system.drawing.image]::FromFile("C:\Users\Administrator\Desktop\PoSh-EasyWin\Dependencies\Background Image 001.jpg")
 }
+
 
 # Takes the entered domain and lists all computers
 Update-FormProgress "$Dependencies\Code\Execution\Enumeration\Import-HostsFromDomain.ps1"
@@ -558,11 +558,35 @@ Update-FormProgress "$Dependencies\Code\Execution\Enumeration\Import-HostsFromDo
 Update-FormProgress "$Dependencies\Code\Main Body\Show-ToolTip.ps1"
 . "$Dependencies\Code\Main Body\Show-ToolTip.ps1"
 
-$QueryAndCollectionPanel = New-Object System.Windows.Forms.Panel -Property @{
+
+$TopLeftPanel = New-Object System.Windows.Forms.Panel -Property @{
     Left   = $FormScale * 5
     Top    = $FormScale * 5
     Width  = $FormScale * 460
-    Height = $FormScale * 645
+    Height = $FormScale * 45
+    BorderStyle = 'FixedSingle'
+}
+$PoShEasyWin.Controls.Add($TopLeftPanel)
+
+
+            $PoShEasyWinLogoPictureBox = New-Object Windows.Forms.PictureBox -Property @{
+                Text   = "PoSh-EasyWin Image"
+                Left   = $FormScale * 5
+                Top    = $FormScale * 5
+                Width  = $FormScale * 285
+                Height = $FormScale * 35
+                Image  = [System.Drawing.Image]::Fromfile("$Dependencies\Images\PoSh-EasyWin Image 01.png")
+                SizeMode = 'StretchImage'
+            }
+            $TopLeftPanel.Controls.Add($PoShEasyWinLogoPictureBox)
+
+
+$QueryAndCollectionPanel = New-Object System.Windows.Forms.Panel -Property @{
+    Left   = $FormScale * 5
+    Top    = $TopLeftPanel.Top + $TopLeftPanel.Height
+    Width  = $FormScale * 460
+    Height = $FormScale * 590
+    BorderStyle = 'FixedSingle'
 }
             $MainLeftTabControlImageList = New-Object System.Windows.Forms.ImageList -Property @{
                 ImageSize = @{
@@ -570,15 +594,17 @@ $QueryAndCollectionPanel = New-Object System.Windows.Forms.Panel -Property @{
                     Height = $FormScale * 16
                 }
             }
-            # Index 0 = Collection
-            $MainLeftTabControlImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Collection.png"))
-            # Index 1 = Interaction
+            # Index 0 = Commands
+            $MainLeftTabControlImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\PowerShell.png"))
+            # Index 1 = Search
+            $MainLeftTabControlImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Search.png"))
+            # Index 2 = Interaction
             $MainLeftTabControlImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Interaction.png"))
-            # Index 2 = Enumeration / Scanning
+            # Index 3 = Enumeration / Scanning
             $MainLeftTabControlImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Radar-Scanning.png"))
-            # Index 3 = OpNotes 
+            # Index 4 = OpNotes 
             $MainLeftTabControlImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Notes.png"))
-            # Index 4 = Info
+            # Index 5 = Info
             $MainLeftTabControlImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Info.png"))
 
 
@@ -586,15 +612,22 @@ $QueryAndCollectionPanel = New-Object System.Windows.Forms.Panel -Property @{
                 Left   = 0
                 Width  = $FormScale * 460
                 Height = $FormScale * 590
-                Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),1,2,1)
-                ImageList = $MainLeftTabControlImageList
+                Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,2,1)
+                ForeColor  = "Blue"
+                ImageList  = $MainLeftTabControlImageList
+                Appearance = [System.Windows.Forms.TabAppearance]::Buttons
+                Hottrack   = $true
             }
             $QueryAndCollectionPanel.Controls.Add($MainLeftTabControl)
 
+            # Commands Tab
+            # This tab contains all the individual commands within the command treeview, such as the PowerShell, WMI, and Native Commands using the WinRM, RPC/DCOM, and SMB protocols
+            Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Commands.ps1"
+            . "$Dependencies\Code\Main Body\Tabs\Commands.ps1"
 
             # Collections Tab
-            Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Collections.ps1"
-            . "$Dependencies\Code\Main Body\Tabs\Collections.ps1"
+            Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Search.ps1"
+            . "$Dependencies\Code\Main Body\Tabs\Search.ps1"
 
             # Interactions Tab
             Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Interactions.ps1"
@@ -620,16 +653,19 @@ $QueryAndCollectionPanel = New-Object System.Windows.Forms.Panel -Property @{
             # Info Tab
             Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Info.ps1"
             . "$Dependencies\Code\Main Body\Tabs\Info.ps1"
-            
+            "6"
+
 $PoShEasyWin.Controls.Add($QueryAndCollectionPanel)
 
 
 $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel -Property @{
-    Left   = $FormScale * 472
+    Left   = $QueryAndCollectionPanel.Left + $QueryAndCollectionPanel.Width
     Top    = $FormScale * 5
     Width  = $FormScale * 200
-    Height = $FormScale * 635    
+    Height = $FormScale * 635
+   BorderStyle = 'FixedSingle'
 }
+
             Update-FormProgress "$Dependencies\Code\Context Menu Strip\Display-ContextMenuForAccountsTreeNode.ps1"
             . "$Dependencies\Code\Context Menu Strip\Display-ContextMenuForAccountsTreeNode.ps1"
             Display-ContextMenuForAccountsTreeNode -ClickedOnArea
@@ -650,8 +686,11 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel -Pr
                 Top    = 0
                 Width  = $FormScale * 192
                 Height = $FormScale * 635
-                Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-                Add_Click = {
+                Appearance = [System.Windows.Forms.TabAppearance]::Buttons
+                Hottrack   = $true
+                Dock       = 'Fill'
+                Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,2,1)
+                Add_Click  = {
                     if ($This.SelectedTab -eq $ComputerTreeviewTab) {
                         $InformationTabControl.SelectedTab = $Section3HostDataTab
                     }
@@ -661,6 +700,7 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel -Pr
                 }
                 ImageList = $ComputerAndAccountTreeViewTabControlImageList
             }
+
             $ComputerAndAccountTreeNodeViewPanel.Controls.Add($ComputerAndAccountTreeViewTabControl)
 
                     # If Computer treenodes are imported/created with missing data, this populates various fields with default data
@@ -721,7 +761,7 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel -Pr
                     . "$Dependencies\Code\System.Windows.Forms\Button\Import-DataFromTxt.ps1"
                     
             $ComputerTreeviewTab = New-Object System.Windows.Forms.TabPage -Property @{
-                Text = "Endpoints"
+                Text = "Endpoints  "
                 Font = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
                 UseVisualStyleBackColor = $True
                 ImageIndex = 0
@@ -761,7 +801,7 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel -Pr
                         Text    = 'CanonicalName'
                         Left    = 0
                         Top     = $FormScale * 5
-                        Width   = $FormScale * 120
+                        Width   = $FormScale * 135
                         Height  = $FormScale * 25
                         Font    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
                         AutoCompleteSource = "ListItems"
@@ -799,7 +839,7 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel -Pr
                         Name   = "Search TextBox"
                         Left   = $script:ComputerTreeNodeComboBox.Left
                         Top    = $script:ComputerTreeNodeComboBox.Top + $script:ComputerTreeNodeComboBox.Height + ($FormScale * 5)
-                        Width  = $FormScale * 120
+                        Width  = $FormScale * 135
                         Height = $FormScale * 25
                         AutoCompleteSource = "ListItems"
                         AutoCompleteMode   = "SuggestAppend"
@@ -991,11 +1031,10 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel -Pr
                     Update-FormProgress "$Dependencies\Code\System.Windows.Forms\TreeView\ComputerTreeView.ps1"
                     . "$Dependencies\Code\System.Windows.Forms\TreeView\ComputerTreeView.ps1"
                     $script:ComputerTreeView = New-Object System.Windows.Forms.TreeView -Property @{
-                        Left = $ComputerTreeNodeSearchComboBox.Left
-                        Top = $ComputerTreeNodeSearchButton.Top + $ComputerTreeNodeSearchButton.Height + ($FormScale * 5)
-                        Width = $FormScale * 180
-                        # Width  = $ComputerTreeNodeSearchComboBox.Width + $ComputerTreeNodeSearchButton.Width + ($FormScale * 5)
-                        Height = $FormScale * 558
+                        Left   = $ComputerTreeNodeSearchComboBox.Left
+                        Top    = $ComputerTreeNodeSearchButton.Top + $ComputerTreeNodeSearchButton.Height + ($FormScale * 5)
+                        Width  = $FormScale * 195
+                        Height = $FormScale * 555
                         # Note: size and location properties are are managed by 
                         Font              = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
                         CheckBoxes        = $True
@@ -1052,7 +1091,7 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel -Pr
 
 
             $AccountsTreeviewTab = New-Object System.Windows.Forms.TabPage -Property @{
-                Text = "Accounts"
+                Text = "Accounts  "
                 Font = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
                 ImageIndex = 1
                 UseVisualStyleBackColor = $True
@@ -1064,7 +1103,7 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel -Pr
                         Text    = "CanonicalName"
                         Left    = 0
                         Top     = $FormScale * 5
-                        Width   = $FormScale * 120
+                        Width   = $FormScale * 135
                         Height  = $FormScale * 25
                         Font    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
                         AutoCompleteSource = "ListItems"
@@ -1128,7 +1167,7 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel -Pr
                         Name   = "Search TextBox"
                         Left   = $script:AccountsTreeNodeComboBox.Left
                         Top    = $script:AccountsTreeNodeComboBox.Top + $script:AccountsTreeNodeComboBox.Height + ($FormScale * 5)
-                        Width  = $FormScale * 120
+                        Width  = $FormScale * 135
                         Height = $FormScale * 25
                         AutoCompleteSource = "ListItems"
                         AutoCompleteMode   = "SuggestAppend"
@@ -1204,7 +1243,7 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel -Pr
                     $script:AccountsTreeView = New-Object System.Windows.Forms.TreeView -Property @{
                         Left   = $AccountsTreeNodeSearchComboBox.Left
                         Top    = $AccountsTreeNodeSearchButton.Top + $AccountsTreeNodeSearchButton.Height + ($FormScale * 5)
-                        Width  = $AccountsTreeNodeSearchComboBox.Width + $AccountsTreeNodeSearchButton.Width + ($FormScale * 5)
+                        Width  = $FormScale * 195
                         Height = $FormScale * 558
                         # Note: size and location properties are are managed by 
                         Font              = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
@@ -1260,10 +1299,11 @@ $PoShEasyWin.Controls.Add($ComputerAndAccountTreeNodeViewPanel)
 
 
 $MainCenterPanel = New-Object System.Windows.Forms.Panel -Property @{
-    Left   = $ComputerAndAccountTreeNodeViewPanel.Left + $ComputerAndAccountTreeNodeViewPanel.Width + ($FormScale * 2)
+    Left   = $ComputerAndAccountTreeNodeViewPanel.Left + $ComputerAndAccountTreeNodeViewPanel.Width
     Top    = $FormScale * 5
     Width  = $FormScale * 607
-    Height = $FormScale * 278     
+    Height = $FormScale * 278
+    BorderStyle = 'FixedSingle'
 }
 
             $MainCenterTabControlImageList = New-Object System.Windows.Forms.ImageList -Property @{
@@ -1288,7 +1328,10 @@ $MainCenterPanel = New-Object System.Windows.Forms.Panel -Property @{
                 Height = $FormScale * 278 
                 SelectedIndex  = 0
                 ShowToolTips   = $True
-                Font           = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+                Appearance     = [System.Windows.Forms.TabAppearance]::Buttons
+                Hottrack       = $true
+                Dock           = 'Fill'
+                Font           = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,2,1)
                 Add_MouseHover = $MainCenterTabControlAdd_MouseHover
                 ImageList = $MainCenterTabControlImageList
             }
@@ -1310,10 +1353,11 @@ $PoShEasyWin.Controls.Add($MainCenterPanel)
 
 
 $ExecutionButtonPanel = New-Object System.Windows.Forms.Panel -Property @{
-    Left   = $MainCenterPanel.Left + $MainCenterPanel.Width + ($FormScale * 5)
-    Top    = $FormScale * 10
-    Height = $FormScale * 273
+    Left   = $MainCenterPanel.Left + $MainCenterPanel.Width
+    Top    = $MainCenterPanel.Top
+    Height = $MainCenterPanel.Height
     Width  = $FormScale * 140
+    BorderStyle = 'FixedSingle'
 }
             $MainRightTabControlImageList = New-Object System.Windows.Forms.ImageList -Property @{
                 ImageSize = @{
@@ -1331,8 +1375,11 @@ $ExecutionButtonPanel = New-Object System.Windows.Forms.Panel -Property @{
                 Height = $FormScale * 273
                 Width  = $FormScale * 140
                 ShowToolTips = $True
-                Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-                ImageList = $MainRightTabControlImageList
+                Appearance   = [System.Windows.Forms.TabAppearance]::Buttons
+                Hottrack     = $true
+                Dock         = 'Fill'
+                Font         = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,2,1)
+                ImageList    = $MainRightTabControlImageList
                 SelectedIndex = 0
             }
             $ExecutionButtonPanel.Controls.Add($MainRightTabControl)
@@ -1345,9 +1392,10 @@ $PoShEasyWin.Controls.Add($ExecutionButtonPanel)
 
 $InformationPanel = New-Object System.Windows.Forms.Panel -Property @{
     Left   = $MainCenterPanel.Left
-    Top    = $MainCenterPanel.Top + $MainCenterPanel.Height + ($FormScale * 5)
-    Width  = $FormScale * 752
-    Height = $FormScale * 352
+    Top    = $MainCenterPanel.Top + $MainCenterPanel.Height
+    Width  = $FormScale * 747
+    Height = $FormScale * 357
+    BorderStyle = 'FixedSingle'
 }
 
             $InformationPanelImageList = New-Object System.Windows.Forms.ImageList -Property @{
@@ -1373,9 +1421,12 @@ $InformationPanel = New-Object System.Windows.Forms.Panel -Property @{
             $InformationTabControl = New-Object System.Windows.Forms.TabControl -Property @{
                 Left   = 0
                 Top    = 0
-                Height = $FormScale * 352
+                Height = $FormScale * 357
                 Width  = $FormScale * 752
-                Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+                Appearance   = [System.Windows.Forms.TabAppearance]::Buttons
+                Hottrack     = $true
+                Dock         = 'Fill'
+                Font         = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,2,1)
                 ShowToolTips = $True
                 Add_Click = { script:Minimize-MonitorJobsTab }
                 Add_MouseHover = { $this.bringtofront() }
@@ -1484,6 +1535,28 @@ Update-FormProgress "$Dependencies\Code\Execution\Individual Execution\Individua
 Update-FormProgress "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-NetworkConnectionSysmon.ps1"
 . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-NetworkConnectionSysmon.ps1"
 
+function Update-EndpointNotes {
+    if ($script:LogCommandsInEndpointNotes.checked) {
+        # Updates endpoint notes with timestamp and command executed
+        $script:ComputerTreeViewSelected = @()
+        [System.Windows.Forms.TreeNodeCollection]$AllTreeViewNodes = $script:ComputerTreeView.Nodes
+        foreach ($root in $AllTreeViewNodes) {
+            foreach ($Category in $root.Nodes) {
+                foreach ($Entry in $Category.Nodes) {
+                    Foreach ($Computer in $script:ComputerTreeViewData) {
+                        if ($entry.checked -and $entry.text -eq $Computer.Name) {
+                            $script:ComputerTreeViewSelected += $Entry.Text
+                            $UpdatedNotes = "$(Get-Date) [Executed] $CollectionName`n$($Computer.Notes)"
+                            $Computer | Add-Member -MemberType NoteProperty -Name Notes -Value $UpdatedNotes -Force
+                        }
+                    }
+                }
+            }
+        } 
+        Save-TreeViewData -Endpoint -SkipTextFieldSave
+    }
+}
+
 
 #============================================================================================================================================================
 #   ____               _         _       _____                          _    _
@@ -1536,7 +1609,7 @@ $ExecuteScriptHandler = {
 
     if ($script:EventLogsStartTimePicker.Checked -xor $script:EventLogsStopTimePicker.Checked) {
         # This brings specific tabs to the forefront/front view
-        $MainLeftTabControl.SelectedTab = $Section1CollectionsTab
+        $MainLeftTabControl.SelectedTab = $Section1SearchTab
         #$InformationTabControl.SelectedTab = $Section3ResultsTab
         #$InformationTabControl.SelectedTab = $Section3MonitorJobsTab
 
@@ -1680,11 +1753,9 @@ $ExecuteScriptHandler = {
                 if ($AccountActivityCheckbox.Checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-AccountLogonActivity.ps1" }
 
                 # Event Logs Event IDs Manual Entry
-                # batman - need to code in support for a WinRM check to use Get-WinEvent
                 if ($EventLogsEventIDsManualEntryCheckbox.Checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-EventLogsEventCodeManualEntryCommand.ps1" }
 
                 # Event Logs Event IDs Quick Pick Selection
-                # batman - need to code in support for a WinRM check to use Get-WinEvent
                 if ($EventLogsQuickPickSelectionCheckbox.Checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-EventLogsQuickPick.ps1" }
 
                 # Event Log Names to retrieve .evtx files
@@ -1704,7 +1775,6 @@ $ExecuteScriptHandler = {
                 # Alternate Data Streams
                 # Combines the inputs from the various GUI fields to query for Alternate Data Streams
                 if ($FileSearchAlternateDataStreamCheckbox.Checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-FileSearchAlternateDataStream.ps1" }
-
 
                 # Endpoint Packet Capture
                 # Conducts a packet capture on the endpoints using netsh

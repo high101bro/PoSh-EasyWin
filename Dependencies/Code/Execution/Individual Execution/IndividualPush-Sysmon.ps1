@@ -127,7 +127,7 @@ elseif ($ExternalProgramsWinRMRadioButton.checked) {
 
     $script:ProgressBarEndpointsProgressBar.Value = 0
 
-    $script:CollectionName = "Sysinternals Sysmon"
+    $CollectionName = "Sysinternals Sysmon"
 
 
     New-Item -Type Directory -Path $script:CollectionSavedDirectoryTextBox.Text -ErrorAction SilentlyContinue
@@ -135,14 +135,14 @@ elseif ($ExternalProgramsWinRMRadioButton.checked) {
 
     foreach ($TargetComputer in $script:ComputerList) {
         Conduct-PreCommandCheck -CollectedDataTimeStampDirectory $($script:CollectionSavedDirectoryTextBox.Text) `
-                                -IndividualHostResults "$script:IndividualHostResults" -CollectionName $script:CollectionName `
+                                -IndividualHostResults "$script:IndividualHostResults" -CollectionName $CollectionName `
                                 -TargetComputer $TargetComputer
-        Create-LogEntry -TargetComputer $TargetComputer  -LogFile $LogFile -Message $script:CollectionName
+        Create-LogEntry -TargetComputer $TargetComputer  -LogFile $LogFile -Message $CollectionName
 
-        $LocalSavePath = "$($script:CollectionSavedDirectoryTextBox.Text)\$script:CollectionName\$TargetComputer - $script:CollectionName.evtx"
+        $LocalSavePath = "$($script:CollectionSavedDirectoryTextBox.Text)\$CollectionName\$TargetComputer - $CollectionName.evtx"
 
 
-        Start-Job -Name "PoSh-EasyWin: $script:CollectionName -- $TargetComputer $DateTime" -ScriptBlock {
+        Start-Job -Name "PoSh-EasyWin: $CollectionName -- $TargetComputer $DateTime" -ScriptBlock {
             param(
                 $ComputerListProvideCredentialsCheckBox,
                 $script:Credential,
@@ -301,15 +301,15 @@ $($script:OptionJobTimeoutSelectionComboBox.Text)
 
     }
     if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
-        Monitor-Jobs -CollectionName $script:CollectionName -MonitorMode -SysmonSwitch -SysmonName $SysinternalsSysmonRenameServiceProcessTextBox.text -ComputerName $script:ComputerList -DisableReRun -InputValues $InputValues -NotExportFiles
+        Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SysmonSwitch -SysmonName $SysinternalsSysmonRenameServiceProcessTextBox.text -ComputerName $script:ComputerList -DisableReRun -InputValues $InputValues -NotExportFiles
     }
     elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
-        Monitor-Jobs -CollectionName $script:CollectionName -NotExportFiles
-        Post-MonitorJobs -CollectionName $script:CollectionName -CollectionCommandStartTime $ExecutionStartTime
+        Monitor-Jobs -CollectionName $CollectionName -NotExportFiles
+        Post-MonitorJobs -CollectionName $CollectionName -CollectionCommandStartTime $ExecutionStartTime
     }
 }
 
-
+Update-EndpointNotes
 
 
 

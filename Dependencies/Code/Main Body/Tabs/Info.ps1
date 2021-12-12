@@ -1,9 +1,9 @@
 
 $MainLeftInfoTab = New-Object System.Windows.Forms.TabPage -Property @{
-    Text = "Info"
+    Text = "Info  "
     Font = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     UseVisualStyleBackColor = $True
-    ImageIndex = 4
+    ImageIndex = 5
 }
 $MainLeftTabControl.Controls.Add($MainLeftInfoTab)
 
@@ -13,7 +13,9 @@ $MainLeftInfoTabControl = New-Object System.Windows.Forms.TabControl -Property @
                   Y = $FormScale * 3 }
     Size     = @{ Width  = $FormScale * 446
                   Height = $FormScale * 557 }
-    Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    Hottrack      = $true
+    Appearance    = [System.Windows.Forms.TabAppearance]::Buttons
+    Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,2,1)
     ShowToolTips  = $True
     SelectedIndex = 0
 }
@@ -40,14 +42,16 @@ foreach ($File in $ResourceFiles) {
         Name       = "$file"
         Location = @{ X = $FormScale * -2
                       Y = $FormScale * -2 }
-        Size     = @{ Width  = $FormScale * 442
-                      Height = $FormScale * 536 }
+        Size     = @{ Width  = $FormScale * 448
+                      Height = $FormScale * 553 }
         MultiLine  = $True
         ScrollBars = "Vertical"
         Font       = New-Object System.Drawing.Font("Courier New",($FormScale * 9),0,0,0)
     }
     $Section1AboutSubTab.Controls.Add($Section1AboutSubTabTextBox)
 }
+
+
 # SIG # Begin signature block
 # MIIFuAYJKoZIhvcNAQcCoIIFqTCCBaUCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR

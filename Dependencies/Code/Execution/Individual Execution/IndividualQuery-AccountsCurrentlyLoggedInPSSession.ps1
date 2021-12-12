@@ -14,28 +14,21 @@ function MonitorJobScriptBlock {
         $CollectionName
     )
     foreach ($TargetComputer in $script:ComputerList) {
-        if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
+        $InvokeCommandSplat = @{
+            ScriptBlock  = {Get-WSManInstance -ResourceURI Shell -Enumerate | Select-Object *}
+            ArgumentList = $null
+            ComputerName = $TargetComputer
+            AsJob        = $true
+            JobName      = "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)"
+        }
+
+        if ( $script:ComputerListProvideCredentialsCheckBox.Checked ) {
             if (!$script:Credential) { Create-NewCredentials }
-
-            Start-Job -ScriptBlock {
-                param($TargetComputer,$script:Credential)
-                Get-WSManInstance -ComputerName $TargetComputer -ResourceURI Shell -Enumerate -Credential $script:Credential | Select-Object *
-            } `
-            -Name "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)" `
-            -ArgumentList @($TargetComputer,$script:Credential)
-
-            Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Get-WSManInstance -ComputerName $TargetComputer -ResourceURI Shell -Enumerate -Credential $script:Credential"
+            $InvokeCommandSplat += @{Credential = $script:Credential}
         }
-        else {
-            Start-Job -ScriptBlock {
-                param($TargetComputer)
-                Get-WSManInstance -ComputerName $TargetComputer -ResourceURI Shell -Enumerate
-            } `
-            -Name "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)" `
-            -ArgumentList @($TargetComputer,$null)
 
-            Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Get-WSManInstance -ComputerName $TargetComputer -ResourceURI Shell -Enumerate"
-        }
+        Invoke-Command @InvokeCommandSplat | Select-Object PSComputerName, *
+        Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Get-WSManInstance -ComputerName $TargetComputer -ResourceURI Shell -Enumerate"
     }
 }
 Invoke-Command -ScriptBlock ${function:MonitorJobScriptBlock} -ArgumentList @($ExecutionStartTime,$CollectionName)
@@ -80,6 +73,7 @@ $CollectionCommandDiffTime = New-TimeSpan -Start $ExecutionStartTime -End $Colle
 $ResultsListBox.Items.RemoveAt(0)
 $ResultsListBox.Items.Insert(0,"$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss')) [$CollectionCommandDiffTime]  $CollectionName")
 
+Update-EndpointNotes
 
 # SIG # Begin signature block
 # MIIFuAYJKoZIhvcNAQcCoIIFqTCCBaUCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB

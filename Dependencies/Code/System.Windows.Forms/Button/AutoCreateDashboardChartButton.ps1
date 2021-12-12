@@ -132,11 +132,13 @@ $AutoCreateDashboardChartButtonAdd_Click = {
                           Y = $FormScale * 5 }
             Size     = @{ Width  = $PoShEasyWin.Size.Width - $($FormScale * 25)
                           Height = $PoShEasyWin.Size.Height - $($FormScale * 50) }
+            Appearance = [System.Windows.Forms.TabAppearance]::Buttons    
+            Hottrack   = $true
+            Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,2,1)
         }
         $AutoChartsTabControl.ShowToolTips  = $True
         $AutoChartsTabControl.SelectedIndex = 0
         $AutoChartsTabControl.Anchor        = $AnchorAll
-        $AutoChartsTabControl.Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         $script:AutoChartsForm.Controls.Add($AutoChartsTabControl)
 
 

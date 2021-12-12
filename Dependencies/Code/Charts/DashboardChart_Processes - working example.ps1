@@ -1,3 +1,5 @@
+#batman
+
 $CollectedDataDirectory = "$PoShHome\Collected Data"
 
 Add-Type -AssemblyName System.Windows.Forms
@@ -5,7 +7,7 @@ Add-Type -AssemblyName System.Windows.Forms.DataVisualization
 
 ### Creates Tabs From Each File
 $script:DashboardChartTab = New-Object System.Windows.Forms.TabPage -Property @{
-    Text   = 'Process Info'
+    Text   = 'Process Info  '
     Width  = $FormScale * 1400
     Height = $FormScale * 1050
     #Anchor = $AnchorAll

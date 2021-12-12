@@ -21,20 +21,20 @@ function MonitorJobScriptBlock {
                                 -TargetComputer $TargetComputer
         Create-LogEntry -TargetComputer $TargetComputer  -LogFile $LogFile -Message $CollectionName
 
+        $InvokeCommandSplat = @{
+            ScriptBlock  = ${function:Search-AlternateDataStream}
+            ArgumentList = @($DirectoriesToSearch,$MaximumDepth)
+            ComputerName = $TargetComputer
+            AsJob        = $True
+            JobName      = "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)"    
+        }
+
         if ( $script:ComputerListProvideCredentialsCheckBox.Checked ) {
             if (!$script:Credential) { Create-NewCredentials }
-            Invoke-Command -ScriptBlock ${function:Search-AlternateDataStream} `
-            -ArgumentList @($DirectoriesToSearch,$MaximumDepth) `
-            -ComputerName $TargetComputer `
-            -AsJob -JobName "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)" `
-            -Credential $script:Credential
+            $InvokeCommandSplat += @{Credential = $script:Credential}
         }
-        else {
-            Invoke-Command -ScriptBlock ${function:Search-AlternateDataStream} `
-            -ArgumentList @($DirectoriesToSearch,$MaximumDepth) `
-            -ComputerName $TargetComputer `
-            -AsJob -JobName "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)"
-        }
+
+        Invoke-Command @InvokeCommandSplat | Select-Object PSComputerName, *
     }
 }
 Invoke-Command -ScriptBlock ${function:MonitorJobScriptBlock} -ArgumentList @($ExecutionStartTime,$CollectionName,$DirectoriesToSearch,$MaximumDepth)
@@ -96,6 +96,7 @@ $CollectionCommandDiffTime = New-TimeSpan -Start $ExecutionStartTime -End $Colle
 $ResultsListBox.Items.RemoveAt(0)
 $ResultsListBox.Items.Insert(0,"$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss')) [$CollectionCommandDiffTime]  $CollectionName")
 
+Update-EndpointNotes
 
 # SIG # Begin signature block
 # MIIFuAYJKoZIhvcNAQcCoIIFqTCCBaUCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB

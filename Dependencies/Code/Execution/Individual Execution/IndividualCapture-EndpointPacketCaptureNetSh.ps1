@@ -269,24 +269,26 @@ foreach ($TargetComputer in $script:ComputerList) {
         )
 
 
+        $NewPSSessionSplat = @{ComputerName = $TargetComputer}
         if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
             if (!$script:Credential) { $script:Credential = Get-Credential }
-            
-            $Session = New-PSSession -ComputerName $TargetComputer -Credential $script:Credential
-        }
-        else {
-            $Session = New-PSSession -ComputerName $TargetComputer
+            $NewPSSessionSplat += @{Credential = $script:Credential}
         }
 
+        $Session = New-PSSession @NewPSSessionSplat
 
-        Invoke-Command -ScriptBlock {
-            param($PacketCaptureCommandNetSh,$NetworkEndpointPacketCaptureDuration)
 
-            Invoke-Expression $PacketCaptureCommandNetSh
-            Start-Sleep -Seconds $NetworkEndpointPacketCaptureDuration
-            Invoke-Expression 'netsh trace stop' | Out-Null
-
-        } -argumentlist @($PacketCaptureCommandNetSh,$NetworkEndpointPacketCaptureDuration) -Session $Session
+        $InvokeCommandSplat = @{
+            ScriptBlock = {
+                param($PacketCaptureCommandNetSh,$NetworkEndpointPacketCaptureDuration)    
+                Invoke-Expression $PacketCaptureCommandNetSh
+                Start-Sleep -Seconds $NetworkEndpointPacketCaptureDuration
+                Invoke-Expression 'netsh trace stop' | Out-Null
+            }
+            ArgumentList = @($PacketCaptureCommandNetSh,$NetworkEndpointPacketCaptureDuration)
+            Session      = $Session
+        }
+        Invoke-Command @InvokeCommandSplat
         Start-Sleep -Seconds 1
 
 
@@ -297,14 +299,16 @@ foreach ($TargetComputer in $script:ComputerList) {
 
 
         # Cleans up the .etl and .cab files from the endpoint
-        Invoke-Command -ScriptBlock {
-            param(
-                $EndpointEtlTraceFile,
-                $EndpointCabTraceFile
-            )
-            Remove-Item -Path $EndpointEtlTraceFile -Force
-            Remove-Item -Path $EndpointCabTraceFile -Force
-        } -argumentlist @($EndpointEtlTraceFile,$EndpointCabTraceFile) -Session $Session
+        $InvokeCommandSplat = @{
+            ScriptBlock = {
+                param($EndpointEtlTraceFile,$EndpointCabTraceFile)
+                Remove-Item -Path $EndpointEtlTraceFile -Force
+                Remove-Item -Path $EndpointCabTraceFile -Force
+            }
+            ArgumentList = @($EndpointEtlTraceFile,$EndpointCabTraceFile)
+            Session      = $Session
+        }
+        Invoke-Command @InvokeCommandSplat
 
 
         $Session | Remove-PSSession
@@ -320,8 +324,6 @@ foreach ($TargetComputer in $script:ComputerList) {
             Remove-Item -Path "$($script:CollectionSavedDirectoryTextBox.Text)\$CollectionName\*.etl" -Force
             Remove-Item -Path "$($script:CollectionSavedDirectoryTextBox.Text)\$CollectionName\*.cab" -Force
         }
-        
-
     } -ArgumentList @(
         $script:ComputerListProvideCredentialsCheckBox,
         $script:Credential,
@@ -411,9 +413,7 @@ $script:ProgressBarEndpointsProgressBar.Value = ($PSSession.ComputerName).Count
 $PoShEasyWin.Refresh()
 
 
-
-
-
+Update-EndpointNotes
 
 
 # SIG # Begin signature block

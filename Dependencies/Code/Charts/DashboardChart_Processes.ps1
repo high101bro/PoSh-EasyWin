@@ -5,7 +5,7 @@ Add-Type -AssemblyName System.Windows.Forms.DataVisualization
 
 ### Creates Tabs From Each File
 $script:AutoChartsIndividualTab01 = New-Object System.Windows.Forms.TabPage -Property @{
-    Text   = 'Process Info'
+    Text   = 'Process Info  '
     Size   = @{ Width  = $FormScale * 1700
                 Height = $FormScale * 1050 }
     #Anchor = $AnchorAll

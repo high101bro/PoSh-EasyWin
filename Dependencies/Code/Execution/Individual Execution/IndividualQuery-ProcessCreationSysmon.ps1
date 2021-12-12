@@ -129,9 +129,7 @@ function IndividualQuery-ProcessCreationSysmon {
 
             if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
                 if (!$script:Credential) { Create-NewCredentials }
-                $InvokeCommandSplat += @{ 
-                    Credential = $script:Credential
-                }
+                $InvokeCommandSplat += @{Credential = $script:Credential}
             }
             Invoke-Command @InvokeCommandSplat | Select-Object PSComputerName, *
         }
@@ -140,7 +138,7 @@ function IndividualQuery-ProcessCreationSysmon {
 
 
     if ($ProcessCreationSysmonSearchOriginalFileNameCheckbox) {
-        $CollectionName = "Process Creation Connection (Sysmon) Source IP"
+        $CollectionName = "Process (Sysmon) Source IP"
         $ProcessCreationSysmonSearchOriginalFileName = ($ProcessCreationSysmonSearchOriginalFileNameRichTextbox.Text).split("`r`n")
     }
     else {
@@ -149,7 +147,7 @@ function IndividualQuery-ProcessCreationSysmon {
 
 
     if ($ProcessCreationSysmonSearchUserCheckbox) {
-        $CollectionName = "Process Creation Connection (Sysmon) Source Port"
+        $CollectionName = "Process (Sysmon) Source Port"
         $ProcessCreationSysmonSearchUser = $ProcessCreationSysmonSearchUserRichTextbox.Lines
     }
     else {
@@ -158,7 +156,7 @@ function IndividualQuery-ProcessCreationSysmon {
 
 
     if ($ProcessCreationSysmonSearchHashesCheckbox) {
-        $CollectionName = "Process Creation Connection (Sysmon) Destination IP"
+        $CollectionName = "Process (Sysmon) Destination IP"
         $ProcessCreationSysmonSearchHashes = ($ProcessCreationSysmonSearchHashesRichTextbox.Text).split("`r`n")
     }
     else {
@@ -167,7 +165,7 @@ function IndividualQuery-ProcessCreationSysmon {
 
 
     if ($ProcessCreationSysmonSearchFilePathCheckbox) {
-        $CollectionName = "Process Creation Connection (Sysmon) Destination Port"
+        $CollectionName = "Process (Sysmon) Destination Port"
         $ProcessCreationSysmonSearchFilePath = ($ProcessCreationSysmonSearchFilePathRichTextbox.Text).split("`r`n")
     }
     else {
@@ -176,7 +174,7 @@ function IndividualQuery-ProcessCreationSysmon {
 
 
     if ($ProcessCreationSysmonSearchCommandlineCheckbox) {
-        $CollectionName = "Process Creation Connection (Sysmon) Account-User Started"
+        $CollectionName = "Process (Sysmon) Account-User Started"
         $ProcessCreationSysmonSearchCommandline = ($ProcessCreationSysmonSearchCommandlineRichTextbox.Text).split("`r`n")
     }
     else {
@@ -185,7 +183,7 @@ function IndividualQuery-ProcessCreationSysmon {
 
 
     if ($ProcessCreationSysmonSearchParentFilePathCheckbox) {
-        $CollectionName = "Process Creation Connection (Sysmon) Executable Path"
+        $CollectionName = "Process (Sysmon) Executable Path"
         $ProcessCreationSysmonSearchParentFilePath = ($ProcessCreationSysmonSearchParentFilePathTextbox.Text).split("`r`n")
     }
     else {
@@ -194,7 +192,7 @@ function IndividualQuery-ProcessCreationSysmon {
 
     
     if ($ProcessCreationSysmonSearchParentCommandlineCheckbox) {
-        $CollectionName = "Process Creation Connection (Sysmon) Executable Path"
+        $CollectionName = "Process (Sysmon) Executable Path"
         $ProcessCreationSysmonSearchParentFilePath = ($ProcessCreationSysmonSearchParentFilePathTextbox.Text).split("`r`n")
     }
     else {
@@ -258,43 +256,43 @@ $($SearchString.trim())
 
     if ($ProcessCreationSysmonSearchOriginalFileNameCheckbox) {
         Invoke-Command -ScriptBlock ${function:MonitorJobScriptBlock} -ArgumentList @($CollectionName,$ProcessCreationSysmonRegex,$ProcessCreationSysmonSearchOriginalFileName,$null,$null,$null,$null,$null,$null)
-        Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript ${function:MonitorJobScriptBlock} -ArgumentList @($CollectionName,$ProcessCreationSysmonRegex,$ProcessCreationSysmonSearchOriginalFileName,$null,$null,$null,$null,$null,$null) -SmithFlag 'RetrieveFile' -InputValues $InputValues
+        Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript ${function:MonitorJobScriptBlock} -ArgumentList @($CollectionName,$ProcessCreationSysmonRegex,$ProcessCreationSysmonSearchOriginalFileName,$null,$null,$null,$null,$null,$null) -InputValues $InputValues
     }
 
 
     if ($ProcessCreationSysmonSearchUserCheckbox) {
         Invoke-Command -ScriptBlock ${function:MonitorJobScriptBlock} -ArgumentList @($CollectionName,$ProcessCreationSysmonRegex,$null,$ProcessCreationSysmonSearchUser,$null,$null,$null,$null,$null)
-        Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript ${function:MonitorJobScriptBlock} -ArgumentList @($CollectionName,$ProcessCreationSysmonRegex,$null,$ProcessCreationSysmonSearchUser,$null,$null,$null,$null,$null) -SmithFlag 'RetrieveFile' -InputValues $InputValues
+        Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript ${function:MonitorJobScriptBlock} -ArgumentList @($CollectionName,$ProcessCreationSysmonRegex,$null,$ProcessCreationSysmonSearchUser,$null,$null,$null,$null,$null) -InputValues $InputValues
     }
 
 
     if ($ProcessCreationSysmonSearchHashesCheckbox) {
         Invoke-Command -ScriptBlock ${function:MonitorJobScriptBlock} -ArgumentList @($CollectionName,$ProcessCreationSysmonRegex,$null,$null,$ProcessCreationSysmonSearchHashes,$null,$null,$null,$null)
-        Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript ${function:MonitorJobScriptBlock} -ArgumentList @($CollectionName,$ProcessCreationSysmonRegex,$null,$null,$ProcessCreationSysmonSearchHashes,$null,$null,$null,$null) -SmithFlag 'RetrieveFile' -InputValues $InputValues
+        Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript ${function:MonitorJobScriptBlock} -ArgumentList @($CollectionName,$ProcessCreationSysmonRegex,$null,$null,$ProcessCreationSysmonSearchHashes,$null,$null,$null,$null) -InputValues $InputValues
     }
 
 
     if ($ProcessCreationSysmonSearchFilePathCheckbox) {
         Invoke-Command -ScriptBlock ${function:MonitorJobScriptBlock} -ArgumentList @($CollectionName,$ProcessCreationSysmonRegex,$null,$null,$null,$ProcessCreationSysmonSearchFilePath,$null,$null,$null)
-        Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript ${function:MonitorJobScriptBlock} -ArgumentList @($CollectionName,$ProcessCreationSysmonRegex,$null,$null,$null,$ProcessCreationSysmonSearchFilePath,$null,$null,$null) -SmithFlag 'RetrieveFile' -InputValues $InputValues
+        Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript ${function:MonitorJobScriptBlock} -ArgumentList @($CollectionName,$ProcessCreationSysmonRegex,$null,$null,$null,$ProcessCreationSysmonSearchFilePath,$null,$null,$null) -InputValues $InputValues
     }
 
 
     if ($ProcessCreationSysmonSearchCommandlineCheckbox) {
         Invoke-Command -ScriptBlock ${function:MonitorJobScriptBlock} -ArgumentList @($CollectionName,$ProcessCreationSysmonRegex,$null,$null,$null,$null,$ProcessCreationSysmonSearchCommandline,$null,$null)
-        Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript ${function:MonitorJobScriptBlock} -ArgumentList @($CollectionName,$ProcessCreationSysmonRegex,$null,$null,$null,$null,$ProcessCreationSysmonSearchCommandline,$null,$null) -SmithFlag 'RetrieveFile' -InputValues $InputValues
+        Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript ${function:MonitorJobScriptBlock} -ArgumentList @($CollectionName,$ProcessCreationSysmonRegex,$null,$null,$null,$null,$ProcessCreationSysmonSearchCommandline,$null,$null) -InputValues $InputValues
     }
 
 
     if ($ProcessCreationSysmonSearchParentFilePathCheckbox) {
         Invoke-Command -ScriptBlock ${function:MonitorJobScriptBlock} -ArgumentList @($CollectionName,$ProcessCreationSysmonRegex,$null,$null,$null,$null,$null,$ProcessCreationSysmonSearchParentFilePath,$null)
-        Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript ${function:MonitorJobScriptBlock} -ArgumentList @($CollectionName,$ProcessCreationSysmonRegex,$null,$null,$null,$null,$null,$ProcessCreationSysmonSearchParentFilePath,$null) -SmithFlag 'RetrieveFile' -InputValues $InputValues
+        Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript ${function:MonitorJobScriptBlock} -ArgumentList @($CollectionName,$ProcessCreationSysmonRegex,$null,$null,$null,$null,$null,$ProcessCreationSysmonSearchParentFilePath,$null) -InputValues $InputValues
     }
     
 
     if ($ProcessCreationSysmonSearchParentCommandlineCheckbox) {
         Invoke-Command -ScriptBlock ${function:MonitorJobScriptBlock} -ArgumentList @($CollectionName,$ProcessCreationSysmonRegex,$null,$null,$null,$null,$null,$null,$ProcessCreationSysmonSearchParentCommandline)
-        Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript ${function:MonitorJobScriptBlock} -ArgumentList @($CollectionName,$ProcessCreationSysmonRegex,$null,$null,$null,$null,$null,$null,$ProcessCreationSysmonSearchParentCommandline) -SmithFlag 'RetrieveFile' -InputValues $InputValues
+        Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript ${function:MonitorJobScriptBlock} -ArgumentList @($CollectionName,$ProcessCreationSysmonRegex,$null,$null,$null,$null,$null,$null,$ProcessCreationSysmonSearchParentCommandline) -InputValues $InputValues
     }
 
     $CollectionCommandEndTime  = Get-Date
@@ -302,6 +300,7 @@ $($SearchString.trim())
     $ResultsListBox.Items.RemoveAt(0)
     $ResultsListBox.Items.Insert(0,"$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss')) [$CollectionCommandDiffTime]  $CollectionName")
 
+    Update-EndpointNotes
 }
 
 # SIG # Begin signature block

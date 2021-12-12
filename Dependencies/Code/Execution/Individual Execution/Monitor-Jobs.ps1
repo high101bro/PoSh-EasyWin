@@ -784,7 +784,7 @@ if ($MonitorMode) {
     `$script:ArgumentList$JobId        = `$ArgumentList 
     `$script:PSWriteHTMLFilePath$JobId = `$PSWriteHTMLFilePath
     `$script:PSWriteHTMLOptions$JobId  = `$PSWriteHTMLOptions
-    `$script:CollectionName$JobId      = `$ComputerName
+    `$CollectionName$JobId      = `$ComputerName
 
 "@
 
@@ -800,7 +800,7 @@ if ($MonitorMode) {
     if ($PSWriteHTMLSwitch) {
         Invoke-Expression @"
         if ("$PSWriteHTML" -eq 'EndpointDataSystemSnapshot') {
-            `$script:JobName$JobId = "Endpoint Analysis `$(`$(`$script:PSWriteHTMLOptions$JobId).count) `$(`$script:CollectionName$JobId) (Browser)"
+            `$script:JobName$JobId = "Endpoint Analysis `$(`$(`$script:PSWriteHTMLOptions$JobId).count) `$(`$CollectionName$JobId) (Browser)"
         }
         elseif ("$PSWriteHTML" -eq 'PSWriteHTMLProcesses') {
             `$script:JobName$JobId = 'Process Data (Browser)'
@@ -872,7 +872,7 @@ if ($MonitorMode) {
         `$script:Section3MonitorJobPanel$JobId = New-Object System.Windows.Forms.panel -Property @{
             Left      = `$script:MonitorJobsLeftPosition
             Top       = `$script:MonitorJobsTopPosition
-            Width     = `$FormScale * 730
+            Width     = `$FormScale * 730 #batman
             Height    = `$script:JobsRowHeight + (`$FormScale * 4)
         }
     
@@ -1719,6 +1719,9 @@ Start-Process 'PowerShell' -ArgumentList '-NoProfile',
                                                                 Top    = `$FormScale * 5
                                                                 Width  = `$PoShEasyWin.Size.Width - `$(`$FormScale * 25)
                                                                 Height = `$PoShEasyWin.Size.Height - `$(`$FormScale * 50)
+                                                                Appearance = [System.Windows.Forms.TabAppearance]::Buttons
+                                                                Hottrack = `$true
+                                                                Font     = New-Object System.Drawing.Font("`$Font",`$(`$FormScale * 10),1,2,1)
                                                             }
                                                             `$AutoChartsTabControl.Anchor = `$AnchorAll
                                                             `$AutoChartsTabControl.Font   = New-Object System.Drawing.Font("`$Font",`$(`$FormScale * 11),0,0,0)

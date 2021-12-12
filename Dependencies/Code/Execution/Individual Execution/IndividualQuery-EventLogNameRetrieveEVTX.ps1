@@ -16,19 +16,19 @@ $EventLogNameEVTXEventIDsManualEntryTextboxFilter = $script:EventLogNameEVTXEven
 $EndpointSavePath = "C:\windows\temp\$($EventLogNameEVTXLogNameSelectionComboBoxSelectedItem.replace('/','-')).evtx"
 
 if ($EventLogNameEVTXWinRMRadioButton.Checked) {
-    $script:CollectionName = "$($EventLogNameEVTXLogNameSelectionComboBoxSelectedItem -replace '/','-')"
+    $CollectionName = "$($EventLogNameEVTXLogNameSelectionComboBoxSelectedItem -replace '/','-')"
 }
 
 
 foreach ($TargetComputer in $script:ComputerList) {
     Conduct-PreCommandCheck -CollectedDataTimeStampDirectory $($script:CollectionSavedDirectoryTextBox.Text) `
-                            -IndividualHostResults "$script:IndividualHostResults" -CollectionName $script:CollectionName `
+                            -IndividualHostResults "$script:IndividualHostResults" -CollectionName $CollectionName `
                             -TargetComputer $TargetComputer
-    Create-LogEntry -TargetComputer $TargetComputer  -LogFile $LogFile -Message $script:CollectionName
+    Create-LogEntry -TargetComputer $TargetComputer  -LogFile $LogFile -Message $CollectionName
 
-    $LocalSavePath = "$($script:CollectionSavedDirectoryTextBox.Text)\$script:CollectionName\$TargetComputer - $script:CollectionName.evtx"
+    $LocalSavePath = "$($script:CollectionSavedDirectoryTextBox.Text)\$CollectionName\$TargetComputer - $CollectionName.evtx"
 
-    Start-Job -Name "PoSh-EasyWin: $script:CollectionName -- $TargetComputer $DateTime" -ScriptBlock {
+    Start-Job -Name "PoSh-EasyWin: $CollectionName -- $TargetComputer $DateTime" -ScriptBlock {
         param(
             $ComputerListProvideCredentialsCheckBoxChecked,
             $script:Credential,
@@ -111,17 +111,29 @@ wevtutil export-log '$EventLog' '$EndpointSavePath' /q:"*
 /ow:$OverWrite
 "@
 
-        Invoke-Command -ScriptBlock {
-            param($EventLogQueryCommand)
-            Invoke-Expression $EventLogQueryCommand
-        } -argumentlist @($EventLogQueryCommand,$null) -Session $Session
+        $InvokeCommandSplat = @{
+            ScriptBlock = {
+                param($EventLogQueryCommand)
+                Invoke-Expression $EventLogQueryCommand
+            }
+            argumentlist = @($EventLogQueryCommand,$null)
+            Session      = $Session
+        }
+        Invoke-Command @InvokeCommandSplat
+
 
         Copy-Item -Path $EndpointSavePath -Destination $LocalSavePath -FromSession $Session -Force
 
-        Invoke-Command -ScriptBlock {
-            param($EndpointSavePath)
-            Remove-Item -Path $EndpointSavePath -Force
-        } -argumentlist @($EndpointSavePath,$null) -Session $Session
+        
+        $InvokeCommandSplat = @{
+            ScriptBlock = {
+                param($EndpointSavePath)
+                Remove-Item -Path $EndpointSavePath -Force
+            }
+            argumentlist = @($EndpointSavePath,$null)
+            Session      = $Session
+        }
+        Invoke-Command @InvokeCommandSplat
 
 
         $Session | Remove-PSSession
@@ -188,39 +200,15 @@ $($script:EventLogNameEVTXEventIDsManualEntryTextbox.Text)
 
 
     if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
-        Monitor-Jobs -CollectionName $script:CollectionName -MonitorMode -EVTXSwitch -EVTXLocalSavePath $LocalSavePath -DisableReRun -InputValues $InputValues -NotExportFiles
+        Monitor-Jobs -CollectionName $CollectionName -MonitorMode -EVTXSwitch -EVTXLocalSavePath $LocalSavePath -InputValues $InputValues -NotExportFiles -DisableReRun
     }
     elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
-        Monitor-Jobs -CollectionName $script:CollectionName -NotExportFiles
-        Post-MonitorJobs -CollectionName $script:CollectionName -CollectionCommandStartTime $ExecutionStartTime
+        Monitor-Jobs -CollectionName $CollectionName -NotExportFiles
+        Post-MonitorJobs -CollectionName $CollectionName -CollectionCommandStartTime $ExecutionStartTime
     }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+Update-EndpointNotes
 
 # SIG # Begin signature block
 # MIIFuAYJKoZIhvcNAQcCoIIFqTCCBaUCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB

@@ -1,6 +1,6 @@
 
 $Section3AboutTab = New-Object System.Windows.Forms.TabPage -Property @{
-    Text = "About"
+    Text = "About  "
     Font = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     UseVisualStyleBackColor = $True
     Add_click = { script:Minimize-MonitorJobsTab }
@@ -10,10 +10,10 @@ $InformationTabControl.Controls.Add($Section3AboutTab)
 
 
 $Section1AboutSubTabRichTextBox = New-Object System.Windows.Forms.TextBox -Property @{
-    Text   = $(Get-Content "$Dependencies\About PoSh-EasyWin.txt" -raw)
+    Text   = "$(Get-Content "$Dependencies\About PoSh-EasyWin.txt" -raw)  "
     Font   = New-Object System.Drawing.Font("Courier New",$($FormScale * 11),0,0,0)
-    Top = $FormScale * 10
-    Height = $FormScale * 317
+    Top    = $FormScale * 3
+    Height = $FormScale * 329
     Left   = $FormScale * 3
     Width  = $FormScale * 742
     MultiLine  = $True
@@ -29,7 +29,7 @@ $Section1AboutSubTabRichTextBox.bringtofront()
 
 $FeatureRequestReportBugButton = New-Object System.Windows.Forms.Button -Property @{
     Text   = "Request Feature / Report Bug"
-    Top    = $FormScale * 300
+    Top    = $FormScale * 305
     Left   = $FormScale * 553
     Width  = $FormScale * 175
     Height = $FormScale * 25

@@ -172,7 +172,9 @@ $AutoCreateMultiSeriesChartButtonAdd_Click = {
                     $AutoChartsTabControl.ShowToolTips  = $True
                     $AutoChartsTabControl.SelectedIndex = 0
                     $AutoChartsTabControl.Anchor        = $AnchorAll
-                    $AutoChartsTabControl.Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+                    $AutoChartsTabControl.Appearance = [System.Windows.Forms.TabAppearance]::Buttons
+                    $AutoChartsTabControl.Hottrack      = $true
+                    $AutoChartsTabControl.Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,2,1)
                     $script:AutoChartsForm.Controls.Add($AutoChartsTabControl)
 
                     # Accounts

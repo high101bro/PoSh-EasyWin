@@ -6,7 +6,7 @@ $SysinternalsButtonWidth       = 110
 $SysinternalsButtonHeight      = 22
 
 $Section1ExecutablesTab = New-Object System.Windows.Forms.TabPage -Property @{
-    Text     = "Executables"
+    Text     = "Executables  "
     Location = @{ X = $FormScale * $SysinternalsRightPosition
                   Y = $FormScale * $SysinternalsDownPosition }
     Size     = @{ Width  = $FormScale * 440

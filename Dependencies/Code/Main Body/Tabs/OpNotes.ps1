@@ -1,9 +1,9 @@
 
 $Section1OpNotesTab = New-Object System.Windows.Forms.TabPage -Property @{
-    Text = "OpNotes"
+    Text = "OpNotes  "
     UseVisualStyleBackColor = $True
     Font = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    ImageIndex = 3
+    ImageIndex = 4
 }
 $MainLeftTabControl.Controls.Add($Section1OpNotesTab)
 
@@ -12,11 +12,11 @@ $OpNotesInputTextBoxHeight = 22
 $OpNotesButtonWidth        = 100
 $OpNotesButtonHeight       = 22
 $OpNotesMainTextBoxWidth   = 450
-$OpNotesMainTextBoxHeight  = 470
+$OpNotesMainTextBoxHeight  = 440
 $OpNotesRightPositionStart = 0
 $OpNotesRightPosition      = 0
 $OpNotesRightPositionShift = $OpNotesButtonWidth + 10
-$OpNotesDownPosition       = 2
+$OpNotesDownPosition       = 7
 $OpNotesDownPositionShift  = 22
 
 # The purpose to allow saving of Opnotes automatcially
