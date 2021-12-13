@@ -1,7 +1,53 @@
 "Name","OperatingSystem","CanonicalName","OperatingSystemHotfix","OperatingSystemServicePack","Enabled","LockedOut","LogonCount","Created","Modified","LastLogonDate","IPv4Address","MACAddress","MemberOf","isCriticalSystemObject","HomedirRequired","Location","ProtectedFromAccidentalDeletion","TrustedForDelegation","SID","PortScan","Notes","ImageIndex"
-"DC01","Windows Server 2012 R2 Standard","/Domain Controllers",,,"True","False","1249","6/28/2020 10:57:02 PM","11/8/2021 12:00:16 PM","12/26/2022 4:48:51 AM","No IP Available","No MAC Available",,"True","No Home Dir Required","No Location","False","True","S-1-5-21-3036625279-3127291219-2495432101-1396",,"12/12/2021 03:53:12 [Executed] Network Settings
-12/12/2021 03:50:37 [Artifact] @{ComputerName=WIN10-01; Id=712; ProcessID=712; Path=C:\Windows\system32\lsass.exe; StartTime=11/29/2021 2:07:33 AM; WorkingSetSize=12943360; Handle=3232; HandleCount=1272; ThreadCount=8; Company=Microsoft Corporation; Product=Microsoft? Windows? Operating System; Description=Local Security Authority Process; __NounName=Process; Name=lsass; Handles=1272; VM=2203410096128; WS=12943360; PM=6262784; NPM=30600; CPU=65.703125; FileVersion=10.0.19041.906 (WinBuild.160101.0800); ProductVersion=10.0.19041.906; PSShowComputerName=True; WorkingSet=12943360; PagedMemorySize=6262784; PrivateMemorySize=6262784; VirtualMemorySize=91873280; TotalProcessorTime=00:01:05.7031250; BasePriority=9; MachineName=.; MainWindowHandle=0; MainWindowTitle=; NonpagedSystemMemorySize=30600; NonpagedSystemMemorySize64=30600; PagedMemorySize64=6262784; PagedSystemMemorySize=147760; PagedSystemMemorySize64=147760; PeakPagedMemorySize=6684672; PeakPagedMemorySize64=6684672; PeakWorkingSet=18128896; PeakWorkingSet64=18128896; PeakVirtualMemorySize=94937088; PeakVirtualMemorySize64=2203413159936; PrivateMemorySize64=6262784; PrivilegedProcessorTime=00:00:31.9218750; ProcessName=lsass; Responding=True; SessionId=0; StartInfo=System.Diagnostics.ProcessStartInfo; SynchronizingObject=; Threads=System.Diagnostics.ProcessThread System.Diagnostics.ProcessThread System.Diagnostics.ProcessThread System.Diagnostics.ProcessThread System.Diagnostics.ProcessThread System.Diagnostics.ProcessThread System.Diagnostics.ProcessThread System.Diagnostics.ProcessThread; UserProcessorTime=00:00:33.7812500; VirtualMemorySize64=2203410096128; EnableRaisingEvents=False; WorkingSet64=12943360; Site=; Container=; PSComputerName=localhost; RunspaceId=063155df-cb42-4dfb-a27e-2c87f02559ba}
-12/12/2021 03:50:08 [Executed] Processes
+"DC01","Windows Server 2012 R2 Standard","/Domain Controllers",,,"True","False","1249","6/28/2020 10:57:02 PM","11/8/2021 12:00:16 PM","12/26/2022 4:48:51 AM","No IP Available","No MAC Available",,"True","No Home Dir Required","No Location","False","True","S-1-5-21-3036625279-3127291219-2495432101-1396",,"12/13/2021 00:34:50 [Executed] Services
+12/13/2021 00:34:49 [Executed] Processes
+12/13/2021 00:30:49 [Executed] Processes
+12/13/2021 00:28:43 [Executed] Alternate Data Streams
+12/13/2021 00:27:54 [Executed] Account Logon Activity
+12/13/2021 00:27:54 [Executed] Accounts Currently Logged In via PowerShell Session
+12/13/2021 00:27:53 [Executed] Accounts Currently Logged In via Console
+12/13/2021 00:27:29 [Executed] Alternate Data Streams
+12/13/2021 00:27:28 [Executed] File Search
+12/13/2021 00:27:28 [Executed] Directory Listing
+12/13/2021 00:26:07 [Executed] Event Logs - System Event Logs
+12/13/2021 00:26:07 [Executed] Event Logs - Security Event Logs
+12/13/2021 00:26:06 [Executed] Event Logs - Application Event Logs
+12/13/2021 00:26:06 [Executed] Event Logs - Event ID Search
+12/13/2021 00:25:39 [Executed] Microsoft-Windows-Sysmon-Operational
+12/13/2021 00:24:44 [Executed] Registry Search - Item Property
+12/13/2021 00:24:30 [Executed] Registry Search - Value Name
+12/13/2021 00:24:20 [Executed] Registry Search - Value Data
+12/13/2021 00:24:06 [Executed] Registry Search - Key Name
+12/13/2021 00:19:52 [Executed] Process (Live) Command Line
+12/13/2021 00:08:55 [Executed] Network Connection (Sysmon) Executable Path
+12/13/2021 00:08:55 [Executed] Network Connection (Sysmon) Account-User Started
+12/13/2021 00:08:54 [Executed] Network Connection (Sysmon) Destination Port
+12/13/2021 00:08:54 [Executed] Network Connection (Sysmon) Destination IP
+12/13/2021 00:08:53 [Executed] Network Connection (Sysmon) Source Port
+12/13/2021 00:08:53 [Executed] Network Connection (Sysmon) Source IP
+12/13/2021 00:08:52 [Executed] Network Connection (Live) DNS Cache
+12/13/2021 00:08:52 [Executed] Network Connection (Live) Process Search
+12/13/2021 00:08:52 [Executed] Network Connection (Live) Exeuctable Path
+12/13/2021 00:08:51 [Executed] Network Connection (Live) Command Line
+12/13/2021 00:08:51 [Executed] Network Connection (Live) Local Port
+12/13/2021 00:08:50 [Executed] Network Connection (Live) Remote Port
+12/13/2021 00:08:50 [Executed] Network Connection (Live) Remote IP Address
+12/13/2021 00:08:50 [Executed] Process (Sysmon) Company Product
+12/13/2021 00:08:49 [Executed] Process (Sysmon) Hash
+12/13/2021 00:08:49 [Executed] Process (Sysmon) User Account, Id
+12/13/2021 00:08:49 [Executed] Process (Sysmon) Rule Name
+12/13/2021 00:08:48 [Executed] Process (Sysmon) Parent Command Line
+12/13/2021 00:08:48 [Executed] Process (Sysmon) Parent File Path
+12/13/2021 00:08:47 [Executed] Process (Sysmon) Command Line
+12/13/2021 00:08:47 [Executed] Process (Sysmon) File Path
+12/13/2021 00:08:47 [Executed] Process (Live) Company, Product
+12/13/2021 00:08:46 [Executed] Process (Live) Hashes, Signer Cert
+12/13/2021 00:08:46 [Executed] Process (Live) Network Connections
+12/13/2021 00:08:45 [Executed] Process (Live) Service Info
+12/13/2021 00:08:45 [Executed] Process (Live) Owner, SID
+12/13/2021 00:08:45 [Executed] Process (Live) Parent Name
+12/13/2021 00:08:44 [Executed] Process (Live) Command Line
+12/13/2021 00:08:44 [Executed] Process (Live) Name
 ","4"
 "WSUS","Windows Server 2012 R2 Datacenter","/Servers/Administrative",,,"True","False","0","1/28/2020 8:21:00 PM","6/28/2020 11:12:39 PM","3/7/2020 10:41:32 AM","10.10.10.23","No MAC Available",,"False","No Home Dir Required","No Location","False","False","S-1-5-21-3036625279-3127291219-2495432101-1108",,"11/30/2021 21:00:10 -- Executed Command: Services
 11/30/2021 21:00:09 -- Executed Command: Processes
@@ -56,7 +102,58 @@
 "WIN81-06A","Windows 8.1 Pro","/US Branch/Employee",,,"True","False","0","2/1/2020 6:00:33 PM","6/28/2020 11:12:39 PM","5/24/2020 9:08:12 PM","10.10.10.108","No MAC Available",,"False","No Home Dir Required","No Location","False","False","S-1-5-21-3036625279-3127291219-2495432101-1121",,,"10"
 "WIN81-05A","Windows 8.1 Pro","/US Branch/Employee",,,"False","False","0","2/1/2020 6:00:43 PM","6/28/2020 11:12:39 PM","6/15/2020 9:28:18 PM","No IP Available","No MAC Available",,"False","No Home Dir Required","No Location","False","False","S-1-5-21-3036625279-3127291219-2495432101-1122",,,"10"
 "WIN81-10","Windows 8.1 Pro","/US Branch/Employee",,,"True","False","0","2/4/2020 12:36:58 AM","6/28/2020 11:12:39 PM","6/25/2020 9:35:42 PM","10.10.10.116","No MAC Available",,"False","No Home Dir Required","No Location","False","False","S-1-5-21-3036625279-3127291219-2495432101-1123",,,"10"
-"WIN10-01","Windows 10 Pro","/US Branch/Employee",,,"True","False","1106","2/23/2020 1:17:03 AM","11/29/2021 2:07:49 AM","12/26/2022 4:48:55 AM","No IP Available","No MAC Available",,"False","No Home Dir Required","No Location","False","False","S-1-5-21-3036625279-3127291219-2495432101-1126",,"","11"
+"WIN10-01","Windows 10 Pro","/US Branch/Employee",,,"True","False","1106","2/23/2020 1:17:03 AM","11/29/2021 2:07:49 AM","12/26/2022 4:48:55 AM","No IP Available","No MAC Available",,"False","No Home Dir Required","No Location","False","False","S-1-5-21-3036625279-3127291219-2495432101-1126",,"12/13/2021 00:44:56 [Executed] Network Connections TCP
+12/13/2021 00:43:52 [Executed] Date Info
+12/13/2021 00:40:59 [Executed] Services
+12/13/2021 00:39:53 [Executed] Processes
+12/13/2021 00:30:49 [Executed] Processes
+12/13/2021 00:28:43 [Executed] Alternate Data Streams
+12/13/2021 00:27:54 [Executed] Account Logon Activity
+12/13/2021 00:27:54 [Executed] Accounts Currently Logged In via PowerShell Session
+12/13/2021 00:27:53 [Executed] Accounts Currently Logged In via Console
+12/13/2021 00:27:29 [Executed] Alternate Data Streams
+12/13/2021 00:27:28 [Executed] File Search
+12/13/2021 00:27:28 [Executed] Directory Listing
+12/13/2021 00:26:07 [Executed] Event Logs - System Event Logs
+12/13/2021 00:26:07 [Executed] Event Logs - Security Event Logs
+12/13/2021 00:26:06 [Executed] Event Logs - Application Event Logs
+12/13/2021 00:26:06 [Executed] Event Logs - Event ID Search
+12/13/2021 00:25:39 [Executed] Microsoft-Windows-Sysmon-Operational
+12/13/2021 00:24:44 [Executed] Registry Search - Item Property
+12/13/2021 00:24:30 [Executed] Registry Search - Value Name
+12/13/2021 00:24:20 [Executed] Registry Search - Value Data
+12/13/2021 00:24:06 [Executed] Registry Search - Key Name
+12/13/2021 00:19:52 [Executed] Process (Live) Command Line
+12/13/2021 00:08:55 [Executed] Network Connection (Sysmon) Executable Path
+12/13/2021 00:08:55 [Executed] Network Connection (Sysmon) Account-User Started
+12/13/2021 00:08:54 [Executed] Network Connection (Sysmon) Destination Port
+12/13/2021 00:08:54 [Executed] Network Connection (Sysmon) Destination IP
+12/13/2021 00:08:53 [Executed] Network Connection (Sysmon) Source Port
+12/13/2021 00:08:53 [Executed] Network Connection (Sysmon) Source IP
+12/13/2021 00:08:52 [Executed] Network Connection (Live) DNS Cache
+12/13/2021 00:08:52 [Executed] Network Connection (Live) Process Search
+12/13/2021 00:08:52 [Executed] Network Connection (Live) Exeuctable Path
+12/13/2021 00:08:51 [Executed] Network Connection (Live) Command Line
+12/13/2021 00:08:51 [Executed] Network Connection (Live) Local Port
+12/13/2021 00:08:50 [Executed] Network Connection (Live) Remote Port
+12/13/2021 00:08:50 [Executed] Network Connection (Live) Remote IP Address
+12/13/2021 00:08:50 [Executed] Process (Sysmon) Company Product
+12/13/2021 00:08:49 [Executed] Process (Sysmon) Hash
+12/13/2021 00:08:49 [Executed] Process (Sysmon) User Account, Id
+12/13/2021 00:08:49 [Executed] Process (Sysmon) Rule Name
+12/13/2021 00:08:48 [Executed] Process (Sysmon) Parent Command Line
+12/13/2021 00:08:48 [Executed] Process (Sysmon) Parent File Path
+12/13/2021 00:08:47 [Executed] Process (Sysmon) Command Line
+12/13/2021 00:08:47 [Executed] Process (Sysmon) File Path
+12/13/2021 00:08:47 [Executed] Process (Live) Company, Product
+12/13/2021 00:08:46 [Executed] Process (Live) Hashes, Signer Cert
+12/13/2021 00:08:46 [Executed] Process (Live) Network Connections
+12/13/2021 00:08:45 [Executed] Process (Live) Service Info
+12/13/2021 00:08:45 [Executed] Process (Live) Owner, SID
+12/13/2021 00:08:45 [Executed] Process (Live) Parent Name
+12/13/2021 00:08:44 [Executed] Process (Live) Command Line
+12/13/2021 00:08:44 [Executed] Process (Live) Name
+","11"
 "WIN10-03","Windows 10 Pro","/US Branch/Employee",,,"True","False","146","2/23/2020 1:19:17 AM","10/10/2021 1:39:09 PM","10/10/2021 1:39:09 PM","10.10.10.103","No MAC Available",,"False","No Home Dir Required","No Location","False","False","S-1-5-21-3036625279-3127291219-2495432101-1127",,,"11"
 "WIN10-04","Windows 10 Pro","/US Branch/Employee",,,"True","False","110","2/23/2020 1:19:54 AM","10/10/2021 1:39:12 PM","10/10/2021 1:39:12 PM","10.10.10.104","No MAC Available",,"False","No Home Dir Required","No Location","False","False","S-1-5-21-3036625279-3127291219-2495432101-1128",,,"11"
 "WIN10-02","Windows 10 Pro","/US Branch/Employee",,,"True","False","712","2/23/2020 1:21:59 AM","11/3/2021 4:39:33 PM","12/26/2022 4:48:55 AM","10.10.10.102","No MAC Available",,"False","No Home Dir Required","No Location","False","False","S-1-5-21-3036625279-3127291219-2495432101-1130",,"12/12/2021 02:58:15 [Executed] Restore Point Info

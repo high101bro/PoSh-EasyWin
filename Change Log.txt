@@ -21,27 +21,23 @@ TODO:
 	Search "tag node" and "tag nodes"
 [ ] Active endpoint note saving... should I add an option to toggle if there's performance issues?
 
-Writing Daily Tips...
+[ ] Writing Daily Tips...
 	- The "Directory Listing (WinRM)" query within the "File Search" tab provides you with a "Get File" button that allows you to easily download multiple files from multiple hosts.
 	- Retrieved files from endpoints have additional data collected from them like Signer Certificates and File Hashes, then are zipped before being downloaded to the localhost.
 	- Only unique files, based on their MD5 file hash, are kept when retrieved from a single endpoint, though files with maching hashes are kept for each endpoint when downloading from multiple endpoints.
 	- WHen using the "Retrieve Files" button, you must select any pre-exiting results from a "Directory Listing" or "File Search".
 
-
-<#
-Finish up... Update-FormProgress "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-ProcessCreationSysmon.ps1"
-. "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-ProcessCreationSysmon.ps1"
-#>
-<#
-#batman add log creations to all of this --Invoke-Command @InvokeCommandSplat
+ [ ] Add more log creations to all of this --Invoke-Command @InvokeCommandSplat
 	Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock {foreach (`$Path in `$RegistrySearchDirectory) { foreach (`$Item in `$SearchRegistryKeyItemPropertyName) { Get-ItemProperty -Path `$Path `$Item } }} -ArgumentList `$SearchRgistryItemProperty  -ComputerName $TargetComputer -AsJob -JobName 'PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)' -Credential `$script:Credential"
 	$ResultsListBox.Items.Add("$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  $CollectionName -- $TargetComputer")
-#>
-
 
 ==================================================
 v6.7.4 - 12 DEC 2021
 ==================================================
+Added Processes Tab
+	- Able to search live processes
+	- Able to search sysmon process logs
+
 Tweaked GUI
 	- added panel borders/outlines
 	- modified margins in many areas

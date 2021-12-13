@@ -12,7 +12,7 @@ $EventLogsStopTimePickerChecked          = $script:EventLogsStopTimePicker.Check
 $EventLogsStartTimePickerValue           = $script:EventLogsStartTimePicker.Value
 $EventLogsStopTimePickerValue            = $script:EventLogsStopTimePicker.Value
 
-function Query-EventLogLogsEventIDsManualEntrySessionBased {
+function SessionQuery-EventIdQuickSelection {
     param(
         $Filter,
         $EventLogsMaximumCollectionTextBoxText,
@@ -52,7 +52,7 @@ foreach ($Query in $script:EventLogQueries) {
         $PoShEasyWin.Refresh()
 
 
-        Invoke-Command -ScriptBlock ${function:Query-EventLogLogsEventIDsManualEntrySessionBased} `
+        Invoke-Command -ScriptBlock ${function:SessionQuery-EventIdQuickSelection} `
         -ArgumentList $Query.Filter, $EventLogsMaximumCollectionTextBoxText, $EventLogsStartTimePickerChecked, $EventLogsStopTimePickerChecked, $EventLogsStartTimePickerValue, $EventLogsStopTimePickerValue `
         -Session $PSSession `
         | Set-Variable SessionData

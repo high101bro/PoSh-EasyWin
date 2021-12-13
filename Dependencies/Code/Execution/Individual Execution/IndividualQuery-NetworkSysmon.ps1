@@ -1,5 +1,5 @@
 
-function IndividualQuery-NetworkConnectionSysmon {
+function IndividualQuery-NetworkSysmon {
     param(
         [switch]$NetworkSysmonSearchSourceIPAddressCheckbox,
         [switch]$NetworkSysmonSearchSourcePortCheckbox,

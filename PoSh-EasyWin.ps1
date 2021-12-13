@@ -1528,12 +1528,12 @@ Update-FormProgress "$Dependencies\Code\Execution\Completed-QueryExecution.ps1"
 . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-ProcessLive.ps1"
 
 # Loads the function used to query for various Sysmon Event ID 1 Process Creation logs
-Update-FormProgress "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-ProcessCreationSysmon.ps1"
-. "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-ProcessCreationSysmon.ps1"
+Update-FormProgress "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-ProcessSysmon.ps1"
+. "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-ProcessSysmon.ps1"
 
 # Loads the function used to query for various Sysmon Event ID 3 Network Connections logs
-Update-FormProgress "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-NetworkConnectionSysmon.ps1"
-. "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-NetworkConnectionSysmon.ps1"
+Update-FormProgress "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-NetworkSysmon.ps1"
+. "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-NetworkSysmon.ps1"
 
 function Update-EndpointNotes {
     if ($script:LogCommandsInEndpointNotes.checked) {
@@ -1785,7 +1785,6 @@ $ExecuteScriptHandler = {
                     if ($NetworkEndpointPacketCaptureCheckBox.Checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualCapture-EndpointPacketCaptureNetSh.ps1" }
                 }
 
-                #batman
                 # Live Process Search for various data
                 if ($ProcessLiveSearchNameCheckbox.checked)               { IndividualQuery-ProcessLive -ProcessLiveSearchNameCheckbox }
                 if ($ProcessLiveSearchCommandlineCheckbox.checked)        { IndividualQuery-ProcessLive -ProcessLiveSearchCommandlineCheckbox }
@@ -1797,14 +1796,14 @@ $ExecuteScriptHandler = {
                 if ($ProcessLiveSearchCompanyProductCheckbox.checked)     { IndividualQuery-ProcessLive -ProcessLiveSearchCompanyProductCheckbox }
 
                 # Searches for Sysmon Event ID 1 for various Process Creation data
-                if ($ProcessCreationSysmonSearchFilePathCheckbox.checked)          { IndividualQuery-ProcessCreationSysmon -ProcessCreationSysmonSearchFilePathCheckbox }
-                if ($ProcessCreationSysmonSearchCommandlineCheckbox.checked)       { IndividualQuery-ProcessCreationSysmon -ProcessCreationSysmonSearchCommandlineCheckbox }
-                if ($ProcessCreationSysmonSearchParentFilePathCheckbox.checked)    { IndividualQuery-ProcessCreationSysmon -ProcessCreationSysmonSearchParentFilePathCheckbox }
-                if ($ProcessCreationSysmonSearchParentCommandlineCheckbox.checked) { IndividualQuery-ProcessCreationSysmon -ProcessCreationSysmonSearchParentCommandlineCheckbox }
-                if ($ProcessCreationSysmonSearchOriginalFileNameCheckbox.checked)  { IndividualQuery-ProcessCreationSysmon -ProcessCreationSysmonSearchOriginalFileNameCheckbox }
-                if ($ProcessCreationSysmonSearchUserCheckbox.checked)              { IndividualQuery-ProcessCreationSysmon -ProcessCreationSysmonSearchUserCheckbox }
-                if ($ProcessCreationSysmonSearchHashesCheckbox.checked)            { IndividualQuery-ProcessCreationSysmon -ProcessCreationSysmonSearchHashesCheckbox }
-                if ($ProcessCreationSysmonSearchCompanyProductCheckbox.checked)    { IndividualQuery-ProcessCreationSysmon -ProcessCreationSysmonSearchCompanyProductCheckbox }
+                if ($ProcessSysmonSearchFilePathCheckbox.checked)          { IndividualQuery-ProcessSysmon -ProcessSysmonSearchFilePathCheckbox }
+                if ($ProcessSysmonSearchCommandlineCheckbox.checked)       { IndividualQuery-ProcessSysmon -ProcessSysmonSearchCommandlineCheckbox }
+                if ($ProcessSysmonSearchParentFilePathCheckbox.checked)    { IndividualQuery-ProcessSysmon -ProcessSysmonSearchParentFilePathCheckbox }
+                if ($ProcessSysmonSearchParentCommandlineCheckbox.checked) { IndividualQuery-ProcessSysmon -ProcessSysmonSearchParentCommandlineCheckbox }
+                if ($ProcessSysmonSearchRuleNameCheckbox.checked)          { IndividualQuery-ProcessSysmon -ProcessSysmonSearchRuleNameCheckbox }
+                if ($ProcessSysmonSearchUserAccountIdCheckbox.checked)     { IndividualQuery-ProcessSysmon -ProcessSysmonSearchUserAccountIdCheckbox }
+                if ($ProcessSysmonSearchHashesCheckbox.checked)            { IndividualQuery-ProcessSysmon -ProcessSysmonSearchHashesCheckbox }
+                if ($ProcessSysmonSearchCompanyProductCheckbox.checked)    { IndividualQuery-ProcessSysmon -ProcessSysmonSearchCompanyProductCheckbox }
 
                 # Live Network Connection Search for various data
                 if ($NetworkLiveSearchRemoteIPAddressCheckbox.checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-NetworkLiveRemoteIPAddress.ps1" }
@@ -1816,12 +1815,12 @@ $ExecuteScriptHandler = {
                 if ($NetworkLiveSearchDNSCacheCheckbox.checked)        { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-NetworkLiveSearchDNSCache.ps1" }
 
                 # Searches for Sysmon Event ID 3 for various Network Connections data
-                if ($NetworkSysmonSearchSourceIPAddressCheckbox.checked)      { IndividualQuery-NetworkConnectionSysmon -NetworkSysmonSearchSourceIPAddressCheckbox }
-                if ($NetworkSysmonSearchSourcePortCheckbox.checked)           { IndividualQuery-NetworkConnectionSysmon -NetworkSysmonSearchSourcePortCheckbox }
-                if ($NetworkSysmonSearchDestinationIPAddressCheckbox.checked) { IndividualQuery-NetworkConnectionSysmon -NetworkSysmonSearchDestinationIPAddressCheckbox }
-                if ($NetworkSysmonSearchDestinationPortCheckbox.checked)      { IndividualQuery-NetworkConnectionSysmon -NetworkSysmonSearchDestinationPortCheckbox }
-                if ($NetworkSysmonSearchAccountCheckbox.checked)              { IndividualQuery-NetworkConnectionSysmon -NetworkSysmonSearchAccountCheckbox }
-                if ($NetworkSysmonSearchExecutablePathCheckbox.checked)       { IndividualQuery-NetworkConnectionSysmon -NetworkSysmonSearchExecutablePathCheckbox }
+                if ($NetworkSysmonSearchSourceIPAddressCheckbox.checked)      { IndividualQuery-NetworkSysmon -NetworkSysmonSearchSourceIPAddressCheckbox }
+                if ($NetworkSysmonSearchSourcePortCheckbox.checked)           { IndividualQuery-NetworkSysmon -NetworkSysmonSearchSourcePortCheckbox }
+                if ($NetworkSysmonSearchDestinationIPAddressCheckbox.checked) { IndividualQuery-NetworkSysmon -NetworkSysmonSearchDestinationIPAddressCheckbox }
+                if ($NetworkSysmonSearchDestinationPortCheckbox.checked)      { IndividualQuery-NetworkSysmon -NetworkSysmonSearchDestinationPortCheckbox }
+                if ($NetworkSysmonSearchAccountCheckbox.checked)              { IndividualQuery-NetworkSysmon -NetworkSysmonSearchAccountCheckbox }
+                if ($NetworkSysmonSearchExecutablePathCheckbox.checked)       { IndividualQuery-NetworkSysmon -NetworkSysmonSearchExecutablePathCheckbox }
 
                 # Sysmon
                 # Pushes Sysmon to remote hosts and configure it with the selected config .xml file
@@ -2054,8 +2053,6 @@ Start-Sleep -Milliseconds 500
 $PoShEasyWin.ShowDialog() | Out-Null
 
 } # END for $ScriptBlockForGuiLoadAndProgressBar
-
-
 
 
 $ScriptBlockProgressBarInput = {

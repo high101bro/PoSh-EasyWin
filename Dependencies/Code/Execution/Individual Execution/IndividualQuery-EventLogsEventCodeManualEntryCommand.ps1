@@ -15,7 +15,7 @@ $EventLogsStartTimePickerValue           = $script:EventLogsStartTimePicker.Valu
 $EventLogsStopTimePickerValue            = $script:EventLogsStopTimePicker.Value
 
 
-function Query-EventLogLogsEventIDsManualEntrySessionBased {
+function IndividualQuery-EventIdSearch {
     param(
         $script:ComputerList,
         $script:Credential,
@@ -45,7 +45,6 @@ function Query-EventLogLogsEventIDsManualEntrySessionBased {
                 Get-Winevent -FilterHashtable $FilterHashtable -Oldest `
                 | Where-Object {$_.TimeCreated -gt $EventLogsStartTimePickerValue -and $_.TimeCreated -lt $EventLogsStopTimePickerValue} `
                 | Select-Object -first $EventLogsMaximumCollectionTextBoxText
-
             }
         }
     }
@@ -117,7 +116,7 @@ function MonitorJobScriptBlock {
 
         if ($EventLogWinRMRadioButton.Checked) {            
             $InvokeCommandSplat = @{
-                ScriptBlock  = ${function:Query-EventLogLogsEventIDsManualEntrySessionBased}
+                ScriptBlock  = ${function:IndividualQuery-EventIdSearch}
                 ArgumentList = @($script:ComputerList,$script:Credential,$ExecutionStartTime,$CollectionName,$EventLogsEventIDsManualEntryTextboxText,$EventLogsMaximumCollectionTextBoxText,$EventLogsStartTimePickerChecked,$EventLogsStopTimePickerChecked,$EventLogsStartTimePickerValue,$EventLogsStopTimePickerValue)
                 ComputerName = $TargetComputer
                 AsJob        = $true

@@ -13,7 +13,7 @@ $EventLogsStopTimePickerChecked        = $script:EventLogsStopTimePicker.Checked
 $EventLogsStartTimePickerValue         = $script:EventLogsStartTimePicker.Value
 $EventLogsStopTimePickerValue          = $script:EventLogsStopTimePicker.Value
 
-function Query-EventLogLogsEventIDsManualEntrySessionBased {
+function IndividualQuery-EventIdQuickSelection {
     param(
         $Filter,
         $EventLogsMaximumCollectionTextBoxText,
@@ -122,7 +122,7 @@ if ($EventLogWinRMRadioButton.Checked) {
                 )
                 foreach ($TargetComputer in $script:ComputerList) {
                     $InvokeCommandSplat = @{
-                        ScriptBlock  = ${function:Query-EventLogLogsEventIDsManualEntrySessionBased}
+                        ScriptBlock  = ${function:IndividualQuery-EventIdQuickSelection}
                         ArgumentList = @($Query.Filter,$EventLogsMaximumCollectionTextBoxText,$EventLogsStartTimePickerChecked,$EventLogsStopTimePickerChecked,$EventLogsStartTimePickerValue,$EventLogsStopTimePickerValue)
                         ComputerName = $TargetComputer
                         AsJob        = $true

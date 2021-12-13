@@ -285,6 +285,7 @@ function IndividualQuery-ProcessLive {
     elseif ($ProcessLiveSearchHashesSignerCertsCheckbox)  {$CollectionName = "Process (Live) Hashes, Signer Cert"}
     elseif ($ProcessLiveSearchCompanyProductCheckbox)     {$CollectionName = "Process (Live) Company, Product"}
         
+
     $EndpointString = ''
     foreach ($item in $script:ComputerList) {$EndpointString += "$item`n"}
 
@@ -320,8 +321,10 @@ Search Terms:
 
 "@
 
-    if ($ProcessesLiveRegexCheckbox.checked) {$ProcessesLiveRegex = $True}
+
+    if   ($ProcessesLiveRegexCheckbox.checked) {$ProcessesLiveRegex = $True}
     else {$ProcessesLiveRegex = $False}
+
 
     if ($ProcessLiveSearchNameCheckbox) {
         $ProcessLiveSearchName = ($ProcessLiveSearchNameRichTextbox.Text).split("`r`n")
@@ -329,11 +332,13 @@ Search Terms:
     }
     else {$ProcessLiveSearchName = $null}
 
+
     if ($ProcessLiveSearchCommandlineCheckbox) {
         $ProcessLiveSearchCommandline = $ProcessLiveSearchCommandlineRichTextbox.Lines
         $InputValues += $($ProcessLiveSearchCommandline -join "`n")
     }
     else {$ProcessLiveSearchCommandline = $null}
+
 
     if ($ProcessLiveSearchParentNameCheckbox) {
         $ProcessLiveSearchParentName = ($ProcessLiveSearchParentNameRichTextbox.Text).split("`r`n")
@@ -341,11 +346,13 @@ Search Terms:
     }
     else {$ProcessLiveSearchParentName = $null}
 
+
     if ($ProcessLiveSearchOwnerSIDCheckbox) {
         $ProcessLiveSearchOwnerSID = ($ProcessLiveSearchOwnerSIDRichTextbox.Text).split("`r`n")
         $InputValues += $($ProcessLiveSearchOwnerSID -join "`n")
     }
     else {$ProcessLiveSearchOwnerSID = $null}
+
 
     if ($ProcessLiveSearchServiceInfoCheckbox) {
         $ProcessLiveSearchServiceInfo = ($ProcessLiveSearchServiceInfoRichTextbox.Text).split("`r`n")
@@ -353,17 +360,20 @@ Search Terms:
     }
     else {$ProcessLiveSearchServiceInfo = $null}
 
+
     if ($ProcessLiveSearchNetworkConnectionsCheckbox) {
         $ProcessLiveSearchNetworkConnections = ($ProcessLiveSearchNetworkConnectionsRichTextbox.Text).split("`r`n")
         $InputValues += $($ProcessLiveSearchNetworkConnections -join "`n")
     }
     else {$ProcessLiveSearchNetworkConnections = $null}
 
+
     if ($ProcessLiveSearchHashesSignerCertsCheckbox) {
         $ProcessLiveSearchHashesSignerCerts = ($ProcessLiveSearchHashesSignerCertsRichTextbox.Text).split("`r`n")
         $InputValues += $($ProcessLiveSearchHashesSignerCerts -join "`n")
     }
     else {$ProcessLiveSearchHashesSignerCerts = $null}
+
 
     if ($ProcessLiveSearchCompanyProductCheckbox) {
         $ProcessLiveSearchCompanyProduct = ($ProcessLiveSearchCompanyProductRichTextbox.Text).split("`r`n")
@@ -386,12 +396,12 @@ Search Terms:
     Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript ${function:MonitorJobScriptBlock} -ArgumentList @($CollectionName,$ProcessesLiveRegex,$ProcessLiveSearchName,$ProcessLiveSearchCommandline,$ProcessLiveSearchParentName,$ProcessLiveSearchOwnerSID,$ProcessLiveSearchServiceInfo,$ProcessLiveSearchNetworkConnections,$ProcessLiveSearchHashesSignerCerts,$ProcessLiveSearchCompanyProduct) -InputValues $InputValues
 
 
-
     $CollectionCommandEndTime  = Get-Date
     $CollectionCommandDiffTime = New-TimeSpan -Start $ExecutionStartTime -End $CollectionCommandEndTime
     $ResultsListBox.Items.RemoveAt(0)
     $ResultsListBox.Items.Insert(0,"$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss')) [$CollectionCommandDiffTime]  $CollectionName")
 
+    
     Update-EndpointNotes
 }
 

@@ -478,7 +478,7 @@ $CollectionsProcessesTabControl.Controls.Add($Section1ProcessCreationSysmonSearc
 
 
 
-$ProcessCreationSysmonSearchGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
+$ProcessSysmonSearchGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
     Text   = "Collection Options"
     Left   = $FormScale * 3
     Top    = $FormScale * 5
@@ -488,46 +488,46 @@ $ProcessCreationSysmonSearchGroupBox = New-Object System.Windows.Forms.GroupBox 
     ForeColor = "Blue"
 }
 
-            $ProcessCreationSysmonRegexCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
+            $ProcessSysmonRegexCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
                 Text   = "Use Regular Expression. Note: The backslash is the escape character, ex: c:\\Windows\\System32"
                 Left   = $FormScale * 7
                 Top    = $FormScale * 18
                 Width  = $FormScale * 280 #430
                 Height = $FormScale * 25
-                Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+                Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
                 ForeColor = "Black"
                 Checked = $false
             }
-            $ProcessCreationSysmonSearchGroupBox.Controls.Add($ProcessCreationSysmonRegexCheckbox)
+            $ProcessSysmonSearchGroupBox.Controls.Add($ProcessSysmonRegexCheckbox)
 
 
             $SupportsRegexButton = New-Object System.Windows.Forms.Button -Property @{
                 Text   = "Regex Examples"
-                Left   = $ProcessCreationSysmonRegexCheckbox.Left + $ProcessCreationSysmonRegexCheckbox.Width + $($FormScale * 28)
-                Top    = $ProcessCreationSysmonRegexCheckbox.Top
+                Left   = $ProcessSysmonRegexCheckbox.Left + $ProcessSysmonRegexCheckbox.Width + $($FormScale * 28)
+                Top    = $ProcessSysmonRegexCheckbox.Top
                 Width  = $FormScale * 115
                 Height = $FormScale * 20
                 Add_Click = { Import-Csv "$Dependencies\Reference RegEx Examples.csv" | Out-GridView }
             }
-            $ProcessCreationSysmonSearchGroupBox.Controls.Add($SupportsRegexButton)
+            $ProcessSysmonSearchGroupBox.Controls.Add($SupportsRegexButton)
             Apply-CommonButtonSettings -Button $SupportsRegexButton
 
 
-#             $ProcessCreationSysmonDatetimeStartLabel = New-Object System.Windows.Forms.Label -Property @{
+#             $ProcessSysmonDatetimeStartLabel = New-Object System.Windows.Forms.Label -Property @{
 #                 Text   = "DateTime Start:"
 #                 Left   = $FormScale * 77
-#                 Top    = $ProcessCreationSysmonRegexCheckbox.Top + $ProcessCreationSysmonRegexCheckbox.Height + $($FormScale * 10)
+#                 Top    = $ProcessSysmonRegexCheckbox.Top + $ProcessSysmonRegexCheckbox.Height + $($FormScale * 10)
 #                 Width  = $FormScale * 90
 #                 Height = $FormScale * 20
 #                 Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
 #                 ForeColor = "Black"
 #             }
-#             $ProcessCreationSysmonSearchGroupBox.Controls.Add($ProcessCreationSysmonDatetimeStartLabel)
+#             $ProcessSysmonSearchGroupBox.Controls.Add($ProcessSysmonDatetimeStartLabel)
 
 
 #             $script:ProcessCreationSysmonStartTimePicker = New-Object System.Windows.Forms.DateTimePicker -Property @{
-#                 Left         = $ProcessCreationSysmonDatetimeStartLabel.Left + $ProcessCreationSysmonDatetimeStartLabel.Width
-#                 Top          = $ProcessCreationSysmonRegexCheckbox.Top + $ProcessCreationSysmonRegexCheckbox.Height + $($FormScale * 10)
+#                 Left         = $ProcessSysmonDatetimeStartLabel.Left + $ProcessSysmonDatetimeStartLabel.Width
+#                 Top          = $ProcessSysmonRegexCheckbox.Top + $ProcessSysmonRegexCheckbox.Height + $($FormScale * 10)
 #                 Width        = $FormScale * 265
 #                 Height       = $FormScale * 100
 #                 Font         = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
@@ -558,24 +558,24 @@ $ProcessCreationSysmonSearchGroupBox = New-Object System.Windows.Forms.GroupBox 
 #             # $TimePicker.Value
 #             # 20190605162740.383143-240
 #             # [System.Management.ManagementDateTimeConverter]::ToDmtfDateTime(($script:ProcessCreationSysmonStartTimePicker.Value))
-#             $ProcessCreationSysmonSearchGroupBox.Controls.Add($script:ProcessCreationSysmonStartTimePicker)
+#             $ProcessSysmonSearchGroupBox.Controls.Add($script:ProcessCreationSysmonStartTimePicker)
 
             
-#             $ProcessCreationSysmonDatetimeStopLabel = New-Object System.Windows.Forms.Label -Property @{
+#             $ProcessSysmonDatetimeStopLabel = New-Object System.Windows.Forms.Label -Property @{
 #                 Text   = "DateTime Stop:"
-#                 Left   = $ProcessCreationSysmonDatetimeStartLabel.Left
-#                 Top    = $ProcessCreationSysmonDatetimeStartLabel.Top + $ProcessCreationSysmonDatetimeStartLabel.Height
-#                 Width  = $ProcessCreationSysmonDatetimeStartLabel.Width
+#                 Left   = $ProcessSysmonDatetimeStartLabel.Left
+#                 Top    = $ProcessSysmonDatetimeStartLabel.Top + $ProcessSysmonDatetimeStartLabel.Height
+#                 Width  = $ProcessSysmonDatetimeStartLabel.Width
 #                 Height = $FormScale * 20
 #                 Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
 #                 ForeColor = "Black"
 #             }
-#             $ProcessCreationSysmonSearchGroupBox.Controls.Add($ProcessCreationSysmonDatetimeStopLabel)
+#             $ProcessSysmonSearchGroupBox.Controls.Add($ProcessSysmonDatetimeStopLabel)
 
 
 #             $script:ProcessCreationSysmonStopTimePicker = New-Object System.Windows.Forms.DateTimePicker -Property @{
-#                 Left         = $ProcessCreationSysmonDatetimeStopLabel.Left + $ProcessCreationSysmonDatetimeStopLabel.Width
-#                 Top          = $ProcessCreationSysmonDatetimeStartLabel.Top + $ProcessCreationSysmonDatetimeStartLabel.Height
+#                 Left         = $ProcessSysmonDatetimeStopLabel.Left + $ProcessSysmonDatetimeStopLabel.Width
+#                 Top          = $ProcessSysmonDatetimeStartLabel.Top + $ProcessSysmonDatetimeStartLabel.Height
 #                 Width        = $script:ProcessCreationSysmonStartTimePicker.Width
 #                 Height       = $FormScale * 100
 #                 Font         = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
@@ -596,27 +596,27 @@ $ProcessCreationSysmonSearchGroupBox = New-Object System.Windows.Forms.GroupBox 
 # "@
 #                 }
 #             }
-#             $ProcessCreationSysmonSearchGroupBox.Controls.Add($script:ProcessCreationSysmonStopTimePicker)
+#             $ProcessSysmonSearchGroupBox.Controls.Add($script:ProcessCreationSysmonStopTimePicker)
 
-$Section1ProcessCreationSysmonSearchTab.Controls.Add($ProcessCreationSysmonSearchGroupBox)
+$Section1ProcessCreationSysmonSearchTab.Controls.Add($ProcessSysmonSearchGroupBox)
 
 
-$ProcessCreationSysmonSearchLabel = New-Object System.Windows.Forms.Label -Property @{
+$ProcessSysmonSearchLabel = New-Object System.Windows.Forms.Label -Property @{
     Text   = "To return results, this section relies on sysmon being installed endpoints."
     Left   = $FormScale * 3
-    Top    = $ProcessCreationSysmonSearchGroupBox.Top + $ProcessCreationSysmonSearchGroupBox.Height + $($FormScale * 5)
+    Top    = $ProcessSysmonSearchGroupBox.Top + $ProcessSysmonSearchGroupBox.Height + $($FormScale * 5)
     Width  = $FormScale * 430
     Height = $FormScale * 15
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     ForeColor = "Black"
 }
-$Section1ProcessCreationSysmonSearchTab.Controls.Add($ProcessCreationSysmonSearchLabel)
+$Section1ProcessCreationSysmonSearchTab.Controls.Add($ProcessSysmonSearchLabel)
 
 
-$ProcessCreationSysmonSearchFilePathCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
+$ProcessSysmonSearchFilePathCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
     Text   = "Process File Path (WinRM)"
     Left   = $FormScale * 3
-    Top    = $ProcessCreationSysmonSearchLabel.Top + $ProcessCreationSysmonSearchLabel.Height
+    Top    = $ProcessSysmonSearchLabel.Top + $ProcessSysmonSearchLabel.Height
     Width  = $FormScale * 210
     Height = $FormScale * 20
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
@@ -628,13 +628,13 @@ $ProcessCreationSysmonSearchFilePathCheckbox = New-Object System.Windows.Forms.C
         if ($this.checked){$this.ForeColor = 'Red'} else {$this.ForeColor = 'Blue'}
     }
 }
-$Section1ProcessCreationSysmonSearchTab.Controls.Add($ProcessCreationSysmonSearchFilePathCheckbox)
+$Section1ProcessCreationSysmonSearchTab.Controls.Add($ProcessSysmonSearchFilePathCheckbox)
 
 
-        $ProcessCreationSysmonSearchFilePathRichTextBox = New-Object System.Windows.Forms.RichTextBox -Property @{
+        $ProcessSysmonSearchFilePathRichTextBox = New-Object System.Windows.Forms.RichTextBox -Property @{
             Lines  = "Enter one Process File Path; One Per Line"
-            Left   = $ProcessCreationSysmonSearchFilePathCheckbox.Left
-            Top    = $ProcessCreationSysmonSearchFilePathCheckbox.Top + $ProcessCreationSysmonSearchFilePathCheckbox.Height + $($FormScale * 5)
+            Left   = $ProcessSysmonSearchFilePathCheckbox.Left
+            Top    = $ProcessSysmonSearchFilePathCheckbox.Top + $ProcessSysmonSearchFilePathCheckbox.Height + $($FormScale * 5)
             Width  = $FormScale * 210
             Height = $FormScale * 75
             Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
@@ -652,13 +652,13 @@ $Section1ProcessCreationSysmonSearchTab.Controls.Add($ProcessCreationSysmonSearc
 "@  
             }
         }
-        $Section1ProcessCreationSysmonSearchTab.Controls.Add($ProcessCreationSysmonSearchFilePathRichTextBox)
+        $Section1ProcessCreationSysmonSearchTab.Controls.Add($ProcessSysmonSearchFilePathRichTextBox)
 
 
-$ProcessCreationSysmonSearchCommandlineCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
+$ProcessSysmonSearchCommandlineCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
     Text   = "Command Line (WinRM)" #CommandLine
-    Left   = $ProcessCreationSysmonSearchFilePathCheckbox.Left + $ProcessCreationSysmonSearchFilePathCheckbox.Width + $($FormScale * 10)
-    Top    = $ProcessCreationSysmonSearchFilePathCheckbox.Top
+    Left   = $ProcessSysmonSearchFilePathCheckbox.Left + $ProcessSysmonSearchFilePathCheckbox.Width + $($FormScale * 10)
+    Top    = $ProcessSysmonSearchFilePathCheckbox.Top
     Width  = $FormScale * 210
     Height = $FormScale * 20
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
@@ -670,13 +670,13 @@ $ProcessCreationSysmonSearchCommandlineCheckbox = New-Object System.Windows.Form
         if ($this.checked){$this.ForeColor = 'Red'} else {$this.ForeColor = 'Blue'}
     }
 }
-$Section1ProcessCreationSysmonSearchTab.Controls.Add($ProcessCreationSysmonSearchCommandlineCheckbox)
+$Section1ProcessCreationSysmonSearchTab.Controls.Add($ProcessSysmonSearchCommandlineCheckbox)
 
 
-        $ProcessCreationSysmonSearchCommandlineRichTextBox = New-Object System.Windows.Forms.RichTextBox -Property @{
+        $ProcessSysmonSearchCommandlineRichTextBox = New-Object System.Windows.Forms.RichTextBox -Property @{
             Lines  = "Enter Process Command Line; One Per Line"
-            Left   = $ProcessCreationSysmonSearchCommandlineCheckbox.Left
-            Top    = $ProcessCreationSysmonSearchCommandlineCheckbox.Top + $ProcessCreationSysmonSearchCommandlineCheckbox.Height + $($FormScale * 5)
+            Left   = $ProcessSysmonSearchCommandlineCheckbox.Left
+            Top    = $ProcessSysmonSearchCommandlineCheckbox.Top + $ProcessSysmonSearchCommandlineCheckbox.Height + $($FormScale * 5)
             Width  = $FormScale * 210
             Height = $FormScale * 75
             Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
@@ -694,13 +694,13 @@ $Section1ProcessCreationSysmonSearchTab.Controls.Add($ProcessCreationSysmonSearc
 "@  
             }
         }
-        $Section1ProcessCreationSysmonSearchTab.Controls.Add($ProcessCreationSysmonSearchCommandlineRichTextBox)
+        $Section1ProcessCreationSysmonSearchTab.Controls.Add($ProcessSysmonSearchCommandlineRichTextBox)
 
 
-$ProcessCreationSysmonSearchParentFilePathCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
+$ProcessSysmonSearchParentFilePathCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
     Text   = "Parent Process File Path"
-    Left   = $ProcessCreationSysmonSearchFilePathRichTextBox.Left 
-    Top    = $ProcessCreationSysmonSearchFilePathRichTextBox.Top+ $ProcessCreationSysmonSearchFilePathRichTextBox.Height + $($FormScale * 5)
+    Left   = $ProcessSysmonSearchFilePathRichTextBox.Left 
+    Top    = $ProcessSysmonSearchFilePathRichTextBox.Top+ $ProcessSysmonSearchFilePathRichTextBox.Height + $($FormScale * 5)
     Width  = $FormScale * 210
     Height = $FormScale * 20
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
@@ -712,13 +712,13 @@ $ProcessCreationSysmonSearchParentFilePathCheckbox = New-Object System.Windows.F
         if ($this.checked){$this.ForeColor = 'Red'} else {$this.ForeColor = 'Blue'}
     }
 }
-$Section1ProcessCreationSysmonSearchTab.Controls.Add($ProcessCreationSysmonSearchParentFilePathCheckbox)
+$Section1ProcessCreationSysmonSearchTab.Controls.Add($ProcessSysmonSearchParentFilePathCheckbox)
 
 
-        $ProcessCreationSysmonSearchParentFilePathRichTextBox = New-Object System.Windows.Forms.RichTextBox -Property @{
+        $ProcessSysmonSearchParentFilePathRichTextBox = New-Object System.Windows.Forms.RichTextBox -Property @{
             Lines  = "Enter one Parent Process File Path; One Per Line"
-            Left   = $ProcessCreationSysmonSearchParentFilePathCheckbox.Left
-            Top    = $ProcessCreationSysmonSearchParentFilePathCheckbox.Top + $ProcessCreationSysmonSearchParentFilePathCheckbox.Height + $($FormScale * 5)
+            Left   = $ProcessSysmonSearchParentFilePathCheckbox.Left
+            Top    = $ProcessSysmonSearchParentFilePathCheckbox.Top + $ProcessSysmonSearchParentFilePathCheckbox.Height + $($FormScale * 5)
             Width  = $FormScale * 210
             Height = $FormScale * 75
             Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
@@ -736,13 +736,13 @@ $Section1ProcessCreationSysmonSearchTab.Controls.Add($ProcessCreationSysmonSearc
 "@  
             }
         }
-        $Section1ProcessCreationSysmonSearchTab.Controls.Add($ProcessCreationSysmonSearchParentFilePathRichTextBox)
+        $Section1ProcessCreationSysmonSearchTab.Controls.Add($ProcessSysmonSearchParentFilePathRichTextBox)
 
 
-$ProcessCreationSysmonSearchParentCommandlineCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
+$ProcessSysmonSearchParentCommandlineCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
     Text   = "Parent Process Command Line" #ParentCommandLine
-    Left   = $ProcessCreationSysmonSearchParentFilePathCheckbox.Left + $ProcessCreationSysmonSearchParentFilePathCheckbox.Width + $($FormScale * 10)
-    Top    = $ProcessCreationSysmonSearchParentFilePathCheckbox.Top
+    Left   = $ProcessSysmonSearchParentFilePathCheckbox.Left + $ProcessSysmonSearchParentFilePathCheckbox.Width + $($FormScale * 10)
+    Top    = $ProcessSysmonSearchParentFilePathCheckbox.Top
     Width  = $FormScale * 210
     Height = $FormScale * 20
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
@@ -754,13 +754,13 @@ $ProcessCreationSysmonSearchParentCommandlineCheckbox = New-Object System.Window
         if ($this.checked){$this.ForeColor = 'Red'} else {$this.ForeColor = 'Blue'}
     }
 }
-$Section1ProcessCreationSysmonSearchTab.Controls.Add($ProcessCreationSysmonSearchParentCommandlineCheckbox)
+$Section1ProcessCreationSysmonSearchTab.Controls.Add($ProcessSysmonSearchParentCommandlineCheckbox)
 
 
-        $ProcessCreationSysmonSearchParentCommandlineRichTextBox = New-Object System.Windows.Forms.RichTextBox -Property @{
+        $ProcessSysmonSearchParentCommandlineRichTextBox = New-Object System.Windows.Forms.RichTextBox -Property @{
             Lines  = "Enter Parent Process Command Line; One Per Line"
-            Left   = $ProcessCreationSysmonSearchParentCommandlineCheckbox.Left
-            Top    = $ProcessCreationSysmonSearchParentCommandlineCheckbox.Top + $ProcessCreationSysmonSearchParentCommandlineCheckbox.Height + $($FormScale * 5)
+            Left   = $ProcessSysmonSearchParentCommandlineCheckbox.Left
+            Top    = $ProcessSysmonSearchParentCommandlineCheckbox.Top + $ProcessSysmonSearchParentCommandlineCheckbox.Height + $($FormScale * 5)
             Width  = $FormScale * 210
             Height = $FormScale * 75
             Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
@@ -778,13 +778,13 @@ $Section1ProcessCreationSysmonSearchTab.Controls.Add($ProcessCreationSysmonSearc
 "@  
             }
         }
-        $Section1ProcessCreationSysmonSearchTab.Controls.Add($ProcessCreationSysmonSearchParentCommandlineRichTextBox)
+        $Section1ProcessCreationSysmonSearchTab.Controls.Add($ProcessSysmonSearchParentCommandlineRichTextBox)
 
 
-$ProcessCreationSysmonSearchOriginalFileNameCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
+$ProcessSysmonSearchRuleNameCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
     Text   = "Rule Name (WinRM)"
     Left   = $FormScale * 3
-    Top    = $ProcessCreationSysmonSearchParentFilePathRichTextBox.Top + $ProcessCreationSysmonSearchParentFilePathRichTextBox.Height + $($FormScale * 5)
+    Top    = $ProcessSysmonSearchParentFilePathRichTextBox.Top + $ProcessSysmonSearchParentFilePathRichTextBox.Height + $($FormScale * 5)
     Width  = $FormScale * 210
     Height = $FormScale * 20
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
@@ -796,13 +796,13 @@ $ProcessCreationSysmonSearchOriginalFileNameCheckbox = New-Object System.Windows
         if ($this.checked){$this.ForeColor = 'Red'} else {$this.ForeColor = 'Blue'}
     }
 }
-$Section1ProcessCreationSysmonSearchTab.Controls.Add($ProcessCreationSysmonSearchOriginalFileNameCheckbox)
+$Section1ProcessCreationSysmonSearchTab.Controls.Add($ProcessSysmonSearchRuleNameCheckbox)
 
 
-        $ProcessCreationSysmonSearchOriginalFileNameRichTextbox = New-Object System.Windows.Forms.RichTextBox -Property @{
+        $ProcessSysmonSearchRuleNameRichTextbox = New-Object System.Windows.Forms.RichTextBox -Property @{
             Lines  = "Enter one Rule Name; One Per Line"
-            Left   = $ProcessCreationSysmonSearchOriginalFileNameCheckbox.Left
-            Top    = $ProcessCreationSysmonSearchOriginalFileNameCheckbox.Top + $ProcessCreationSysmonSearchOriginalFileNameCheckbox.Height + $($FormScale * 5)
+            Left   = $ProcessSysmonSearchRuleNameCheckbox.Left
+            Top    = $ProcessSysmonSearchRuleNameCheckbox.Top + $ProcessSysmonSearchRuleNameCheckbox.Height + $($FormScale * 5)
             Width  = $FormScale * 210
             Height = $FormScale * 75
             Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
@@ -820,13 +820,13 @@ $Section1ProcessCreationSysmonSearchTab.Controls.Add($ProcessCreationSysmonSearc
 "@  
             }
         }
-        $Section1ProcessCreationSysmonSearchTab.Controls.Add($ProcessCreationSysmonSearchOriginalFileNameRichTextbox)
+        $Section1ProcessCreationSysmonSearchTab.Controls.Add($ProcessSysmonSearchRuleNameRichTextbox)
 
 
-$ProcessCreationSysmonSearchUserCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
-    Text   = "User Account (WinRM)"
-    Left   = $ProcessCreationSysmonSearchOriginalFileNameCheckbox.Left + $ProcessCreationSysmonSearchOriginalFileNameCheckbox.Width + $($FormScale * 10)
-    Top    = $ProcessCreationSysmonSearchOriginalFileNameCheckbox.Top
+$ProcessSysmonSearchUserAccountIdCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
+    Text   = "User Account / ID (WinRM)"
+    Left   = $ProcessSysmonSearchRuleNameCheckbox.Left + $ProcessSysmonSearchRuleNameCheckbox.Width + $($FormScale * 10)
+    Top    = $ProcessSysmonSearchRuleNameCheckbox.Top
     Width  = $FormScale * 210
     Height = $FormScale * 20
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
@@ -838,13 +838,13 @@ $ProcessCreationSysmonSearchUserCheckbox = New-Object System.Windows.Forms.Check
         if ($this.checked){$this.ForeColor = 'Red'} else {$this.ForeColor = 'Blue'}
     }
 }
-$Section1ProcessCreationSysmonSearchTab.Controls.Add($ProcessCreationSysmonSearchUserCheckbox)
+$Section1ProcessCreationSysmonSearchTab.Controls.Add($ProcessSysmonSearchUserAccountIdCheckbox)
 
 
-        $ProcessCreationSysmonSearchUserRichTextBox = New-Object System.Windows.Forms.RichTextBox -Property @{
+        $ProcessSysmonSearchUserAccountIdRichTextBox = New-Object System.Windows.Forms.RichTextBox -Property @{
             Lines  = "Enter User Account; One Per Line"
-            Left   = $ProcessCreationSysmonSearchUserCheckbox.Left
-            Top    = $ProcessCreationSysmonSearchUserCheckbox.Top + $ProcessCreationSysmonSearchUserCheckbox.Height + $($FormScale * 5)
+            Left   = $ProcessSysmonSearchUserAccountIdCheckbox.Left
+            Top    = $ProcessSysmonSearchUserAccountIdCheckbox.Top + $ProcessSysmonSearchUserAccountIdCheckbox.Height + $($FormScale * 5)
             Width  = $FormScale * 210
             Height = $FormScale * 75
             Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
@@ -862,13 +862,13 @@ $Section1ProcessCreationSysmonSearchTab.Controls.Add($ProcessCreationSysmonSearc
 "@  
             }
         }
-        $Section1ProcessCreationSysmonSearchTab.Controls.Add($ProcessCreationSysmonSearchUserRichTextBox)
+        $Section1ProcessCreationSysmonSearchTab.Controls.Add($ProcessSysmonSearchUserAccountIdRichTextBox)
 
 
-$ProcessCreationSysmonSearchHashesCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
+$ProcessSysmonSearchHashesCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
     Text   = "Hashes: MD5/SHA1/SHA256/IMP"
     Left   = $FormScale * 3
-    Top    = $ProcessCreationSysmonSearchOriginalFileNameRichTextbox.Top + $ProcessCreationSysmonSearchOriginalFileNameRichTextbox.Height + $($FormScale * 5)
+    Top    = $ProcessSysmonSearchRuleNameRichTextbox.Top + $ProcessSysmonSearchRuleNameRichTextbox.Height + $($FormScale * 5)
     Width  = $FormScale * 210
     Height = $FormScale * 20
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
@@ -880,13 +880,13 @@ $ProcessCreationSysmonSearchHashesCheckbox = New-Object System.Windows.Forms.Che
         if ($this.checked){$this.ForeColor = 'Red'} else {$this.ForeColor = 'Blue'}
     }
 }
-$Section1ProcessCreationSysmonSearchTab.Controls.Add($ProcessCreationSysmonSearchHashesCheckbox)
+$Section1ProcessCreationSysmonSearchTab.Controls.Add($ProcessSysmonSearchHashesCheckbox)
 
 
-        $ProcessCreationSysmonSearchHashesRichTextBox = New-Object System.Windows.Forms.RichTextBox -Property @{
+        $ProcessSysmonSearchHashesRichTextBox = New-Object System.Windows.Forms.RichTextBox -Property @{
             Lines  = "Enter Hashes; One Per Line"
-            Left   = $ProcessCreationSysmonSearchHashesCheckbox.Left
-            Top    = $ProcessCreationSysmonSearchHashesCheckbox.Top + $ProcessCreationSysmonSearchHashesCheckbox.Height + $($FormScale * 5)
+            Left   = $ProcessSysmonSearchHashesCheckbox.Left
+            Top    = $ProcessSysmonSearchHashesCheckbox.Top + $ProcessSysmonSearchHashesCheckbox.Height + $($FormScale * 5)
             Width  = $FormScale * 210
             Height = $FormScale * 75
             Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
@@ -904,13 +904,13 @@ $Section1ProcessCreationSysmonSearchTab.Controls.Add($ProcessCreationSysmonSearc
 "@  
             }
         }
-        $Section1ProcessCreationSysmonSearchTab.Controls.Add($ProcessCreationSysmonSearchHashesRichTextBox)
+        $Section1ProcessCreationSysmonSearchTab.Controls.Add($ProcessSysmonSearchHashesRichTextBox)
 
 
-$ProcessCreationSysmonSearchCompanyProductCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
+$ProcessSysmonSearchCompanyProductCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
     Text   = "Company / Product (WinRM)"
-    Left   = $ProcessCreationSysmonSearchHashesCheckbox.Left + $ProcessCreationSysmonSearchHashesCheckbox.Width + $($FormScale * 10)
-    Top    = $ProcessCreationSysmonSearchHashesCheckbox.Top
+    Left   = $ProcessSysmonSearchHashesCheckbox.Left + $ProcessSysmonSearchHashesCheckbox.Width + $($FormScale * 10)
+    Top    = $ProcessSysmonSearchHashesCheckbox.Top
     Width  = $FormScale * 210
     Height = $FormScale * 20
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
@@ -922,13 +922,13 @@ $ProcessCreationSysmonSearchCompanyProductCheckbox = New-Object System.Windows.F
         if ($this.checked){$this.ForeColor = 'Red'} else {$this.ForeColor = 'Blue'}
     }
 }
-$Section1ProcessCreationSysmonSearchTab.Controls.Add($ProcessCreationSysmonSearchCompanyProductCheckbox)
+$Section1ProcessCreationSysmonSearchTab.Controls.Add($ProcessSysmonSearchCompanyProductCheckbox)
 
 
-        $ProcessCreationSysmonSearchCompanyProductRichTextBox = New-Object System.Windows.Forms.RichTextBox -Property @{
+        $ProcessSysmonSearchCompanyProductRichTextBox = New-Object System.Windows.Forms.RichTextBox -Property @{
             Lines  = "Enter Company/Product; One Per Line"
-            Left   = $ProcessCreationSysmonSearchCompanyProductCheckbox.Left
-            Top    = $ProcessCreationSysmonSearchCompanyProductCheckbox.Top + $ProcessCreationSysmonSearchCompanyProductCheckbox.Height + $($FormScale * 5)
+            Left   = $ProcessSysmonSearchCompanyProductCheckbox.Left
+            Top    = $ProcessSysmonSearchCompanyProductCheckbox.Top + $ProcessSysmonSearchCompanyProductCheckbox.Height + $($FormScale * 5)
             Width  = $FormScale * 210
             Height = $FormScale * 75
             Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
@@ -946,7 +946,7 @@ $Section1ProcessCreationSysmonSearchTab.Controls.Add($ProcessCreationSysmonSearc
 "@  
             }
         }
-        $Section1ProcessCreationSysmonSearchTab.Controls.Add($ProcessCreationSysmonSearchCompanyProductRichTextBox)
+        $Section1ProcessCreationSysmonSearchTab.Controls.Add($ProcessSysmonSearchCompanyProductRichTextBox)
 
 
 # SIG # Begin signature block

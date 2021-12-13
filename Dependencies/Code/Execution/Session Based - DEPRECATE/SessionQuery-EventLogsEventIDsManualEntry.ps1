@@ -8,7 +8,7 @@ $PoShEasyWin.Refresh()
 
 $script:ProgressBarEndpointsProgressBar.Value = 0
 
-function Query-EventLogLogsEventIDsManualEntrySessionBased {
+function SessionQuery-EventIdSearch {
     param(
         $EventLogsEventIDsManualEntryTextboxText,
         $EventLogsMaximumCollectionTextBoxText,
@@ -57,8 +57,7 @@ $EventLogsStopTimePickerChecked          = $script:EventLogsStopTimePicker.Check
 $EventLogsStartTimePickerValue           = $script:EventLogsStartTimePicker.Value
 $EventLogsStopTimePickerValue            = $script:EventLogsStopTimePicker.Value
 
-#Invoke-Command -ScriptBlock ${function:Query-EventLogLogsEventIDsManualEntrySessionBased} -ArgumentList $EventLogsEventIDsManualEntryTextboxText, $EventLogsMaximumCollectionTextBoxText, $EventLogsStartTimePickerChecked, $EventLogsStopTimePickerChecked, $EventLogsStartTimePickerValue, $EventLogsStopTimePickerValue -Session $PSSession | Export-Csv -Path $OutputFilePath -NoTypeInformation -Force
-Invoke-Command -ScriptBlock ${function:Query-EventLogLogsEventIDsManualEntrySessionBased} `
+Invoke-Command -ScriptBlock ${function:SessionQuery-EventIdSearch} `
 -ArgumentList $EventLogsEventIDsManualEntryTextboxText, $EventLogsMaximumCollectionTextBoxText, $EventLogsStartTimePickerChecked, $EventLogsStopTimePickerChecked, $EventLogsStartTimePickerValue, $EventLogsStopTimePickerValue `
 -Session $PSSession `
 | Set-Variable SessionData
