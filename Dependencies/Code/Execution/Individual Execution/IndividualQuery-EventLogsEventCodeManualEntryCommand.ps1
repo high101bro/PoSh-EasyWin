@@ -28,34 +28,69 @@ function Query-EventLogLogsEventIDsManualEntrySessionBased {
         $EventLogsStartTimePickerValue,
         $EventLogsStopTimePickerValue
     )
-    $ManualEntry = $EventLogsEventIDsManualEntryTextboxText -replace " ","" -replace "a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|y|z","" | Where-Object {$_.trim() -ne ""}
+    $IDs = $EventLogsEventIDsManualEntryTextboxText -replace " ","" -replace "a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|y|z","" | Where-Object {$_.trim() -ne ""}
     #$ManualEntry = ($EventLogsEventIDsManualEntryTextboxText).split("`r`n")
 
-    $EventLogList = Get-ChildItem 'C:\Windows\System32\Winevt\Logs' | Select-Object -ExpandProperty BaseName
-
-    $FilterHashtable = @{
-        Logname = $EventLogList
-        Id      = $ManualEntry
-    }
+    $EventLogList = (Get-ChildItem 'C:\Windows\System32\Winevt\Logs' | Select-Object -ExpandProperty BaseName) -replace '%4','/'
 
     if ($EventLogsStartTimePickerValue -and $EventLogsStopTimePickerValue) {
-        Get-WinEvent -FilterHashtable $FilterHashtable -Oldest -ErrorAction SilentlyContinue `
-        | Where-Object {$_.TimeCreated -gt $EventLogsStartTimePickerValue -and $_.TimeCreated -lt $EventLogsStopTimePickerValue} `
-        | Select-Object -first $EventLogsMaximumCollectionTextBoxText
+        foreach ($LogName in $EventLogList) {
+            $FilterHashtable = @{LogName=$LogName; Id=$IDs}
+            try {
+                 Get-Winevent -FilterHashtable $FilterHashtable `
+                 | Where-Object {$_.TimeCreated -gt $EventLogsStartTimePickerValue -and $_.TimeCreated -lt $EventLogsStopTimePickerValue} `
+                 | Select-Object -first $EventLogsMaximumCollectionTextBoxText
+            }
+            catch {
+                Get-Winevent -FilterHashtable $FilterHashtable -Oldest `
+                | Where-Object {$_.TimeCreated -gt $EventLogsStartTimePickerValue -and $_.TimeCreated -lt $EventLogsStopTimePickerValue} `
+                | Select-Object -first $EventLogsMaximumCollectionTextBoxText
+
+            }
+        }
     }
     elseif ($EventLogsStartTimePickerValue) {
-        Get-WinEvent -FilterHashtable $FilterHashtable -Oldest -ErrorAction SilentlyContinue `
-        | Where-Object {$_.TimeCreated -gt $EventLogsStartTimePickerValue} `
-        | Select-Object -first $EventLogsMaximumCollectionTextBoxText
+        foreach ($LogName in $EventLogList) {
+            $FilterHashtable = @{LogName=$LogName; Id=$IDs}
+            try {
+                 Get-Winevent -FilterHashtable $FilterHashtable `
+                 | Where-Object {$_.TimeCreated -gt $EventLogsStartTimePickerValue} `
+                 | Select-Object -first $EventLogsMaximumCollectionTextBoxText
+            }
+            catch {
+                Get-Winevent -FilterHashtable $FilterHashtable -Oldest `
+                | Where-Object {$_.TimeCreated -gt $EventLogsStartTimePickerValue} `
+                | Select-Object -first $EventLogsMaximumCollectionTextBoxText
+            }
+        }
     }
     elseif ($EventLogsStopTimePickerValue) {
-        Get-WinEvent -FilterHashtable $FilterHashtable -Oldest -ErrorAction SilentlyContinue `
-        | Where-Object {$_.TimeCreated -lt $EventLogsStopTimePickerValue} `
-        | Select-Object -first $EventLogsMaximumCollectionTextBoxText
+        foreach ($LogName in $EventLogList) {
+            $FilterHashtable = @{LogName=$LogName; Id=$IDs}
+            try {
+                 Get-Winevent -FilterHashtable $FilterHashtable `
+                 | Where-Object {$_.TimeCreated -lt $EventLogsStopTimePickerValue} `
+                 | Select-Object -first $EventLogsMaximumCollectionTextBoxText
+            }
+            catch {
+                Get-Winevent -FilterHashtable $FilterHashtable -Oldest `
+                | Where-Object {$_.TimeCreated -lt $EventLogsStopTimePickerValue} `
+                | Select-Object -first $EventLogsMaximumCollectionTextBoxText
+            }
+        }
     }
     else {
-        Get-WinEvent -FilterHashtable $FilterHashtable -Oldest -ErrorAction SilentlyContinue `
-        | Select-Object -first $EventLogsMaximumCollectionTextBoxText
+        foreach ($LogName in $EventLogList) {
+            $FilterHashtable = @{LogName=$LogName; Id=$IDs}
+            try {
+                 Get-Winevent -FilterHashtable $FilterHashtable `
+                 | Select-Object -first $EventLogsMaximumCollectionTextBoxText
+                }
+            catch {
+                Get-Winevent -FilterHashtable $FilterHashtable -Oldest `
+                | Select-Object -first $EventLogsMaximumCollectionTextBoxText
+            }
+        }
     }
 }
 
