@@ -437,6 +437,7 @@ $($SearchString.trim())
                     $FileTransferOptionsForm.Controls.Add($FileTransferStatusBar)
         
         $FileTransferOptionsForm.ShowDialog()   
+}
 
 # SIG # Begin signature block
 # MIIFuAYJKoZIhvcNAQcCoIIFqTCCBaUCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
