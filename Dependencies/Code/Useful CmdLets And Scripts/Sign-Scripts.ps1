@@ -1,37 +1,116 @@
 param(
+    $AuthentiCode,
     $FilePath,
-    $Certificate
+    $Subject = "CN=PoSh-EasyWin By Dan Komnick (high101bro)"
 )
 
-<#
-$Params = @{    
-Subject           = "CN=PoSh-EasyWin By Dan Komnick (high101bro)"
-Type              = "CodeSigningCert"    
-KeySpec           = "Signature"     
-KeyUsage          = "DigitalSignature"    
-FriendlyName      = "Test code signing"    
-NotAfter          = [datetime]::now.AddYears(10)    
-CertStoreLocation = 'Cert:\CurrentUser\My' }
+Write-Host "[!] " -ForegroundColor Red -NoNewline
+Write-Host "Generate New Certificate? " -ForegroundColor Cyan -NoNewline
+$yn = Read-host "(y/N)"
 
-$SigningCertificate = New-SelfSignedCertificate @Params
+#$CertScope = 'CurrentUser'
+$CertScope = 'LocalMachine'
 
-Export-Certificate -FilePath "PoSh-EasyWin_Public_Certificate.cer" -Cert $SigningCertificate
-Import-Certificate -FilePath "PoSh-EasyWin_Public_Certificate.cer" -CertStoreLocation Cert:\CurrentUser\Root
-#>
+switch -Wildcard ($yn) {
+    y* {
+        Write-Host "[!] " -ForegroundColor Red -NoNewline
+        Write-Host "Are you sure? You should avoid changing your AuthentiCode often." -ForegroundColor Cyan -NoNewline
+        $yn = Read-host "(sure/)N"
+        
+        switch -Wildcard ($yn) {
+            sure {
+                Write-Host ""
+                Write-Host "#########################" -ForegroundColor Yellow
+                Write-Host "# Remove Previous Certs #" -ForegroundColor Yellow
+                Write-Host "#########################" -ForegroundColor Yellow
+                $CertLocations = @(
+                    "Cert:\$CertScope\My",
+                    "Cert:\$CertScope\Root",
+                    "Cert:\$CertScope\TrustedPublisher"
+                )
+                Get-ChildItem $CertLocations | Where-Object {$_.Subject -eq $Subject} | Remove-Item
+                Get-ChildItem $(Get-Location) "PoSh-EasyWin_Public_Certificate.cer" | Remove-Item
+
+                Write-Host ""
+                Write-Host "########################" -ForegroundColor Yellow
+                Write-Host "# Generate Certificate #" -ForegroundColor Yellow
+                Write-Host "########################" -ForegroundColor Yellow
+                $Params = @{    
+                    Subject           = $Subject
+                    Type              = "CodeSigningCert"    
+                    KeySpec           = "Signature"     
+                    KeyUsage          = "DigitalSignature"    
+                    FriendlyName      = "High101Bro Certificate"    
+                    NotAfter          = [datetime]::now.AddYears(10)    
+                    CertStoreLocation = "Cert:\$CertScope\My"
+                }
+                    
+                $SigningCertificate = New-SelfSignedCertificate @Params 
+
+
+                Export-Certificate -FilePath "PoSh-EasyWin_Public_Certificate.cer" -Cert $SigningCertificate        
+                #Import-Certificate -FilePath "PoSh-EasyWin_Public_Certificate.cer" -CertStoreLocation "Cert:\$CertScope\My"
+                Import-Certificate -FilePath "PoSh-EasyWin_Public_Certificate.cer" -CertStoreLocation "Cert:\$CertScope\Root"
+                Import-Certificate -FilePath "PoSh-EasyWin_Public_Certificate.cer" -CertStoreLocation "Cert:\$CertScope\TrustedPublisher"
+
+                #######################
+                # Alternative  Method #
+                #######################
+                    # Write-Host "#############################################" -ForegroundColor Yellow
+                    # Write-Host "# Add certificate to root certificate store #" -ForegroundColor Yellow
+                    # Write-Host "#############################################" -ForegroundColor Yellow
+                    # ## Create an object to represent the $CertScope\Root certificate store.
+                    # $rootStore = [System.Security.Cryptography.X509Certificates.X509Store]::new("Root","$CertScope")
+                    # ## Open the root certificate store for reading and writing.
+                    # $rootStore.Open("ReadWrite")
+                    # ## Add the certificate stored in the $SigningCertificate variable.
+                    # $rootStore.Add($SigningCertificate)
+                    # ## Close the root certificate store.
+                    # $rootStore.Close()
+                    
+                    # Write-Host "###########################################################" -ForegroundColor Yellow
+                    # Write-Host "# Add certificate to trusted publishers certificate store #" -ForegroundColor Yellow
+                    # Write-Host "###########################################################" -ForegroundColor Yellow
+                    # ## Create an object to represent the $CertScope\TrustedPublisher certificate store.
+                    # $publisherStore = [System.Security.Cryptography.X509Certificates.X509Store]::new("TrustedPublisher","$CertScope")
+                    # ## Open the TrustedPublisher certificate store for reading and writing.
+                    # $publisherStore.Open("ReadWrite")
+                    # ## Add the certificate stored in the $SigningCertificate variable.
+                    # $publisherStore.Add($SigningCertificate)
+                    # ## Close the TrustedPublisher certificate store.
+                    # $publisherStore.Close()
+                
+                Write-Host ""
+                Write-Host "##############################" -ForegroundColor Yellow
+                Write-Host "# Checkings for Certificates #" -ForegroundColor Yellow
+                Write-Host "##############################" -ForegroundColor Yellow
+                # Confirm if the self-signed Authenticode certificate exists in the computer's Personal, Root, and Trusted Publishers certificate store
+                Get-ChildItem $CertLocations | Where-Object {$_.Subject -eq $Subject}
+            }
+        }
+    }
+}
+
+
 
 if (-not $FilePath) {
     $FilePath = Get-ChildItem . -Recurse
 }
-if (-not $Certificate) {
-    $Certificate = Get-ChildItem -Path 'Cert:\CurrentUser\Root\' | Where-Object {$_.Thumbprint -eq 'D78BFEBE3F975656E6200FED8521A1815C41327A'}
+if (-not $AuthentiCode) {
+    $AuthentiCode = Get-ChildItem -Path "Cert:\$CertScope\My" | Where-Object {$_.Subject -eq $Subject}
 }
 
-Write-Host "[!] " -ForegroundColor Red -NoNewline
-Write-Host "Signing Scripts with: " -ForegroundColor Cyan
-Write-Host "$Certificate" -ForegroundColor White
+Write-Host ""
+Write-Host "##############################" -ForegroundColor Yellow
+Write-Host "# Verify Signing Certificate #" -ForegroundColor Yellow
+Write-Host "##############################" -ForegroundColor Yellow
 Write-Host ""
 Write-Host "[!] " -ForegroundColor Red -NoNewline
-Write-Host "Do You Want To Continue? " -ForegroundColor Cyan -NoNewline
+Write-Host "Signing Scripts with: " -ForegroundColor Cyan
+Write-Host "$AuthentiCode" -ForegroundColor White
+Write-Host ""
+Write-Host "[!] " -ForegroundColor Red -NoNewline
+Write-Host "Do You Want To Sign the Scripts with the above Certificate? " -ForegroundColor Cyan -NoNewline
 $Prompt = Read-Host "(y/n)"
 Write-Host ""
 
@@ -40,7 +119,10 @@ $SignIt = {
     Foreach ($Script in $FilePath) {
         if ($script | Where-Object {$_.Extension -eq '.ps1'}) {
             $script:TotalScripts += 1
-            Set-AuthenticodeSignature $Script.FullName $Certificate -OutVariable SignStatus | Out-Null
+            Set-AuthenticodeSignature -FilePath $Script.FullName -Certificate $AuthentiCode -OutVariable SignStatus | Out-Null
+
+            
+            # Write-Host -ForegroundColor Yellow $
             Write-Host "[!] " -ForegroundColor Red -NoNewline
             Write-Host "Signed Script [" -ForegroundColor Cyan -NoNewline
             Write-Host "$($SignStatus.Status)" -ForegroundColor Yellow -NoNewline
@@ -49,6 +131,12 @@ $SignIt = {
         }
     }
 }
+
+Write-Host ""
+Write-Host "#######################" -ForegroundColor Yellow
+Write-Host "# Signing Certifictes #" -ForegroundColor Yellow
+Write-Host "#######################" -ForegroundColor Yellow
+Write-Host ""
 
 switch -Wildcard ($Prompt) {
     y* {
@@ -84,8 +172,8 @@ switch -Wildcard ($Prompt) {
 # SIG # Begin signature block
 # MIIFuAYJKoZIhvcNAQcCoIIFqTCCBaUCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUmh+Nv9p8eRc2Vg9jle+fUj17
-# K62gggM6MIIDNjCCAh6gAwIBAgIQeugH5LewQKBKT6dPXhQ7sDANBgkqhkiG9w0B
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQU3a6Ic4IoAqMQb5qDMrNlu+qN
+# pL2gggM6MIIDNjCCAh6gAwIBAgIQeugH5LewQKBKT6dPXhQ7sDANBgkqhkiG9w0B
 # AQUFADAzMTEwLwYDVQQDDChQb1NoLUVhc3lXaW4gQnkgRGFuIEtvbW5pY2sgKGhp
 # Z2gxMDFicm8pMB4XDTIxMTIxNDA1MDIwMFoXDTMxMTIxNDA1MTIwMFowMzExMC8G
 # A1UEAwwoUG9TaC1FYXN5V2luIEJ5IERhbiBLb21uaWNrIChoaWdoMTAxYnJvKTCC
@@ -106,11 +194,11 @@ switch -Wildcard ($Prompt) {
 # YXN5V2luIEJ5IERhbiBLb21uaWNrIChoaWdoMTAxYnJvKQIQeugH5LewQKBKT6dP
 # XhQ7sDAJBgUrDgMCGgUAoHgwGAYKKwYBBAGCNwIBDDEKMAigAoAAoQKAADAZBgkq
 # hkiG9w0BCQMxDAYKKwYBBAGCNwIBBDAcBgorBgEEAYI3AgELMQ4wDAYKKwYBBAGC
-# NwIBFTAjBgkqhkiG9w0BCQQxFgQUCdG25RkAMxl4r2t/8yQK9LdDhV0wDQYJKoZI
-# hvcNAQEBBQAEggEArR6PDoemr/GADRcaKhTIMnuOYgMpcHIlhkyCjC6P5hdhCoQl
-# T36B7920etmssdZQsCz1MAACEeKnPKBzBT7lMHmAX1Ct9usiqAwsliE7X7SrBvtR
-# wPTLGTbA4ymVZ3qkV8X5SjOGjRo096gh9fS+SuADzhUoO4sxu0NHapSaGn6eWmWN
-# etV9MK3svjZ+cymq6WmPTbzBEGLjofu9liI+/6V0xQzl4EzgbrEAmzghcshlleMq
-# 6IyPxliG9InXw/3ULQmKKIMzxOfGztPP8KlukHGD/KJz2xpUwc8E0EReTLsjji3x
-# VUonHXUSFUhuJhx/5xj+74qCKQQ8mQ3s62XffA==
+# NwIBFTAjBgkqhkiG9w0BCQQxFgQU9rwU2KhPxiku5Qnqccy5AzKWGFcwDQYJKoZI
+# hvcNAQEBBQAEggEAPscKiipVy7DD8GtiQzmTBmN5lLehR6IvbwFx8nLpxI1W8M4n
+# k0bBKKohOCClMPKRXystu3FdGHMr1eWu0P5siScbo7CxzjoH5QbMgXeTvuliOkv3
+# v+zBRD8IXePtz9CFHqJj6HjQbQfqM2r94E7lwyxRgpYczW1Del9WU/dc9BJIl4FT
+# yzYMtWPHCM+ZjUvXlMmiV91yQR09Xr7vnaqJL3PymhHuppujR4a8jVOJ1uDFWN4i
+# fmY0EkSTYfdpCpJFOsT8r3OFIV6Vnp2EMxFwxidxapn52VjwXfN6Mkz6E8aXaQfC
+# UPsFTZsbMTabacosCArgwZ8sp+jXZkJGkr1jqw==
 # SIG # End signature block
