@@ -1708,7 +1708,7 @@ Start-Process 'PowerShell' -ArgumentList '-NoProfile',
                                             Top    = `$FormScale * 5
                                             Width  = `$PoShEasyWin.Size.Width   #1241
                                             Height = `$PoShEasyWin.Size.Height  #638
-                                            Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("`$EasyWinIcon")
+                                            Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("`$script:EasyWinIcon")
                                             Font   = New-Object System.Drawing.Font("`$Font",`$(`$FormScale * 11),0,0,0)
                                             StartPosition = "CenterScreen"
                                             Add_Closing   = { `$This.dispose() }
@@ -1754,7 +1754,7 @@ Start-Process 'PowerShell' -ArgumentList '-NoProfile',
                                                                         Width  = `$FormScale * 400
                                                                         Height = `$FormScale * 500
                                                                         StartPosition = "CenterScreen"
-                                                                        Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("`$EasyWinIcon")
+                                                                        Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("`$script:EasyWinIcon")
                                                                         Font          = New-Object System.Drawing.Font("`$Font",`$(`$FormScale * 11),0,0,0)
                                                                         AutoScroll    = `$True
                                                                         #FormBorderStyle =  "fixed3d"
@@ -1934,7 +1934,7 @@ Start-Process 'PowerShell' -ArgumentList '-NoProfile',
             `$script:MonitorJobsButtonStatus$JobId.Add_click({
                                 `$script:MonitorJobsDetailsFrom$JobId = New-Object Windows.Forms.Form -Property @{
                                     Text          = "Monitor Jobs Details - `$(`$script:JobName$JobId)"
-                                    Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("`$EasyWinIcon")
+                                    Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("`$script:EasyWinIcon")
                                     Width         = `$FormScale * 670
                                     Height        = `$FormScale * 600
                                     StartPosition = "CenterScreen"
@@ -2374,7 +2374,7 @@ Start-Process 'PowerShell' -ArgumentList '-NoProfile',
             Add_click = {
                 `$script:Section3MonitorJobViewCommandForm$JobId = New-Object Windows.Forms.Form -Property @{
                     Text          = "View Command - `$(`$script:JobName$JobId)"
-                    Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("`$EasyWinIcon")
+                    Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("`$script:EasyWinIcon")
                     Width         = `$FormScale * 670
                     Height        = `$FormScale * 600
                     StartPosition = "CenterScreen"
@@ -2458,7 +2458,7 @@ Start-Process 'PowerShell' -ArgumentList '-NoProfile',
             Add_click = {
                 `$script:Section3MonitorJobViewOptionsForm$JobId = New-Object Windows.Forms.Form -Property @{
                     Text          = "Options - `$(`$script:JobName$JobId)"
-                    Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("`$EasyWinIcon")
+                    Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("`$script:EasyWinIcon")
                     Width         = `$FormScale * 670
                     Height        = `$FormScale * 200
                     StartPosition = "CenterScreen"

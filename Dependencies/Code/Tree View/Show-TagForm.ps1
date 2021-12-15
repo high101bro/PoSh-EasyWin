@@ -11,7 +11,7 @@ function Show-TagForm {
                           Height = $FormScale * 115 }
             StartPosition = "CenterScreen"
             Font = New-Object System.Drawing.Font('Courier New',$($FormScale * 11),0,0,0)
-            Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
+            Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("$script:EasyWinIcon")
             Add_Closing = { $This.dispose() }
         }
         #$ComputerListMassTagForm | select *
@@ -68,7 +68,7 @@ function Show-TagForm {
                           Height = $FormScale * 115 }
             StartPosition = "CenterScreen"
             Font = New-Object System.Drawing.Font('Courier New',$($FormScale * 11),0,0,0)
-            Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
+            Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("$script:EasyWinIcon")
             Add_Closing = { $This.dispose() }
         }
         #$AccountsListMassTagForm | select *

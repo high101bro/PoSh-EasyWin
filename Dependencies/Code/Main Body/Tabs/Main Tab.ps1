@@ -175,14 +175,32 @@ $MainCenterMainTab.Controls.Add($AutoCreateDashboardChartButton)
 Apply-CommonButtonSettings -Button $AutoCreateDashboardChartButton
 
 
-$PowerShellTerminalButton = New-Object System.Windows.Forms.Button -Property @{
-    Text   = "PowerShell"
+$TeamChatPopoutClientButton = New-Object System.Windows.Forms.Button -Property @{
+    Text   = "Start Chat Client"
     Left   = $AutoCreateDashboardChartButton.Left + $AutoCreateDashboardChartButton.Width + $($FormScale * 5)
     Top    = $AutoCreateDashboardChartButton.Top
     Width  = $FormScale * 115
     Height = $FormScale * 22
     Add_Click = {
-        Start-Process PowerShell.exe
+        if (Verify-Action -Title "Team Chat Client" -Question "Do you want to launch the team chat client?") {
+            . "$Dependencies\Code\PoSh-Chat\Start-PoShChatClient.ps1"
+        }
+    }
+}
+$MainCenterMainTab.Controls.Add($TeamChatPopoutClientButton)
+Apply-CommonButtonSettings -Button $TeamChatPopoutClientButton
+
+
+$PowerShellTerminalButton = New-Object System.Windows.Forms.Button -Property @{
+    Text   = "PowerShell"
+    Left   = $TeamChatPopoutClientButton.Left + $TeamChatPopoutClientButton.Width + $($FormScale * 5)
+    Top    = $TeamChatPopoutClientButton.Top
+    Width  = $FormScale * 115
+    Height = $FormScale * 22
+    Add_Click = {
+        if (Verify-Action -Title "Team Chat" -Question "Do you want to launch a PowerShell terminal?") {
+            Start-Process PowerShell.exe
+        }
     }
 }
 $MainCenterMainTab.Controls.Add($PowerShellTerminalButton)
@@ -234,6 +252,24 @@ $OpenCsvResultsButton = New-Object System.Windows.Forms.Button -Property @{
 }
 $MainCenterMainTab.Controls.Add($OpenCsvResultsButton)
 Apply-CommonButtonSettings -Button $OpenCsvResultsButton
+
+
+$TeamChatStartChatServerButton = New-Object System.Windows.Forms.Button -Property @{
+    Text   = "Start Chat Server"
+    Left   = $OpenCsvResultsButton.Left + $OpenCsvResultsButton.Width + $($FormScale * 5)
+    Top    = $OpenCsvResultsButton.Top
+    Width  = $FormScale * 115
+    Height = $FormScale * 22
+    Add_Click = {
+        if (Verify-Action -Title "Team Chat Server" -Question "Do you want to launch the team chat server?`n`nEnsure to only have one instance running to avoid issues.`nThe server is hosted on port TCP/15600.") {
+            New-Item -ItemType Directory -Path "$PoShHome\Team Chat Logs\" -ErrorAction SilentlyContinue
+            $Datetime = (Get-Date).ToString('yyyy-MM-dd HH.mm.ss')
+            Start-Process PowerShell.exe -ArgumentList @("-NoExit & '$Dependencies\code\PoSh-Chat\Start-PoshChatServer.ps1' -EnableLogging '$PoSHHome\Team Chat Logs\team chat ($Datetime).log'")
+        }
+    }
+}
+$MainCenterMainTab.Controls.Add($TeamChatStartChatServerButton)
+Apply-CommonButtonSettings -Button $TeamChatStartChatServerButton
 
 
 # The Launch-ChartImageSaveFileDialog function is use by 'build charts and autocharts'

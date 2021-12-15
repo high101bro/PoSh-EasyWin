@@ -131,7 +131,7 @@ function script:Invoke-PSWriteHTMLPowerShellSessions {
                             else {
                                 New-DiagramNode `
                                     -Label  "[$($object.PSComputerName)]`nClient IP: $($object.ClientIP)" `
-                                    -Image  $EasyWinIcon `
+                                    -Image  $script:EasyWinIcon `
                                     -size   20 `
                                     -LinkColor DarkGray `
                                     -ArrowsToEnabled

@@ -5,13 +5,13 @@ $EndpointCommandPath = "$Dependencies\Commands & Scripts\Commands - Endpoint.csv
 $ActiveDirectoryCommandPath = "$Dependencies\Commands & Scripts\Commands - Active Directory.csv"
 
 $SystemTrayNotifyIcon = {
-    param($CollectionDirectory,$ScriptLocationPath,$EndpointCommandPath,$ActiveDirectoryCommandPath,$CurrentProcessId,$FormAdminCheck,$EasyWinIcon,$Font,$ThisScript,$InitialScriptLoadTime)
+    param($CollectionDirectory,$ScriptLocationPath,$EndpointCommandPath,$ActiveDirectoryCommandPath,$CurrentProcessId,$FormAdminCheck,$script:EasyWinIcon,$Font,$ThisScript,$InitialScriptLoadTime)
     Add-Type -AssemblyName System.Windows.Forms
     Add-Type -AssemblyName System.Drawing
 
     $PoShEasyWinSystemTrayNotifyIcon = New-Object System.Windows.Forms.NotifyIcon -Property @{
         Text        = 'PoSh-EasyWin  ' + '[' + $InitialScriptLoadTime + ']'
-        Icon        = $EasyWinIcon
+        Icon        = $script:EasyWinIcon
         Visible     = $true
         ContextMenu = New-Object System.Windows.Forms.ContextMenu
         BalloonTipTitle = 'PoSh-EasyWin'
@@ -72,7 +72,7 @@ $SystemTrayNotifyIcon = {
                     Width   = 280
                     Height  = 109
                     TopMost = $true
-                    Icon    = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
+                    Icon    = [System.Drawing.Icon]::ExtractAssociatedIcon("$script:EasyWinIcon")
                     Font    = New-Object System.Drawing.Font("$Font",11,0,0,0)
                     FormBorderStyle = 'Fixed3d'
                     StartPosition   = 'CenterScreen'
@@ -147,7 +147,7 @@ $SystemTrayNotifyIcon = {
                     Width   = 250
                     Height  = 109
                     TopMost = $true
-                    Icon    = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
+                    Icon    = [System.Drawing.Icon]::ExtractAssociatedIcon("$script:EasyWinIcon")
                     Font    = New-Object System.Drawing.Font("$Font",11,0,0,0)
                     FormBorderStyle =  'Fixed3d'
                     StartPosition   = 'CenterScreen'
@@ -223,7 +223,7 @@ $SystemTrayNotifyIcon = {
 }
 
 
-Start-Process -FilePath powershell.exe -ArgumentList  "-WindowStyle Hidden -Command Invoke-Command {$SystemTrayNotifyIcon} -ArgumentList @('$CollectionDirectory','$ScriptLocationPath','$EndpointCommandPath','$ActiveDirectoryCommandPath',$CurrentProcessId,[bool]'`$$FormAdminCheck','$EasyWinIcon','$Font',$($ThisScript.trim('&')),'$InitialScriptLoadTime')" -PassThru `
+Start-Process -FilePath powershell.exe -ArgumentList  "-WindowStyle Hidden -Command Invoke-Command {$SystemTrayNotifyIcon} -ArgumentList @('$CollectionDirectory','$ScriptLocationPath','$EndpointCommandPath','$ActiveDirectoryCommandPath',$CurrentProcessId,[bool]'`$$FormAdminCheck','$script:EasyWinIcon','$Font',$($ThisScript.trim('&')),'$InitialScriptLoadTime')" -PassThru `
 | Select-Object -ExpandProperty Id | Set-Variable FormHelperProcessId
 
 

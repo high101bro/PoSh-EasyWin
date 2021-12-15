@@ -30,6 +30,18 @@ TODO:
  [ ] Add more log creations to all of this --Invoke-Command @InvokeCommandSplat
 	Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock {foreach (`$Path in `$RegistrySearchDirectory) { foreach (`$Item in `$SearchRegistryKeyItemPropertyName) { Get-ItemProperty -Path `$Path `$Item } }} -ArgumentList `$SearchRgistryItemProperty  -ComputerName $TargetComputer -AsJob -JobName 'PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)' -Credential `$script:Credential"
 	$ResultsListBox.Items.Add("$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  $CollectionName -- $TargetComputer")
+[ ] Fix bug will reading log files and it's count
+
+
+==================================================
+v6.8.4 - 15 DEC 2021
+==================================================
+
+Integrate PoShChat feature into PoSh-EasyWin
+	- Updated code, chat messages, message font/colors
+	- Added button to main tab to launch PoSh Chat Client
+	- Added button to main tab to launch PoSh Chat Server
+	- Added license
 
 ==================================================
 v6.7.4 - 12 DEC 2021

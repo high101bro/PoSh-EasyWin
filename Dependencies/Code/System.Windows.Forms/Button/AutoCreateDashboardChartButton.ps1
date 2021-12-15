@@ -15,7 +15,7 @@ $AutoCreateDashboardChartButtonAdd_Click = {
         Size      = @{ Width  = $FormScale * 327
                        Height = $FormScale * 155 }
         StartPosition = "CenterScreen"
-        Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
+        Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("$script:EasyWinIcon")
         #ControlBox    = $true
         Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         AutoScroll    = $True
@@ -113,7 +113,7 @@ $AutoCreateDashboardChartButtonAdd_Click = {
             Size     = @{ Width  = $PoShEasyWin.Size.Width    #1241
                           Height = $PoShEasyWin.Size.Height } #638
             StartPosition = "CenterScreen"
-            Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
+            Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("$script:EasyWinIcon")
             Font = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
             Add_Closing = { $This.dispose() }
         }

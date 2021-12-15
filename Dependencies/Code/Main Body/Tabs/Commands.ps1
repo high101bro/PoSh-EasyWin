@@ -108,7 +108,7 @@ function Update-CustomCommandGroup {
         Height = $FormScale * 120
         StartPosition = "CenterScreen"
         Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-        Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
+        Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("$script:EasyWinIcon")
         Add_Closing = { $This.dispose() }
     }
                 $GroupCommandsGroupNameLabel = New-Object System.Windows.Forms.Label -Property @{

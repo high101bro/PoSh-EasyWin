@@ -5,7 +5,7 @@ function script:Launch-NetworkConnectionGUI {
         Height  = $FormScale * 350
         StartPosition = "CenterScreen"
         TopMost = $false
-        Icon    = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
+        Icon    = [System.Drawing.Icon]::ExtractAssociatedIcon("$script:EasyWinIcon")
         Font    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         FormBorderStyle =  'Sizable' #  Fixed3D, FixedDialog, FixedSingle, FixedToolWindow, None, Sizable, SizableToolWindow
         ShowIcon        = $true

@@ -440,7 +440,7 @@ $script:AutoChart01ADComputersCheckDiffButton.Add_Click({
         Text   = 'Investigate Difference'
         Size   = @{ Width  = $FormScale * 330
                     Height = $FormScale * 360 }
-        Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
+        Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$script:EasyWinIcon")
         StartPosition = "CenterScreen"
         ControlBoX = $true
         Add_Closing = { $This.dispose() }
@@ -953,7 +953,7 @@ $script:AutoChart02ADComputersCheckDiffButton.Add_Click({
         Text   = 'Investigate Difference'
         Size   = @{ Width  = $FormScale * 330
                     Height = $FormScale * 360 }
-        Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
+        Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$script:EasyWinIcon")
         StartPosition = "CenterScreen"
         ControlBoX = $true
         Add_Closing = { $This.dispose() }
@@ -1461,7 +1461,7 @@ $script:AutoChart03ADComputersCheckDiffButton.Add_Click({
         Text   = 'Investigate Difference'
         Size   = @{ Width  = $FormScale * 330
                     Height = $FormScale * 360 }
-        Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
+        Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$script:EasyWinIcon")
         StartPosition = "CenterScreen"
         ControlBoX = $true
         Add_Closing = { $This.dispose() }
@@ -1972,7 +1972,7 @@ $script:AutoChart04ADComputersCheckDiffButton.Add_Click({
         Text   = 'Investigate Difference'
         Size   = @{ Width  = $FormScale * 330
                     Height = $FormScale * 360 }
-        Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
+        Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$script:EasyWinIcon")
         StartPosition = "CenterScreen"
         ControlBoX = $true
         Add_Closing = { $This.dispose() }
@@ -2480,7 +2480,7 @@ $script:AutoChart05ADComputersCheckDiffButton.Add_Click({
         Text   = 'Investigate Difference'
         Size   = @{ Width  = $FormScale * 330
                     Height = $FormScale * 360 }
-        Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
+        Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$script:EasyWinIcon")
         StartPosition = "CenterScreen"
         ControlBoX = $true
         Add_Closing = { $This.dispose() }
@@ -2985,7 +2985,7 @@ $script:AutoChart06ADComputersCheckDiffButton.Add_Click({
         Text   = 'Investigate Difference'
         Size   = @{ Width  = $FormScale * 330
                     Height = $FormScale * 360 }
-        Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
+        Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$script:EasyWinIcon")
         StartPosition = "CenterScreen"
         ControlBoX = $true
         Add_Closing = { $This.dispose() }
@@ -3491,7 +3491,7 @@ $script:AutoChart07ADComputersCheckDiffButton.Add_Click({
         Text   = 'Investigate Difference'
         Size   = @{ Width  = $FormScale * 330
                     Height = $FormScale * 360 }
-        Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
+        Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$script:EasyWinIcon")
         StartPosition = "CenterScreen"
         ControlBoX = $true
         Add_Closing = { $This.dispose() }
@@ -4002,7 +4002,7 @@ $script:AutoChart08ADComputersCheckDiffButton.Add_Click({
         Text   = 'Investigate Difference'
         Size   = @{ Width  = $FormScale * 330
                     Height = $FormScale * 360 }
-        Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
+        Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$script:EasyWinIcon")
         StartPosition = "CenterScreen"
         ControlBoX = $true
         Add_Closing = { $This.dispose() }
@@ -4510,7 +4510,7 @@ $script:AutoChart09ADComputersCheckDiffButton.Add_Click({
         Text   = 'Investigate Difference'
         Size   = @{ Width  = $FormScale * 330
                     Height = $FormScale * 360 }
-        Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
+        Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$script:EasyWinIcon")
         StartPosition = "CenterScreen"
         ControlBoX = $true
         Add_Closing = { $This.dispose() }
@@ -5018,7 +5018,7 @@ $script:AutoChart10ADComputersCheckDiffButton.Add_Click({
         Text   = 'Investigate Difference'
         Size   = @{ Width  = $FormScale * 330
                     Height = $FormScale * 360 }
-        Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
+        Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$script:EasyWinIcon")
         StartPosition = "CenterScreen"
         ControlBoX = $true
         Add_Closing = { $This.dispose() }

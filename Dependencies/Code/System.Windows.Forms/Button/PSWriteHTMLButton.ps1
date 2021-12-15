@@ -109,7 +109,7 @@ $PSWriteHTMLForm = New-Object System.Windows.Forms.Form -Property @{
     StartPosition   = "CenterScreen"
     Width           = $FormScale * 350
     Height          = $FormScale * 294
-    Icon            = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
+    Icon            = [System.Drawing.Icon]::ExtractAssociatedIcon("$script:EasyWinIcon")
     FormBorderStyle = 'Sizable' #  Fixed3D, FixedDialog, FixedSingle, FixedToolWindow, None, Sizable, SizableToolWindow
     ShowIcon        = $true
     showintaskbar   = $false
@@ -228,7 +228,7 @@ if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -eq 1 
                             StartPosition   = "CenterScreen"
                             Width           = $FormScale * 350
                             Height          = $FormScale * 294
-                            Icon            = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
+                            Icon            = [System.Drawing.Icon]::ExtractAssociatedIcon("$script:EasyWinIcon")
                             FormBorderStyle = 'Sizable'
                             ShowIcon        = $true
                             showintaskbar   = $false

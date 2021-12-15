@@ -217,7 +217,7 @@ $PoShHome                            = $PSScriptRoot #Deprecated# Split-Path -pa
         # list of ports that can be updated for custom port scans
         $CustomPortsToScan                    = "$Dependencies\Custom Ports To Scan.txt"
 
-        $EasyWinIcon                          = "$Dependencies\Images\Icons\favicon.ico"
+        $script:EasyWinIcon                          = "$Dependencies\Images\Icons\favicon.ico"
         $high101bro_image                     = "$Dependencies\Images\high101bro Logo Color Transparent.png"
 
     # Name of Collected Data Directory
@@ -254,7 +254,7 @@ if (-not (Test-Path $ShortcutDestination)) {
     $WScriptShell = New-Object -ComObject WScript.Shell
     $Shortcut = $WScriptShell.CreateShortcut($ShortcutDestination)
     $Shortcut.TargetPath = $FileToShortCut
-    $Shortcut.IconLocation = $EasyWinIcon
+    $Shortcut.IconLocation = $script:EasyWinIcon
     $Shortcut.Save()
 }
 
@@ -457,7 +457,7 @@ $PoShEasyWinAccountLaunch = [System.Security.Principal.WindowsIdentity]::GetCurr
 
 $PoShEasyWin = New-Object System.Windows.Forms.Form -Property @{
     Text    = "PoSh-EasyWin   ($PoShEasyWinAccountLaunch)  [$InitialScriptLoadTime]"
-    Icon    = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
+    Icon    = [System.Drawing.Icon]::ExtractAssociatedIcon("$script:EasyWinIcon")
     Width   = $FormScale * 1435
     Height  = $FormScale * 685
     TopMost = $true
@@ -489,7 +489,7 @@ $PoShEasyWin = New-Object System.Windows.Forms.Form -Property @{
             Width   = $FormScale * 250
             Height  = $FormScale * 109
             TopMost = $true
-            Icon    = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
+            Icon    = [System.Drawing.Icon]::ExtractAssociatedIcon("$script:EasyWinIcon")
             Font    = New-Object System.Drawing.Font("$Font",($FormScale * 11),0,0,0)
             FormBorderStyle =  'Fixed3d'
             StartPosition   = 'CenterScreen'
@@ -921,8 +921,8 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel -Pr
                     $EndpointTreeviewImageHashTable = [ordered]@{}
 
                     # Position 0 = Default Image, this one is often seen when clicking on a treenode
-                    $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$EasyWinIcon"))
-                    $EndpointTreeviewImageHashTable['0'] = "$EasyWinIcon"
+                    $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$script:EasyWinIcon"))
+                    $EndpointTreeviewImageHashTable['0'] = "$script:EasyWinIcon"
 
                     # Position 1 = used as the default image that is loaded against the .treeview itself, thus shown at the top level for the Organizational Units, It gets overwritten by each node that is added
                     $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Icon OU LightYellow.png"))
@@ -945,8 +945,8 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel -Pr
                     $EndpointTreeviewImageHashTable = [ordered]@{}
 
                     # Position 0 = Default Image, this one is often seen when clicking on a treenode
-                    $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$EasyWinIcon"))
-                    $EndpointTreeviewImageHashTable['0'] = "$EasyWinIcon"
+                    $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$script:EasyWinIcon"))
+                    $EndpointTreeviewImageHashTable['0'] = "$script:EasyWinIcon"
 
                     # Position 1 = used as the default image that is loaded against the .treeview itself, thus shown at the top level for the Organizational Units, It gets overwritten by each node that is added
                     $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\OU-Default.png"))
@@ -1214,8 +1214,8 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel -Pr
                     $AccountsTreeviewImageHashTable = [ordered]@{}
 
                     # Position 0 = Default Image, this one is often seen when clicking on a treenode
-                    $AccountsTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$EasyWinIcon"))
-                    $AccountsTreeviewImageHashTable['0'] = "$EasyWinIcon"
+                    $AccountsTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$script:EasyWinIcon"))
+                    $AccountsTreeviewImageHashTable['0'] = "$script:EasyWinIcon"
 
                     # Position 1 = used as the default image that is loaded against the .treeview itself, thus shown at the top level for the Organizational Units, It gets overwritten by each node that is added
                     $AccountsTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Icon OU LightYellow.png"))
@@ -1323,8 +1323,7 @@ $MainCenterPanel = New-Object System.Windows.Forms.Panel -Property @{
             $MainCenterTabControl = New-Object System.Windows.Forms.TabControl -Property @{
                 Left   = 0
                 Top    = 0
-                #Width  = $FormScale * 370
-                Width = $FormScale * 607
+                Width  = $FormScale * 607
                 Height = $FormScale * 278 
                 SelectedIndex  = 0
                 ShowToolTips   = $True
@@ -1348,6 +1347,7 @@ $MainCenterPanel = New-Object System.Windows.Forms.Panel -Property @{
             # Statistics Tab
             Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Statistics.ps1"
             . "$Dependencies\Code\Main Body\Tabs\Statistics.ps1"
+
 
 $PoShEasyWin.Controls.Add($MainCenterPanel)
 

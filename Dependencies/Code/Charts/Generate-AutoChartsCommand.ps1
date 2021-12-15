@@ -1019,7 +1019,7 @@ script:Update-MultiSeriesChart
             Text   = "Investigate Difference"
             Size   = @{ Width  = $FormScale * 330
                         Height = $FormScale * 360 }
-            Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
+            Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$script:EasyWinIcon")
             StartPosition = "CenterScreen"
             ControlBox = $true
             Add_Closing = { $This.dispose() }

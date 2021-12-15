@@ -70,7 +70,7 @@ function Display-ContextMenuForAccountsTreeNode {
                     Height = $FormScale * 157
                     StartPosition = "CenterScreen"
                     Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-                    Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
+                    Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("$script:EasyWinIcon")
                     Add_Closing = { $This.dispose() }
                 }
             

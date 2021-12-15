@@ -25,7 +25,7 @@ $PktMonPacketCaptureForm = New-Object System.Windows.Forms.Form -Property @{
     Width  = $FormScale * 750
     Height = $FormScale * 625
     StartPosition = "CenterScreen"
-    Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
+    Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("$script:EasyWinIcon")
     Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     AutoScroll    = $True
     #FormBorderStyle =  "fixed3d"
@@ -199,7 +199,7 @@ Open Sessions: $($session | Where-Object {$_.State -match 'Open'})
             Width   = $FormScale * 250
             Height  = $FormScale * 109
             TopMost = $true
-            Icon    = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
+            Icon    = [System.Drawing.Icon]::ExtractAssociatedIcon("$script:EasyWinIcon")
             Font    = New-Object System.Drawing.Font("$Font",($FormScale * 11),0,0,0)
             FormBorderStyle =  'Fixed3d'
             StartPosition   = 'CenterScreen'

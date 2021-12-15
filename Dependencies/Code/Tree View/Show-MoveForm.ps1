@@ -12,7 +12,7 @@ function Show-MoveForm {
             Text          = "Move"
             Size          = New-Object System.Drawing.Size(($FormScale * 330),($FormScale * 107))
             StartPosition = "CenterScreen"
-            Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
+            Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("$script:EasyWinIcon")
             Add_Closing = { $This.dispose() }
         }
         $AccountsTreeNodePopup.Text = $Title
@@ -68,7 +68,7 @@ function Show-MoveForm {
             Text          = "Move"
             Size          = New-Object System.Drawing.Size(($FormScale * 330),($FormScale * 107))
             StartPosition = "CenterScreen"
-            Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
+            Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("$script:EasyWinIcon")
             Add_Closing = { $This.dispose() }
         }
         $ComputerTreeNodePopup.Text = $Title

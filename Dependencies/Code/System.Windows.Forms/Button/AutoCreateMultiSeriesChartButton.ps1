@@ -12,7 +12,7 @@ $AutoCreateMultiSeriesChartButtonAdd_Click = {
         height        = $FormScale * 205
         StartPosition = "CenterScreen"
         Text          = "Multi-Series Chart"
-        Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
+        Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("$script:EasyWinIcon")
         ControlBox    = $true
         Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         AutoScroll    = $True
@@ -154,7 +154,7 @@ $AutoCreateMultiSeriesChartButtonAdd_Click = {
                     $AnchorAll = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right -bor
                         [System.Windows.Forms.AnchorStyles]::Top -bor [System.Windows.Forms.AnchorStyles]::Left
                     $script:AutoChartsForm               = New-Object Windows.Forms.Form
-                    $script:AutoChartsForm.Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
+                    $script:AutoChartsForm.Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("$script:EasyWinIcon")
                     $script:AutoChartsForm.Width         = $PoShEasyWin.Size.Width  #1160
                     $script:AutoChartsForm.Height        = $PoShEasyWin.Size.Height #638
                     $script:AutoChartsForm.StartPosition = "CenterScreen"

@@ -61,7 +61,7 @@ Function Import-DataFromActiveDirectory {
         
         $ImportFromADFrom = New-Object Windows.Forms.Form -Property @{
             Text          = 'Import Endpoint Data from Active Directory'
-            Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
+            Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("$script:EasyWinIcon")
             Width         = $FormScale * 500
             Height        = $FormScale * 410
             StartPosition = "CenterScreen"
@@ -433,7 +433,7 @@ Function Import-DataFromActiveDirectory {
 
         $ImportFromADFrom = New-Object Windows.Forms.Form -Property @{
             Text          = 'Import account information from Active Directory'
-            Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
+            Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("$script:EasyWinIcon")
             Width         = $FormScale * 500
             Height        = $FormScale * 265
             StartPosition = "CenterScreen"

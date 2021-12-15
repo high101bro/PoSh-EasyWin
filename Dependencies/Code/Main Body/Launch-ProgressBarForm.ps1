@@ -17,7 +17,7 @@ function Launch-ProgressBarForm {
         Width  = $Width
         Height = $Height
         StartPosition = "CenterScreen"
-        Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
+        Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("$script:EasyWinIcon")
         Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         AutoScroll    = $True
         #FormBorderStyle =  "fixed3d"

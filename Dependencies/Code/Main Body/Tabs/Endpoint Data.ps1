@@ -30,7 +30,7 @@ $script:Section3EndpointDataIconPictureBox = New-Object Windows.Forms.PictureBox
                 Width  = $FormScale * 335
                 Height = $FormScale * 500
                 Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-                Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
+                Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$script:EasyWinIcon")
                 StartPosition = "CenterScreen"
                 Add_Closing = { $This.dispose() }
             }
