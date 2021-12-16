@@ -717,87 +717,92 @@ Actual Command Example: pktmon filter add 'SMB SYN Packets' --IP 10.10.10.100  -
         Add_MouseLeave = { $This.text = $This.SelectedItem -replace '\s+',' ' }
     }
     $PktMonPacketCaptureForm.Controls.Add($PktMonFilterListSelectionComboBox)
-    $PktMonFilterListSelectionComboBox.Items.Add("'SMB SYN Packets' --IP 10.10.10.100  --Transport TCP SYN --Port 445")
-    $PktMonFilterListSelectionComboBox.Items.Add("'TCP w/in Subnet' --IP 10.10.10.0/24 --Transport TCP")
-    $PktMonFilterListSelectionComboBox.Items.Add("'DNS To Server'   --IP 10.10.10.100  --Transport UDP --Port 53")
-    $PktMonFilterListSelectionComboBox.Items.Add("'Ping Traffic'    --IP 10.10.10.100  --Transport ICMP")
-    $PktMonFilterListSelectionComboBox.Items.Add("")
-    $PktMonFilterListSelectionComboBox.Items.Add("'TCP Traffic'    --Transport TCP")
-    $PktMonFilterListSelectionComboBox.Items.Add("'UDP Traffic'    --Transport UDP")
-    $PktMonFilterListSelectionComboBox.Items.Add("'ICMP Traffic'   --Transport ICMP")
-    $PktMonFilterListSelectionComboBox.Items.Add("'ICMPv6 Traffic' --Transport ICMPv6")
-    $PktMonFilterListSelectionComboBox.Items.Add("'Protocol #'     --Transport <Protocol Number>")
-    $PktMonFilterListSelectionComboBox.Items.Add("")
-    $PktMonFilterListSelectionComboBox.Items.Add("'Computer MAC' --MAC DE:AD:BE:EF:FE:ED")
-    $PktMonFilterListSelectionComboBox.Items.Add("'Computer MAC' --MAC DE-FA-CE-DB-AB-E1")
-    $PktMonFilterListSelectionComboBox.Items.Add("")
-    $PktMonFilterListSelectionComboBox.Items.Add("'Default VLAN' --VLAN 1")
-    $PktMonFilterListSelectionComboBox.Items.Add("")
-    $PktMonFilterListSelectionComboBox.Items.Add("'IPv4' --Data-Link IPv4")
-    $PktMonFilterListSelectionComboBox.Items.Add("'IPv6' --Data-Link IPv6")
-    $PktMonFilterListSelectionComboBox.Items.Add("'ARP'  --Data-Link ARP")
-    $PktMonFilterListSelectionComboBox.Items.Add("--Data-Link <Protocol Number>")
-    $PktMonFilterListSelectionComboBox.Items.Add("")
-    $PktMonFilterListSelectionComboBox.Items.Add("'VXLAN'    --Encap VXLAN")
-    $PktMonFilterListSelectionComboBox.Items.Add("'GRE'      --Encap GRE")
-    $PktMonFilterListSelectionComboBox.Items.Add("'NVGRE'    --Encap NVGRE")
-    $PktMonFilterListSelectionComboBox.Items.Add("'IP-in-IP' --Encap IP-in-IP")
-    $PktMonFilterListSelectionComboBox.Items.Add("")
-    $PktMonFilterListSelectionComboBox.Items.Add("'FTP'         --Port 21 --Transport TCP")
-    $PktMonFilterListSelectionComboBox.Items.Add("'SSH'         --Port 22 --Transport TCP")
-    $PktMonFilterListSelectionComboBox.Items.Add("'Telnet'      --Port 23 --Transport TCP")
-    $PktMonFilterListSelectionComboBox.Items.Add("'SMTP'        --Port 25 --Transport TCP")
-    $PktMonFilterListSelectionComboBox.Items.Add("'DNS'         --Port 53")
-    $PktMonFilterListSelectionComboBox.Items.Add("'DHCP-S'      --Port 67 --Transport UDP")
-    $PktMonFilterListSelectionComboBox.Items.Add("'DHCP-C'      --Port 68 --Transport UDP")
-    $PktMonFilterListSelectionComboBox.Items.Add("'TFTP'        --Port 69 --Transport UDP")
-    $PktMonFilterListSelectionComboBox.Items.Add("'HTTP'        --Port 80 --Transport TCP")
-    $PktMonFilterListSelectionComboBox.Items.Add("'Kerberos'    --Port 88")
-    $PktMonFilterListSelectionComboBox.Items.Add("'POP3'        --Port 110 --Transport TCP")
-    $PktMonFilterListSelectionComboBox.Items.Add("'RPCbind'     --Port 111")
-    $PktMonFilterListSelectionComboBox.Items.Add("'NTP'         --Port 123 --Transport UDP")
-    $PktMonFilterListSelectionComboBox.Items.Add("'MS-RPC'      --Port 135")
-    $PktMonFilterListSelectionComboBox.Items.Add("'NetBIOS-NS'  --Port 137 --Transport UDP")
-    $PktMonFilterListSelectionComboBox.Items.Add("'NetBIOS-DGM' --Port 138 --Transport UDP")
-    $PktMonFilterListSelectionComboBox.Items.Add("'NetBIOS-SSN' --Port 139")
-    $PktMonFilterListSelectionComboBox.Items.Add("'IMAP'        --Port 143 --Transport TCP")
-    $PktMonFilterListSelectionComboBox.Items.Add("'SNMP'        --Port 161 --Transport UDP")
-    $PktMonFilterListSelectionComboBox.Items.Add("'SNMP-Trap'   --Port 162 --Transport UDP")
-    $PktMonFilterListSelectionComboBox.Items.Add("'LDAP'        --Port 389 --Transport TCP")
-    $PktMonFilterListSelectionComboBox.Items.Add("'HTTPS'       --Port 443 --Transport TCP")
-    $PktMonFilterListSelectionComboBox.Items.Add("'SMB'         --Port 445")
-    $PktMonFilterListSelectionComboBox.Items.Add("'SMTPS'       --Port 465 --Transport TCP")
-    $PktMonFilterListSelectionComboBox.Items.Add("'ISAKMP'      --Port 500 --Transport UDP")
-    $PktMonFilterListSelectionComboBox.Items.Add("'SysLog'      --Port 514")
-    $PktMonFilterListSelectionComboBox.Items.Add("'RTSP'        --Port 554 --Transport TCP")
-    $PktMonFilterListSelectionComboBox.Items.Add("'RSync'       --Port 873 --Transport TCP")
-    $PktMonFilterListSelectionComboBox.Items.Add("'FTPS'        --Port 990 --Transport TCP")
-    $PktMonFilterListSelectionComboBox.Items.Add("'IMAPS'       --Port 993 --Transport TCP")
-    $PktMonFilterListSelectionComboBox.Items.Add("'POP3S'       --Port 995 --Transport TCP")
-    $PktMonFilterListSelectionComboBox.Items.Add("'MS-SQL-S'    --Port 1433")
-    $PktMonFilterListSelectionComboBox.Items.Add("'RADIUS-Auth' --Port 1645 --Transport UDP")
-    $PktMonFilterListSelectionComboBox.Items.Add("'RADIUS-Acnt' --Port 1646 --Transport UDP")
-    $PktMonFilterListSelectionComboBox.Items.Add("'L2TP'        --Port 1701 --Transport UDP")
-    $PktMonFilterListSelectionComboBox.Items.Add("'PPTP'        --Port 1723 --Transport TCP")
-    $PktMonFilterListSelectionComboBox.Items.Add("'RADIUS-Auth' --Port 1812 --Transport UDP")
-    $PktMonFilterListSelectionComboBox.Items.Add("'RADIUS-Acnt' --Port 1813 --Transport UDP")
-    $PktMonFilterListSelectionComboBox.Items.Add("'UPNP'        --Port 1900 --Transport UDP")
-    $PktMonFilterListSelectionComboBox.Items.Add("'Cisco-SCCP'  --Port 2000")
-    $PktMonFilterListSelectionComboBox.Items.Add("'NFS'         --Port 2049 --Transport UDP")
-    $PktMonFilterListSelectionComboBox.Items.Add("'PPP'         --Port 3000 --Transport TCP")
-    $PktMonFilterListSelectionComboBox.Items.Add("'MYSQL'       --Port 3306 --Transport TCP")
-    $PktMonFilterListSelectionComboBox.Items.Add("'RDP/MS-DS'   --Port 3389")
-    $PktMonFilterListSelectionComboBox.Items.Add("'MetaSploit'  --Port 4444")
-    $PktMonFilterListSelectionComboBox.Items.Add("'NAT-T-IKE'   --Port 4500 --Transport UDP")
-    $PktMonFilterListSelectionComboBox.Items.Add("'SIP'         --Port 5060 --Transport UDP")
-    $PktMonFilterListSelectionComboBox.Items.Add("'PostgreSQL'  --Port 5432 --Transport TCP")
-    $PktMonFilterListSelectionComboBox.Items.Add("'VNC'         --Port 5900")
-    $PktMonFilterListSelectionComboBox.Items.Add("'WinRM/HTTP'  --Port 5985 --Transport TCP")
-    $PktMonFilterListSelectionComboBox.Items.Add("'WinRM/HTTPS' --Port 5986 --Transport TCP")
-    $PktMonFilterListSelectionComboBox.Items.Add("'X11'         --Port 6000 --Transport TCP")
-    $PktMonFilterListSelectionComboBox.Items.Add("'HTTP-Alt'    --Port 8000 --Transport TCP")
-    $PktMonFilterListSelectionComboBox.Items.Add("'HTTP-Proxy'  --Port 8080 --Transport TCP")
-    $PktMonFilterListSelectionComboBox.Items.Add("'HTTPS-Alt'   --Port 8443 --Transport TCP")
+    $PktMonPacketCaptureFilterList = @(
+        "'SMB SYN Packets' --IP 10.10.10.100  --Transport TCP SYN --Port 445",
+        "'TCP w/in Subnet' --IP 10.10.10.0/24 --Transport TCP",
+        "'DNS To Server'   --IP 10.10.10.100  --Transport UDP --Port 53",
+        "'Ping Traffic'    --IP 10.10.10.100  --Transport ICMP",
+        "",
+        "'TCP Traffic'    --Transport TCP",
+        "'UDP Traffic'    --Transport UDP",
+        "'ICMP Traffic'   --Transport ICMP",
+        "'ICMPv6 Traffic' --Transport ICMPv6",
+        "'Protocol #'     --Transport <Protocol Number>",
+        "",
+        "'Computer MAC' --MAC DE:AD:BE:EF:FE:ED",
+        "'Computer MAC' --MAC DE-FA-CE-DB-AB-E1",
+        "",
+        "'Default VLAN' --VLAN 1",
+        "",
+        "'IPv4' --Data-Link IPv4",
+        "'IPv6' --Data-Link IPv6",
+        "'ARP'  --Data-Link ARP",
+        "--Data-Link <Protocol Number>",
+        "",
+        "'VXLAN'    --Encap VXLAN",
+        "'GRE'      --Encap GRE",
+        "'NVGRE'    --Encap NVGRE",
+        "'IP-in-IP' --Encap IP-in-IP",
+        "",
+        "'FTP'         --Port 21 --Transport TCP",
+        "'SSH'         --Port 22 --Transport TCP",
+        "'Telnet'      --Port 23 --Transport TCP",
+        "'SMTP'        --Port 25 --Transport TCP",
+        "'DNS'         --Port 53",
+        "'DHCP-S'      --Port 67 --Transport UDP",
+        "'DHCP-C'      --Port 68 --Transport UDP",
+        "'TFTP'        --Port 69 --Transport UDP",
+        "'HTTP'        --Port 80 --Transport TCP",
+        "'Kerberos'    --Port 88",
+        "'POP3'        --Port 110 --Transport TCP",
+        "'RPCbind'     --Port 111",
+        "'NTP'         --Port 123 --Transport UDP",
+        "'MS-RPC'      --Port 135",
+        "'NetBIOS-NS'  --Port 137 --Transport UDP",
+        "'NetBIOS-DGM' --Port 138 --Transport UDP",
+        "'NetBIOS-SSN' --Port 139",
+        "'IMAP'        --Port 143 --Transport TCP",
+        "'SNMP'        --Port 161 --Transport UDP",
+        "'SNMP-Trap'   --Port 162 --Transport UDP",
+        "'LDAP'        --Port 389 --Transport TCP",
+        "'HTTPS'       --Port 443 --Transport TCP",
+        "'SMB'         --Port 445",
+        "'SMTPS'       --Port 465 --Transport TCP",
+        "'ISAKMP'      --Port 500 --Transport UDP",
+        "'SysLog'      --Port 514",
+        "'RTSP'        --Port 554 --Transport TCP",
+        "'RSync'       --Port 873 --Transport TCP",
+        "'FTPS'        --Port 990 --Transport TCP",
+        "'IMAPS'       --Port 993 --Transport TCP",
+        "'POP3S'       --Port 995 --Transport TCP",
+        "'MS-SQL-S'    --Port 1433",
+        "'RADIUS-Auth' --Port 1645 --Transport UDP",
+        "'RADIUS-Acnt' --Port 1646 --Transport UDP",
+        "'L2TP'        --Port 1701 --Transport UDP",
+        "'PPTP'        --Port 1723 --Transport TCP",
+        "'RADIUS-Auth' --Port 1812 --Transport UDP",
+        "'RADIUS-Acnt' --Port 1813 --Transport UDP",
+        "'UPNP'        --Port 1900 --Transport UDP",
+        "'Cisco-SCCP'  --Port 2000",
+        "'NFS'         --Port 2049 --Transport UDP",
+        "'PPP'         --Port 3000 --Transport TCP",
+        "'MYSQL'       --Port 3306 --Transport TCP",
+        "'RDP/MS-DS'   --Port 3389",
+        "'MetaSploit'  --Port 4444",
+        "'NAT-T-IKE'   --Port 4500 --Transport UDP",
+        "'SIP'         --Port 5060 --Transport UDP",
+        "'PostgreSQL'  --Port 5432 --Transport TCP",
+        "'VNC'         --Port 5900",
+        "'WinRM/HTTP'  --Port 5985 --Transport TCP",
+        "'WinRM/HTTPS' --Port 5986 --Transport TCP",
+        "'X11'         --Port 6000 --Transport TCP",
+        "'HTTP-Alt'    --Port 8000 --Transport TCP",
+        "'HTTP-Proxy'  --Port 8080 --Transport TCP",
+        "'HTTPS-Alt'   --Port 8443 --Transport TCP"
+    )
+    Foreach ($Filter in $PktMonPacketCaptureFilterList) {
+        $PktMonFilterListSelectionComboBox.Items.Add($Filter)
+    }
 
 
     $PktMonFilterListSelectionAddButton = New-Object System.Windows.Forms.Button -Property @{
@@ -1360,6 +1365,7 @@ $PktMonPacketCaptureForm.ShowDialog()
         -c, --components
             Select components to monitor. Can be all components, NICs only, or a
             list of component ids. Defaults to all.
+#>
 #
 # SIG # Begin signature block
 # MIIFuAYJKoZIhvcNAQcCoIIFqTCCBaUCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB

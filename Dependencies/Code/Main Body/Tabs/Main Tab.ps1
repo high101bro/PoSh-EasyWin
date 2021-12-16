@@ -56,6 +56,25 @@ $ResultsFolderAutoTimestampCheckbox = New-Object System.Windows.Forms.Checkbox -
 $MainCenterMainTab.Controls.Add($ResultsFolderAutoTimestampCheckbox)
 
 
+$SaveResultsToFileShareCheckbox = New-Object System.Windows.Forms.Checkbox -Property @{
+    Text   = "Use File Share"
+    Top    = $ResultsFolderAutoTimestampCheckbox.Top
+    Left   = $CollectionSavedDirectoryTextBox.Left + ($FormScale * 125)
+    Width  = $FormScale * 115
+    Height = $FormScale * 22
+    Checked = $false
+    add_click = {
+        if ($This.Checked) {
+            . "$Dependencies\Code\Main Body\Launch-FileShareConnection.ps1"
+        }
+        else {
+            $script:CollectionSavedDirectoryTextBox.Text = $SaveLocation
+        }
+    }
+}
+$MainCenterMainTab.Controls.Add($SaveResultsToFileShareCheckbox)
+
+
 Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\DirectoryUpdateButton.ps1"
 . "$Dependencies\Code\System.Windows.Forms\Button\DirectoryUpdateButton.ps1"
 $DirectoryUpdateButton = New-Object System.Windows.Forms.Button -Property @{

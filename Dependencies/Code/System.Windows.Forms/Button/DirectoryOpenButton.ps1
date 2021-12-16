@@ -1,14 +1,27 @@
 $DirectoryOpenButtonAdd_Click = {
-    if (Test-Path $($script:CollectionSavedDirectoryTextBox.Text)) {
-        $OpenDirectory = $script:CollectionSavedDirectoryTextBox.Text
-    }
-    elseif (Test-Path $CollectedDataDirectory) {
-        $OpenDirectory = $CollectedDataDirectory
+    if ($SaveResultsToFileShareCheckbox.Checked) {
+        if (Test-Path $($script:CollectionSavedDirectoryTextBox.Text)) {
+            Invoke-Item -Path $script:CollectionSavedDirectoryTextBox.Text
+        }
+        elseif (Test-Path "$($script:SmbShareDriveLetter):") {
+            Invoke-Item -Path "$($script:SmbShareDriveLetter):"
+        }
+        else {
+            $SaveResultsToFileShareCheckbox.Checked = $false
+            [System.Windows.Forms.MessageBox]::Show("There is not share drive connected.","PoSh-EasyWIn - Open Directory",'Ok',"Warning")
+        }
     }
     else {
-        $OpenDirectory = $PoShHome
+        if (Test-Path $($script:CollectionSavedDirectoryTextBox.Text)) {
+            Invoke-Item -Path $script:CollectionSavedDirectoryTextBox.Text
+        }
+        elseif (Test-Path $CollectedDataDirectory) {
+            Invoke-Item -Path $CollectedDataDirectory
+        }
+        else {
+            Invoke-Item -Path $PoShHome
+        }
     }
-    Invoke-Item -Path $OpenDirectory
 }
 
 $DirectoryOpenButtonAdd_MouseHover = {

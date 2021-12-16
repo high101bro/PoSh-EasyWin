@@ -1578,9 +1578,12 @@ $script:WinRmCommandCountHistory = $false
 $ExecuteScriptHandler = {
     [System.Windows.Forms.Application]::UseWaitCursor = $true
 
-    if ($ResultsFolderAutoTimestampCheckbox.Checked) {
+    if ($ResultsFolderAutoTimestampCheckbox.Checked -eq $true -and $SaveResultsToFileShareCheckbox.Checked -eq $false) {
         $script:CollectedDataTimeStampDirectory = "$CollectedDataDirectory\$((Get-Date).ToString('yyyy-MM-dd HH.mm.ss'))"
         $script:CollectionSavedDirectoryTextBox.Text = $script:CollectedDataTimeStampDirectory
+    }
+    elseif ($ResultsFolderAutoTimestampCheckbox.Checked -eq $true -and $SaveResultsToFileShareCheckbox.Checked -eq $true) {
+        $script:CollectionSavedDirectoryTextBox.Text = "$($script:SmbShareDriveLetter):\$((Get-Date).ToString('yyyy-MM-dd HH.mm.ss'))"
     }
 
     # Clears the Progress bars

@@ -31,7 +31,7 @@ TODO:
 	Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock {foreach (`$Path in `$RegistrySearchDirectory) { foreach (`$Item in `$SearchRegistryKeyItemPropertyName) { Get-ItemProperty -Path `$Path `$Item } }} -ArgumentList `$SearchRgistryItemProperty  -ComputerName $TargetComputer -AsJob -JobName 'PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)' -Credential `$script:Credential"
 	$ResultsListBox.Items.Add("$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  $CollectionName -- $TargetComputer")
 [ ] Fix bug will reading log files and it's count
-
+[ ] add code to specify posh chat port number 
 
 ==================================================
 v6.8.4 - 15 DEC 2021
@@ -39,6 +39,7 @@ v6.8.4 - 15 DEC 2021
 
 Integrate PoShChat feature into PoSh-EasyWin
 	- Updated code, chat messages, message font/colors
+	- The chat server currently listens on TCP port 15600
 	- Added button to main tab to launch PoSh Chat Client
 	- Added button to main tab to launch PoSh Chat Server
 	- Added license
