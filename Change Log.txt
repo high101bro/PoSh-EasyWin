@@ -33,11 +33,19 @@ TODO:
 [ ] Fix bug will reading log files and it's count
 [ ] add code to specify posh chat port number 
 
+!!!!!!!!!!!!!!!!! ADD THIS FEATURE!!!!!!!!!!!1New-PSDrive -Name test -PSProvider FileSystem -Root \\dc01\c$ -Credential $creds
+
 ==================================================
-v6.8.4 - 15 DEC 2021
+v6.8.4 - 16 DEC 2021
 ==================================================
 
-Integrate PoShChat feature into PoSh-EasyWin
+Added abilty to store longs to smb file Share
+	- Added checkbox to main tab named 'Use File Share'
+	- The option creates the share on the specified hosts, provided you have the credentials/permission to do do
+	- automatically saves results to the mapped share drive
+	- Note: To view the SMB File Share in Windwos Explorer, you need to manually map the network drive
+
+Integrated PoShChat feature into PoSh-EasyWin
 	- Updated code, chat messages, message font/colors
 	- The chat server currently listens on TCP port 15600
 	- Added button to main tab to launch PoSh Chat Client

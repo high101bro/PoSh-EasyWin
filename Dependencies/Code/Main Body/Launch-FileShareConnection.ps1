@@ -164,7 +164,7 @@ Function Launch-FileShareConnection {
 
 
         $SmbFileShareServerFilePathLabel = New-Object System.Windows.Forms.Label -Property @{
-            Text   = "File Path:"
+            Text   = "Remote File Path:"
             Left   = $SmbFileShareServerHostnameIPLabel.Left
             Top    = $SmbFileShareServerHostnameIPLabel.Top + $SmbFileShareServerHostnameIPLabel.Height + $($FormScale * 5)
             Width  = $FormScale * 120
@@ -185,7 +185,7 @@ Function Launch-FileShareConnection {
 
 
         $SmbFileShareServerFileShareNameLabel = New-Object System.Windows.Forms.Label -Property @{
-            Text   = "Name:"
+            Text   = "Remote Share Name:"
             Left   = $SmbFileShareServerFilePathLabel.Left
             Top    = $SmbFileShareServerFilePathLabel.Top + $SmbFileShareServerFilePathLabel.Height + $($FormScale * 5)
             Width  = $FormScale * 120
@@ -206,7 +206,7 @@ Function Launch-FileShareConnection {
 
 
         $SmbFileShareServerDriveLetterLabel = New-Object System.Windows.Forms.Label -Property @{
-            Text   = "Drive Letter:"
+            Text   = "Local Drive Letter:"
             Left   = $SmbFileShareServerFileShareNameLabel.Left
             Top    = $SmbFileShareServerFileShareNameLabel.Top + $SmbFileShareServerFileShareNameLabel.Height + $($FormScale * 5)
             Width  = $FormScale * 120
@@ -235,9 +235,9 @@ Function Launch-FileShareConnection {
         Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         ForeColor = 'Black'
         Add_Click = {
-            $FileShareName  = $SmbFileShareServerFileShareNameTextbox.Text
-            $FilePath       = $SmbFileShareServerFilePathTextbox.Text
-            $SMBServer      = $SmbFileShareServerHostnameIPTextbox.Text
+            $script:FileShareName = $SmbFileShareServerFileShareNameTextbox.Text
+            $FilePath = $SmbFileShareServerFilePathTextbox.Text
+            $script:SMBServer = $SmbFileShareServerHostnameIPTextbox.Text
             $script:SmbShareDriveLetter = $SmbFileShareServerDriveLetterTextbox.Text
             
             if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
@@ -246,31 +246,36 @@ Function Launch-FileShareConnection {
 
             $InvokeCommandSplat = @{
                 ScriptBlock = {
-                    param($FilePath,$FileShareName)
-                    if (-not (Get-PSDrive -Name $FileShareName -ErrorAction SilentlyContinue)) {
+                    param($FilePath,$script:FileShareName)
+                    if (-not (Get-PSDrive -Name $script:FileShareName -ErrorAction SilentlyContinue)) {
                         New-Item -Type Directory -Path $FilePath -ErrorAction SilentlyContinue
-                        New-SmbShare -Path $FilePath -Name $FileShareName
+                        New-SmbShare -Path $FilePath -Name $script:FileShareName
+                        Grant-SmbShareAccess -Name $script:FileShareName -AccountName EveryOne -AccessRight Full -Force
                     }
                 }
-                ArgumentList = @($FilePath,$FileShareName)
-                ComputerName = $SMBServer
+                ArgumentList = @($FilePath,$script:FileShareName)
+                ComputerName = $script:SMBServer
                 Credential   = $script:Credential
             }
             Invoke-Command @InvokeCommandSplat
                       
             $NewSmbMappingSplat = @{
                 LocalPath  = "$($script:SmbShareDriveLetter):"
-                RemotePath = "\\$SMBServer\$FileShareName"
+                RemotePath = "\\$script:SMBServer\$script:FileShareName"
+                Persistent = $true
                 UserName   = $script:Credential.UserName
                 Password   = $script:Credential.GetNetworkCredential().Password
             }
             New-SmbMapping @NewSmbMappingSplat
+            net use P: \\hostname\PoSh-EasyWin /USER:user@domain.com 'password' /persistent:Yes
 
             if (Get-SmbMapping -LocalPath "$($script:SmbShareDriveLetter):") {
                 $script:FileTransferStatusBar.Text = "SMB File Share Mapping Exists for: [$($script:SmbShareDriveLetter):] $((Get-SmbMapping).RemotePath)"
+                Start-Sleep -Seconds 1
+                $SmbFileShareServerForm.Close()
             }
             else {
-                $script:FileTransferStatusBar.Text = "SMB File Share Mapping to $SMBServer Failed..."
+                $script:FileTransferStatusBar.Text = "SMB File Share Mapping to $script:SMBServer Failed..."
             }
         }
     }
@@ -343,8 +348,8 @@ Launch-FileShareConnection
 # SIG # Begin signature block
 # MIIFuAYJKoZIhvcNAQcCoIIFqTCCBaUCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUyCQrWTBHlDogLWEjU8fSl8jC
-# pmagggM6MIIDNjCCAh6gAwIBAgIQeugH5LewQKBKT6dPXhQ7sDANBgkqhkiG9w0B
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUd2MWvFTklLWVu+G1a3SRbOby
+# /AigggM6MIIDNjCCAh6gAwIBAgIQeugH5LewQKBKT6dPXhQ7sDANBgkqhkiG9w0B
 # AQUFADAzMTEwLwYDVQQDDChQb1NoLUVhc3lXaW4gQnkgRGFuIEtvbW5pY2sgKGhp
 # Z2gxMDFicm8pMB4XDTIxMTIxNDA1MDIwMFoXDTMxMTIxNDA1MTIwMFowMzExMC8G
 # A1UEAwwoUG9TaC1FYXN5V2luIEJ5IERhbiBLb21uaWNrIChoaWdoMTAxYnJvKTCC
@@ -365,11 +370,11 @@ Launch-FileShareConnection
 # YXN5V2luIEJ5IERhbiBLb21uaWNrIChoaWdoMTAxYnJvKQIQeugH5LewQKBKT6dP
 # XhQ7sDAJBgUrDgMCGgUAoHgwGAYKKwYBBAGCNwIBDDEKMAigAoAAoQKAADAZBgkq
 # hkiG9w0BCQMxDAYKKwYBBAGCNwIBBDAcBgorBgEEAYI3AgELMQ4wDAYKKwYBBAGC
-# NwIBFTAjBgkqhkiG9w0BCQQxFgQUrNlkfQuQGWQjfokGuPunwbA7nTAwDQYJKoZI
-# hvcNAQEBBQAEggEAim6zykR/c+/Sl5Rf86DXG5A7dgVREliWYpK04iQLUTMJohGt
-# 3MH7LCfNTWDnjsTJTOOzQ2NQi+gfonoA9864MifkXqZfPkwcCMewTiRzg/TyNRMC
-# oIei4z1kZwtdR/nSPU3/pUMPmioh0OR36SANvW1TcgFzYOoOidnheiGiSoknGYNZ
-# fR/Bc+hQP6KOJebUWQzffGtmBOWeAhboA78FovSDNkosjGiIrBp1e6/Myo6C5Dbl
-# 40DyC8Eh6OpHNWqEsRuhiXyMrie1CiVqBIexYVRQkoJ3lLXPPkbcmp1QaRTBYDc9
-# cGLsZIDbNCThBdS2dx4CBSSLVEJCzBxsJYk/HQ==
+# NwIBFTAjBgkqhkiG9w0BCQQxFgQUzDG1bOvHGyWdp+EL8pc2uz8/nXQwDQYJKoZI
+# hvcNAQEBBQAEggEAaQe5ENq7F7j3rEfz7hCKriGH28kJ2/GoAz0Y7yiMXtPLZjdh
+# sUm2UOGLDnKuBDcuH1VMmpstQd8b0PzCDlrfcQal311UZhM2JCH6VFFNymVo6JID
+# bGPzkla7TFZZS7mDm4T1Xz4EWwAE8qJjdZlBUXLa74aNjezEioR+ZM4LnnG2IyA5
+# B3c4+NkvCMlg7acsJq+D8gffp17xj8NrWg93t/N+n+A6gtfOZAtJIpqZcx+k/Dp5
+# UHqzI/4T3zoI/qozPR8WRv9Aq7h8JrFsnGQBm5MeIUKQKc/WVWYD2WCVVH0YNEj7
+# ZCjkOGU1rVZdeoVz49yew6CiYRRkp62CMs+lyw==
 # SIG # End signature block

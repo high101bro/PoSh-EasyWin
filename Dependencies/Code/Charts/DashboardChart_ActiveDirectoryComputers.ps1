@@ -5183,12 +5183,11 @@ $script:AutoChart10ADComputersManipulationPanel.Controls.Add($script:AutoChart10
 
 $script:AutoChart10ADComputers.Series["PasswordLastSet"].Points.Clear()
 $script:AutoChart10ADComputersOverallDataResults | Sort-Object { $_.DataField.PasswordLastSet -as [datetime] } | Select-Object -skip $script:AutoChart10ADComputersTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart10ADComputersTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart10ADComputers.Series["PasswordLastSet"].Points.AddXY($_.DataField.PasswordLastSet,$_.UniqueCount)}
-
 # SIG # Begin signature block
 # MIIFuAYJKoZIhvcNAQcCoIIFqTCCBaUCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUuEeu3m2P2Tn9BU1IaqBvwnaM
-# vMagggM6MIIDNjCCAh6gAwIBAgIQeugH5LewQKBKT6dPXhQ7sDANBgkqhkiG9w0B
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQU5U9sFCHgw4cAFg1kH92d103i
+# BH6gggM6MIIDNjCCAh6gAwIBAgIQeugH5LewQKBKT6dPXhQ7sDANBgkqhkiG9w0B
 # AQUFADAzMTEwLwYDVQQDDChQb1NoLUVhc3lXaW4gQnkgRGFuIEtvbW5pY2sgKGhp
 # Z2gxMDFicm8pMB4XDTIxMTIxNDA1MDIwMFoXDTMxMTIxNDA1MTIwMFowMzExMC8G
 # A1UEAwwoUG9TaC1FYXN5V2luIEJ5IERhbiBLb21uaWNrIChoaWdoMTAxYnJvKTCC
@@ -5209,11 +5208,11 @@ $script:AutoChart10ADComputersOverallDataResults | Sort-Object { $_.DataField.Pa
 # YXN5V2luIEJ5IERhbiBLb21uaWNrIChoaWdoMTAxYnJvKQIQeugH5LewQKBKT6dP
 # XhQ7sDAJBgUrDgMCGgUAoHgwGAYKKwYBBAGCNwIBDDEKMAigAoAAoQKAADAZBgkq
 # hkiG9w0BCQMxDAYKKwYBBAGCNwIBBDAcBgorBgEEAYI3AgELMQ4wDAYKKwYBBAGC
-# NwIBFTAjBgkqhkiG9w0BCQQxFgQUe5387R7utfWIioDEl0GNCuhmzicwDQYJKoZI
-# hvcNAQEBBQAEggEABwtascGWxFYAkF7O7gT1LGkxUO1dAAdYX5Uo+wH9vtK0pu97
-# bxbs6UDleJhyoX7DZH0S7eHovxOA8SmZguLn5xS3ZyLfSlxHRoRhBTavXRIVwC4J
-# FpPQ9TAoEbu4WFhl8OehOV1kbJTKON2OwORD9jIdE4PcuoR/fHj2Fc4BLfxxQ5Kl
-# AMe2+C+E8idJ1w/HAGMXmiv2fT6bKtqw0uF9VfYthgjs2YIzeuwCqyHeHS2+MF8h
-# NAVZjarXZuX3If9YfuwTxNDaDFy6Ca11L+AIRKvB18XV3ABqhLrkDDTjb+DTqnDj
-# /+XK1Zr+10Gs8wN5mA+ruSaxB6xeuCR5gvunKw==
+# NwIBFTAjBgkqhkiG9w0BCQQxFgQUZb3TRCtFnKWNxYZvdKNDOiZxBcswDQYJKoZI
+# hvcNAQEBBQAEggEAZ4RkmBj0HGs+MCnxU0ln2KRg2wWWrkvsH350qyVcJw7ausWK
+# y6VF6gV5plibSBpttVjy/EJmoR7q2Jpj8AY9Hs7BvxZufedjTcSXU20TtkjSXh0+
+# YWPT3j95iohtbBtrxOZID3tNO5lcBnpAuRd2Qvq94gWY9hNdB+MHm81NT796kCul
+# ivVZd5HLcad7tT/WGQqa6d8/8ijPyq00dKGmxCbbV9UrYwc9lVEvQv2FEPO73WsB
+# ucAL3z7os+57+5Ey/4f1jzh9O1Hv5KTWhM3czP9vspVCuFG41J/pZL7rGlGMZyfA
+# xhQcEBtIrVt9KOh1NmNMdYIn3ZwamIHKhyBd6Q==
 # SIG # End signature block

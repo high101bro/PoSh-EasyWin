@@ -96,7 +96,6 @@ Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\DirectoryOpe
 $DirectoryOpenButton = New-Object System.Windows.Forms.Button -Property @{
     Text   = "Open Folder"
     Top    = $DirectoryUpdateButton.Top
-    # Left   = $script:CollectionSavedDirectoryTextBox.Width - ($FormScale * 232)
     Left   = $DirectoryUpdateButton.Left + $DirectoryUpdateButton.Width + $($FormScale * 5)
     Width  = $FormScale * 115
     Height = $FormScale * 22
@@ -376,8 +375,8 @@ $MainCenterMainTab.Controls.Add($script:ProgressBarQueriesProgressBar)
 # SIG # Begin signature block
 # MIIFuAYJKoZIhvcNAQcCoIIFqTCCBaUCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUCoATToruMgt4F9PossxaST9M
-# 6dagggM6MIIDNjCCAh6gAwIBAgIQeugH5LewQKBKT6dPXhQ7sDANBgkqhkiG9w0B
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUWVvLpjr66DlfBZWSBHGgTf69
+# PBmgggM6MIIDNjCCAh6gAwIBAgIQeugH5LewQKBKT6dPXhQ7sDANBgkqhkiG9w0B
 # AQUFADAzMTEwLwYDVQQDDChQb1NoLUVhc3lXaW4gQnkgRGFuIEtvbW5pY2sgKGhp
 # Z2gxMDFicm8pMB4XDTIxMTIxNDA1MDIwMFoXDTMxMTIxNDA1MTIwMFowMzExMC8G
 # A1UEAwwoUG9TaC1FYXN5V2luIEJ5IERhbiBLb21uaWNrIChoaWdoMTAxYnJvKTCC
@@ -398,11 +397,11 @@ $MainCenterMainTab.Controls.Add($script:ProgressBarQueriesProgressBar)
 # YXN5V2luIEJ5IERhbiBLb21uaWNrIChoaWdoMTAxYnJvKQIQeugH5LewQKBKT6dP
 # XhQ7sDAJBgUrDgMCGgUAoHgwGAYKKwYBBAGCNwIBDDEKMAigAoAAoQKAADAZBgkq
 # hkiG9w0BCQMxDAYKKwYBBAGCNwIBBDAcBgorBgEEAYI3AgELMQ4wDAYKKwYBBAGC
-# NwIBFTAjBgkqhkiG9w0BCQQxFgQUHYF8UuZ/z1AGv6piSPJWsUG8GiEwDQYJKoZI
-# hvcNAQEBBQAEggEAFyER/Onxlco1Hg6nJjK2/ZKUVRT+upPu/SXROiOKAGcl6MZk
-# 2iqAL1b4cjMLTyxDLjBZjfQyxTKRxu4Z4egCvptyEedg19YTPShdA8IXXSbKlxBb
-# FFRJNId8fjEBV2hZdTslQkqs+3tDGxNDy5zawC7GVC+WIR52yOe19D4DPpERsEyD
-# emRYUUSuG5egndx0szi4J3GljSh8bB0LMhxJ2M+NnkRpRFMd3dfc0+78R+vAkUvs
-# 2U1KFtVq1ezwkfjPTXFxh2QjtZ/e82lxhh1dI/UVH7GYTDQx/y4CbQFAKda7pInz
-# qj8ISUioSd5dlLeRU3xVwdOAnACS8NvHu7E5DQ==
+# NwIBFTAjBgkqhkiG9w0BCQQxFgQU5ySoK87dOE77SNWlsUl8jnPQ3KQwDQYJKoZI
+# hvcNAQEBBQAEggEAT4cG+atIAWpjJ39QUDMsKCilR0KcqK9do3kCxsMstYhD7P6B
+# azKaEuzS3Rrpr1UdXZfIPXMZSmDxTc7pYTKPlwYrEmUBY8qoSVG3wFPtcjoU2G6e
+# XPyco1ag/cs7p7wnQg7ovyDNCuHHX4u3EFsiiGZofDTsGMtxqXZasi9xTwxZrNf6
+# gGLFj6i/f7thufUsZx39PlKfScq0yT69g1QCDmotqALcegktHx6vT7998joJX3WQ
+# FbeTlLHsgaqLd9yvmv2Q0DAdOjTKVBgwqPwHRZFaOuUldB7zRmBV90daX7f+fOvN
+# D4X8YCerU9fTr9/EKRHpX8PbZuAkE/+mOggwxA==
 # SIG # End signature block
