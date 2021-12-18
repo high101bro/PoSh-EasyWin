@@ -153,6 +153,68 @@ Command:
             $script:ComputerListContextMenuStrip.Items.add($script:ComputerListSSHToolStripButton)
 
 
+            $script:ComputerListFileSystemToolStripButton = New-Object System.Windows.Forms.ToolStripMenuItem -Property @{
+                Image = [System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\SMBShare.jpg")
+                Text        = "Browse File System (SMB)"
+                ForeColor   = 'Black'
+                Add_Click   = {
+                    Create-TreeViewCheckBoxArray -Endpoint
+                    Generate-ComputerList
+
+                    if ($script:ComputerListProvideCredentialsCheckBox.Checked) { $Username = $script:Credential.UserName}
+                    else {$Username = $PoShEasyWinAccountLaunch }
+                                                
+                    if ($script:ComputerListEndpointNameToolStripLabel.text) {
+                        $VerifyAction = Verify-Action -Title "Verification: Browse File System (PSDrive/SMB)" -Question "Connecting Account:  $Username`n`n`Browse the file system via SMB on the following?" -Computer $($script:ComputerListEndpointNameToolStripLabel.text)
+                        if ($script:ComputerListUseDNSCheckbox.checked) { 
+                            $script:ComputerTreeViewSelected = $script:ComputerListEndpointNameToolStripLabel.text 
+                        }
+                        else {
+                            [System.Windows.Forms.TreeNodeCollection]$AllTreeViewNodes = $script:ComputerTreeView.Nodes
+                            foreach ($root in $AllTreeViewNodes) {
+                                foreach ($Category in $root.Nodes) {
+                                    foreach ($Entry in $Category.nodes) {
+                                        if ($Entry.Text -eq $script:ComputerListEndpointNameToolStripLabel.text) {
+                                            foreach ($Metadata in $Entry.nodes) {
+                                                if ($Metadata.Name -eq 'IPv4Address') {
+                                                    $script:ComputerTreeViewSelected = $Metadata.text
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    # elseif (-not $script:ComputerListEndpointNameToolStripLabel.text) {
+                    #     [System.Windows.Forms.Messagebox]::Show('Left click an endpoint node to select it, then right click to access the context menu and select PSSession.','PowerShell Session')
+                    # }
+
+                    $NewPSDriveSplat = @{
+                        Name       = $script:ComputerListEndpointNameToolStripLabel.text
+                        PSProvider = 'FileSystem'
+                        Root       = "\\$($script:ComputerListEndpointNameToolStripLabel.text)\c$"
+                    } 
+                    if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
+                        if (!$script:Credential) { Create-NewCredentials }
+                        $NewPSDriveSplat += @{Credential = $script:Credential}
+                    }
+                    New-PSDrive @NewPSDriveSplat
+                    # start-process PowerShell.exe -ArgumentList "param($script:ComputerListEndpointNameToolStripLabel,$script:credential,);New-PSDrive -Name $($script:ComputerListEndpointNameToolStripLabel.text) -PSProvider 'FileSystem' -Root "\\$($script:ComputerListEndpointNameToolStripLabel.text)\c$" -Credential $script:credential"
+
+                    Invoke-Item -Path "$($script:ComputerListEndpointNameToolStripLabel.text):"
+
+                    if ($script:RollCredentialsState -and $script:ComputerListProvideCredentialsCheckBox.checked) {
+                        Start-Sleep -Seconds 3
+                        Generate-NewRollingPassword
+                    }            
+                }
+                ToolTipText = "
+"
+            }
+            $script:ComputerListContextMenuStrip.Items.add($script:ComputerListFileSystemToolStripButton)
+
+
             $script:ComputerListEventViewerToolStripButton = New-Object System.Windows.Forms.ToolStripMenuItem -Property @{
                 Image = [System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Event-Viewer.png")
                 Text        = "Event Viewer (Connect)"

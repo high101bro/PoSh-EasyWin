@@ -446,10 +446,8 @@ function script:Minimize-MonitorJobsTab {
 Update-FormProgress "$Dependencies\Code\Main Body\Launch-SystemTrayNotifyIcon.ps1"
 . "$Dependencies\Code\Main Body\Launch-SystemTrayNotifyIcon.ps1"
 
-
 # The Launch-ProgressBarForm.ps1 is topmost upon loading to ensure it's displayed intially, but is then able to be move unpon
 $ResolutionCheckForm.topmost = $false
-
 
 $PoShEasyWinAccountLaunch = [System.Security.Principal.WindowsIdentity]::GetCurrent().Name
 #[System.Windows.Forms.Application]::EnableVisualStyles()
@@ -568,17 +566,16 @@ $TopLeftPanel = New-Object System.Windows.Forms.Panel -Property @{
 }
 $PoShEasyWin.Controls.Add($TopLeftPanel)
 
-
-            $PoShEasyWinLogoPictureBox = New-Object Windows.Forms.PictureBox -Property @{
-                Text   = "PoSh-EasyWin Image"
-                Left   = $FormScale * 5
-                Top    = $FormScale * 5
-                Width  = $FormScale * 285
-                Height = $FormScale * 35
-                Image  = [System.Drawing.Image]::Fromfile("$Dependencies\Images\PoSh-EasyWin Image 01.png")
-                SizeMode = 'StretchImage'
-            }
-            $TopLeftPanel.Controls.Add($PoShEasyWinLogoPictureBox)
+    $PoShEasyWinLogoPictureBox = New-Object Windows.Forms.PictureBox -Property @{
+        Text   = "PoSh-EasyWin Image"
+        Left   = $FormScale * 5
+        Top    = $FormScale * 5
+        Width  = $FormScale * 285
+        Height = $FormScale * 35
+        Image  = [System.Drawing.Image]::Fromfile("$Dependencies\Images\PoSh-EasyWin Image 01.png")
+        SizeMode = 'StretchImage'
+    }
+    $TopLeftPanel.Controls.Add($PoShEasyWinLogoPictureBox)
 
 
 $QueryAndCollectionPanel = New-Object System.Windows.Forms.Panel -Property @{
@@ -588,72 +585,71 @@ $QueryAndCollectionPanel = New-Object System.Windows.Forms.Panel -Property @{
     Height = $FormScale * 590
     BorderStyle = 'FixedSingle'
 }
-            $MainLeftTabControlImageList = New-Object System.Windows.Forms.ImageList -Property @{
-                ImageSize = @{
-                    Width  = $FormScale * 16
-                    Height = $FormScale * 16
-                }
-            }
-            # Index 0 = Commands
-            $MainLeftTabControlImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\PowerShell.png"))
-            # Index 1 = Search
-            $MainLeftTabControlImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Search.png"))
-            # Index 2 = Interaction
-            $MainLeftTabControlImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Interaction.png"))
-            # Index 3 = Enumeration / Scanning
-            $MainLeftTabControlImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Radar-Scanning.png"))
-            # Index 4 = OpNotes 
-            $MainLeftTabControlImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Notes.png"))
-            # Index 5 = Info
-            $MainLeftTabControlImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Info.png"))
+    $MainLeftTabControlImageList = New-Object System.Windows.Forms.ImageList -Property @{
+        ImageSize = @{
+            Width  = $FormScale * 16
+            Height = $FormScale * 16
+        }
+    }
+    # Index 0 = Commands
+    $MainLeftTabControlImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\PowerShell.png"))
+    # Index 1 = Search
+    $MainLeftTabControlImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Search.png"))
+    # Index 2 = Interaction
+    $MainLeftTabControlImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Interaction.png"))
+    # Index 3 = Enumeration / Scanning
+    $MainLeftTabControlImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Radar-Scanning.png"))
+    # Index 4 = OpNotes 
+    $MainLeftTabControlImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Notes.png"))
+    # Index 5 = Info
+    $MainLeftTabControlImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Info.png"))
 
 
-            $MainLeftTabControl = New-Object System.Windows.Forms.TabControl -Property @{
-                Left   = 0
-                Width  = $FormScale * 460
-                Height = $FormScale * 590
-                Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,2,1)
-                ForeColor  = "Blue"
-                ImageList  = $MainLeftTabControlImageList
-                Appearance = [System.Windows.Forms.TabAppearance]::Buttons
-                Hottrack   = $true
-            }
-            $QueryAndCollectionPanel.Controls.Add($MainLeftTabControl)
+    $MainLeftTabControl = New-Object System.Windows.Forms.TabControl -Property @{
+        Left   = 0
+        Width  = $FormScale * 460
+        Height = $FormScale * 590
+        Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,2,1)
+        ForeColor  = "Blue"
+        ImageList  = $MainLeftTabControlImageList
+        Appearance = [System.Windows.Forms.TabAppearance]::Buttons
+        Hottrack   = $true
+    }
+    $QueryAndCollectionPanel.Controls.Add($MainLeftTabControl)
 
-            # Commands Tab
-            # This tab contains all the individual commands within the command treeview, such as the PowerShell, WMI, and Native Commands using the WinRM, RPC/DCOM, and SMB protocols
-            Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Commands.ps1"
-            . "$Dependencies\Code\Main Body\Tabs\Commands.ps1"
+    # Commands Tab
+    # This tab contains all the individual commands within the command treeview, such as the PowerShell, WMI, and Native Commands using the WinRM, RPC/DCOM, and SMB protocols
+    Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Commands.ps1"
+    . "$Dependencies\Code\Main Body\Tabs\Commands.ps1"
 
-            # Collections Tab
-            Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Search.ps1"
-            . "$Dependencies\Code\Main Body\Tabs\Search.ps1"
+    # Collections Tab
+    Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Search.ps1"
+    . "$Dependencies\Code\Main Body\Tabs\Search.ps1"
 
-            # Interactions Tab
-            Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Interactions.ps1"
-            . "$Dependencies\Code\Main Body\Tabs\Interactions.ps1"
+    # Interactions Tab
+    Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Interactions.ps1"
+    . "$Dependencies\Code\Main Body\Tabs\Interactions.ps1"
 
-            # Enumeration Tab
-            Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Enumeration.ps1"
-            . "$Dependencies\Code\Main Body\Tabs\Enumeration.ps1"
+    # Enumeration Tab
+    Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Enumeration.ps1"
+    . "$Dependencies\Code\Main Body\Tabs\Enumeration.ps1"
 
-            # Checklists Tab
-            Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Checklists.ps1"
-            . "$Dependencies\Code\Main Body\Tabs\Checklists.ps1"
+    # Checklists Tab
+    Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Checklists.ps1"
+    . "$Dependencies\Code\Main Body\Tabs\Checklists.ps1"
 
-            ### DEPRECATED ###
-            # Processes Reference Tab 
-            #. "$Dependencies\Code\Main Body\Tabs\Processes Reference.ps1"
-            ### DEPRECATED ###
+    ### DEPRECATED ###
+    # Processes Reference Tab 
+    #. "$Dependencies\Code\Main Body\Tabs\Processes Reference.ps1"
+    ### DEPRECATED ###
 
-            # OpNotes Tab
-            Update-FormProgress "$Dependencies\Code\Main Body\Tabs\OpNotes.ps1"
-            . "$Dependencies\Code\Main Body\Tabs\OpNotes.ps1"
+    # OpNotes Tab
+    Update-FormProgress "$Dependencies\Code\Main Body\Tabs\OpNotes.ps1"
+    . "$Dependencies\Code\Main Body\Tabs\OpNotes.ps1"
 
-            # Info Tab
-            Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Info.ps1"
-            . "$Dependencies\Code\Main Body\Tabs\Info.ps1"
-            "6"
+    # Info Tab
+    Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Info.ps1"
+    . "$Dependencies\Code\Main Body\Tabs\Info.ps1"
 
 $PoShEasyWin.Controls.Add($QueryAndCollectionPanel)
 
@@ -666,633 +662,612 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel -Pr
    BorderStyle = 'FixedSingle'
 }
 
-            Update-FormProgress "$Dependencies\Code\Context Menu Strip\Display-ContextMenuForAccountsTreeNode.ps1"
-            . "$Dependencies\Code\Context Menu Strip\Display-ContextMenuForAccountsTreeNode.ps1"
-            Display-ContextMenuForAccountsTreeNode -ClickedOnArea
+    Update-FormProgress "$Dependencies\Code\Context Menu Strip\Display-ContextMenuForAccountsTreeNode.ps1"
+    . "$Dependencies\Code\Context Menu Strip\Display-ContextMenuForAccountsTreeNode.ps1"
+    Display-ContextMenuForAccountsTreeNode -ClickedOnArea
 
-            $ComputerAndAccountTreeViewTabControlImageList = New-Object System.Windows.Forms.ImageList -Property @{
-                ImageSize = @{
-                    Width  = $FormScale * 16
-                    Height = $FormScale * 16
+    $ComputerAndAccountTreeViewTabControlImageList = New-Object System.Windows.Forms.ImageList -Property @{
+        ImageSize = @{
+            Width  = $FormScale * 16
+            Height = $FormScale * 16
+        }
+    }
+    # Index 0 = Endpoints
+    $ComputerAndAccountTreeViewTabControlImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Endpoint-Default.png"))
+    # Index 1 = Accounts
+    $ComputerAndAccountTreeViewTabControlImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Accounts.png"))
+
+    $ComputerAndAccountTreeViewTabControl = New-Object System.Windows.Forms.TabControl -Property @{
+        Left   = 0
+        Top    = 0
+        Width  = $FormScale * 192
+        Height = $FormScale * 635
+        Appearance = [System.Windows.Forms.TabAppearance]::Buttons
+        Hottrack   = $true
+        Dock       = 'Fill'
+        Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,2,1)
+        Add_Click  = {
+            if ($This.SelectedTab -eq $ComputerTreeviewTab) { $InformationTabControl.SelectedTab = $Section3HostDataTab }
+            elseif ($This.SelectedTab -eq $AccountsTreeviewTab) { $InformationTabControl.SelectedTab = $Section3AccountDataTab }
+        }
+        ImageList = $ComputerAndAccountTreeViewTabControlImageList
+    }
+
+    $ComputerAndAccountTreeNodeViewPanel.Controls.Add($ComputerAndAccountTreeViewTabControl)
+
+        # If Computer treenodes are imported/created with missing data, this populates various fields with default data
+        Update-FormProgress "$Dependencies\Code\Tree View\Normalize-TreeViewData.ps1"
+        . "$Dependencies\Code\Tree View\Normalize-TreeViewData.ps1"
+
+        Update-FormProgress "$Dependencies\Code\Tree View\Save-TreeViewData.ps1"
+        . "$Dependencies\Code\Tree View\Save-TreeViewData.ps1"
+
+        # Initializes the Computer TreeView section that computer nodes are added to
+        # TreeView initialization initially happens upon load and whenever the it is regenerated, like when switching between views
+        # These include the root nodes of Search, and various Operating System and OU/CN names
+        Update-FormProgress "$Dependencies\Code\Tree View\Initialize-TreeViewData.ps1"
+        . "$Dependencies\Code\Tree View\Initialize-TreeViewData.ps1"
+
+        # This will keep the Computer TreeNodes checked when switching between OS and OU/CN views
+        Update-FormProgress "$Dependencies\Code\Tree View\UpdateState-TreeViewData.ps1"
+        . "$Dependencies\Code\Tree View\UpdateState-TreeViewData.ps1"
+
+        # Adds a treenode to the specified root node... a computer node within a category node
+        Update-FormProgress "$Dependencies\Code\Tree View\AddTreeNodeTo-TreeViewData.ps1"
+        . "$Dependencies\Code\Tree View\AddTreeNodeTo-TreeViewData.ps1"
+
+        # Populate Auto Tag List used for Host Data tagging and Searching
+        $TagListFileContents = Get-Content -Path $TagAutoListFile
+
+        # Searches for Accounts nodes that match a given search entry
+        # A new category node named by the search entry will be created and all results will be nested within
+        Update-FormProgress "$Dependencies\Code\Tree View\Search-TreeViewData.ps1"
+        . "$Dependencies\Code\Tree View\Search-TreeViewData.ps1"
+
+        # Code to remove empty categoryies
+        Update-FormProgress "$Dependencies\Code\Tree View\Remove-EmptyCategory.ps1"
+        . "$Dependencies\Code\Tree View\Remove-EmptyCategory.ps1"
+
+        Update-FormProgress "$Dependencies\Code\Tree View\Message-NodeAlreadyExists.ps1"
+        . "$Dependencies\Code\Tree View\Message-NodeAlreadyExists.ps1"
+
+        Update-FormProgress "$Dependencies\Code\Tree View\Show-MoveForm.ps1"
+        . "$Dependencies\Code\Tree View\Show-MoveForm.ps1"
+
+        Update-FormProgress "$Dependencies\Code\Tree View\Show-TagForm.ps1"
+        . "$Dependencies\Code\Tree View\Show-TagForm.ps1"
+
+        Update-FormProgress "$Dependencies\Code\Execution\Action\Check-Connection.ps1"
+        . "$Dependencies\Code\Execution\Action\Check-Connection.ps1"
+
+        Update-FormProgress "$Dependencies\Code\Tree View\MoveNode-TreeViewData.ps1"
+        . "$Dependencies\Code\Tree View\MoveNode-TreeViewData.ps1"
+
+        Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\Import-DataFromActiveDirectory.ps1"
+        . "$Dependencies\Code\System.Windows.Forms\Button\Import-DataFromActiveDirectory.ps1"
+
+        Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\Import-DataFromCsv.ps1"
+        . "$Dependencies\Code\System.Windows.Forms\Button\Import-DataFromCsv.ps1"
+        
+        Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\Import-DataFromTxt.ps1"
+        . "$Dependencies\Code\System.Windows.Forms\Button\Import-DataFromTxt.ps1"
+            
+    $ComputerTreeviewTab = New-Object System.Windows.Forms.TabPage -Property @{
+        Text = "Endpoints  "
+        Font = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+        UseVisualStyleBackColor = $True
+        ImageIndex = 0
+    }
+    $ComputerAndAccountTreeViewTabControl.Controls.Add($ComputerTreeviewTab)
+
+        $script:UpdateComputerTreeViewScriptBlock = {
+            # This variable stores data on checked checkboxes, so boxes checked remain among different views
+            $script:ComputerTreeViewSelected = @()
+
+            [System.Windows.Forms.TreeNodeCollection]$AllTreeViewNodes = $script:ComputerTreeView.Nodes
+            foreach ($root in $AllTreeViewNodes) {
+                foreach ($Category in $root.Nodes) {
+                    foreach ($Entry in $Category.nodes) {
+                        if ($Entry.Checked) {
+                            $script:ComputerTreeViewSelected += $Entry.Text
+                        }
+                    }
                 }
             }
-            # Index 0 = Endpoints
-            $ComputerAndAccountTreeViewTabControlImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Endpoint-Default.png"))
-            # Index 1 = Accounts
-            $ComputerAndAccountTreeViewTabControlImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Accounts.png"))
+            $script:ComputerTreeView.Nodes.Clear()
+            Initialize-TreeViewData -Endpoint
+            Normalize-TreeViewData -Endpoint
+            Save-TreeViewData -Endpoint
 
-            $ComputerAndAccountTreeViewTabControl = New-Object System.Windows.Forms.TabControl -Property @{
-                Left   = 0
-                Top    = 0
-                Width  = $FormScale * 192
-                Height = $FormScale * 635
-                Appearance = [System.Windows.Forms.TabAppearance]::Buttons
-                Hottrack   = $true
-                Dock       = 'Fill'
-                Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,2,1)
-                Add_Click  = {
-                    if ($This.SelectedTab -eq $ComputerTreeviewTab) {
-                        $InformationTabControl.SelectedTab = $Section3HostDataTab
-                    }
-                    elseif ($This.SelectedTab -eq $AccountsTreeviewTab) {
-                        $InformationTabControl.SelectedTab = $Section3AccountDataTab
+            $script:ComputerTreeView.Nodes.Add($script:TreeNodeComputerList)
+            Foreach($Computer in $script:ComputerTreeViewData) {
+                AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:TreeNodeComputerList -Category $Computer.$($This.SelectedItem) -Entry $Computer.Name -ToolTip $Computer.IPv4Address -Metadata $Computer
+            }
+            UpdateState-TreeViewData -Endpoint
+
+            Update-TreeViewData -Endpoint -TreeView $script:ComputerTreeView.Nodes
+        }
+
+
+        $script:ComputerTreeNodeComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
+            Text    = 'CanonicalName'
+            Left    = 0
+            Top     = $FormScale * 5
+            Width   = $FormScale * 135
+            Height  = $FormScale * 25
+            Font    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+            AutoCompleteSource = "ListItems"
+            AutoCompleteMode   = "SuggestAppend"    
+            add_SelectedIndexChanged = $script:UpdateComputerTreeViewScriptBlock
+        }
+        $ComputerTreeNodeComboBoxList = @('CanonicalName', 'OperatingSystem', 'OperatingSystemHotfix', 'OperatingSystemServicePack', 'Enabled', 'LockedOut', 'LogonCount', 'Created', 'Modified', 'LastLogonDate', 'MemberOf', 'isCriticalSystemObject', 'HomedirRequired', 'Location', 'ProtectedFromAccidentalDeletion', 'TrustedForDelegation')
+        ForEach ($Item in $ComputerTreeNodeComboBoxList) { $script:ComputerTreeNodeComboBox.Items.Add($Item) }
+        $ComputerTreeviewTab.Controls.Add($script:ComputerTreeNodeComboBox)
+
+
+        $ComputerTreeNodeSearchGreedyCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
+            Text    = "Greedy"
+            Left    = $script:ComputerTreeNodeComboBox.Left + $script:ComputerTreeNodeComboBox.Width + $($FormScale * 5)
+            Top     = $script:ComputerTreeNodeComboBox.Top - ($FormScale * 6)
+            Height  = $FormScale * 25
+            Width   = $FormScale * 65
+            Checked = $true
+            Font    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+        }
+        $ComputerTreeviewTab.Controls.Add($ComputerTreeNodeSearchGreedyCheckbox)
+                
+
+        # Initial load of CSV data
+        $script:ComputerTreeViewData = $null
+        $script:ComputerTreeViewData = Import-Csv $script:EndpointTreeNodeFileSave -ErrorAction SilentlyContinue #| Select-Object -Property Name, OperatingSystem, CanonicalName, IPv4Address, MACAddress, Notes
+
+        $script:ComputerTreeViewSelected = ""
+
+        Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ComboBox\ComputerTreeNodeSearchComboBox.ps1"
+        . "$Dependencies\Code\System.Windows.Forms\ComboBox\ComputerTreeNodeSearchComboBox.ps1"
+        $ComputerTreeNodeSearchComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
+            Name   = "Search TextBox"
+            Left   = $script:ComputerTreeNodeComboBox.Left
+            Top    = $script:ComputerTreeNodeComboBox.Top + $script:ComputerTreeNodeComboBox.Height + ($FormScale * 5)
+            Width  = $FormScale * 135
+            Height = $FormScale * 25
+            AutoCompleteSource = "ListItems"
+            AutoCompleteMode   = "SuggestAppend"
+            Font               = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+            Add_KeyDown        = $ComputerTreeNodeSearchComboBoxAdd_KeyDown
+            Add_MouseHover     = $ComputerTreeNodeSearchComboBoxAdd_MouseHover
+        }
+        ForEach ($Tag in $TagListFileContents) { [void] $ComputerTreeNodeSearchComboBox.Items.Add($Tag) }
+        $ComputerTreeviewTab.Controls.Add($ComputerTreeNodeSearchComboBox)
+
+
+        Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\ComputerTreeNodeSearchButton.ps1"
+        . "$Dependencies\Code\System.Windows.Forms\Button\ComputerTreeNodeSearchButton.ps1"
+        $ComputerTreeNodeSearchButton = New-Object System.Windows.Forms.Button -Property @{
+            Text   = "Search"
+            Left   = $ComputerTreeNodeSearchComboBox.Left + $ComputerTreeNodeSearchComboBox.Width + ($FormScale * 5)
+            Top    = $ComputerTreeNodeSearchComboBox.Top
+            Width  = $FormScale * 55
+            Height = $FormScale * 22
+            Add_Click = { 
+                Search-TreeViewData -Endpoint
+            }
+            Add_MouseHover = $ComputerTreeNodeSearchButtonAdd_MouseHover
+        }
+        $ComputerTreeviewTab.Controls.Add($ComputerTreeNodeSearchButton)
+        Apply-CommonButtonSettings -Button $ComputerTreeNodeSearchButton
+
+        Remove-EmptyCategory -Endpoint
+
+
+        Update-FormProgress "$Dependencies\Code\Tree View\Computer\AddHost-ComputerTreeNode.ps1"
+        . "$Dependencies\Code\Tree View\Computer\AddHost-ComputerTreeNode.ps1"
+
+        Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListDeselectAllToolStripButton.ps1"
+        . "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListDeselectAllToolStripButton.ps1"
+
+        Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListNSLookupCheckedToolStripButton.ps1"
+        . "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListNSLookupCheckedToolStripButton.ps1"
+
+        Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListTagToolStripButton.ps1"
+        . "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListTagToolStripButton.ps1"
+
+        Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListMoveToolStripButton.ps1"
+        . "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListMoveToolStripButton.ps1"
+
+        Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListDeleteToolStripButton.ps1"
+        . "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListDeleteToolStripButton.ps1"
+
+        Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListRenameToolStripButton.ps1"
+        . "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListRenameToolStripButton.ps1"
+
+        Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListPingToolStripButton.ps1"
+        . "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListPingToolStripButton.ps1"
+
+        Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListRPCCheckToolStripButton.ps1"
+        . "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListRPCCheckToolStripButton.ps1"
+
+        Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListSMBCheckToolStripButton.ps1"
+        . "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListSMBCheckToolStripButton.ps1"
+
+        Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListWinRMCheckToolStripButton.ps1"
+        . "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListWinRMCheckToolStripButton.ps1"
+
+        Update-FormProgress "$Dependencies\Code\Context Menu Strip\Display-ContextMenuForComputerTreeNode.ps1"
+        . "$Dependencies\Code\Context Menu Strip\Display-ContextMenuForComputerTreeNode.ps1"
+        Display-ContextMenuForComputerTreeNode -ClickedOnArea
+
+
+        # The .ImageList allows for the images to be loaded from disk to memory only once, then referenced using their index number
+        $ComputerTreeviewImageList = New-Object System.Windows.Forms.ImageList -Property @{
+            ImageSize = @{
+                Width  = $FormScale * 16
+                Height = $FormScale * 16
+            }
+        }
+        $script:ComputerTreeViewIconList = Get-ChildItem "$Dependencies\Images\Icons\Endpoint"
+
+        # This hashtable is used to maintain a relationship between the imageindex number and the image filepath, it is used when populating the Endpoint Data tab
+        $EndpointTreeviewImageHashTable = [ordered]@{}
+
+        # Position 0 = Default Image, this one is often seen when clicking on a treenode
+        $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$script:EasyWinIcon"))
+        $EndpointTreeviewImageHashTable['0'] = "$script:EasyWinIcon"
+
+        # Position 1 = used as the default image that is loaded against the .treeview itself, thus shown at the top level for the Organizational Units, It gets overwritten by each node that is added
+        $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Icon OU LightYellow.png"))
+        $EndpointTreeviewImageHashTable['1'] = "$Dependencies\Images\Icons\Icon OU LightYellow.png"
+        
+        # Position 2 = used as the default image for the computer/account/entry node. Normalize-TreeViewData.ps1 populates it by default if an imageindex number doesn't exist for it already
+        $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Endpoint-Default.png"))
+        $EndpointTreeviewImageHashTable['2'] = "$Dependencies\Images\Icons\Endpoint-Default.png"
+        
+        # The .ImageList allows for the images to be loaded from disk to memory only once, then referenced using their index number
+        $ComputerTreeviewImageList = New-Object System.Windows.Forms.ImageList -Property @{
+            ImageSize = @{
+                Width  = $FormScale * 16
+                Height = $FormScale * 16
+            }
+        }
+        $script:ComputerTreeViewIconList = Get-ChildItem "$Dependencies\Images\Icons\Endpoint"
+
+        # This hashtable is used to maintain a relationship between the imageindex number and the image filepath, it is used when populating the Endpoint Data tab
+        $EndpointTreeviewImageHashTable = [ordered]@{}
+
+        # Position 0 = Default Image, this one is often seen when clicking on a treenode
+        $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$script:EasyWinIcon"))
+        $EndpointTreeviewImageHashTable['0'] = "$script:EasyWinIcon"
+
+        # Position 1 = used as the default image that is loaded against the .treeview itself, thus shown at the top level for the Organizational Units, It gets overwritten by each node that is added
+        $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\OU-Default.png"))
+        $EndpointTreeviewImageHashTable['1'] = "$Dependencies\Images\Icons\OU-Default.png"
+        
+        # Position 2 = PowerShell Icon, used to indicate an active powershell session
+        $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\PowerShell.png"))
+        $EndpointTreeviewImageHashTable['2'] = "$Dependencies\Images\Icons\PowerShell.png"
+
+        # Position 3 = used as the default image for the computer/account/entry node. Normalize-TreeViewData.ps1 populates it by default if an imageindex number doesn't exist for it already
+        $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Endpoint-Default.png"))
+        $EndpointTreeviewImageHashTable['3'] = "$Dependencies\Images\Icons\Endpoint-Default.png"
+        
+        # Position 4 = Windows Server Default
+        $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Windows-Server-Default.png"))
+        $EndpointTreeviewImageHashTable['4'] = "$Dependencies\Images\Icons\Windows-Server-Default.png"
+                            
+        # Position 5 = Windows Desktop Client Default
+        $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Endpoint\Windows-Desktop-Client.png"))
+        $EndpointTreeviewImageHashTable['5'] = "$Dependencies\Images\Icons\Endpoint\Windows-Desktop-Client.png"
+
+        # Position 6 = Windows Desktop `95
+        $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Endpoint\Windows-Desktop-95.png"))
+        $EndpointTreeviewImageHashTable['6'] = "$Dependencies\Images\Icons\Endpoint\Windows-Desktop-95.png"
+
+        # Position 7 = Windows Desktop XP
+        $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Endpoint\Windows-Desktop-XP.png"))
+        $EndpointTreeviewImageHashTable['7'] = "$Dependencies\Images\Icons\Endpoint\Windows-Desktop-XP.png"
+
+        # Position 8 = Windows Desktop Vista
+        $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Endpoint\Windows-Desktop-Vista.png"))
+        $EndpointTreeviewImageHashTable['8'] = "$Dependencies\Images\Icons\Endpoint\Windows-Desktop-Vista.png"
+
+        # Position 9 = Windows Desktop 7
+        $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Endpoint\Windows-Desktop-7.png"))
+        $EndpointTreeviewImageHashTable['9'] = "$Dependencies\Images\Icons\Endpoint\Windows-Desktop-7.png"
+
+        # Position 10 = Windows Desktop 8
+        $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Endpoint\Windows-Desktop-8.png"))
+        $EndpointTreeviewImageHashTable['10'] = "$Dependencies\Images\Icons\Endpoint\Windows-Desktop-8.png"
+
+        # Position 11 = Windows Desktop 10
+        $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Endpoint\Windows-Desktop-10.png"))
+        $EndpointTreeviewImageHashTable['11'] = "$Dependencies\Images\Icons\Endpoint\Windows-Desktop-10.png"
+
+        # Position 12 = Windows Desktop 11
+        $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Endpoint\Windows-Desktop-11.png"))
+        $EndpointTreeviewImageHashTable['12'] = "$Dependencies\Images\Icons\Endpoint\Windows-Desktop-11.png"
+        
+        # Position 13 = Linux Ubuntu
+        $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Endpoint\Linux-OS-Ubuntu.png"))
+        $EndpointTreeviewImageHashTable['13'] = "$Dependencies\Images\Icons\Endpoint\Linux-OS-Ubuntu.png"
+
+        # Position 14 = Linux Debian
+        $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Endpoint\Linux-OS-Debian.png"))
+        $EndpointTreeviewImageHashTable['14'] = "$Dependencies\Images\Icons\Endpoint\Linux-OS-Debian.png"
+
+        # Position 15 = Linux Red Hat
+        $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Endpoint\Linux-OS-Red-Hat.png"))
+        $EndpointTreeviewImageHashTable['15'] = "$Dependencies\Images\Icons\Endpoint\Linux-OS-Red-Hat.png"
+
+        # Position 16 = Linux CentOS
+        $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Endpoint\Linux-OS-CentOS.png"))
+        $EndpointTreeviewImageHashTable['16'] = "$Dependencies\Images\Icons\Endpoint\Linux-OS-CentOS.png"
+
+        
+        # note, if you update this variable, update this one too... $ComputerTreeViewChangeIconRootTreeNodeCount
+        $script:EndpointTreeviewImageHashTableCount = 16
+
+        foreach ($Image in $script:ComputerTreeViewIconList.FullName) {
+            $script:EndpointTreeviewImageHashTableCount++
+            $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Image"))
+            $EndpointTreeviewImageHashTable["$script:EndpointTreeviewImageHashTableCount"] = "$Image"
+        }
+
+        # Position -1 = currently unused
+        $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$high101bro_image"))
+        $script:EndpointTreeviewImageHashTableCount++
+        $EndpointTreeviewImageHashTable["$script:EndpointTreeviewImageHashTableCount"] = "$Dependencies\Images\high101bro Logo Color Transparent.png"
+
+
+        Update-FormProgress "$Dependencies\Code\System.Windows.Forms\TreeView\ComputerTreeView.ps1"
+        . "$Dependencies\Code\System.Windows.Forms\TreeView\ComputerTreeView.ps1"
+        $script:ComputerTreeView = New-Object System.Windows.Forms.TreeView -Property @{
+            Left   = $ComputerTreeNodeSearchComboBox.Left
+            Top    = $ComputerTreeNodeSearchButton.Top + $ComputerTreeNodeSearchButton.Height + ($FormScale * 5)
+            Width  = $FormScale * 195
+            Height = $FormScale * 555
+            # Note: size and location properties are are managed by 
+            Font              = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+            CheckBoxes        = $True
+            #LabelEdit         = $True  #Not implementing yet...
+            ShowLines         = $True
+            ShowNodeToolTips  = $True
+            Add_Click         = $ComputerTreeViewAdd_Click
+            Add_AfterSelect   = $ComputerTreeViewAdd_AfterSelect
+            Add_MouseHover = {
+                $ComputerAndAccountTreeNodeViewPanel.Height = $FormScale * 635
+                $ComputerAndAccountTreeViewTabControl.Height = $FormScale * 635
+                $script:ComputerTreeView.Height = $FormScale * 558
+            }
+            Add_MouseLeave = {
+                $ComputerAndAccountTreeNodeViewPanel.Height = $FormScale * 635
+                $ComputerAndAccountTreeViewTabControl.Height = $FormScale * 635
+                $script:ComputerTreeView.Height = $FormScale * 558
+            }
+            Add_MouseEnter    = {
+                $ComputerAndAccountTreeNodeViewPanel.bringtofront()
+                $ComputerAndAccountTreeViewTabControl.bringtofront()
+                $script:ComputerTreeView.bringtofront()
+            }
+            #ShortcutsEnabled  = $false                                #Used for ContextMenuStrip
+            ContextMenuStrip  = $ComputerListContextMenuStrip      #Ref Add_click
+            ShowPlusMinus     = $true
+            HideSelection     = $false
+            #not working #AfterSelect       = {}
+            ImageList         = $ComputerTreeviewImageList
+            ImageIndex        = 1 # the default image             
+        }
+        $script:ComputerTreeView.Sort()
+        $ComputerTreeviewTab.Controls.Add($script:ComputerTreeView)
+
+        Initialize-TreeViewData -Endpoint
+        Normalize-TreeViewData -Endpoint
+
+        # This will load data that is located in the saved file
+        Foreach($Computer in $script:ComputerTreeViewData) {
+            AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:TreeNodeComputerList -Category $Computer.CanonicalName -Entry $Computer.Name -ToolTip $Computer.IPv4Address -IPv4Address $Computer.IPv4Address -Metadata $Computer 
+        }
+        $script:ComputerTreeView.Nodes.Add($script:TreeNodeComputerList)
+
+        # Controls the layout of the computer treeview
+        $script:ComputerTreeView.ExpandAll()
+        [System.Windows.Forms.TreeNodeCollection]$AllTreeViewNodes = $script:ComputerTreeView.Nodes
+        foreach ($root in $AllTreeViewNodes) {
+            foreach ($Category in $root.Nodes) {
+                foreach ($Entry in $Category.nodes) { $Entry.Collapse() }
+            }
+        }
+
+
+    $AccountsTreeviewTab = New-Object System.Windows.Forms.TabPage -Property @{
+        Text = "Accounts  "
+        Font = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+        ImageIndex = 1
+        UseVisualStyleBackColor = $True
+    }
+    $ComputerAndAccountTreeViewTabControl.Controls.Add($AccountsTreeviewTab)
+
+        $script:AccountsTreeNodeComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
+            Text    = "CanonicalName"
+            Left    = 0
+            Top     = $FormScale * 5
+            Width   = $FormScale * 135
+            Height  = $FormScale * 25
+            Font    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+            AutoCompleteSource = "ListItems"
+            AutoCompleteMode   = "SuggestAppend"    
+            add_SelectedIndexChanged      = {
+                # This variable stores data on checked checkboxes, so boxes checked remain among different views
+                $script:AccountsTreeViewSelected = @()
+
+                [System.Windows.Forms.TreeNodeCollection]$AllTreeViewNodes = $script:AccountsTreeView.Nodes
+                foreach ($root in $AllTreeViewNodes) {
+                    foreach ($Category in $root.Nodes) {
+                        foreach ($Entry in $Category.nodes) {
+                            if ($Entry.Checked) {
+                                $script:AccountsTreeViewSelected += $Entry.Text
+                            }
+                        }
                     }
                 }
-                ImageList = $ComputerAndAccountTreeViewTabControlImageList
+                $script:AccountsTreeView.Nodes.Clear()
+                Initialize-TreeViewData -Accounts
+                Normalize-TreeViewData -Accounts
+                Save-TreeViewData -Accounts
+
+                Foreach($Account in $script:AccountsTreeViewData) {
+                    AddTreeNodeTo-TreeViewData -Accounts -RootNode $script:TreeNodeAccountsList -Category $Account.$($This.SelectedItem) -Entry $Account.Name -ToolTip $Account.SID -Metadata $Account
+                }
+                $script:AccountsTreeView.Nodes.Add($script:TreeNodeAccountsList)
+                UpdateState-TreeViewData -Accounts
+                Update-TreeViewData -Accounts -TreeView $script:AccountsTreeView.Nodes
+
             }
+        }
+        $AccountsTreeNodeComboBoxList = @('CanonicalName','Enabled','LockedOut','SmartCardLogonRequired','Created','Modified','LastLogonDate','LastBadPasswordAttempt','PasswordNeverExpires','PasswordExpired','PasswordNotRequired','BadLogonCount',,'ScriptPath','HomeDrive')
+        ForEach ($Item in $AccountsTreeNodeComboBoxList) { $script:AccountsTreeNodeComboBox.Items.Add($Item) }
+        $AccountsTreeviewTab.Controls.Add($script:AccountsTreeNodeComboBox)
 
-            $ComputerAndAccountTreeNodeViewPanel.Controls.Add($ComputerAndAccountTreeViewTabControl)
 
-                    # If Computer treenodes are imported/created with missing data, this populates various fields with default data
-                    Update-FormProgress "$Dependencies\Code\Tree View\Normalize-TreeViewData.ps1"
-                    . "$Dependencies\Code\Tree View\Normalize-TreeViewData.ps1"
+        $AccountsTreeNodeSearchGreedyCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
+            Text    = "Greedy"
+            Left    = $script:AccountsTreeNodeComboBox.Left + $script:AccountsTreeNodeComboBox.Width + ($FormScale * 5)
+            Top     = $script:AccountsTreeNodeComboBox.Top - ($FormScale * 6)
+            Height  = $FormScale * 25
+            Width   = $FormScale * 65
+            Checked = $true
+            Font    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+        }
+        $AccountsTreeviewTab.Controls.Add($AccountsTreeNodeSearchGreedyCheckbox)
+                
 
-                    Update-FormProgress "$Dependencies\Code\Tree View\Save-TreeViewData.ps1"
-                    . "$Dependencies\Code\Tree View\Save-TreeViewData.ps1"
+        # Initial load of CSV data
+        $script:AccountsTreeViewData = $null
+        $script:AccountsTreeViewData = Import-Csv $script:AccountsTreeNodeFileSave -ErrorAction SilentlyContinue #| Select-Object -Property Name, OperatingSystem, CanonicalName, IPv4Address, MACAddress, Notes
 
-                    # Initializes the Computer TreeView section that computer nodes are added to
-                    # TreeView initialization initially happens upon load and whenever the it is regenerated, like when switching between views
-                    # These include the root nodes of Search, and various Operating System and OU/CN names
-                    Update-FormProgress "$Dependencies\Code\Tree View\Initialize-TreeViewData.ps1"
-                    . "$Dependencies\Code\Tree View\Initialize-TreeViewData.ps1"
+        $script:AccountsTreeViewSelected = ""
 
-                    # This will keep the Computer TreeNodes checked when switching between OS and OU/CN views
-                    Update-FormProgress "$Dependencies\Code\Tree View\UpdateState-TreeViewData.ps1"
-                    . "$Dependencies\Code\Tree View\UpdateState-TreeViewData.ps1"
+        Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ComboBox\AccountsTreeNodeSearchComboBox.ps1"
+        . "$Dependencies\Code\System.Windows.Forms\ComboBox\AccountsTreeNodeSearchComboBox.ps1"
+        $AccountsTreeNodeSearchComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
+            Name   = "Search TextBox"
+            Left   = $script:AccountsTreeNodeComboBox.Left
+            Top    = $script:AccountsTreeNodeComboBox.Top + $script:AccountsTreeNodeComboBox.Height + ($FormScale * 5)
+            Width  = $FormScale * 135
+            Height = $FormScale * 25
+            AutoCompleteSource = "ListItems"
+            AutoCompleteMode   = "SuggestAppend"
+            Font               = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+            Add_KeyDown        = $AccountsTreeNodeSearchComboBoxAdd_KeyDown
+            Add_MouseHover     = $AccountsTreeNodeSearchComboBoxAdd_MouseHover
+        }
+        ForEach ($Tag in $TagListFileContents) { [void] $AccountsTreeNodeSearchComboBox.Items.Add($Tag) }
+        $AccountsTreeviewTab.Controls.Add($AccountsTreeNodeSearchComboBox)
 
-                    # Adds a treenode to the specified root node... a computer node within a category node
-                    Update-FormProgress "$Dependencies\Code\Tree View\AddTreeNodeTo-TreeViewData.ps1"
-                    . "$Dependencies\Code\Tree View\AddTreeNodeTo-TreeViewData.ps1"
 
-                    # Populate Auto Tag List used for Host Data tagging and Searching
-                    $TagListFileContents = Get-Content -Path $TagAutoListFile
-
-                    # Searches for Accounts nodes that match a given search entry
-                    # A new category node named by the search entry will be created and all results will be nested within
-                    Update-FormProgress "$Dependencies\Code\Tree View\Search-TreeViewData.ps1"
-                    . "$Dependencies\Code\Tree View\Search-TreeViewData.ps1"
-
-                    # Code to remove empty categoryies
-                    Update-FormProgress "$Dependencies\Code\Tree View\Remove-EmptyCategory.ps1"
-                    . "$Dependencies\Code\Tree View\Remove-EmptyCategory.ps1"
-
-                    Update-FormProgress "$Dependencies\Code\Tree View\Message-NodeAlreadyExists.ps1"
-                    . "$Dependencies\Code\Tree View\Message-NodeAlreadyExists.ps1"
-
-                    Update-FormProgress "$Dependencies\Code\Tree View\Show-MoveForm.ps1"
-                    . "$Dependencies\Code\Tree View\Show-MoveForm.ps1"
-
-                    Update-FormProgress "$Dependencies\Code\Tree View\Show-TagForm.ps1"
-                    . "$Dependencies\Code\Tree View\Show-TagForm.ps1"
-
-                    Update-FormProgress "$Dependencies\Code\Execution\Action\Check-Connection.ps1"
-                    . "$Dependencies\Code\Execution\Action\Check-Connection.ps1"
-
-                    Update-FormProgress "$Dependencies\Code\Tree View\MoveNode-TreeViewData.ps1"
-                    . "$Dependencies\Code\Tree View\MoveNode-TreeViewData.ps1"
-
-                    Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\Import-DataFromActiveDirectory.ps1"
-                    . "$Dependencies\Code\System.Windows.Forms\Button\Import-DataFromActiveDirectory.ps1"
-
-                    Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\Import-DataFromCsv.ps1"
-                    . "$Dependencies\Code\System.Windows.Forms\Button\Import-DataFromCsv.ps1"
-                    
-                    Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\Import-DataFromTxt.ps1"
-                    . "$Dependencies\Code\System.Windows.Forms\Button\Import-DataFromTxt.ps1"
-                    
-            $ComputerTreeviewTab = New-Object System.Windows.Forms.TabPage -Property @{
-                Text = "Endpoints  "
-                Font = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-                UseVisualStyleBackColor = $True
-                ImageIndex = 0
+        Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\AccountsTreeNodeSearchButton.ps1"
+        . "$Dependencies\Code\System.Windows.Forms\Button\AccountsTreeNodeSearchButton.ps1"
+        $AccountsTreeNodeSearchButton = New-Object System.Windows.Forms.Button -Property @{
+            Text   = "Search"
+            Left   = $AccountsTreeNodeSearchComboBox.Left + $AccountsTreeNodeSearchComboBox.Width + ($FormScale * 5)
+            Top    = $AccountsTreeNodeSearchComboBox.Top
+            Width  = $FormScale * 55
+            Height = $FormScale * 22
+            Add_Click = { 
+                Search-TreeViewData -Accounts
             }
-            $ComputerAndAccountTreeViewTabControl.Controls.Add($ComputerTreeviewTab)
+            Add_MouseHover = $AccountsTreeNodeSearchButtonAdd_MouseHover
+        }
+        $AccountsTreeviewTab.Controls.Add($AccountsTreeNodeSearchButton)
+        Apply-CommonButtonSettings -Button $AccountsTreeNodeSearchButton
 
-                    $script:UpdateComputerTreeViewScriptBlock = {
-                        # This variable stores data on checked checkboxes, so boxes checked remain among different views
-                        $script:ComputerTreeViewSelected = @()
+        Remove-EmptyCategory -Accounts
 
-                        [System.Windows.Forms.TreeNodeCollection]$AllTreeViewNodes = $script:ComputerTreeView.Nodes
-                        foreach ($root in $AllTreeViewNodes) {
-                            foreach ($Category in $root.Nodes) {
-                                foreach ($Entry in $Category.nodes) {
-                                    if ($Entry.Checked) {
-                                        $script:ComputerTreeViewSelected += $Entry.Text
-                                    }
-                                }
-                            }
-                        }
-                        $script:ComputerTreeView.Nodes.Clear()
-                        Initialize-TreeViewData -Endpoint
-                        Normalize-TreeViewData -Endpoint
-                        Save-TreeViewData -Endpoint
-
-                        $script:ComputerTreeView.Nodes.Add($script:TreeNodeComputerList)
-                        Foreach($Computer in $script:ComputerTreeViewData) {
-                            AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:TreeNodeComputerList -Category $Computer.$($This.SelectedItem) -Entry $Computer.Name -ToolTip $Computer.IPv4Address -Metadata $Computer
-                        }
-                        UpdateState-TreeViewData -Endpoint
-
-                        Update-TreeViewData -Endpoint -TreeView $script:ComputerTreeView.Nodes
-                    }
+        Update-FormProgress "$Dependencies\Code\Tree View\Accounts\AddAccount-AccountsTreeNode.ps1"
+        . "$Dependencies\Code\Tree View\Accounts\AddAccount-AccountsTreeNode.ps1"
 
 
-                    $script:ComputerTreeNodeComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
-                        Text    = 'CanonicalName'
-                        Left    = 0
-                        Top     = $FormScale * 5
-                        Width   = $FormScale * 135
-                        Height  = $FormScale * 25
-                        Font    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-                        AutoCompleteSource = "ListItems"
-                        AutoCompleteMode   = "SuggestAppend"    
-                        add_SelectedIndexChanged = $script:UpdateComputerTreeViewScriptBlock
-                        #Add_MouseHover = $ComputerTreeNodeEnabledRadioButtonAdd_MouseHover
-                    }
-                    $ComputerTreeNodeComboBoxList = @('CanonicalName', 'OperatingSystem', 'OperatingSystemHotfix', 'OperatingSystemServicePack', 'Enabled', 'LockedOut', 'LogonCount', 'Created', 'Modified', 'LastLogonDate', 'MemberOf', 'isCriticalSystemObject', 'HomedirRequired', 'Location', 'ProtectedFromAccidentalDeletion', 'TrustedForDelegation')
-                    ForEach ($Item in $ComputerTreeNodeComboBoxList) { $script:ComputerTreeNodeComboBox.Items.Add($Item) }
-                    $ComputerTreeviewTab.Controls.Add($script:ComputerTreeNodeComboBox)
-
-
-                    $ComputerTreeNodeSearchGreedyCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
-                        Text    = "Greedy"
-                        Left    = $script:ComputerTreeNodeComboBox.Left + $script:ComputerTreeNodeComboBox.Width + $($FormScale * 5)
-                        Top     = $script:ComputerTreeNodeComboBox.Top - ($FormScale * 6)
-                        Height  = $FormScale * 25
-                        Width   = $FormScale * 65
-                        Checked = $true
-                        Font    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-                        #ToolTipText = "Checkbox this to get results with partial matches`nex: 'server' will show results with 'server-01' and 'Windows Server 2012'"
-                    }
-                    $ComputerTreeviewTab.Controls.Add($ComputerTreeNodeSearchGreedyCheckbox)
-                            
-
-                    # Initial load of CSV data
-                    $script:ComputerTreeViewData = $null
-                    $script:ComputerTreeViewData = Import-Csv $script:EndpointTreeNodeFileSave -ErrorAction SilentlyContinue #| Select-Object -Property Name, OperatingSystem, CanonicalName, IPv4Address, MACAddress, Notes
-
-                    $script:ComputerTreeViewSelected = ""
-
-                    Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ComboBox\ComputerTreeNodeSearchComboBox.ps1"
-                    . "$Dependencies\Code\System.Windows.Forms\ComboBox\ComputerTreeNodeSearchComboBox.ps1"
-                    $ComputerTreeNodeSearchComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
-                        Name   = "Search TextBox"
-                        Left   = $script:ComputerTreeNodeComboBox.Left
-                        Top    = $script:ComputerTreeNodeComboBox.Top + $script:ComputerTreeNodeComboBox.Height + ($FormScale * 5)
-                        Width  = $FormScale * 135
-                        Height = $FormScale * 25
-                        AutoCompleteSource = "ListItems"
-                        AutoCompleteMode   = "SuggestAppend"
-                        Font               = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-                        Add_KeyDown        = $ComputerTreeNodeSearchComboBoxAdd_KeyDown
-                        Add_MouseHover     = $ComputerTreeNodeSearchComboBoxAdd_MouseHover
-                    }
-                    ForEach ($Tag in $TagListFileContents) { [void] $ComputerTreeNodeSearchComboBox.Items.Add($Tag) }
-                    $ComputerTreeviewTab.Controls.Add($ComputerTreeNodeSearchComboBox)
-
-
-                    Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\ComputerTreeNodeSearchButton.ps1"
-                    . "$Dependencies\Code\System.Windows.Forms\Button\ComputerTreeNodeSearchButton.ps1"
-                    $ComputerTreeNodeSearchButton = New-Object System.Windows.Forms.Button -Property @{
-                        Text   = "Search"
-                        Left   = $ComputerTreeNodeSearchComboBox.Left + $ComputerTreeNodeSearchComboBox.Width + ($FormScale * 5)
-                        Top    = $ComputerTreeNodeSearchComboBox.Top
-                        Width  = $FormScale * 55
-                        Height = $FormScale * 22
-                        Add_Click = { 
-                            Search-TreeViewData -Endpoint
-                        }
-                        Add_MouseHover = $ComputerTreeNodeSearchButtonAdd_MouseHover
-                    }
-                    $ComputerTreeviewTab.Controls.Add($ComputerTreeNodeSearchButton)
-                    Apply-CommonButtonSettings -Button $ComputerTreeNodeSearchButton
-
-                    Remove-EmptyCategory -Endpoint
-
-
-                    Update-FormProgress "$Dependencies\Code\Tree View\Computer\AddHost-ComputerTreeNode.ps1"
-                    . "$Dependencies\Code\Tree View\Computer\AddHost-ComputerTreeNode.ps1"
-
-                    Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListDeselectAllToolStripButton.ps1"
-                    . "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListDeselectAllToolStripButton.ps1"
-
-                    Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListNSLookupCheckedToolStripButton.ps1"
-                    . "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListNSLookupCheckedToolStripButton.ps1"
-
-                    Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListTagToolStripButton.ps1"
-                    . "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListTagToolStripButton.ps1"
-
-                    Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListMoveToolStripButton.ps1"
-                    . "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListMoveToolStripButton.ps1"
-
-                    Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListDeleteToolStripButton.ps1"
-                    . "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListDeleteToolStripButton.ps1"
-
-                    Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListRenameToolStripButton.ps1"
-                    . "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListRenameToolStripButton.ps1"
-
-                    Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListPingToolStripButton.ps1"
-                    . "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListPingToolStripButton.ps1"
-
-                    Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListRPCCheckToolStripButton.ps1"
-                    . "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListRPCCheckToolStripButton.ps1"
-
-                    Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListSMBCheckToolStripButton.ps1"
-                    . "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListSMBCheckToolStripButton.ps1"
-
-                    Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListWinRMCheckToolStripButton.ps1"
-                    . "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListWinRMCheckToolStripButton.ps1"
-
-                    Update-FormProgress "$Dependencies\Code\Context Menu Strip\Display-ContextMenuForComputerTreeNode.ps1"
-                    . "$Dependencies\Code\Context Menu Strip\Display-ContextMenuForComputerTreeNode.ps1"
-                    Display-ContextMenuForComputerTreeNode -ClickedOnArea
-
-
-                    # The .ImageList allows for the images to be loaded from disk to memory only once, then referenced using their index number
-                    $ComputerTreeviewImageList = New-Object System.Windows.Forms.ImageList -Property @{
-                        ImageSize = @{
-                            Width  = $FormScale * 16
-                            Height = $FormScale * 16
-                        }
-                    }
-                    $script:ComputerTreeViewIconList = Get-ChildItem "$Dependencies\Images\Icons\Endpoint"
-
-                    # This hashtable is used to maintain a relationship between the imageindex number and the image filepath, it is used when populating the Endpoint Data tab
-                    $EndpointTreeviewImageHashTable = [ordered]@{}
-
-                    # Position 0 = Default Image, this one is often seen when clicking on a treenode
-                    $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$script:EasyWinIcon"))
-                    $EndpointTreeviewImageHashTable['0'] = "$script:EasyWinIcon"
-
-                    # Position 1 = used as the default image that is loaded against the .treeview itself, thus shown at the top level for the Organizational Units, It gets overwritten by each node that is added
-                    $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Icon OU LightYellow.png"))
-                    $EndpointTreeviewImageHashTable['1'] = "$Dependencies\Images\Icons\Icon OU LightYellow.png"
-                    
-                    # Position 2 = used as the default image for the computer/account/entry node. Normalize-TreeViewData.ps1 populates it by default if an imageindex number doesn't exist for it already
-                    $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Endpoint-Default.png"))
-                    $EndpointTreeviewImageHashTable['2'] = "$Dependencies\Images\Icons\Endpoint-Default.png"
-                    
-                    # The .ImageList allows for the images to be loaded from disk to memory only once, then referenced using their index number
-                    $ComputerTreeviewImageList = New-Object System.Windows.Forms.ImageList -Property @{
-                        ImageSize = @{
-                            Width  = $FormScale * 16
-                            Height = $FormScale * 16
-                        }
-                    }
-                    $script:ComputerTreeViewIconList = Get-ChildItem "$Dependencies\Images\Icons\Endpoint"
-
-                    # This hashtable is used to maintain a relationship between the imageindex number and the image filepath, it is used when populating the Endpoint Data tab
-                    $EndpointTreeviewImageHashTable = [ordered]@{}
-
-                    # Position 0 = Default Image, this one is often seen when clicking on a treenode
-                    $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$script:EasyWinIcon"))
-                    $EndpointTreeviewImageHashTable['0'] = "$script:EasyWinIcon"
-
-                    # Position 1 = used as the default image that is loaded against the .treeview itself, thus shown at the top level for the Organizational Units, It gets overwritten by each node that is added
-                    $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\OU-Default.png"))
-                    $EndpointTreeviewImageHashTable['1'] = "$Dependencies\Images\Icons\OU-Default.png"
-                    
-                    # Position 2 = PowerShell Icon, used to indicate an active powershell session
-                    $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\PowerShell.png"))
-                    $EndpointTreeviewImageHashTable['2'] = "$Dependencies\Images\Icons\PowerShell.png"
-
-                    # Position 3 = used as the default image for the computer/account/entry node. Normalize-TreeViewData.ps1 populates it by default if an imageindex number doesn't exist for it already
-                    $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Endpoint-Default.png"))
-                    $EndpointTreeviewImageHashTable['3'] = "$Dependencies\Images\Icons\Endpoint-Default.png"
-                    
-                    # Position 4 = Windows Server Default
-                    $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Windows-Server-Default.png"))
-                    $EndpointTreeviewImageHashTable['4'] = "$Dependencies\Images\Icons\Windows-Server-Default.png"
-                                        
-                    # Position 5 = Windows Desktop Client Default
-                    $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Endpoint\Windows-Desktop-Client.png"))
-                    $EndpointTreeviewImageHashTable['5'] = "$Dependencies\Images\Icons\Endpoint\Windows-Desktop-Client.png"
-
-                    # Position 6 = Windows Desktop `95
-                    $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Endpoint\Windows-Desktop-95.png"))
-                    $EndpointTreeviewImageHashTable['6'] = "$Dependencies\Images\Icons\Endpoint\Windows-Desktop-95.png"
-
-                    # Position 7 = Windows Desktop XP
-                    $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Endpoint\Windows-Desktop-XP.png"))
-                    $EndpointTreeviewImageHashTable['7'] = "$Dependencies\Images\Icons\Endpoint\Windows-Desktop-XP.png"
-
-                    # Position 8 = Windows Desktop Vista
-                    $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Endpoint\Windows-Desktop-Vista.png"))
-                    $EndpointTreeviewImageHashTable['8'] = "$Dependencies\Images\Icons\Endpoint\Windows-Desktop-Vista.png"
-
-                    # Position 9 = Windows Desktop 7
-                    $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Endpoint\Windows-Desktop-7.png"))
-                    $EndpointTreeviewImageHashTable['9'] = "$Dependencies\Images\Icons\Endpoint\Windows-Desktop-7.png"
-
-                    # Position 10 = Windows Desktop 8
-                    $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Endpoint\Windows-Desktop-8.png"))
-                    $EndpointTreeviewImageHashTable['10'] = "$Dependencies\Images\Icons\Endpoint\Windows-Desktop-8.png"
-
-                    # Position 11 = Windows Desktop 10
-                    $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Endpoint\Windows-Desktop-10.png"))
-                    $EndpointTreeviewImageHashTable['11'] = "$Dependencies\Images\Icons\Endpoint\Windows-Desktop-10.png"
-
-                    # Position 12 = Windows Desktop 11
-                    $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Endpoint\Windows-Desktop-11.png"))
-                    $EndpointTreeviewImageHashTable['12'] = "$Dependencies\Images\Icons\Endpoint\Windows-Desktop-11.png"
-                    
-                    # Position 13 = Linux Ubuntu
-                    $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Endpoint\Linux-OS-Ubuntu.png"))
-                    $EndpointTreeviewImageHashTable['13'] = "$Dependencies\Images\Icons\Endpoint\Linux-OS-Ubuntu.png"
-
-                    # Position 14 = Linux Debian
-                    $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Endpoint\Linux-OS-Debian.png"))
-                    $EndpointTreeviewImageHashTable['14'] = "$Dependencies\Images\Icons\Endpoint\Linux-OS-Debian.png"
-
-                    # Position 15 = Linux Red Hat
-                    $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Endpoint\Linux-OS-Red-Hat.png"))
-                    $EndpointTreeviewImageHashTable['15'] = "$Dependencies\Images\Icons\Endpoint\Linux-OS-Red-Hat.png"
-
-                    # Position 16 = Linux CentOS
-                    $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Endpoint\Linux-OS-CentOS.png"))
-                    $EndpointTreeviewImageHashTable['16'] = "$Dependencies\Images\Icons\Endpoint\Linux-OS-CentOS.png"
- 
-                    
-                    # note, if you update this variable, update this one too... $ComputerTreeViewChangeIconRootTreeNodeCount
-                    $script:EndpointTreeviewImageHashTableCount = 16
-
-                    foreach ($Image in $script:ComputerTreeViewIconList.FullName) {
-                        $script:EndpointTreeviewImageHashTableCount++
-                        $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Image"))
-                        $EndpointTreeviewImageHashTable["$script:EndpointTreeviewImageHashTableCount"] = "$Image"
-                    }
-
-                    # Position -1 = currently unused
-                    $ComputerTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$high101bro_image"))
-                    $script:EndpointTreeviewImageHashTableCount++
-                    $EndpointTreeviewImageHashTable["$script:EndpointTreeviewImageHashTableCount"] = "$Dependencies\Images\high101bro Logo Color Transparent.png"
-
-
-                    Update-FormProgress "$Dependencies\Code\System.Windows.Forms\TreeView\ComputerTreeView.ps1"
-                    . "$Dependencies\Code\System.Windows.Forms\TreeView\ComputerTreeView.ps1"
-                    $script:ComputerTreeView = New-Object System.Windows.Forms.TreeView -Property @{
-                        Left   = $ComputerTreeNodeSearchComboBox.Left
-                        Top    = $ComputerTreeNodeSearchButton.Top + $ComputerTreeNodeSearchButton.Height + ($FormScale * 5)
-                        Width  = $FormScale * 195
-                        Height = $FormScale * 555
-                        # Note: size and location properties are are managed by 
-                        Font              = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-                        CheckBoxes        = $True
-                        #LabelEdit         = $True  #Not implementing yet...
-                        #not working # AfterLabelEdit = {  }
-                        #not working #ShowRootLines     = $false
-                        ShowLines         = $True
-                        ShowNodeToolTips  = $True
-                        Add_Click         = $ComputerTreeViewAdd_Click
-                        Add_AfterSelect   = $ComputerTreeViewAdd_AfterSelect
-                        Add_MouseHover = {
-                            $ComputerAndAccountTreeNodeViewPanel.Height = $FormScale * 635
-                            $ComputerAndAccountTreeViewTabControl.Height = $FormScale * 635
-                            $script:ComputerTreeView.Height = $FormScale * 558
-                        }
-                        Add_MouseLeave = {
-                            $ComputerAndAccountTreeNodeViewPanel.Height = $FormScale * 635
-                            $ComputerAndAccountTreeViewTabControl.Height = $FormScale * 635
-                            $script:ComputerTreeView.Height = $FormScale * 558
-                        }
-                        Add_MouseEnter    = {
-                            $ComputerAndAccountTreeNodeViewPanel.bringtofront()
-                            $ComputerAndAccountTreeViewTabControl.bringtofront()
-                            $script:ComputerTreeView.bringtofront()
-                        }
-                        #ShortcutsEnabled  = $false                                #Used for ContextMenuStrip
-                        ContextMenuStrip  = $ComputerListContextMenuStrip      #Ref Add_click
-                        ShowPlusMinus     = $true
-                        HideSelection     = $false
-                        #not working #AfterSelect       = {}
-                        ImageList         = $ComputerTreeviewImageList
-                        ImageIndex        = 1 # the default image             
-                    }
-                    $script:ComputerTreeView.Sort()
-                    $ComputerTreeviewTab.Controls.Add($script:ComputerTreeView)
-
-                    Initialize-TreeViewData -Endpoint
-                    Normalize-TreeViewData -Endpoint
-   
-                    # This will load data that is located in the saved file
-                    Foreach($Computer in $script:ComputerTreeViewData) {
-                        AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:TreeNodeComputerList -Category $Computer.CanonicalName -Entry $Computer.Name -ToolTip $Computer.IPv4Address -IPv4Address $Computer.IPv4Address -Metadata $Computer 
-                    }
-                    $script:ComputerTreeView.Nodes.Add($script:TreeNodeComputerList)
-
-                    # Controls the layout of the computer treeview
-                    $script:ComputerTreeView.ExpandAll()
-                    [System.Windows.Forms.TreeNodeCollection]$AllTreeViewNodes = $script:ComputerTreeView.Nodes
-                    foreach ($root in $AllTreeViewNodes) {
-                        foreach ($Category in $root.Nodes) {
-                            foreach ($Entry in $Category.nodes) { $Entry.Collapse() }
-                        }
-                    }
-
-
-            $AccountsTreeviewTab = New-Object System.Windows.Forms.TabPage -Property @{
-                Text = "Accounts  "
-                Font = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-                ImageIndex = 1
-                UseVisualStyleBackColor = $True
+        # The .ImageList allows for the images to be loaded from disk to memory only once, then referenced using their index number
+        $AccountsTreeviewImageList = New-Object System.Windows.Forms.ImageList -Property @{
+            ImageSize = @{
+                Width  = $FormScale * 16
+                Height = $FormScale * 16
             }
-            $ComputerAndAccountTreeViewTabControl.Controls.Add($AccountsTreeviewTab)
+        }
+        $script:AccountsTreeViewIconList = Get-ChildItem "$Dependencies\Images\Icons\Account"
+
+        # This hashtable is used to maintain a relationship between the imageindex number and the image filepath, it is used when populating the Account Data tab
+        $AccountsTreeviewImageHashTable = [ordered]@{}
+
+        # Position 0 = Default Image, this one is often seen when clicking on a treenode
+        $AccountsTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$script:EasyWinIcon"))
+        $AccountsTreeviewImageHashTable['0'] = "$script:EasyWinIcon"
+
+        # Position 1 = used as the default image that is loaded against the .treeview itself, thus shown at the top level for the Organizational Units, It gets overwritten by each node that is added
+        $AccountsTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Icon OU LightYellow.png"))
+        $AccountsTreeviewImageHashTable['1'] = "$Dependencies\Images\Icons\Icon OU LightYellow.png"
+        
+        # Position 2 = used as the default image for the computer/account/entry node. Normalize-TreeViewData.ps1 populates it by default if an imageindex number doesn't exist for it already
+        $AccountsTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Account-Default.png"))
+        $AccountsTreeviewImageHashTable['2'] = "$Dependencies\Images\Icons\Account-Default.png"
+        
+        $AccountsTreeviewImageHashTableCount = 2
+        foreach ($Image in $script:AccountsTreeViewIconList.FullName) {
+            $AccountsTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Image"))
+            $AccountsTreeviewImageHashTableCount++
+            $AccountsTreeviewImageHashTable["$AccountsTreeviewImageHashTableCount"] = "$Image"
+        }
+
+        # Position -1 = currently unused
+        $AccountsTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$high101bro_image"))
+        $AccountsTreeviewImageHashTableCount++
+        $AccountsTreeviewImageHashTable["$AccountsTreeviewImageHashTableCount"] = "$Dependencies\Images\Icons\OU-Default.png"
 
 
-                    $script:AccountsTreeNodeComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
-                        Text    = "CanonicalName"
-                        Left    = 0
-                        Top     = $FormScale * 5
-                        Width   = $FormScale * 135
-                        Height  = $FormScale * 25
-                        Font    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-                        AutoCompleteSource = "ListItems"
-                        AutoCompleteMode   = "SuggestAppend"    
-                        add_SelectedIndexChanged      = {
-                            # This variable stores data on checked checkboxes, so boxes checked remain among different views
-                            $script:AccountsTreeViewSelected = @()
+        Update-FormProgress "$Dependencies\Code\System.Windows.Forms\TreeView\AccountsTreeView.ps1"
+        . "$Dependencies\Code\System.Windows.Forms\TreeView\AccountsTreeView.ps1"
+        $script:AccountsTreeView = New-Object System.Windows.Forms.TreeView -Property @{
+            Left   = $AccountsTreeNodeSearchComboBox.Left
+            Top    = $AccountsTreeNodeSearchButton.Top + $AccountsTreeNodeSearchButton.Height + ($FormScale * 5)
+            Width  = $FormScale * 195
+            Height = $FormScale * 558
+            Font              = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+            CheckBoxes        = $True
+            ShowLines         = $True
+            ShowNodeToolTips  = $True
+            Add_Click         = $AccountsTreeViewAdd_Click
+            Add_AfterSelect   = $AccountsTreeViewAdd_AfterSelect
+            Add_MouseEnter    = {
+                $ComputerAndAccountTreeNodeViewPanel.bringtofront()
+                $ComputerAndAccountTreeViewTabControl.bringtofront()
+                $script:AccountsTreeView.bringtofront()
+            }
+            Add_MouseLeave    = $AccountsTreeViewAdd_MouseLeave
+            ContextMenuStrip  = $AccountsListContextMenuStrip
+            ShowPlusMinus     = $true
+            HideSelection     = $false
+            ImageList         = $AccountsTreeviewImageList
+            ImageIndex        = 1
+        }
+        $script:AccountsTreeView.Sort()
+        $AccountsTreeviewTab.Controls.Add($script:AccountsTreeView)
 
-                            [System.Windows.Forms.TreeNodeCollection]$AllTreeViewNodes = $script:AccountsTreeView.Nodes
-                            foreach ($root in $AllTreeViewNodes) {
-                                foreach ($Category in $root.Nodes) {
-                                    foreach ($Entry in $Category.nodes) {
-                                        if ($Entry.Checked) {
-                                            $script:AccountsTreeViewSelected += $Entry.Text
-                                        }
-                                    }
-                                }
-                            }
-                            $script:AccountsTreeView.Nodes.Clear()
-                            Initialize-TreeViewData -Accounts
-                            Normalize-TreeViewData -Accounts
-                            Save-TreeViewData -Accounts
+        Initialize-TreeViewData -Accounts
+        Normalize-TreeViewData -Accounts
+        
+        # This will load data that is located in the saved file
+        Foreach($Account in $script:AccountsTreeViewData) {
+            AddTreeNodeTo-TreeViewData -Accounts -RootNode $script:TreeNodeAccountsList -Category $Account.CanonicalName -Entry $Account.Name -ToolTip $Account.SID -Metadata $Account
+        }
+        $script:AccountsTreeView.Nodes.Add($script:TreeNodeAccountsList)
 
-                            Foreach($Account in $script:AccountsTreeViewData) {
-                                AddTreeNodeTo-TreeViewData -Accounts -RootNode $script:TreeNodeAccountsList -Category $Account.$($This.SelectedItem) -Entry $Account.Name -ToolTip $Account.SID -Metadata $Account
-                            }
-                            $script:AccountsTreeView.Nodes.Add($script:TreeNodeAccountsList)
-                            UpdateState-TreeViewData -Accounts
-                            Update-TreeViewData -Accounts -TreeView $script:AccountsTreeView.Nodes
-
-                        }
-                        #Add_MouseHover = $AccountsTreeNodeEnabledRadioButtonAdd_MouseHover
-                    }
-                    $AccountsTreeNodeComboBoxList = @('CanonicalName','Enabled','LockedOut','SmartCardLogonRequired','Created','Modified','LastLogonDate','LastBadPasswordAttempt','PasswordNeverExpires','PasswordExpired','PasswordNotRequired','BadLogonCount',,'ScriptPath','HomeDrive')
-                    ForEach ($Item in $AccountsTreeNodeComboBoxList) { $script:AccountsTreeNodeComboBox.Items.Add($Item) }
-                    $AccountsTreeviewTab.Controls.Add($script:AccountsTreeNodeComboBox)
-
-
-                    $AccountsTreeNodeSearchGreedyCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
-                        Text    = "Greedy"
-                        Left    = $script:AccountsTreeNodeComboBox.Left + $script:AccountsTreeNodeComboBox.Width + ($FormScale * 5)
-                        Top     = $script:AccountsTreeNodeComboBox.Top - ($FormScale * 6)
-                        Height  = $FormScale * 25
-                        Width   = $FormScale * 65
-                        Checked = $true
-                        Font    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-                        #ToolTipText = "Checkbox this to get results with partial matches`nex: 'admin' will show results with 'admin' and 'administrator'"
-                    }
-                    $AccountsTreeviewTab.Controls.Add($AccountsTreeNodeSearchGreedyCheckbox)
-                            
-
-                    # Initial load of CSV data
-                    $script:AccountsTreeViewData = $null
-                    $script:AccountsTreeViewData = Import-Csv $script:AccountsTreeNodeFileSave -ErrorAction SilentlyContinue #| Select-Object -Property Name, OperatingSystem, CanonicalName, IPv4Address, MACAddress, Notes
-
-                    $script:AccountsTreeViewSelected = ""
-
-                    Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ComboBox\AccountsTreeNodeSearchComboBox.ps1"
-                    . "$Dependencies\Code\System.Windows.Forms\ComboBox\AccountsTreeNodeSearchComboBox.ps1"
-                    $AccountsTreeNodeSearchComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
-                        Name   = "Search TextBox"
-                        Left   = $script:AccountsTreeNodeComboBox.Left
-                        Top    = $script:AccountsTreeNodeComboBox.Top + $script:AccountsTreeNodeComboBox.Height + ($FormScale * 5)
-                        Width  = $FormScale * 135
-                        Height = $FormScale * 25
-                        AutoCompleteSource = "ListItems"
-                        AutoCompleteMode   = "SuggestAppend"
-                        Font               = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-                        Add_KeyDown        = $AccountsTreeNodeSearchComboBoxAdd_KeyDown
-                        Add_MouseHover     = $AccountsTreeNodeSearchComboBoxAdd_MouseHover
-                    }
-                    ForEach ($Tag in $TagListFileContents) { [void] $AccountsTreeNodeSearchComboBox.Items.Add($Tag) }
-                    $AccountsTreeviewTab.Controls.Add($AccountsTreeNodeSearchComboBox)
-
-
-                    Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\AccountsTreeNodeSearchButton.ps1"
-                    . "$Dependencies\Code\System.Windows.Forms\Button\AccountsTreeNodeSearchButton.ps1"
-                    $AccountsTreeNodeSearchButton = New-Object System.Windows.Forms.Button -Property @{
-                        Text   = "Search"
-                        Left   = $AccountsTreeNodeSearchComboBox.Left + $AccountsTreeNodeSearchComboBox.Width + ($FormScale * 5)
-                        Top    = $AccountsTreeNodeSearchComboBox.Top
-                        Width  = $FormScale * 55
-                        Height = $FormScale * 22
-                        Add_Click = { 
-                            Search-TreeViewData -Accounts
-                        }
-                        Add_MouseHover = $AccountsTreeNodeSearchButtonAdd_MouseHover
-                    }
-                    $AccountsTreeviewTab.Controls.Add($AccountsTreeNodeSearchButton)
-                    Apply-CommonButtonSettings -Button $AccountsTreeNodeSearchButton
-
-                    Remove-EmptyCategory -Accounts
-
-                    Update-FormProgress "$Dependencies\Code\Tree View\Accounts\AddAccount-AccountsTreeNode.ps1"
-                    . "$Dependencies\Code\Tree View\Accounts\AddAccount-AccountsTreeNode.ps1"
-
-
-                    # The .ImageList allows for the images to be loaded from disk to memory only once, then referenced using their index number
-                    $AccountsTreeviewImageList = New-Object System.Windows.Forms.ImageList -Property @{
-                        ImageSize = @{
-                            Width  = $FormScale * 16
-                            Height = $FormScale * 16
-                        }
-                    }
-                    $script:AccountsTreeViewIconList = Get-ChildItem "$Dependencies\Images\Icons\Account"
-
-                    # This hashtable is used to maintain a relationship between the imageindex number and the image filepath, it is used when populating the Account Data tab
-                    $AccountsTreeviewImageHashTable = [ordered]@{}
-
-                    # Position 0 = Default Image, this one is often seen when clicking on a treenode
-                    $AccountsTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$script:EasyWinIcon"))
-                    $AccountsTreeviewImageHashTable['0'] = "$script:EasyWinIcon"
-
-                    # Position 1 = used as the default image that is loaded against the .treeview itself, thus shown at the top level for the Organizational Units, It gets overwritten by each node that is added
-                    $AccountsTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Icon OU LightYellow.png"))
-                    $AccountsTreeviewImageHashTable['1'] = "$Dependencies\Images\Icons\Icon OU LightYellow.png"
-                    
-                    # Position 2 = used as the default image for the computer/account/entry node. Normalize-TreeViewData.ps1 populates it by default if an imageindex number doesn't exist for it already
-                    $AccountsTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Account-Default.png"))
-                    $AccountsTreeviewImageHashTable['2'] = "$Dependencies\Images\Icons\Account-Default.png"
-                    
-                    $AccountsTreeviewImageHashTableCount = 2
-                    foreach ($Image in $script:AccountsTreeViewIconList.FullName) {
-                        $AccountsTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$Image"))
-                        $AccountsTreeviewImageHashTableCount++
-                        $AccountsTreeviewImageHashTable["$AccountsTreeviewImageHashTableCount"] = "$Image"
-                    }
-
-                    # Position -1 = currently unused
-                    $AccountsTreeviewImageList.Images.Add([System.Drawing.Image]::FromFile("$high101bro_image"))
-                    $AccountsTreeviewImageHashTableCount++
-                    $AccountsTreeviewImageHashTable["$AccountsTreeviewImageHashTableCount"] = "$Dependencies\Images\Icons\OU-Default.png"
-
-
-                    Update-FormProgress "$Dependencies\Code\System.Windows.Forms\TreeView\AccountsTreeView.ps1"
-                    . "$Dependencies\Code\System.Windows.Forms\TreeView\AccountsTreeView.ps1"
-                    $script:AccountsTreeView = New-Object System.Windows.Forms.TreeView -Property @{
-                        Left   = $AccountsTreeNodeSearchComboBox.Left
-                        Top    = $AccountsTreeNodeSearchButton.Top + $AccountsTreeNodeSearchButton.Height + ($FormScale * 5)
-                        Width  = $FormScale * 195
-                        Height = $FormScale * 558
-                        # Note: size and location properties are are managed by 
-                        Font              = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-                        CheckBoxes        = $True
-                        #LabelEdit         = $True  #Not implementing yet...
-                        #not working # AfterLabelEdit = {  }
-                        #not working #ShowRootLines     = $false
-                        ShowLines         = $True
-                        ShowNodeToolTips  = $True
-                        Add_Click         = $AccountsTreeViewAdd_Click
-                        Add_AfterSelect   = $AccountsTreeViewAdd_AfterSelect
-                        #Add_MouseHover    = $AccountsTreeViewAdd_MouseHover
-                        Add_MouseEnter    = {
-                            $ComputerAndAccountTreeNodeViewPanel.bringtofront()
-                            $ComputerAndAccountTreeViewTabControl.bringtofront()
-                            $script:AccountsTreeView.bringtofront()
-                        }
-                        Add_MouseLeave    = $AccountsTreeViewAdd_MouseLeave
-                        #ShortcutsEnabled  = $false                            #Used for ContextMenuStrip
-                        ContextMenuStrip  = $AccountsListContextMenuStrip      #Ref Add_click
-                        ShowPlusMinus     = $true
-                        HideSelection     = $false
-                        #not working #AfterSelect       = {}
-                        ImageList         = $AccountsTreeviewImageList
-                        ImageIndex        = 1
-                    }
-                    $script:AccountsTreeView.Sort()
-                    $AccountsTreeviewTab.Controls.Add($script:AccountsTreeView)
-
-                    Initialize-TreeViewData -Accounts
-                    Normalize-TreeViewData -Accounts
-
-                    # # Yes, save initially during the load because it will save any poulated default data
-                    #Save-TreeViewData -Accounts
-                    
-                    # This will load data that is located in the saved file
-                    Foreach($Account in $script:AccountsTreeViewData) {
-                        AddTreeNodeTo-TreeViewData -Accounts -RootNode $script:TreeNodeAccountsList -Category $Account.CanonicalName -Entry $Account.Name -ToolTip $Account.SID -Metadata $Account
-                    }
-                    $script:AccountsTreeView.Nodes.Add($script:TreeNodeAccountsList)
-
-                    # Controls the layout of the Accounts treeview
-                    $script:AccountsTreeView.ExpandAll()
-                    [System.Windows.Forms.TreeNodeCollection]$AllTreeViewNodes = $script:AccountsTreeView.Nodes
-                    foreach ($root in $AllTreeViewNodes) {
-                        foreach ($Category in $root.Nodes) {
-                            foreach ($Entry in $Category.nodes) { $Entry.Collapse() }
-                        }
-                    }
+        # Controls the layout of the Accounts treeview
+        $script:AccountsTreeView.ExpandAll()
+        [System.Windows.Forms.TreeNodeCollection]$AllTreeViewNodes = $script:AccountsTreeView.Nodes
+        foreach ($root in $AllTreeViewNodes) {
+            foreach ($Category in $root.Nodes) {
+                foreach ($Entry in $Category.nodes) { $Entry.Collapse() }
+            }
+        }
                     
 $PoShEasyWin.Controls.Add($ComputerAndAccountTreeNodeViewPanel)
 
@@ -1306,48 +1281,44 @@ $MainCenterPanel = New-Object System.Windows.Forms.Panel -Property @{
     BorderStyle = 'FixedSingle'
 }
 
-            $MainCenterTabControlImageList = New-Object System.Windows.Forms.ImageList -Property @{
-                ImageSize = @{
-                    Width  = $FormScale * 16
-                    Height = $FormScale * 16
-                }
-            }
-            # Index 0 = Main
-            $MainCenterTabControlImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Home-Main.png"))
-            # Index 1 = Options
-            $MainCenterTabControlImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Options.png"))
-            # Index 2 = Statistics
-            $MainCenterTabControlImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Statistics.png"))
+    $MainCenterTabControlImageList = New-Object System.Windows.Forms.ImageList -Property @{
+        ImageSize = @{
+            Width  = $FormScale * 16
+            Height = $FormScale * 16
+        }
+    }
+    # Index 0 = Main
+    $MainCenterTabControlImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Home-Main.png"))
+    # Index 1 = Options
+    $MainCenterTabControlImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Options.png"))
+    # Index 2 = Statistics
+    $MainCenterTabControlImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Statistics.png"))
 
 
-            $MainCenterTabControl = New-Object System.Windows.Forms.TabControl -Property @{
-                Left   = 0
-                Top    = 0
-                Width  = $FormScale * 607
-                Height = $FormScale * 278 
-                SelectedIndex  = 0
-                ShowToolTips   = $True
-                Appearance     = [System.Windows.Forms.TabAppearance]::Buttons
-                Hottrack       = $true
-                Dock           = 'Fill'
-                Font           = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,2,1)
-                Add_MouseHover = $MainCenterTabControlAdd_MouseHover
-                ImageList = $MainCenterTabControlImageList
-            }
-            $MainCenterPanel.Controls.Add($MainCenterTabControl)
+    $MainCenterTabControl = New-Object System.Windows.Forms.TabControl -Property @{
+        Left   = 0
+        Top    = 0
+        Width  = $FormScale * 607
+        Height = $FormScale * 278 
+        SelectedIndex  = 0
+        ShowToolTips   = $True
+        Appearance     = [System.Windows.Forms.TabAppearance]::Buttons
+        Hottrack       = $true
+        Dock           = 'Fill'
+        Font           = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,2,1)
+        Add_MouseHover = $MainCenterTabControlAdd_MouseHover
+        ImageList = $MainCenterTabControlImageList
+    }
+    $MainCenterPanel.Controls.Add($MainCenterTabControl)
 
-            # Main Tab
-            Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Main Tab.ps1"
-            . "$Dependencies\Code\Main Body\Tabs\Main Tab.ps1"
+    Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Main Tab.ps1"
+    . "$Dependencies\Code\Main Body\Tabs\Main Tab.ps1"
 
-            # Options Tab
-            Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Options.ps1"
-            . "$Dependencies\Code\Main Body\Tabs\Options.ps1"
+    Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Options.ps1"
+    . "$Dependencies\Code\Main Body\Tabs\Options.ps1"
 
-            # Statistics Tab
-            Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Statistics.ps1"
-            . "$Dependencies\Code\Main Body\Tabs\Statistics.ps1"
-
+    Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Statistics.ps1"
+    . "$Dependencies\Code\Main Body\Tabs\Statistics.ps1"
 
 $PoShEasyWin.Controls.Add($MainCenterPanel)
 
@@ -1359,33 +1330,33 @@ $ExecutionButtonPanel = New-Object System.Windows.Forms.Panel -Property @{
     Width  = $FormScale * 140
     BorderStyle = 'FixedSingle'
 }
-            $MainRightTabControlImageList = New-Object System.Windows.Forms.ImageList -Property @{
-                ImageSize = @{
-                    Width  = $FormScale * 16
-                    Height = $FormScale * 16
-                }
-            }
-            $MainRightTabControlImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Action.png"))
+    $MainRightTabControlImageList = New-Object System.Windows.Forms.ImageList -Property @{
+        ImageSize = @{
+            Width  = $FormScale * 16
+            Height = $FormScale * 16
+        }
+    }
+    $MainRightTabControlImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Action.png"))
 
 
-            $MainRightTabControl = New-Object System.Windows.Forms.TabControl -Property @{
-                Name   = "Main Tab Window for Computer List"
-                Left   = 0
-                Top    = 0
-                Height = $FormScale * 273
-                Width  = $FormScale * 140
-                ShowToolTips = $True
-                Appearance   = [System.Windows.Forms.TabAppearance]::Buttons
-                Hottrack     = $true
-                Dock         = 'Fill'
-                Font         = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,2,1)
-                ImageList    = $MainRightTabControlImageList
-                SelectedIndex = 0
-            }
-            $ExecutionButtonPanel.Controls.Add($MainRightTabControl)
+    $MainRightTabControl = New-Object System.Windows.Forms.TabControl -Property @{
+        Name   = "Main Tab Window for Computer List"
+        Left   = 0
+        Top    = 0
+        Height = $FormScale * 273
+        Width  = $FormScale * 140
+        ShowToolTips = $True
+        Appearance   = [System.Windows.Forms.TabAppearance]::Buttons
+        Hottrack     = $true
+        Dock         = 'Fill'
+        Font         = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,2,1)
+        ImageList    = $MainRightTabControlImageList
+        SelectedIndex = 0
+    }
+    $ExecutionButtonPanel.Controls.Add($MainRightTabControl)
 
-            Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Action.ps1"
-            . "$Dependencies\Code\Main Body\Tabs\Action.ps1"
+    Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Action.ps1"
+    . "$Dependencies\Code\Main Body\Tabs\Action.ps1"
 
 $PoShEasyWin.Controls.Add($ExecutionButtonPanel)
 
@@ -1398,59 +1369,59 @@ $InformationPanel = New-Object System.Windows.Forms.Panel -Property @{
     BorderStyle = 'FixedSingle'
 }
 
-            $InformationPanelImageList = New-Object System.Windows.Forms.ImageList -Property @{
-                ImageSize = @{
-                    Width  = $FormScale * 16
-                    Height = $FormScale * 16
-                }
-            }
-            # Index 0 = About
-            $InformationPanelImageList.Images.Add([System.Drawing.Image]::FromFile("$high101bro_image"))
-            # Index 1 = Results / Information
-            $InformationPanelImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Information.png"))
-            # Index 2 = Monitor Jobs
-            $InformationPanelImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Monitor-Jobs.png"))
-            # Index 3 = Endpoint Data
-            $InformationPanelImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Endpoint-Default.png"))
-            # Index 4 = Account Data
-            $InformationPanelImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Accounts.png"))
-            # Index 5 = Command Exploration
-            $InformationPanelImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\PowerShell.png"))
+    $InformationPanelImageList = New-Object System.Windows.Forms.ImageList -Property @{
+        ImageSize = @{
+            Width  = $FormScale * 16
+            Height = $FormScale * 16
+        }
+    }
+    # Index 0 = About
+    $InformationPanelImageList.Images.Add([System.Drawing.Image]::FromFile("$high101bro_image"))
+    # Index 1 = Results / Information
+    $InformationPanelImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Information.png"))
+    # Index 2 = Monitor Jobs
+    $InformationPanelImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Monitor-Jobs.png"))
+    # Index 3 = Endpoint Data
+    $InformationPanelImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Endpoint-Default.png"))
+    # Index 4 = Account Data
+    $InformationPanelImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\Accounts.png"))
+    # Index 5 = Command Exploration
+    $InformationPanelImageList.Images.Add([System.Drawing.Image]::FromFile("$Dependencies\Images\Icons\PowerShell.png"))
 
 
-            $InformationTabControl = New-Object System.Windows.Forms.TabControl -Property @{
-                Left   = 0
-                Top    = 0
-                Height = $FormScale * 357
-                Width  = $FormScale * 752
-                Appearance   = [System.Windows.Forms.TabAppearance]::Buttons
-                Hottrack     = $true
-                Dock         = 'Fill'
-                Font         = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,2,1)
-                ShowToolTips = $True
-                Add_Click = { script:Minimize-MonitorJobsTab }
-                Add_MouseHover = { $this.bringtofront() }
-                ImageList = $InformationPanelImageList
-            }
-            $InformationPanel.Controls.Add($InformationTabControl)
+    $InformationTabControl = New-Object System.Windows.Forms.TabControl -Property @{
+        Left   = 0
+        Top    = 0
+        Height = $FormScale * 357
+        Width  = $FormScale * 752
+        Appearance   = [System.Windows.Forms.TabAppearance]::Buttons
+        Hottrack     = $true
+        Dock         = 'Fill'
+        Font         = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,2,1)
+        ShowToolTips = $True
+        Add_Click = { script:Minimize-MonitorJobsTab }
+        Add_MouseHover = { $this.bringtofront() }
+        ImageList = $InformationPanelImageList
+    }
+    $InformationPanel.Controls.Add($InformationTabControl)
 
-            Update-FormProgress "$Dependencies\Code\Main Body\Tabs\About.ps1"
-            . "$Dependencies\Code\Main Body\Tabs\About.ps1"
+    Update-FormProgress "$Dependencies\Code\Main Body\Tabs\About.ps1"
+    . "$Dependencies\Code\Main Body\Tabs\About.ps1"
 
-            Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Results.ps1"
-            . "$Dependencies\Code\Main Body\Tabs\Results.ps1"
+    Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Results.ps1"
+    . "$Dependencies\Code\Main Body\Tabs\Results.ps1"
 
-            Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Monitor Jobs.ps1"
-            . "$Dependencies\Code\Main Body\Tabs\Monitor Jobs.ps1"
+    Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Monitor Jobs.ps1"
+    . "$Dependencies\Code\Main Body\Tabs\Monitor Jobs.ps1"
 
-            Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Endpoint Data.ps1"
-            . "$Dependencies\Code\Main Body\Tabs\Endpoint Data.ps1"
+    Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Endpoint Data.ps1"
+    . "$Dependencies\Code\Main Body\Tabs\Endpoint Data.ps1"
 
-            Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Account Data.ps1"
-            . "$Dependencies\Code\Main Body\Tabs\Account Data.ps1"
+    Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Account Data.ps1"
+    . "$Dependencies\Code\Main Body\Tabs\Account Data.ps1"
 
-            Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Query Exploration.ps1"
-            . "$Dependencies\Code\Main Body\Tabs\Query Exploration.ps1"
+    Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Query Exploration.ps1"
+    . "$Dependencies\Code\Main Body\Tabs\Query Exploration.ps1"
 
 $PoShEasyWin.Controls.Add($InformationPanel)
 

@@ -49,15 +49,7 @@ Function Import-DataFromActiveDirectory {
             UpdateState-TreeViewData -Endpoint
             Save-TreeViewData -Endpoint
         }
-        
-        
-        
-        
-        
-        
-        
-        
-        
+                
         
         $ImportFromADFrom = New-Object Windows.Forms.Form -Property @{
             Text          = 'Import Endpoint Data from Active Directory'
@@ -432,7 +424,7 @@ Function Import-DataFromActiveDirectory {
         $ComputerAndAccountTreeViewTabControl.SelectedTab = $AccountsTreeviewTab
 
         $ImportFromADFrom = New-Object Windows.Forms.Form -Property @{
-            Text          = 'Import account information from Active Directory'
+            Text          = 'Import Account information from Active Directory'
             Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("$script:EasyWinIcon")
             Width         = $FormScale * 500
             Height        = $FormScale * 265
@@ -707,7 +699,7 @@ Function Import-DataFromActiveDirectory {
         
             $ImportFromADFrom.ShowDialog()
     }
-
+}
 # SIG # Begin signature block
 # MIIFuAYJKoZIhvcNAQcCoIIFqTCCBaUCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR

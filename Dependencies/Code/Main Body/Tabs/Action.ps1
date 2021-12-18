@@ -270,16 +270,6 @@ $ExecutionModeGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
                 DropDownStyle = 'DropDownList'
                 Add_SelectedIndexChanged = {
                     & $script:CommandTreeViewQueryMethodSelectionComboBoxAdd_SelectedIndexChanged
-                    #$This.Text | Set-Content "$PoShHome\Settings\Script Execution Mode.txt" -Force
-
-                    # if ($this.SelectedItem -eq 'Monitor Jobs') {
-                    #     $Section3ActionTab.Controls.Add($script:OptionJobTimeoutSelectionLabel)
-                    #     $Section3ActionTab.Controls.Add($script:OptionJobTimeoutSelectionComboBox)
-                    # }
-                    # else {
-                    #     $Section3ActionTab.Controls.Remove($script:OptionJobTimeoutSelectionLabel)
-                    #     $Section3ActionTab.Controls.Remove($script:OptionJobTimeoutSelectionComboBox)
-                    # }
                 }
             }
             $QueryMethodSelectionList = @(

@@ -6,9 +6,6 @@ $AutoCreateDashboardChartButtonAdd_Click = {
     [void] [System.Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms")
     [void] [System.Reflection.Assembly]::LoadWithPartialName("System.Drawing")
 
-    #----------------------------------
-    # Auto Create Charts Selection Form
-    #----------------------------------
     $AutoChartsSelectionForm = New-Object System.Windows.Forms.Form -Property @{
         Name          = "Dashboard Charts"
         Text          = "Dashboard Charts"
@@ -23,9 +20,6 @@ $AutoCreateDashboardChartButtonAdd_Click = {
         Add_Closing = { $This.dispose() }
     }
 
-    #------------------------------
-    # Auto Create Charts Main Label
-    #------------------------------
     $AutoChartsMainLabel = New-Object System.Windows.Forms.Label -Property @{
         Text     = "Generates a dashboard with multiple charts "
         Location = @{ X = $FormScale * 10
@@ -37,9 +31,6 @@ $AutoCreateDashboardChartButtonAdd_Click = {
     $AutoChartsSelectionForm.Controls.Add($AutoChartsMainLabel)
 
 
-    #----------------------------------
-    # Auto Chart Select Chart ComboBox
-    #----------------------------------
     $AutoChartSelectChartComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
         Text      = "Select A Chart"
         Location  = @{ X = $FormScale * 10
@@ -65,9 +56,6 @@ $AutoCreateDashboardChartButtonAdd_Click = {
     $AutoChartsSelectionForm.Controls.Add($AutoChartSelectChartComboBox)
 
 
-    #----------------------------
-    # Auto Charts - Progress Bar
-    #----------------------------
     $script:AutoChartsProgressBar = New-Object System.Windows.Forms.ProgressBar -Property @{
         Style    = "Continuous"
         #Maximum = 10
@@ -81,9 +69,6 @@ $AutoCreateDashboardChartButtonAdd_Click = {
     $AutoChartsSelectionForm.Controls.Add($script:AutoChartsProgressBar)
 
 
-    #-----------------------------------
-    # Auto Create Charts Execute Button
-    #-----------------------------------
     $AutoChartsExecuteButton = New-Object System.Windows.Forms.Button -Property @{
         Text     = "View Dashboard"
         Location = @{ X = $AutoChartsProgressBar.Location.X
@@ -98,13 +83,6 @@ $AutoCreateDashboardChartButtonAdd_Click = {
         Launch-AutoChartsViewCharts
     })
     function Launch-AutoChartsViewCharts {
-        #####################################################################################################################################
-        #####################################################################################################################################
-        ##
-        ## Auto Create Charts Form
-        ##
-        #####################################################################################################################################
-        #####################################################################################################################################
         $AnchorAll = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right -bor
             [System.Windows.Forms.AnchorStyles]::Top -bor [System.Windows.Forms.AnchorStyles]::Left
         $script:AutoChartsForm = New-Object Windows.Forms.Form -Property @{
@@ -118,12 +96,6 @@ $AutoCreateDashboardChartButtonAdd_Click = {
             Add_Closing = { $This.dispose() }
         }
 
-
-        #####################################################################################################################################
-        ##
-        ## Auto Create Charts TabControl
-        ##
-        #####################################################################################################################################
         # The TabControl controls the tabs within it
         $AutoChartsTabControl = New-Object System.Windows.Forms.TabControl -Property @{
             Name     = "Auto Charts"
@@ -140,7 +112,6 @@ $AutoCreateDashboardChartButtonAdd_Click = {
         $AutoChartsTabControl.SelectedIndex = 0
         $AutoChartsTabControl.Anchor        = $AnchorAll
         $script:AutoChartsForm.Controls.Add($AutoChartsTabControl)
-
 
 
         # Dashboard with multiple charts

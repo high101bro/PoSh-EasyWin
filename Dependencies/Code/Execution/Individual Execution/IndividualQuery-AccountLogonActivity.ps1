@@ -32,9 +32,7 @@ function MonitorJobScriptBlock {
 
         if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
             if (!$script:Credential) { Create-NewCredentials }
-            $InvokeCommandSplat += @{ 
-                Credential = $script:Credential
-            }
+            $InvokeCommandSplat += @{ Credential = $script:Credential }
         }
         
         Invoke-Command @InvokeCommandSplat | Select-Object PSComputerName, *

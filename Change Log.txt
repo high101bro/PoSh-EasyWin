@@ -39,6 +39,11 @@ TODO:
 v6.8.4 - 16 DEC 2021
 ==================================================
 
+Added Browse File System (SMB Share) to computer treeview
+	- Allows you to connect to endpoint and view files in Windows GUI
+	- Creates a temporary PSDrive connection using the newest SMB protocol version
+	- it's benates the SSH connection
+
 Added abilty to store longs to smb file Share
 	- Added checkbox to main tab named 'Use File Share'
 	- The option creates the share on the specified hosts, provided you have the credentials/permission to do do

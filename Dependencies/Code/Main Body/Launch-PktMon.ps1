@@ -189,76 +189,10 @@ Open Sessions: $($session | Where-Object {$_.State -match 'Open'})
         script:Update-PktMonFilterListBox
     }
     Add_Closing = {
-        param($sender,$Selection)
         if ($script:PktMonCaptureStartButton.enabled -eq $false) {
             [System.Windows.Forms.MessageBox]::Show("All existing PowerShell sessions will be removed.`n`nAny running packet captures will be continue on the endpoints.","PoSh-EasyWin",'Ok',"Warning")
         }
-
-        $script:VerifyCloseForm = New-Object System.Windows.Forms.Form -Property @{
-            Text    = "Packet Capture"
-            Width   = $FormScale * 250
-            Height  = $FormScale * 109
-            TopMost = $true
-            Icon    = [System.Drawing.Icon]::ExtractAssociatedIcon("$script:EasyWinIcon")
-            Font    = New-Object System.Drawing.Font("$Font",($FormScale * 11),0,0,0)
-            FormBorderStyle =  'Fixed3d'
-            StartPosition   = 'CenterScreen'
-            showintaskbar   = $true
-            ControlBox      = $true
-            MaximizeBox     = $false
-            MinimizeBox     = $false
-            Add_Closing = {
-                if     ($script:VerifyToCloseForm -eq $true) { $Selection.Cancel = $false }
-                elseif ($script:VerifyToCloseForm -eq $false){ $Selection.Cancel = $true }
-                else   { $Selection.Cancel = $true  }
-                $this.TopMost = $false
-                $this.dispose()
-                $this.close()
-            }
-        }
-        $VerifyCloseLabel = New-Object System.Windows.Forms.Label -Property @{
-            Text   = 'Do you want to close this form?'
-            Width  = $FormScale * 250
-            Height = $FormScale * 22
-            Left   = $FormScale * 10
-            Top    = $FormScale * 10
-        }
-        $script:VerifyCloseForm.Controls.Add($VerifyCloseLabel)
-    
-    
-        $VerifyYesButton = New-Object System.Windows.Forms.Button -Property @{
-            Text   = 'Yes'
-            Width  = $FormScale * 100
-            Height = $FormScale * 22
-            Left   = $FormScale * 10
-            Top    = $VerifyCloseLabel.Top + $VerifyCloseLabel.Height
-            BackColor = 'LightGray'
-            Add_Click = {
-                $script:PSSessionPktMon | Remove-PSSession
-                $script:Timer.Stop()
-                $This.dispose()
-
-                $script:VerifyToCloseForm = $True
-                $script:VerifyCloseForm.close()
-            }
-        }
-        $script:VerifyCloseForm.Controls.Add($VerifyYesButton)
-    
-        $VerifyNoButton = New-Object System.Windows.Forms.Button -Property @{
-            Text   = 'No'
-            Width  = $FormScale * 100
-            Height = $FormScale * 22
-            Left   = $VerifyYesButton.Left + $VerifyYesButton.Width + ($FormScale * 10)
-            Top    = $VerifyYesButton.Top
-            BackColor = 'LightGray'
-            Add_Click = {
-                $script:VerifyToCloseForm = $false
-                $script:VerifyCloseForm.close()
-            }
-        }
-        $script:VerifyCloseForm.Controls.Add($VerifyNoButton)
-    
-        $script:VerifyCloseForm.ShowDialog()
+        $This.dispose()
     }
 }
 
