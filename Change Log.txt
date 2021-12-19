@@ -39,6 +39,12 @@ TODO:
 v6.8.4 - 16 DEC 2021
 ==================================================
 
+Fixed issue with PSWriteHTML not saving data correctly due to SMB File Share update
+
+Added warning message and verify-action to the charts feature 
+	- Triggers if more than 6 Properties are selected
+	- Too many charts can cause the GUI to hang or the tool to crash
+	
 Added Browse File System (SMB Share) to computer treeview
 	- Allows you to connect to endpoint and view files in Windows GUI
 	- Creates a temporary PSDrive connection using the newest SMB protocol version

@@ -93,8 +93,8 @@ function Display-ContextMenuForAccountsTreeNode {
                                   Y = $AccountsTreeNodePopupAddTextBox.Location.Y + $AccountsTreeNodePopupAddTextBox.Size.Height + $($FormScale * 10) }
                     Width  = $FormScale * 300
                     Height = $FormScale * 25
-                    AutoCompleteSource = "ListItems" # Options are: FileSystem, HistoryList, RecentlyUsedList, AllURL, AllSystemSources, FileSystemDirectories, CustomSource, ListItems, None
-                    AutoCompleteMode   = "SuggestAppend" # Options are: "Suggest", "Append", "SuggestAppend"
+                    AutoCompleteSource = "ListItems"
+                    AutoCompleteMode   = "SuggestAppend"
                     Font               = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
                 }
                 $AccountsTreeNodeOUCategoryList = $script:AccountsTreeViewData | Select-Object -ExpandProperty CanonicalName -Unique
@@ -726,11 +726,12 @@ function Display-ContextMenuForAccountsTreeNode {
     $Entry.ContextMenuStrip = $script:AccountsListContextMenuStrip
 }
 
+
 # SIG # Begin signature block
 # MIIFuAYJKoZIhvcNAQcCoIIFqTCCBaUCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUc2QEHvkbBnt0zeDZAn7fGQJP
-# c3ygggM6MIIDNjCCAh6gAwIBAgIQeugH5LewQKBKT6dPXhQ7sDANBgkqhkiG9w0B
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUfCw+GAZuIomiRbaclVDsJ1ma
+# xDigggM6MIIDNjCCAh6gAwIBAgIQeugH5LewQKBKT6dPXhQ7sDANBgkqhkiG9w0B
 # AQUFADAzMTEwLwYDVQQDDChQb1NoLUVhc3lXaW4gQnkgRGFuIEtvbW5pY2sgKGhp
 # Z2gxMDFicm8pMB4XDTIxMTIxNDA1MDIwMFoXDTMxMTIxNDA1MTIwMFowMzExMC8G
 # A1UEAwwoUG9TaC1FYXN5V2luIEJ5IERhbiBLb21uaWNrIChoaWdoMTAxYnJvKTCC
@@ -751,11 +752,11 @@ function Display-ContextMenuForAccountsTreeNode {
 # YXN5V2luIEJ5IERhbiBLb21uaWNrIChoaWdoMTAxYnJvKQIQeugH5LewQKBKT6dP
 # XhQ7sDAJBgUrDgMCGgUAoHgwGAYKKwYBBAGCNwIBDDEKMAigAoAAoQKAADAZBgkq
 # hkiG9w0BCQMxDAYKKwYBBAGCNwIBBDAcBgorBgEEAYI3AgELMQ4wDAYKKwYBBAGC
-# NwIBFTAjBgkqhkiG9w0BCQQxFgQUuIREkiO8J8gSjZKQlR9dWfojCXAwDQYJKoZI
-# hvcNAQEBBQAEggEAdtwvDkZN313oWN5M3OGF42T6git8cgF8HfDj0U04NwkjeFLi
-# Ej/7l/xJEN2BKpKLACQvoOiodKp7YEKBzQbxcLpvpCc2XDRXOtZLDlDi8RNUDPh9
-# dej5kQsdq9BfsP43UIeSPEpuhG1ydOIu1Ctz9gUOpIrGShn4U0qNz/dkbupOG+Tx
-# k02o9p2x6flK75MhYPpQErHdQy+lg2DxZIxcSCq6njS6NCluXSKUrbiQk8va1o6+
-# JOnGGvD9MOe7qh5Sij/cbo4vB9jtXAfpkooLsUJ4X1eHt4otjpYmlgIIKANk/MrK
-# WKJxklVkt2aQPPEML0fQQkatUlA7k1nsKnOnDw==
+# NwIBFTAjBgkqhkiG9w0BCQQxFgQUrZzlkp5g7G4/gu4sceypbq2xzcswDQYJKoZI
+# hvcNAQEBBQAEggEADUdViKK24uEB9L4yz655DIgkjJWN/AGIC5iVJZ5qrRUZczPE
+# Ssb3OIc250HnVGfRM4ZaQbxLu4hfy0H27KfFtwhJuI2yZGhNuHjPJ8hvmmtsWoP4
+# +uMu5TVIiKTgOpWXi9zspE+iSUC5hrf0tqNlnOhLr4bp8N/LqlFIEgB8A9kl6Wnn
+# /K0G51j8EQzcItDJWHU0hQzIBrPjN7d81jDuwVlNYe8+LFvpL0S4Lr18da0+kPuj
+# Hue7EvtPG2CoDl/hqdoVDE+rFpqx4SQ4Kz0/eXiV8v2PkI2STcWYqPzJX4yuBx+8
+# c5pCfHx6Zc+6mZ3S9Y1Uz5i+F4UtKssb104F6Q==
 # SIG # End signature block

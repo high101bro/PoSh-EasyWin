@@ -309,9 +309,7 @@ $script:AutoChart01SmbShareTrimOffLastGroupBoX = New-Object System.Windows.Forms
 $script:AutoChart01SmbShareTrimOffLastGroupBox.Controls.Add($script:AutoChart01SmbShareTrimOffLastTrackBar)
 $script:AutoChart01SmbShareManipulationPanel.Controls.Add($script:AutoChart01SmbShareTrimOffLastGroupBox)
 
-#======================================
-# Auto Create Charts Select Chart Type
-#======================================
+
 $script:AutoChart01SmbShareChartTypeComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
     Text      = 'Column'
     Location  = @{ X = $script:AutoChart01SmbShareTrimOffFirstGroupBox.Location.X + $($FormScale * 80)
@@ -388,9 +386,7 @@ $script:AutoChart01SmbShareChangeColorComboBox.add_SelectedIndexChanged({
 $script:AutoChart01SmbShareManipulationPanel.Controls.Add($script:AutoChart01SmbShareChangeColorComboBox)
 
 
-#=====================================
-# AutoCharts - Investigate Difference
-#=====================================
+
 function script:InvestigateDifference-AutoChart01 {
     # List of Positive Endpoints that positively match
     $script:AutoChart01SmbShareImportCsvPosResults = $script:AutoChartDataSourceCsvSmbSharesSmbShares | Where-Object 'Name' -eq $($script:AutoChart01SmbShareInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
@@ -413,9 +409,7 @@ function script:InvestigateDifference-AutoChart01 {
     $script:AutoChart01SmbShareInvestDiffNegResultsLabel.Text = "Negative Match ($($script:AutoChart01SmbShareImportCsvNegResults.count))"
 }
 
-#==============================
-# Auto Chart Buttons
-#==============================
+
 ### Auto Create Charts Check Diff Button
 $script:AutoChart01SmbShareCheckDiffButton = New-Object Windows.Forms.Button -Property @{
     Text      = 'Investigate'
@@ -579,9 +573,7 @@ $script:AutoChart01SmbShareSaveButton.Add_Click({
 })
 $script:AutoChart01SmbShareManipulationPanel.controls.Add($script:AutoChart01SmbShareSaveButton)
 
-#==============================
-# Auto Charts - Notice Textbox
-#==============================
+
 $script:AutoChart01SmbShareNoticeTextboX = New-Object System.Windows.Forms.Textbox -Property @{
     Location    = @{ X = $script:AutoChart01SmbShareSaveButton.Location.X
                         Y = $script:AutoChart01SmbShareSaveButton.Location.Y + $script:AutoChart01SmbShareSaveButton.Size.Height + $($FormScale * 6) }
@@ -838,9 +830,7 @@ $script:AutoChart02SmbShareTrimOffLastGroupBoX = New-Object System.Windows.Forms
 $script:AutoChart02SmbShareTrimOffLastGroupBox.Controls.Add($script:AutoChart02SmbShareTrimOffLastTrackBar)
 $script:AutoChart02SmbShareManipulationPanel.Controls.Add($script:AutoChart02SmbShareTrimOffLastGroupBox)
 
-#======================================
-# Auto Create Charts Select Chart Type
-#======================================
+
 $script:AutoChart02SmbShareChartTypeComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
     Text      = 'Column'
     Location  = @{ X = $script:AutoChart02SmbShareTrimOffFirstGroupBox.Location.X + $($FormScale * 80)
@@ -915,9 +905,7 @@ $script:AutoChart02SmbShareChangeColorComboBox.add_SelectedIndexChanged({
 })
 $script:AutoChart02SmbShareManipulationPanel.Controls.Add($script:AutoChart02SmbShareChangeColorComboBox)
 
-#=====================================
-# AutoCharts - Investigate Difference
-#=====================================
+
 function script:InvestigateDifference-AutoChart02 {
     # List of Positive Endpoints that positively match
     $script:AutoChart02SmbShareImportCsvPosResults = $script:AutoChartDataSourceCsvSmbSharesSmbShares | Where-Object 'Name' -eq $($script:AutoChart02SmbShareInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
@@ -940,9 +928,7 @@ function script:InvestigateDifference-AutoChart02 {
     $script:AutoChart02SmbShareInvestDiffNegResultsLabel.Text = "Negative Match ($($script:AutoChart02SmbShareImportCsvNegResults.count))"
 }
 
-#==============================
-# Auto Chart Buttons
-#==============================
+
 ### Auto Create Charts Check Diff Button
 $script:AutoChart02SmbShareCheckDiffButton = New-Object Windows.Forms.Button -Property @{
     Text      = 'Investigate'
@@ -1106,9 +1092,7 @@ $script:AutoChart02SmbShareSaveButton.Add_Click({
 })
 $script:AutoChart02SmbShareManipulationPanel.controls.Add($script:AutoChart02SmbShareSaveButton)
 
-#==============================
-# Auto Charts - Notice Textbox
-#==============================
+
 $script:AutoChart02SmbShareNoticeTextboX = New-Object System.Windows.Forms.Textbox -Property @{
     Location    = @{ X = $script:AutoChart02SmbShareSaveButton.Location.X
                         Y = $script:AutoChart02SmbShareSaveButton.Location.Y + $script:AutoChart02SmbShareSaveButton.Size.Height + $($FormScale * 6) }
@@ -1352,9 +1336,7 @@ $script:AutoChart03SmbShareTrimOffLastGroupBoX = New-Object System.Windows.Forms
 $script:AutoChart03SmbShareTrimOffLastGroupBox.Controls.Add($script:AutoChart03SmbShareTrimOffLastTrackBar)
 $script:AutoChart03SmbShareManipulationPanel.Controls.Add($script:AutoChart03SmbShareTrimOffLastGroupBox)
 
-#======================================
-# Auto Create Charts Select Chart Type
-#======================================
+
 $script:AutoChart03SmbShareChartTypeComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
     Text      = 'Column'
     Location  = @{ X = $script:AutoChart03SmbShareTrimOffFirstGroupBox.Location.X + $($FormScale * 80)
@@ -1428,9 +1410,7 @@ $script:AutoChart03SmbShareChangeColorComboBox.add_SelectedIndexChanged({
 })
 $script:AutoChart03SmbShareManipulationPanel.Controls.Add($script:AutoChart03SmbShareChangeColorComboBox)
 
-#=====================================
-# AutoCharts - Investigate Difference
-#=====================================
+
 function script:InvestigateDifference-AutoChart03 {
     # List of Positive Endpoints that positively match
     $script:AutoChart03SmbShareImportCsvPosResults = $script:AutoChartDataSourceCsvSmbSharesSmbShares | Where-Object 'Path' -eq $($script:AutoChart03SmbShareInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
@@ -1453,9 +1433,7 @@ function script:InvestigateDifference-AutoChart03 {
     $script:AutoChart03SmbShareInvestDiffNegResultsLabel.Text = "Negative Match ($($script:AutoChart03SmbShareImportCsvNegResults.count))"
 }
 
-#==============================
-# Auto Chart Buttons
-#==============================
+
 ### Auto Create Charts Check Diff Button
 $script:AutoChart03SmbShareCheckDiffButton = New-Object Windows.Forms.Button -Property @{
     Text      = 'Investigate'
@@ -1619,9 +1597,7 @@ $script:AutoChart03SmbShareSaveButton.Add_Click({
 })
 $script:AutoChart03SmbShareManipulationPanel.controls.Add($script:AutoChart03SmbShareSaveButton)
 
-#==============================
-# Auto Charts - Notice Textbox
-#==============================
+
 $script:AutoChart03SmbShareNoticeTextboX = New-Object System.Windows.Forms.Textbox -Property @{
     Location    = @{ X = $script:AutoChart03SmbShareSaveButton.Location.X
                         Y = $script:AutoChart03SmbShareSaveButton.Location.Y + $script:AutoChart03SmbShareSaveButton.Size.Height + $($FormScale * 6) }
@@ -1868,9 +1844,7 @@ $script:AutoChart04SmbShareTrimOffLastGroupBoX = New-Object System.Windows.Forms
 $script:AutoChart04SmbShareTrimOffLastGroupBox.Controls.Add($script:AutoChart04SmbShareTrimOffLastTrackBar)
 $script:AutoChart04SmbShareManipulationPanel.Controls.Add($script:AutoChart04SmbShareTrimOffLastGroupBox)
 
-#======================================
-# Auto Create Charts Select Chart Type
-#======================================
+
 $script:AutoChart04SmbShareChartTypeComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
     Text      = 'Column'
     Location  = @{ X = $script:AutoChart04SmbShareTrimOffFirstGroupBox.Location.X + $($FormScale * 80)
@@ -1944,9 +1918,7 @@ $script:AutoChart04SmbShareChangeColorComboBox.add_SelectedIndexChanged({
 })
 $script:AutoChart04SmbShareManipulationPanel.Controls.Add($script:AutoChart04SmbShareChangeColorComboBox)
 
-#=====================================
-# AutoCharts - Investigate Difference
-#=====================================
+
 function script:InvestigateDifference-AutoChart04 {
     # List of Positive Endpoints that positively match
     $script:AutoChart04SmbShareImportCsvPosResults = $script:AutoChartDataSourceCsvSmbSharesSmbShares | Where-Object 'CurrentUsers' -eq $($script:AutoChart04SmbShareInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
@@ -1969,9 +1941,7 @@ function script:InvestigateDifference-AutoChart04 {
     $script:AutoChart04SmbShareInvestDiffNegResultsLabel.Text = "Negative Match ($($script:AutoChart04SmbShareImportCsvNegResults.count))"
 }
 
-#==============================
-# Auto Chart Buttons
-#==============================
+
 ### Auto Create Charts Check Diff Button
 $script:AutoChart04SmbShareCheckDiffButton = New-Object Windows.Forms.Button -Property @{
     Text      = 'Investigate'
@@ -2135,9 +2105,7 @@ $script:AutoChart04SmbShareSaveButton.Add_Click({
 })
 $script:AutoChart04SmbShareManipulationPanel.controls.Add($script:AutoChart04SmbShareSaveButton)
 
-#==============================
-# Auto Charts - Notice Textbox
-#==============================
+
 $script:AutoChart04SmbShareNoticeTextboX = New-Object System.Windows.Forms.Textbox -Property @{
     Location    = @{ X = $script:AutoChart04SmbShareSaveButton.Location.X
                         Y = $script:AutoChart04SmbShareSaveButton.Location.Y + $script:AutoChart04SmbShareSaveButton.Size.Height + $($FormScale * 6) }
@@ -2397,9 +2365,7 @@ $script:AutoChart05SmbShareTrimOffLastGroupBoX = New-Object System.Windows.Forms
 $script:AutoChart05SmbShareTrimOffLastGroupBox.Controls.Add($script:AutoChart05SmbShareTrimOffLastTrackBar)
 $script:AutoChart05SmbShareManipulationPanel.Controls.Add($script:AutoChart05SmbShareTrimOffLastGroupBox)
 
-#======================================
-# Auto Create Charts Select Chart Type
-#======================================
+
 $script:AutoChart05SmbShareChartTypeComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
     Text      = 'Column'
     Location  = @{ X = $script:AutoChart05SmbShareTrimOffFirstGroupBox.Location.X + $($FormScale * 80)
@@ -2474,9 +2440,7 @@ $script:AutoChart05SmbShareChangeColorComboBox.add_SelectedIndexChanged({
 })
 $script:AutoChart05SmbShareManipulationPanel.Controls.Add($script:AutoChart05SmbShareChangeColorComboBox)
 
-#=====================================
-# AutoCharts - Investigate Difference
-#=====================================
+
 function script:InvestigateDifference-AutoChart05 {
     # List of Positive Endpoints that positively match
     $script:AutoChart05SmbShareImportCsvPosResults = $script:AutoChartDataSourceCsvSmbSharesSmbShares | Where-Object 'Name' -eq $($script:AutoChart05SmbShareInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
@@ -2499,9 +2463,7 @@ function script:InvestigateDifference-AutoChart05 {
     $script:AutoChart05SmbShareInvestDiffNegResultsLabel.Text = "Negative Match ($($script:AutoChart05SmbShareImportCsvNegResults.count))"
 }
 
-#==============================
-# Auto Chart Buttons
-#==============================
+
 ### Auto Create Charts Check Diff Button
 $script:AutoChart05SmbShareCheckDiffButton = New-Object Windows.Forms.Button -Property @{
     Text      = 'Investigate'
@@ -2665,9 +2627,7 @@ $script:AutoChart05SmbShareSaveButton.Add_Click({
 })
 $script:AutoChart05SmbShareManipulationPanel.controls.Add($script:AutoChart05SmbShareSaveButton)
 
-#==============================
-# Auto Charts - Notice Textbox
-#==============================
+
 $script:AutoChart05SmbShareNoticeTextboX = New-Object System.Windows.Forms.Textbox -Property @{
     Location    = @{ X = $script:AutoChart05SmbShareSaveButton.Location.X
                         Y = $script:AutoChart05SmbShareSaveButton.Location.Y + $script:AutoChart05SmbShareSaveButton.Size.Height + $($FormScale * 6) }
@@ -2927,9 +2887,7 @@ $script:AutoChart06SmbShareTrimOffLastGroupBoX = New-Object System.Windows.Forms
 $script:AutoChart06SmbShareTrimOffLastGroupBox.Controls.Add($script:AutoChart06SmbShareTrimOffLastTrackBar)
 $script:AutoChart06SmbShareManipulationPanel.Controls.Add($script:AutoChart06SmbShareTrimOffLastGroupBox)
 
-#======================================
-# Auto Create Charts Select Chart Type
-#======================================
+
 $script:AutoChart06SmbShareChartTypeComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
     Text      = 'Column'
     Location  = @{ X = $script:AutoChart06SmbShareTrimOffFirstGroupBox.Location.X + $($FormScale * 80)
@@ -3004,9 +2962,7 @@ $script:AutoChart06SmbShareChangeColorComboBox.add_SelectedIndexChanged({
 })
 $script:AutoChart06SmbShareManipulationPanel.Controls.Add($script:AutoChart06SmbShareChangeColorComboBox)
 
-#=====================================
-# AutoCharts - Investigate Difference
-#=====================================
+
 function script:InvestigateDifference-AutoChart06 {
     # List of Positive Endpoints that positively match
     $script:AutoChart06SmbShareImportCsvPosResults = $script:AutoChartDataSourceCsvSmbSharesSmbShares | Where-Object 'Name' -eq $($script:AutoChart06SmbShareInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
@@ -3029,9 +2985,7 @@ function script:InvestigateDifference-AutoChart06 {
     $script:AutoChart06SmbShareInvestDiffNegResultsLabel.Text = "Negative Match ($($script:AutoChart06SmbShareImportCsvNegResults.count))"
 }
 
-#==============================
-# Auto Chart Buttons
-#==============================
+
 ### Auto Create Charts Check Diff Button
 $script:AutoChart06SmbShareCheckDiffButton = New-Object Windows.Forms.Button -Property @{
     Text      = 'Investigate'
@@ -3195,9 +3149,7 @@ $script:AutoChart06SmbShareSaveButton.Add_Click({
 })
 $script:AutoChart06SmbShareManipulationPanel.controls.Add($script:AutoChart06SmbShareSaveButton)
 
-#==============================
-# Auto Charts - Notice Textbox
-#==============================
+
 $script:AutoChart06SmbShareNoticeTextboX = New-Object System.Windows.Forms.Textbox -Property @{
     Location    = @{ X = $script:AutoChart06SmbShareSaveButton.Location.X
                         Y = $script:AutoChart06SmbShareSaveButton.Location.Y + $script:AutoChart06SmbShareSaveButton.Size.Height + $($FormScale * 6) }
@@ -3217,30 +3169,11 @@ $script:AutoChart06SmbShare.Series["Encrypted Shares"].Points.Clear()
 $script:AutoChart06SmbShareOverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart06SmbShareTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart06SmbShareTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart06SmbShare.Series["Encrypted Shares"].Points.AddXY($_.Computer,$_.ResultsCount)}
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # SIG # Begin signature block
 # MIIFuAYJKoZIhvcNAQcCoIIFqTCCBaUCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUBCzeO+E/ulGhpqkVvWJg6HYK
-# T2mgggM6MIIDNjCCAh6gAwIBAgIQeugH5LewQKBKT6dPXhQ7sDANBgkqhkiG9w0B
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUeAPwb1rlPmg3CK+nie8yB8If
+# OkSgggM6MIIDNjCCAh6gAwIBAgIQeugH5LewQKBKT6dPXhQ7sDANBgkqhkiG9w0B
 # AQUFADAzMTEwLwYDVQQDDChQb1NoLUVhc3lXaW4gQnkgRGFuIEtvbW5pY2sgKGhp
 # Z2gxMDFicm8pMB4XDTIxMTIxNDA1MDIwMFoXDTMxMTIxNDA1MTIwMFowMzExMC8G
 # A1UEAwwoUG9TaC1FYXN5V2luIEJ5IERhbiBLb21uaWNrIChoaWdoMTAxYnJvKTCC
@@ -3261,11 +3194,11 @@ $script:AutoChart06SmbShareOverallDataResults | Sort-Object -Property ResultsCou
 # YXN5V2luIEJ5IERhbiBLb21uaWNrIChoaWdoMTAxYnJvKQIQeugH5LewQKBKT6dP
 # XhQ7sDAJBgUrDgMCGgUAoHgwGAYKKwYBBAGCNwIBDDEKMAigAoAAoQKAADAZBgkq
 # hkiG9w0BCQMxDAYKKwYBBAGCNwIBBDAcBgorBgEEAYI3AgELMQ4wDAYKKwYBBAGC
-# NwIBFTAjBgkqhkiG9w0BCQQxFgQUH8UvGWParXmyArJemvLnv6TYo9QwDQYJKoZI
-# hvcNAQEBBQAEggEAu0T2fYp1jiL+Pl19FBzvS79s7O6veF44ZZKBLxv3QTa2KW+i
-# O9gY6VR3Tk6C9a2b2t+NBKs2AMT8bEGLyO/X1DakPvqzhvpO4yYAuMGKsHoq1xtt
-# 5syquNVafG8gnCdtfVKbc5KjQKnuqp+5kmrX74vxWogv1Pvyto4u4wW3inFHEKVR
-# GCj6KWeGWb0y4/xYkUmqiyrXBfx5do7ZI8x0zrcdufutJw+Au6AQo8dx4DfM93Us
-# sBG/Rnrx0iWt220aA27DHP4qsQdizsMAZujgHumqb5sdRXIb+n3XBpLor5F/HZQ0
-# rlKm1Q7js9raX+JgGlR6oFE1egRHtYpsfAXXqw==
+# NwIBFTAjBgkqhkiG9w0BCQQxFgQUJ92VJGqivEWJbDIMo5Gw0ZgNT3swDQYJKoZI
+# hvcNAQEBBQAEggEADoWaelZf2gFZNBEzEUyflaxLZBWQ1uSTxgsMgtAy3w+Ty1HS
+# 8meTpJmJyUJ70yqatNBm6OfrY++nNjcUQPNYeWBjUA9tbToVar+hYOoEsz3osYRh
+# z2ZKMD7V35dSY3q2V4CO0dVfSF0DjBxTuBKB8JCe59a/leZYT8TZpSwHbWK8WfqO
+# ZvkBPpWVvgNTCqVtFEY45fAjsxQE47KCYbPyRU4vM4SETQL1HW8pSGKV46TK1HaR
+# P7j6na25YvsnWVQBhQGUXXuedu4zQ7aB8tS7PntHv2zB4InFSjp6NmMfrROXa4aX
+# rjqO8aynydkuGp9SEiXGLEw2Qokh61K6bw+WBQ==
 # SIG # End signature block

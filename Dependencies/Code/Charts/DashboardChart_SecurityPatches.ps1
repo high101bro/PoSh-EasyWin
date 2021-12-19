@@ -303,9 +303,7 @@ $script:AutoChart01SecurityPatchesTrimOffLastGroupBoX = New-Object System.Window
 $script:AutoChart01SecurityPatchesTrimOffLastGroupBox.Controls.Add($script:AutoChart01SecurityPatchesTrimOffLastTrackBar)
 $script:AutoChart01SecurityPatchesManipulationPanel.Controls.Add($script:AutoChart01SecurityPatchesTrimOffLastGroupBox)
 
-#======================================
-# Auto Create Charts Select Chart Type
-#======================================
+
 $script:AutoChart01SecurityPatchesChartTypeComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
     Text      = 'Column'
     Location  = @{ X = $script:AutoChart01SecurityPatchesTrimOffFirstGroupBox.Location.X + $($FormScale * 80)
@@ -382,9 +380,7 @@ $script:AutoChart01SecurityPatchesChangeColorComboBox.add_SelectedIndexChanged({
 $script:AutoChart01SecurityPatchesManipulationPanel.Controls.Add($script:AutoChart01SecurityPatchesChangeColorComboBox)
 
 
-#=====================================
-# AutoCharts - Investigate Difference
-#=====================================
+
 function script:InvestigateDifference-AutoChart01 {
     # List of Positive Endpoints that positively match
     $script:AutoChart01SecurityPatchesImportCsvPosResults = $script:AutoChartDataSourceCsvSecurityPatches | Where-Object 'HotFixID' -eq $($script:AutoChart01SecurityPatchesInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
@@ -407,9 +403,7 @@ function script:InvestigateDifference-AutoChart01 {
     $script:AutoChart01SecurityPatchesInvestDiffNegResultsLabel.Text = "Negative Match ($($script:AutoChart01SecurityPatchesImportCsvNegResults.count))"
 }
 
-#==============================
-# Auto Chart Buttons
-#==============================
+
 ### Auto Create Charts Check Diff Button
 $script:AutoChart01SecurityPatchesCheckDiffButton = New-Object Windows.Forms.Button -Property @{
     Text      = 'Investigate'
@@ -573,9 +567,7 @@ $script:AutoChart01SecurityPatchesSaveButton.Add_Click({
 })
 $script:AutoChart01SecurityPatchesManipulationPanel.controls.Add($script:AutoChart01SecurityPatchesSaveButton)
 
-#==============================
-# Auto Charts - Notice Textbox
-#==============================
+
 $script:AutoChart01SecurityPatchesNoticeTextboX = New-Object System.Windows.Forms.Textbox -Property @{
     Location    = @{ X = $script:AutoChart01SecurityPatchesSaveButton.Location.X
                         Y = $script:AutoChart01SecurityPatchesSaveButton.Location.Y + $script:AutoChart01SecurityPatchesSaveButton.Size.Height + $($FormScale * 6) }
@@ -832,9 +824,7 @@ $script:AutoChart02SecurityPatchesTrimOffLastGroupBoX = New-Object System.Window
 $script:AutoChart02SecurityPatchesTrimOffLastGroupBox.Controls.Add($script:AutoChart02SecurityPatchesTrimOffLastTrackBar)
 $script:AutoChart02SecurityPatchesManipulationPanel.Controls.Add($script:AutoChart02SecurityPatchesTrimOffLastGroupBox)
 
-#======================================
-# Auto Create Charts Select Chart Type
-#======================================
+
 $script:AutoChart02SecurityPatchesChartTypeComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
     Text      = 'Column'
     Location  = @{ X = $script:AutoChart02SecurityPatchesTrimOffFirstGroupBox.Location.X + $($FormScale * 80)
@@ -909,9 +899,7 @@ $script:AutoChart02SecurityPatchesChangeColorComboBox.add_SelectedIndexChanged({
 })
 $script:AutoChart02SecurityPatchesManipulationPanel.Controls.Add($script:AutoChart02SecurityPatchesChangeColorComboBox)
 
-#=====================================
-# AutoCharts - Investigate Difference
-#=====================================
+
 function script:InvestigateDifference-AutoChart02 {
     # List of Positive Endpoints that positively match
     $script:AutoChart02SecurityPatchesImportCsvPosResults = $script:AutoChartDataSourceCsvSecurityPatches | Where-Object 'Name' -eq $($script:AutoChart02SecurityPatchesInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
@@ -934,9 +922,7 @@ function script:InvestigateDifference-AutoChart02 {
     $script:AutoChart02SecurityPatchesInvestDiffNegResultsLabel.Text = "Negative Match ($($script:AutoChart02SecurityPatchesImportCsvNegResults.count))"
 }
 
-#==============================
-# Auto Chart Buttons
-#==============================
+
 ### Auto Create Charts Check Diff Button
 $script:AutoChart02SecurityPatchesCheckDiffButton = New-Object Windows.Forms.Button -Property @{
     Text      = 'Investigate'
@@ -1100,9 +1086,7 @@ $script:AutoChart02SecurityPatchesSaveButton.Add_Click({
 })
 $script:AutoChart02SecurityPatchesManipulationPanel.controls.Add($script:AutoChart02SecurityPatchesSaveButton)
 
-#==============================
-# Auto Charts - Notice Textbox
-#==============================
+
 $script:AutoChart02SecurityPatchesNoticeTextboX = New-Object System.Windows.Forms.Textbox -Property @{
     Location    = @{ X = $script:AutoChart02SecurityPatchesSaveButton.Location.X
                         Y = $script:AutoChart02SecurityPatchesSaveButton.Location.Y + $script:AutoChart02SecurityPatchesSaveButton.Size.Height + $($FormScale * 6) }
@@ -1341,9 +1325,7 @@ $script:AutoChart03SecurityPatchesTrimOffLastGroupBoX = New-Object System.Window
 $script:AutoChart03SecurityPatchesTrimOffLastGroupBox.Controls.Add($script:AutoChart03SecurityPatchesTrimOffLastTrackBar)
 $script:AutoChart03SecurityPatchesManipulationPanel.Controls.Add($script:AutoChart03SecurityPatchesTrimOffLastGroupBox)
 
-#======================================
-# Auto Create Charts Select Chart Type
-#======================================
+
 $script:AutoChart03SecurityPatchesChartTypeComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
     Text      = 'Column'
     Location  = @{ X = $script:AutoChart03SecurityPatchesTrimOffFirstGroupBox.Location.X + $($FormScale * 80)
@@ -1417,9 +1399,7 @@ $script:AutoChart03SecurityPatchesChangeColorComboBox.add_SelectedIndexChanged({
 })
 $script:AutoChart03SecurityPatchesManipulationPanel.Controls.Add($script:AutoChart03SecurityPatchesChangeColorComboBox)
 
-#=====================================
-# AutoCharts - Investigate Difference
-#=====================================
+
 function script:InvestigateDifference-AutoChart03 {
     # List of Positive Endpoints that positively match
     $script:AutoChart03SecurityPatchesImportCsvPosResults = $script:AutoChartDataSourceCsvSecurityPatches | Where-Object 'ServicePackInEffect' -eq $($script:AutoChart03SecurityPatchesInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
@@ -1442,9 +1422,7 @@ function script:InvestigateDifference-AutoChart03 {
     $script:AutoChart03SecurityPatchesInvestDiffNegResultsLabel.Text = "Negative Match ($($script:AutoChart03SecurityPatchesImportCsvNegResults.count))"
 }
 
-#==============================
-# Auto Chart Buttons
-#==============================
+
 ### Auto Create Charts Check Diff Button
 $script:AutoChart03SecurityPatchesCheckDiffButton = New-Object Windows.Forms.Button -Property @{
     Text      = 'Investigate'
@@ -1608,9 +1586,7 @@ $script:AutoChart03SecurityPatchesSaveButton.Add_Click({
 })
 $script:AutoChart03SecurityPatchesManipulationPanel.controls.Add($script:AutoChart03SecurityPatchesSaveButton)
 
-#==============================
-# Auto Charts - Notice Textbox
-#==============================
+
 $script:AutoChart03SecurityPatchesNoticeTextboX = New-Object System.Windows.Forms.Textbox -Property @{
     Location    = @{ X = $script:AutoChart03SecurityPatchesSaveButton.Location.X
                         Y = $script:AutoChart03SecurityPatchesSaveButton.Location.Y + $script:AutoChart03SecurityPatchesSaveButton.Size.Height + $($FormScale * 6) }
@@ -1850,9 +1826,7 @@ $script:AutoChart04SecurityPatchesTrimOffLastGroupBoX = New-Object System.Window
 $script:AutoChart04SecurityPatchesTrimOffLastGroupBox.Controls.Add($script:AutoChart04SecurityPatchesTrimOffLastTrackBar)
 $script:AutoChart04SecurityPatchesManipulationPanel.Controls.Add($script:AutoChart04SecurityPatchesTrimOffLastGroupBox)
 
-#======================================
-# Auto Create Charts Select Chart Type
-#======================================
+
 $script:AutoChart04SecurityPatchesChartTypeComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
     Text      = 'Bar'
     Location  = @{ X = $script:AutoChart04SecurityPatchesTrimOffFirstGroupBox.Location.X + $($FormScale * 80)
@@ -1926,9 +1900,7 @@ $script:AutoChart04SecurityPatchesChangeColorComboBox.add_SelectedIndexChanged({
 })
 $script:AutoChart04SecurityPatchesManipulationPanel.Controls.Add($script:AutoChart04SecurityPatchesChangeColorComboBox)
 
-#=====================================
-# AutoCharts - Investigate Difference
-#=====================================
+
 function script:InvestigateDifference-AutoChart04 {
     # List of Positive Endpoints that positively match
     $script:AutoChart04SecurityPatchesImportCsvPosResults = $script:AutoChartDataSourceCsvSecurityPatches | Where-Object 'InstalledOn' -eq $($script:AutoChart04SecurityPatchesInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
@@ -1951,9 +1923,7 @@ function script:InvestigateDifference-AutoChart04 {
     $script:AutoChart04SecurityPatchesInvestDiffNegResultsLabel.Text = "Negative Match ($($script:AutoChart04SecurityPatchesImportCsvNegResults.count))"
 }
 
-#==============================
-# Auto Chart Buttons
-#==============================
+
 ### Auto Create Charts Check Diff Button
 $script:AutoChart04SecurityPatchesCheckDiffButton = New-Object Windows.Forms.Button -Property @{
     Text      = 'Investigate'
@@ -2117,9 +2087,7 @@ $script:AutoChart04SecurityPatchesSaveButton.Add_Click({
 })
 $script:AutoChart04SecurityPatchesManipulationPanel.controls.Add($script:AutoChart04SecurityPatchesSaveButton)
 
-#==============================
-# Auto Charts - Notice Textbox
-#==============================
+
 $script:AutoChart04SecurityPatchesNoticeTextboX = New-Object System.Windows.Forms.Textbox -Property @{
     Location    = @{ X = $script:AutoChart04SecurityPatchesSaveButton.Location.X
                         Y = $script:AutoChart04SecurityPatchesSaveButton.Location.Y + $script:AutoChart04SecurityPatchesSaveButton.Size.Height + $($FormScale * 6) }
@@ -2139,15 +2107,11 @@ $script:AutoChart04SecurityPatches.Series["Install Date"].Points.Clear()
 $script:AutoChart04SecurityPatchesOverallDataResults | Sort-Object { $_.DataField.InstalledOn -as [datetime] } | Select-Object -skip $script:AutoChart04SecurityPatchesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart04SecurityPatchesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart04SecurityPatches.Series["Install Date"].Points.AddXY($_.DataField.InstalledOn,$_.UniqueCount)}
 
 
-
-
-
-
 # SIG # Begin signature block
 # MIIFuAYJKoZIhvcNAQcCoIIFqTCCBaUCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUV19AYx97Ud+HZ4GIethyI5c8
-# xAOgggM6MIIDNjCCAh6gAwIBAgIQeugH5LewQKBKT6dPXhQ7sDANBgkqhkiG9w0B
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUEjOayC4nrcSJhSYd4bxH5MXd
+# nsOgggM6MIIDNjCCAh6gAwIBAgIQeugH5LewQKBKT6dPXhQ7sDANBgkqhkiG9w0B
 # AQUFADAzMTEwLwYDVQQDDChQb1NoLUVhc3lXaW4gQnkgRGFuIEtvbW5pY2sgKGhp
 # Z2gxMDFicm8pMB4XDTIxMTIxNDA1MDIwMFoXDTMxMTIxNDA1MTIwMFowMzExMC8G
 # A1UEAwwoUG9TaC1FYXN5V2luIEJ5IERhbiBLb21uaWNrIChoaWdoMTAxYnJvKTCC
@@ -2168,11 +2132,11 @@ $script:AutoChart04SecurityPatchesOverallDataResults | Sort-Object { $_.DataFiel
 # YXN5V2luIEJ5IERhbiBLb21uaWNrIChoaWdoMTAxYnJvKQIQeugH5LewQKBKT6dP
 # XhQ7sDAJBgUrDgMCGgUAoHgwGAYKKwYBBAGCNwIBDDEKMAigAoAAoQKAADAZBgkq
 # hkiG9w0BCQMxDAYKKwYBBAGCNwIBBDAcBgorBgEEAYI3AgELMQ4wDAYKKwYBBAGC
-# NwIBFTAjBgkqhkiG9w0BCQQxFgQUUfwJE2nLF9ZNCOxhH4X0h36qC9YwDQYJKoZI
-# hvcNAQEBBQAEggEAXOA23XFgHrSA/kqW1zHtxL59oFaLGXihAlqzgRwyPv/mpOjc
-# l9nyJZKURoXetoDhNFPGAOJaeEr+xEtspXGQQwzQ/5L/qluUaslcIdYRpe2TiI+n
-# zIpdemdzIHe6UZ7xUH+rfZd5aNZ7+2XnwoyKAIJ4B1mq/OZU6OctVtO9VsvLXMDZ
-# 0lg2eWrXq7TTyCG0Z7jZO2JF8XSs5tV5Je2HiXKcEFU4E6WHegBzp8qn7UGf2OEK
-# teE+BFbtTs+Me/Xh3Su3sXXi7cnrHy1Vx2FqSYQGPAqAZhD83avWbDOAOXLtvEMx
-# mrerAoDGPj2Z1R4VV2cXfVQsggC+KlJ9I9gaOw==
+# NwIBFTAjBgkqhkiG9w0BCQQxFgQUoyDEzHglweJbCH1FDYg9AX/eowQwDQYJKoZI
+# hvcNAQEBBQAEggEACe/JhvUKGOJ71sMo9RApVjk1np6nFvU3HJxRNX4ywi+uGCrt
+# w3h5mBjAuk5WsYqtTA7FgonBm+uacRomW4i204O+Z6TBCSmqYDObD83QA5mrAX+6
+# mVYDq6pQuHaWAH9UqtNUBT2cQ0pK5+b+LlJ5xUT7ynkQKZXOc9qnK6B8pOgIWN5Q
+# fs8xb0VLP4T8KESvJCGtELZzq3nniyYc5MilzP5jKbiGhMgd/B2tVSxeh8Eewudf
+# Ql+/Twlzl+K4H3K8HS94R4G793trxylEs8nDCdGFrnsvFZ09tyJTLWe0Ev3GHR6V
+# Ixw8HADTDOLt/c7MM/S/IYywkZ0lzxr/H89PqA==
 # SIG # End signature block

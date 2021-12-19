@@ -70,11 +70,13 @@ function Query-ProcessInfoWithinSysmon {
     return $SysmonNetworkConnectionEventFound | Select-Object -Property ComputerName, UtcTime, Protocol, SourceHostName, SourceIP, SourcePort, SourcePortName, DestinationHostName, DestinationIP, DestinationPort, DestinationPortName, User, ProcessId, Image, RuleName, Event, Initiated, SourceIsIPv6, DestinationIsIPv6, PSComputerName | Sort-Object -Property UtcTime
 }
 
+
+
 # SIG # Begin signature block
 # MIIFuAYJKoZIhvcNAQcCoIIFqTCCBaUCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUD1WRSm+SbbruTBq9haU+Mq5d
-# n8mgggM6MIIDNjCCAh6gAwIBAgIQeugH5LewQKBKT6dPXhQ7sDANBgkqhkiG9w0B
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUeBt89B583hobeokZIiDzHjmt
+# 2IigggM6MIIDNjCCAh6gAwIBAgIQeugH5LewQKBKT6dPXhQ7sDANBgkqhkiG9w0B
 # AQUFADAzMTEwLwYDVQQDDChQb1NoLUVhc3lXaW4gQnkgRGFuIEtvbW5pY2sgKGhp
 # Z2gxMDFicm8pMB4XDTIxMTIxNDA1MDIwMFoXDTMxMTIxNDA1MTIwMFowMzExMC8G
 # A1UEAwwoUG9TaC1FYXN5V2luIEJ5IERhbiBLb21uaWNrIChoaWdoMTAxYnJvKTCC
@@ -95,11 +97,11 @@ function Query-ProcessInfoWithinSysmon {
 # YXN5V2luIEJ5IERhbiBLb21uaWNrIChoaWdoMTAxYnJvKQIQeugH5LewQKBKT6dP
 # XhQ7sDAJBgUrDgMCGgUAoHgwGAYKKwYBBAGCNwIBDDEKMAigAoAAoQKAADAZBgkq
 # hkiG9w0BCQMxDAYKKwYBBAGCNwIBBDAcBgorBgEEAYI3AgELMQ4wDAYKKwYBBAGC
-# NwIBFTAjBgkqhkiG9w0BCQQxFgQUWuPHnRUp2TGIhZxskxQCH8O8+DIwDQYJKoZI
-# hvcNAQEBBQAEggEAG5vVjyOjwJqRh5WP+CV4GDs+vwvDQ/3a2K2S0Ab9aGpk4DII
-# Ttl20gS0thA3iO8Rrz+jRyz3FKMgFL8GYRVt4FU3ir6BfPulacab2n1qiDJFdjZr
-# 6KdlIG2/qdrFL6tPLbJcQCFYf25YCQB13letjIgdd+UnQsiEBWwvVFePxRJMbyPL
-# w2//pDHgy7zqfc7AgTF3+h0ameGinbT9TMOhy7NDUzHkoVoCLpo9DF+ctMsUjykT
-# 8FClkfejV36aneb/eLj2Jz6ifSGw7P7hThCg6icxcP1cCKwTaLxQY8fyUyVaYvR4
-# 6SaAR1wuGsyzXX1GyP51LzhJrIL1UtGLk3RjXQ==
+# NwIBFTAjBgkqhkiG9w0BCQQxFgQURKLeLP8BgBOcgSPLBPZNuY3p/v4wDQYJKoZI
+# hvcNAQEBBQAEggEAHvdG4CdWCCiuwhOAI1TdA3NGXIjD3+2mfNNwPYL6CCKXDgAr
+# Lcg+2eO1lBcwiPxeFrNk7IvOmForQOKBlIhT1NBySDMf7Nu8V6IzChjCf5E5tIww
+# WXoMKuqWnBLiBmwHGIvfISEktB8TGeNbUbgTojkbokmHNo+4BgUxO3aSkMTb2KJk
+# 9HxHy6xn8dcJOFaNKserxlR1aVQizXIzkcI9nibKGTAfLnfOdaYCY1XpMXUFkMLf
+# AyOwnOScdNJObvExTprYPNeNEgSO7BaOgN2/dQoQLjtmy4F2aXg1CjpUz//mc3/6
+# CP/U1jRDCRVh33rSIYUd3t0nPdRxVzT+FIGrjA==
 # SIG # End signature block

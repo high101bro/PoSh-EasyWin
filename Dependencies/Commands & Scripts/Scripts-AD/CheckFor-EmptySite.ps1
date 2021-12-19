@@ -1,9 +1,9 @@
 <#
 .Description
     An empty site is generally not recommended. The term describes a site without any Domain Controllers.
-    A site of this sort has two possible reasons for existing – Microsoft SCCM product used for software
+    A site of this sort has two possible reasons for existing ï¿½ Microsoft SCCM product used for software
     distribution and other management tools to help identify something in Active directory for end users
-    or application use. In general this isn’t an issue, but if they are not needed, removing them is a
+    or application use. In general this isnï¿½t an issue, but if they are not needed, removing them is a
     good practice. Less for Active directory to replicated to existing Domain Controllers in other sites.
 #>
 
@@ -49,8 +49,8 @@ Foreach ($DomainController in $DomainControllers) {
 # SIG # Begin signature block
 # MIIFuAYJKoZIhvcNAQcCoIIFqTCCBaUCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUGX0fFOA6g0AZaMyNNiRE9Hkz
-# WuWgggM6MIIDNjCCAh6gAwIBAgIQeugH5LewQKBKT6dPXhQ7sDANBgkqhkiG9w0B
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUYIW5l06HeKualhqPW7W8sEyC
+# VUCgggM6MIIDNjCCAh6gAwIBAgIQeugH5LewQKBKT6dPXhQ7sDANBgkqhkiG9w0B
 # AQUFADAzMTEwLwYDVQQDDChQb1NoLUVhc3lXaW4gQnkgRGFuIEtvbW5pY2sgKGhp
 # Z2gxMDFicm8pMB4XDTIxMTIxNDA1MDIwMFoXDTMxMTIxNDA1MTIwMFowMzExMC8G
 # A1UEAwwoUG9TaC1FYXN5V2luIEJ5IERhbiBLb21uaWNrIChoaWdoMTAxYnJvKTCC
@@ -71,11 +71,11 @@ Foreach ($DomainController in $DomainControllers) {
 # YXN5V2luIEJ5IERhbiBLb21uaWNrIChoaWdoMTAxYnJvKQIQeugH5LewQKBKT6dP
 # XhQ7sDAJBgUrDgMCGgUAoHgwGAYKKwYBBAGCNwIBDDEKMAigAoAAoQKAADAZBgkq
 # hkiG9w0BCQMxDAYKKwYBBAGCNwIBBDAcBgorBgEEAYI3AgELMQ4wDAYKKwYBBAGC
-# NwIBFTAjBgkqhkiG9w0BCQQxFgQUfmXHc8gBq9K/J1jAyf6GtgfORogwDQYJKoZI
-# hvcNAQEBBQAEggEAuzCOdh/62EISgCmgoByp3VH//SHY6G+8CyrAWCqjiGziFL/c
-# PpI7y6Z6KkZFld2g3wg9bJobwJz89BZumoUNt+nIq2A2MPihzeJ/T0RugUwdszXd
-# OZ9JdRvaudaLoc8bz8xN9Dt5IikmySn7Z9fwBD8w+S8ewV9FybUVIiTU5bvC10Hp
-# 5iFJTGUO5X0FYA97fDSJZwRePdXO5Rsqsjz9IBG7XTkuR5gp9w9l4ZlUPq/Zc0TH
-# fsEon5f43aY3DMeVyHgbf19Vs2vsuRqRp1alXMkcEevs0Op47njcF+vJkZGq8H3i
-# IMO7CVCy6NWcgL6o37kFSbx4V57S2isq7FOZCw==
+# NwIBFTAjBgkqhkiG9w0BCQQxFgQUqjvFwORqK98lDHAS5kSH+jzeDeQwDQYJKoZI
+# hvcNAQEBBQAEggEAWHj+Sq2wyVZEYe+501BU+j0ISbo5qqz3dzMbwqB6YeIIvwRG
+# amnz6J9uyIHDRviOFxqGrvZ4wYL4wicB+6rtidY1UYAv0GMuAOqU3hvcgYnUVQ4/
+# dYZnnhc0suH93XTx/FkeInVOIkEWwNVxoHrRgN1MoHhnipc0rTtZNFCjeHMuVk7g
+# S16iFkEgC+u2CwH2pgpfaO6OLMB5wl4Hzogf/UYYxkpQnqm8c1A1AltGoMfdcNwA
+# TdfMI9qW6IOn0SKW/rABkwomKs16HHw/Qd8qot5AYMAzsPvLFc7H/xNw+nl5AAn5
+# xNHIQayG264W0PRbMOWux8KLBavfM1HCSoUZsQ==
 # SIG # End signature block

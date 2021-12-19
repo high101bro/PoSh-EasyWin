@@ -132,24 +132,6 @@ $MainCenterMainTab.Controls.Add($SendFilesButton)
 Apply-CommonButtonSettings -Button $SendFilesButton
 
 
-# batman
-# Update-FormProgress "$Dependencies\Code\Charts\Generate-AutoChartsCommand.ps1"
-# . "$Dependencies\Code\Charts\Generate-AutoChartsCommand.ps1"
-# Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\AutoCreateMultiSeriesChartButton.ps1"
-# . "$Dependencies\Code\System.Windows.Forms\Button\AutoCreateMultiSeriesChartButton.ps1"
-# $AutoCreateMultiSeriesChartButton = New-Object System.Windows.Forms.Button -Property @{
-#     Text   = "Multi-Charts"
-#     Left   = $ResultsSectionLabel.Left
-#     Top    = $ResultsSectionLabel.Top + $ResultsSectionLabel.Height + ($FormScale * 1)
-#     Width  = $FormScale * 115
-#     Height = $FormScale * 22
-#     Add_Click      = $AutoCreateMultiSeriesChartButtonAdd_Click
-#     Add_MouseHover = $AutoCreateMultiSeriesChartButtonAdd_MouseHover
-# }
-# $MainCenterMainTab.Controls.Add($AutoCreateMultiSeriesChartButton)
-# Apply-CommonButtonSettings -Button $AutoCreateMultiSeriesChartButton
-
-
 Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\PSWriteHTMLButton.ps1"
 . "$Dependencies\Code\System.Windows.Forms\Button\PSWriteHTMLButton.ps1"
 $PSWriteHTMLButton = New-Object System.Windows.Forms.Button -Property @{
@@ -200,7 +182,7 @@ $TeamChatPopoutClientButton = New-Object System.Windows.Forms.Button -Property @
     Width  = $FormScale * 115
     Height = $FormScale * 22
     Add_Click = {
-        if (Verify-Action -Title "Team Chat Client" -Question "Do you want to launch the team chat client?") {
+        if (Verify-Action -Title "Team Chat Client" -Question "Do you want to launch the team chat client?`n`nThe chat messages are passed along in plain text.`nThis is currently designed for internal use only.`nThe server is hosted on port TCP/15600.") {
             . "$Dependencies\Code\PoSh-Chat\Start-PoShChatClient.ps1"
         }
     }
@@ -223,6 +205,24 @@ $PowerShellTerminalButton = New-Object System.Windows.Forms.Button -Property @{
 }
 $MainCenterMainTab.Controls.Add($PowerShellTerminalButton)
 Apply-CommonButtonSettings -Button $PowerShellTerminalButton
+
+
+# batman
+# Update-FormProgress "$Dependencies\Code\Charts\Generate-AutoChartsCommand.ps1"
+# . "$Dependencies\Code\Charts\Generate-AutoChartsCommand.ps1"
+# Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\AutoCreateMultiSeriesChartButton.ps1"
+# . "$Dependencies\Code\System.Windows.Forms\Button\AutoCreateMultiSeriesChartButton.ps1"
+# $AutoCreateMultiSeriesChartButton = New-Object System.Windows.Forms.Button -Property @{
+#     Text   = "Multi-Charts"
+#     Left   = $PowerShellTerminalButton.Left
+#     Top    = $PowerShellTerminalButton.Top + $PowerShellTerminalButton.Height + ($FormScale * 1)
+#     Width  = $FormScale * 115
+#     Height = $FormScale * 22
+#     Add_Click      = $AutoCreateMultiSeriesChartButtonAdd_Click
+#     Add_MouseHover = $AutoCreateMultiSeriesChartButtonAdd_MouseHover
+# }
+# $MainCenterMainTab.Controls.Add($AutoCreateMultiSeriesChartButton)
+# Apply-CommonButtonSettings -Button $AutoCreateMultiSeriesChartButton
 
 
 Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\RetrieveFilesButton.ps1"
@@ -279,7 +279,7 @@ $TeamChatStartChatServerButton = New-Object System.Windows.Forms.Button -Propert
     Width  = $FormScale * 115
     Height = $FormScale * 22
     Add_Click = {
-        if (Verify-Action -Title "Team Chat Server" -Question "Do you want to launch the team chat server?`n`nEnsure to only have one instance running to avoid issues.`nThe server is hosted on port TCP/15600.") {
+        if (Verify-Action -Title "Team Chat Server" -Question "Do you want to launch the team chat server?`n`nThe chat messages are passed along in plain text.`nThis is currently designed for internal use only.`nEnsure to only have one instance running to avoid issues.`nThe server is hosted on port TCP/15600.") {
             New-Item -ItemType Directory -Path "$PoShHome\Team Chat Logs\" -ErrorAction SilentlyContinue
             $Datetime = (Get-Date).ToString('yyyy-MM-dd HH.mm.ss')
             Start-Process PowerShell.exe -ArgumentList @("-NoExit & '$Dependencies\code\PoSh-Chat\Start-PoshChatServer.ps1' -EnableLogging '$PoSHHome\Team Chat Logs\team chat ($Datetime).log'")
@@ -372,11 +372,13 @@ $script:ProgressBarQueriesProgressBar = New-Object System.Windows.Forms.Progress
 }
 $MainCenterMainTab.Controls.Add($script:ProgressBarQueriesProgressBar)
 
+
+
 # SIG # Begin signature block
 # MIIFuAYJKoZIhvcNAQcCoIIFqTCCBaUCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUWVvLpjr66DlfBZWSBHGgTf69
-# PBmgggM6MIIDNjCCAh6gAwIBAgIQeugH5LewQKBKT6dPXhQ7sDANBgkqhkiG9w0B
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUIdbXEg19wvb1jJVMUmmMF5DL
+# zrGgggM6MIIDNjCCAh6gAwIBAgIQeugH5LewQKBKT6dPXhQ7sDANBgkqhkiG9w0B
 # AQUFADAzMTEwLwYDVQQDDChQb1NoLUVhc3lXaW4gQnkgRGFuIEtvbW5pY2sgKGhp
 # Z2gxMDFicm8pMB4XDTIxMTIxNDA1MDIwMFoXDTMxMTIxNDA1MTIwMFowMzExMC8G
 # A1UEAwwoUG9TaC1FYXN5V2luIEJ5IERhbiBLb21uaWNrIChoaWdoMTAxYnJvKTCC
@@ -397,11 +399,11 @@ $MainCenterMainTab.Controls.Add($script:ProgressBarQueriesProgressBar)
 # YXN5V2luIEJ5IERhbiBLb21uaWNrIChoaWdoMTAxYnJvKQIQeugH5LewQKBKT6dP
 # XhQ7sDAJBgUrDgMCGgUAoHgwGAYKKwYBBAGCNwIBDDEKMAigAoAAoQKAADAZBgkq
 # hkiG9w0BCQMxDAYKKwYBBAGCNwIBBDAcBgorBgEEAYI3AgELMQ4wDAYKKwYBBAGC
-# NwIBFTAjBgkqhkiG9w0BCQQxFgQU5ySoK87dOE77SNWlsUl8jnPQ3KQwDQYJKoZI
-# hvcNAQEBBQAEggEAT4cG+atIAWpjJ39QUDMsKCilR0KcqK9do3kCxsMstYhD7P6B
-# azKaEuzS3Rrpr1UdXZfIPXMZSmDxTc7pYTKPlwYrEmUBY8qoSVG3wFPtcjoU2G6e
-# XPyco1ag/cs7p7wnQg7ovyDNCuHHX4u3EFsiiGZofDTsGMtxqXZasi9xTwxZrNf6
-# gGLFj6i/f7thufUsZx39PlKfScq0yT69g1QCDmotqALcegktHx6vT7998joJX3WQ
-# FbeTlLHsgaqLd9yvmv2Q0DAdOjTKVBgwqPwHRZFaOuUldB7zRmBV90daX7f+fOvN
-# D4X8YCerU9fTr9/EKRHpX8PbZuAkE/+mOggwxA==
+# NwIBFTAjBgkqhkiG9w0BCQQxFgQUeYkMqxr09QZcmRwY7rNYWQVSPiAwDQYJKoZI
+# hvcNAQEBBQAEggEAN6OrOMkfCJg62LP43fM2KsDjoWDvVeiT/9K4YEHkbZAEl8Rk
+# njPvVVOfg3TlYCmiRe1SyQHjZfSJKqKDzuRAgnY17NQak8LPW09BeQM/SfyoPcEG
+# 7AgfgrTQQ7MNxBhsdPlciApELtNVZSAPqg0C14LFd6B9PIRInHLm1c1Qpl1oBQco
+# JFrzBrE61+BDfY+k+ctc6qtQbk8xUVeSVBMGULAi8AAhwDkHMsq7WZZbxmMux0SS
+# XXKihpjbRi/1BRbohRAR89MCLHiOG5fm6KQ3FBPKJH/e3wHgUfoXo52kkbd7+4lx
+# Bp1mQTK6SxOnqNr9QrhtjigUKG5mUEQ2J7WwWQ==
 # SIG # End signature block

@@ -17,11 +17,14 @@ Foreach ($LogName in $AllEventLogNames) {
 $EventLogDetails `
 | Select-Object -Property @{n='Name';e={$_.Name}}, @{n='Enabled';e={$_.Enabled}}, @{n='Type';e={$_.Type}}, @{n='OwningPublisher';e={$_.OwningPublisher}}, @{n='Isolation';e={$_.Isolation}}, @{n='LogFileName';e={$_.LogFileName}}, @{n='MaxSize';e={$_.MaxSize}}, @{n='FileMax';e={$_.FileMax}}, @{n='Retention';e={$_.Retention}}, @{n='AutoBackup';e={$_.AutoBackup}} `
 | Sort-Object -Property @{e="Enabled";Descending=$True}, @{e="Name";Descending=$False}
+
+
+
 # SIG # Begin signature block
 # MIIFuAYJKoZIhvcNAQcCoIIFqTCCBaUCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQU+WIWs9mo8o7BEOaU+Qqulege
-# d1agggM6MIIDNjCCAh6gAwIBAgIQeugH5LewQKBKT6dPXhQ7sDANBgkqhkiG9w0B
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUQvS2RhCxBFoZjZPo3nMV4cWw
+# ZBmgggM6MIIDNjCCAh6gAwIBAgIQeugH5LewQKBKT6dPXhQ7sDANBgkqhkiG9w0B
 # AQUFADAzMTEwLwYDVQQDDChQb1NoLUVhc3lXaW4gQnkgRGFuIEtvbW5pY2sgKGhp
 # Z2gxMDFicm8pMB4XDTIxMTIxNDA1MDIwMFoXDTMxMTIxNDA1MTIwMFowMzExMC8G
 # A1UEAwwoUG9TaC1FYXN5V2luIEJ5IERhbiBLb21uaWNrIChoaWdoMTAxYnJvKTCC
@@ -42,11 +45,11 @@ $EventLogDetails `
 # YXN5V2luIEJ5IERhbiBLb21uaWNrIChoaWdoMTAxYnJvKQIQeugH5LewQKBKT6dP
 # XhQ7sDAJBgUrDgMCGgUAoHgwGAYKKwYBBAGCNwIBDDEKMAigAoAAoQKAADAZBgkq
 # hkiG9w0BCQMxDAYKKwYBBAGCNwIBBDAcBgorBgEEAYI3AgELMQ4wDAYKKwYBBAGC
-# NwIBFTAjBgkqhkiG9w0BCQQxFgQUHHVvN8NBUW2rZ10uKzjOBE/yI5YwDQYJKoZI
-# hvcNAQEBBQAEggEAOzJwnZPpnd7HTRrZkGnQR5GAL/qSXphT+Aefjq0JK1lWLRv3
-# P/Lk6wi7gf5M/CUbSutWSKCO73OSefN2loLkMnJdot20ar85P0d1i2NsFGgzajs4
-# 8pzQ6K/P4OxlURUIGhjliK+jZ+10IVJJ7rW9TSX9oYu9Rx09NgURRdkUMsAZJ8Ax
-# R33qpUtdhpfaeKZTczVaMHpa2+jv+DwuptqnLKx10FnEDE2gNzHLyjwuM5EnSGOk
-# nmRpb74TaR+adu20WjB/V9h7raGc9y8D9PUSHhkbvM0DXve3yHYCc/Q+bLNA05q6
-# uP6qj2DITCzTVhCnbzHv7pX8YhoLGDuo3YhfxQ==
+# NwIBFTAjBgkqhkiG9w0BCQQxFgQUoFb8T8JGfU6sqAYPQg+/e8ykYKowDQYJKoZI
+# hvcNAQEBBQAEggEAd3UNZAQeIEPfzUBnogl7xBGvDpoG8LSC+PZwivIC6BKPdW4s
+# ggEvd3Gczqoeuf3Cax6vdRfEdgG+EfQeVFnxlXTYqkxTVthUvjEZr7wZLyvq5zOa
+# ITzgFFFrBxGeYcVHT9mb0rUG301WSBdKVyICqZOGfCRKcpNObnXC7gg8nrWuboOk
+# 6BvxeOWatbCns1SjUAIn4CgFa6xeTFtBBaZ8ItU4OK43jLJQFppJeH4yil47upuN
+# OzN5ZZNfhj+nyMIDqZe0d8+ywgN6qCY0DitztPxRtL87jjYQ0kj9zKd4IUtb6mk+
+# JqL0djnRNez5Y9X3ivQ9lR9K5jsfIqfRl7ax2Q==
 # SIG # End signature block

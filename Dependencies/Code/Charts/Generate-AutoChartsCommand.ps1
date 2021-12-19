@@ -87,9 +87,6 @@ function Generate-AutoChartsCommand {
     Add-Type -AssemblyName System.Windows.Forms.DataVisualization
 
 
-    #--------------------------
-    # Auto Create Charts Object
-    #--------------------------
     Clear-Variable -Name AutoChart -Scope script
     $script:AutoChartCharting = New-object System.Windows.Forms.DataVisualization.Charting.Chart -Property @{
         Width           = $FormScale * 1115
@@ -106,12 +103,8 @@ function Generate-AutoChartsCommand {
             $script:AutoChartCharting.Controls.Remove($script:AutoChartsManipulationPanel)
         }
     }
-    #$script:AutoChartCharting.DataManipulator.Sort() = "Descending"
 
 
-    #--------------------------
-    # Auto Create Charts Title
-    #--------------------------
     $script:AutoChartTitle = New-Object System.Windows.Forms.DataVisualization.Charting.Title
     if (Test-Path "$script:CSVFilePathMostRecent") {
         $script:AutoChartTitle.Text = ($script:CSVFilePathMostRecent.split('\'))[-1] -replace '.csv',''
@@ -125,9 +118,7 @@ function Generate-AutoChartsCommand {
     $script:AutoChartTitle.Alignment = "topcenter" #"topLeft"
     $script:AutoChartCharting.Titles.Add($script:AutoChartTitle)
 
-    #-------------------------
-    # Auto Create Charts Area
-    #-------------------------
+
     $script:AutoChartsArea                        = New-Object System.Windows.Forms.DataVisualization.Charting.ChartArea
     $script:AutoChartsArea.Name                   = "Chart Area"
     $script:AutoChartsArea.AxisX.Title            = $script:PropertyX
@@ -141,9 +132,7 @@ function Generate-AutoChartsCommand {
     $script:AutoChartsArea.AxisY.IntervalAutoMode = $true
     $script:AutoChartCharting.ChartAreas.Add($script:AutoChartsArea)
 
-    #--------------------------
-    # Auto Create Charts Legend
-    #--------------------------
+
     $script:Legend                      = New-Object system.Windows.Forms.DataVisualization.Charting.Legend
     $script:Legend.Enabled              = $True
     $script:Legend.Name                 = "Collection Legend"
@@ -154,9 +143,7 @@ function Generate-AutoChartsCommand {
     $script:Legend.BorderColor          = 'White'
     $script:AutoChartCharting.Legends.Add($script:Legend)
 
-    #--------------------------------------------
-    # Auto Create Charts Data Series Most Recent
-    #--------------------------------------------
+
     $script:AutoChartCharting.Series.Add("Most Recent")
     $script:AutoChartCharting.Series["Most Recent"].Enabled           = $True
     $script:AutoChartCharting.Series["Most Recent"].ChartType         = 'Column'
@@ -172,9 +159,7 @@ function Generate-AutoChartsCommand {
     $script:AutoChartCharting.Series["Most Recent"]['PieLineColor']   = 'Black'
     $script:AutoChartCharting.Series["Most Recent"]['PieLabelStyle']  = 'Outside'
 
-    #-----------------------------------------
-    # Auto Create Charts Data Series Previous
-    #-----------------------------------------
+
     $script:AutoChartCharting.Series.Add("Previous")
     $script:AutoChartCharting.Series["Previous"].Enabled           = $True
     $script:AutoChartCharting.Series["Previous"].ChartType         = 'Point'
@@ -190,9 +175,7 @@ function Generate-AutoChartsCommand {
     $script:AutoChartCharting.Series["Previous"]['PieLineColor']   = 'Black'
     $script:AutoChartCharting.Series["Previous"]['PieLabelStyle']  = 'Outside'
 
-    #-----------------------------------------
-    # Auto Create Charts Data Series Baseline
-    #-----------------------------------------
+
     $script:AutoChartCharting.Series.Add("Baseline")
     $script:AutoChartCharting.Series["Baseline"].Enabled           = $True
     $script:AutoChartCharting.Series["Baseline"].ChartType         = 'Point'
@@ -209,9 +192,6 @@ function Generate-AutoChartsCommand {
     $script:AutoChartCharting.Series["Baseline"]['PieLabelStyle']  = 'Outside'
 
 
-    #------------------------------------------------------------
-    # Auto Create Charts - Code that counts computers that match
-    #------------------------------------------------------------
     # Compiles the data for only unique/similar hosts... hosts not common among all files are not aggregated
     $Script:MergedCSVUniquePropertyDataResults = @()
     $script:CsvFileCommonDataBaseline   = @()
@@ -286,20 +266,6 @@ function Generate-AutoChartsCommand {
             $script:CsvFileCommonDataMostRecent += $script:CsvFileDataMostRecent | Where { $_.PSComputerName -eq $UniqueHost }
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     # The purpose of the code below is to ultiately add any missing unique fields to each collection.
@@ -393,14 +359,6 @@ function Generate-AutoChartsCommand {
     }
 
 
-
-
-
-
-
-
-
-
     $script:OverallDataResultsPrevious = @()
     if (Test-Path $script:CSVFilePathPrevious) {
         # If the Second field/Y Axis equals PSComputername, it counts it
@@ -487,15 +445,6 @@ function Generate-AutoChartsCommand {
             $script:OverallDataResultsPrevious += $DataResultsPrevious
         }
     }
-
-
-
-
-
-
-
-
-
 
 
     $script:OverallDataResultsMostRecent = @()
@@ -593,7 +542,6 @@ function script:Update-MultiSeriesChart {
     param(
         [switch]$TrackBar
     )
-    #robin
     # Creates an ordered list to organize the chart values to assign all three charts
     # The ordered list is based on the most recent results and is based on unique counts of the associated properties
     if ($script:PropertyY -eq "PSComputerName" ) {
@@ -778,18 +726,6 @@ function script:Update-MultiSeriesChart {
 script:Update-MultiSeriesChart
 
 
-
-
-
-
-
-
-    ############################################################################################################
-    # Auto Create Charts Processes
-    ############################################################################################################
-    #-----------------------------
-    # Creates Tabs From Each File
-    #-----------------------------
     $script:AutoChartsIndividualTabPage         = New-Object System.Windows.Forms.TabPage
     $script:AutoChartsIndividualTabPage.Text    = "$QueryTabName  "
     $script:AutoChartsIndividualTabPage.Name    = "$QueryTabName"
@@ -852,12 +788,6 @@ script:Update-MultiSeriesChart
     }
 
 
-    #==============================================================================================================================
-    # AutoCharts - Trim TrackBars
-    #==============================================================================================================================
-    #--------------------------------------
-    # AutoCharts - Trim Off First GroupBox
-    #--------------------------------------
     $script:AutoChartsTrimOffFirstGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
         Text        = "Trim Off First: 0"
         Location    = @{ X = $FormScale * 10
@@ -868,9 +798,6 @@ script:Update-MultiSeriesChart
         Font        = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         ForeColor   = 'Black'
     }
-        #--------------------------------------
-        # AutoCharts - Trim Off First TrackBar
-        #--------------------------------------
         $script:AutoChartsTrimOffFirstTrackBar = New-Object System.Windows.Forms.TrackBar -Property @{
             Location    = @{ X = $($FormScale * 1)
                              Y = $($FormScale * 20) }
@@ -895,9 +822,6 @@ script:Update-MultiSeriesChart
     $script:AutoChartsManipulationPanel.Controls.Add($script:AutoChartsTrimOffFirstGroupBox)
 
 
-    #--------------------------------------
-    # Auto Charts - Trim Off Last GroupBox
-    #--------------------------------------
     $script:AutoChartsTrimOffLastGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
         Text        = "Trim Off Last: 0"
         Location    = @{ X = $script:AutoChartsTrimOffFirstGroupBox.Location.X + $script:AutoChartsTrimOffFirstGroupBox.Size.Width + $($FormScale * 10)
@@ -908,9 +832,6 @@ script:Update-MultiSeriesChart
         Font        = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         ForeColor   = 'Black'
     }
-        #-------------------------------------
-        # AutoCharts - Trim Off Last TrackBar
-        #-------------------------------------
         $script:AutoChartsTrimOffLastTrackBar = New-Object System.Windows.Forms.TrackBar -Property @{
             Location      = @{ X = $($FormScale * 1)
                                Y = $($FormScale * 20) }
@@ -934,9 +855,6 @@ script:Update-MultiSeriesChart
     $script:AutoChartsManipulationPanel.Controls.Add($script:AutoChartsTrimOffLastGroupBox)
 
 
-    #----------------------------------
-    # Auto Charts - Title Name Textbox
-    #----------------------------------
     $script:AutoChartsTitleNameTextbox = New-Object System.Windows.Forms.Textbox -Property @{
         Location    = @{ X = $script:AutoChartsTrimOffFirstGroupBox.Location.X
                          Y = $script:AutoChartsTrimOffFirstGroupBox.Location.Y + $script:AutoChartsTrimOffFirstGroupBox.Size.Height + $($FormScale * 6)  }
@@ -956,9 +874,6 @@ script:Update-MultiSeriesChart
     }})
 
 
-    #------------------------------
-    # Auto Charts - Notice Textbox
-    #------------------------------
     $script:AutoChartsNoticeTextbox = New-Object System.Windows.Forms.Textbox -Property @{
         Location    = @{ X = $script:AutoChartsTrimOffLastGroupBox.Location.X
                          Y = $script:AutoChartsTrimOffLastGroupBox.Location.Y + $script:AutoChartsTrimOffLastGroupBox.Size.Height + $($FormScale * 6)  }
@@ -976,9 +891,6 @@ script:Update-MultiSeriesChart
     $script:AutoChartsManipulationPanel.Controls.Add($script:AutoChartsNoticeTextbox)
 
 
-    #==============================================================================================================================
-    # AutoCharts - Investigate Difference
-    #==============================================================================================================================
     function script:Investigate-CsvFileData ($ImportCsvFileData) {
         function InvestigateDifference-AutoChart {
             # Clears out data
@@ -1012,9 +924,7 @@ script:Update-MultiSeriesChart
         #$AutoChartsInvestigateDifferenceDropDownArray = $AutoChartsInvestigateDifferenceImportCsv | Select-Object -Property Name -ExpandProperty Name | Sort-Object -Unique | Select-Object -Skip $script:AutoChartsTrimOffFirstTrackBarValue | Select -SkipLast $script:AutoChartsTrimOffLastTrackBarValue
         $AutoChartsInvestigateDifferenceDropDownArray = $AutoChartsInvestigateDifferenceImportCsv | Select-Object -Property Name -ExpandProperty Name | Sort-Object -Unique
 
-        #-----------------------------------------------
-        # Investigate Difference Compare Csv Files Form
-        #-----------------------------------------------
+
         $AutoChartsInvestigateDifferenceForm = New-Object System.Windows.Forms.Form -Property @{
             Text   = "Investigate Difference"
             Size   = @{ Width  = $FormScale * 330
@@ -1024,9 +934,8 @@ script:Update-MultiSeriesChart
             ControlBox = $true
             Add_Closing = { $This.dispose() }
         }
-        #---------------------------------------------------
-        # Investigate Difference Drop Down Label & ComboBox
-        #---------------------------------------------------
+
+
         $AutoChartsInvestigateDifferenceDropDownLabel = New-Object System.Windows.Forms.Label -Property @{
             Text     = "Investigate the difference between computers."
             Location = @{ X = $FormScale * 10
@@ -1042,16 +951,14 @@ script:Update-MultiSeriesChart
             Height   = $FormScale * 30
             Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
             AutoCompleteSource = "ListItems"
-            AutoCompleteMode   = "SuggestAppend" # Options are: "Suggest", "Append", "SuggestAppend"
+            AutoCompleteMode   = "SuggestAppend"
         }
         ForEach ($Item in $AutoChartsInvestigateDifferenceDropDownArray) { $AutoChartsInvestigateDifferenceDropDownComboBox.Items.Add($Item) }
         $AutoChartsInvestigateDifferenceDropDownComboBox.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { InvestigateDifference-AutoChart }})
         $AutoChartsInvestigateDifferenceDropDownComboBox.Add_Click({ InvestigateDifference-AutoChart })
         $AutoChartsInvestigateDifferenceForm.Controls.AddRange(@($AutoChartsInvestigateDifferenceDropDownLabel,$AutoChartsInvestigateDifferenceDropDownComboBox))
 
-        #---------------------------------------
-        # Investigate Difference Execute Button
-        #---------------------------------------
+
         $AutoChartsInvestigateDifferenceExecuteButton = New-Object System.Windows.Forms.Button -Property @{
             Text     = "Execute"
             Location = @{ X = $FormScale * 10
@@ -1065,9 +972,6 @@ script:Update-MultiSeriesChart
         $AutoChartsInvestigateDifferenceForm.Controls.Add($AutoChartsInvestigateDifferenceExecuteButton)
 
 
-        #---------------------------------------------------------
-        # Investigate Difference Positive Results Label & TextBox
-        #---------------------------------------------------------
         $AutoChartsInvestigateDifferencePositiveResultsLabel = New-Object System.Windows.Forms.Label -Property @{
             Text       = "Positive Match (+)"
             Location   = @{ X = $FormScale * 10
@@ -1089,9 +993,8 @@ script:Update-MultiSeriesChart
             ScrollBars = "Vertical"
         }
         $AutoChartsInvestigateDifferenceForm.Controls.AddRange(@($AutoChartsInvestigateDifferencePositiveResultsLabel,$AutoChartsInvestigateDifferencePositiveResultsTextBox))
-        #---------------------------------------------------------
-        # Investigate Difference Negative Results Label & TextBox
-        #---------------------------------------------------------
+
+
         $AutoChartsInvestigateDifferenceNegativeResultsLabel = New-Object System.Windows.Forms.Label -Property @{
             Text       = "Negative Match (-)"
             Location   = @{ X = $AutoChartsInvestigateDifferencePositiveResultsLabel.Location.x + $AutoChartsInvestigateDifferencePositiveResultsLabel.Size.Width + $($FormScale * 10)
@@ -1119,11 +1022,6 @@ script:Update-MultiSeriesChart
     }
 
 
-    #==================================================================================================================
-    #==================================================================================================================
-    # Auto Chart - Display Title Checkbox
-    #==================================================================================================================
-    #==================================================================================================================
     $script:AutoChartsTitleCheckBox = New-Object System.Windows.Forms.Checkbox -Property @{
         Text      = 'Display Title'
         Location  = @{ X = $script:AutoChartsTrimOffLastGroupBox.Location.X + $script:AutoChartsTrimOffLastGroupBox.Size.Width + $($FormScale * 6)
@@ -1140,9 +1038,6 @@ script:Update-MultiSeriesChart
     $script:AutoChartsManipulationPanel.Controls.Add($script:AutoChartsTitleCheckBox)
 
 
-    #================================
-    # Auto Create Charts Save Button
-    #================================
     $script:AutoChartsSaveChartImageButton = New-Object Windows.Forms.Button -Property @{
         Text      = "Save Image"
         Location  = @{ X = $script:AutoChartsTitleCheckBox.Location.X + $script:AutoChartsTitleCheckBox.Size.Width + $($FormScale * 6)
@@ -1158,9 +1053,6 @@ script:Update-MultiSeriesChart
     $script:AutoChartsManipulationPanel.controls.Add($script:AutoChartsSaveChartImageButton)
 
 
-    #=======================================
-    # Auto Create Charts Select Chart Label
-    #=======================================
     $script:AutoChartsChartTypeFilterLabel = New-Object System.Windows.Forms.Label -Property @{
         Text      = 'Category Filter -->'
         Location = @{ X = $script:AutoChartsSaveChartImageButton.Location.X + $script:AutoChartsSaveChartImageButton.Size.Width + $($FormScale * 6)
@@ -1172,9 +1064,6 @@ script:Update-MultiSeriesChart
     $script:AutoChartsManipulationPanel.Controls.Add($script:AutoChartsChartTypeFilterLabel)
 
 
-    #======================================
-    # Auto Create Charts Select Chart Type
-    #======================================
     $script:AutoChartsChartTypeFilterComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
         Text      = 'Column'
         Location = @{ X = $script:AutoChartsChartTypeFilterLabel.Location.X + $script:AutoChartsChartTypeFilterLabel.Size.Width + $($FormScale * 6)
@@ -1254,11 +1143,6 @@ script:Update-MultiSeriesChart
     $script:AutoChartsManipulationPanel.Controls.Add($script:AutoChartsChartTypeFilterComboBox)
 
 
-    #==================================================================================================================
-    #==================================================================================================================
-    # Auto Chart - Display Most Recent Series Checkbox
-    #==================================================================================================================
-    #==================================================================================================================
     $script:AutoChartsDisplayMostRecentSeriesCheckBox = New-Object System.Windows.Forms.Checkbox -Property @{
         Text      = 'Most Recent Series'
         Location  = @{ X = $script:AutoChartsTitleCheckBox.Location.X
@@ -1284,9 +1168,6 @@ script:Update-MultiSeriesChart
     $script:AutoChartsManipulationPanel.Controls.Add($script:AutoChartsDisplayMostRecentSeriesCheckBox)
 
 
-    #==========================================
-    # Auto Create - Most Recent Results Button
-    #==========================================
     $script:AutoChartsResultsMostRecentButton = New-Object Windows.Forms.Button -Property @{
         Text      = "View Results"
         Location  = @{ X = $script:AutoChartsDisplayMostRecentSeriesCheckBox.Location.X + $script:AutoChartsDisplayMostRecentSeriesCheckBox.Size.Width + $($FormScale * 6)
@@ -1305,9 +1186,6 @@ script:Update-MultiSeriesChart
     if ($OptionsAutoSaveChartsAsImages.checked) { $script:AutoChartCharting.SaveImage("$AutosavedChartsDirectory\$FileDate - $FileName.png", 'png') }
 
 
-    #=====================================
-    # Auto Create Investigate Most Recent
-    #=====================================
     $script:AutoChartsInvestigateMostRecentButton = New-Object Windows.Forms.Button -Property @{
         Text      = "Investigate"
         Location = @{ X = $script:AutoChartsResultsMostRecentButton.Location.X + $script:AutoChartsResultsMostRecentButton.Size.Width + $($FormScale * 6)
@@ -1327,9 +1205,6 @@ script:Update-MultiSeriesChart
     $script:AutoChartsManipulationPanel.controls.Add($script:AutoChartsInvestigateMostRecentButton)
 
 
-    #======================================
-    # Auto Create Charts Select Chart Type
-    #======================================
     $script:AutoChartsChartTypeMostRecentComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
         Text      = 'Column'
         Location = @{ X = $script:AutoChartsInvestigateMostRecentButton.Location.X + $script:AutoChartsInvestigateMostRecentButton.Size.Width + $($FormScale * 6)
@@ -1350,9 +1225,6 @@ script:Update-MultiSeriesChart
     $script:AutoChartsManipulationPanel.Controls.Add($script:AutoChartsChartTypeMostRecentComboBox)
 
 
-    #===============================
-    # Change the color of the chart
-    #===============================
     $script:AutoChartsChangeColorMostRecentComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
         Text      = "Blue"
         Location = @{ X = $script:AutoChartsChartTypeMostRecentComboBox.Location.X + $script:AutoChartsChartTypeMostRecentComboBox.Size.Width + $($FormScale * 6)
@@ -1379,11 +1251,6 @@ script:Update-MultiSeriesChart
     $script:AutoChartsManipulationPanel.Controls.Add($script:AutoChartsChangeColorMostRecentComboBox)
 
 
-    #==================================================================================================================
-    #==================================================================================================================
-    # Auto Chart - Display Previous Series Checkbox
-    #==================================================================================================================
-    #==================================================================================================================
     $script:AutoChartsDisplayPreviousSeriesCheckBox = New-Object System.Windows.Forms.Checkbox -Property @{
         Text      = 'Previous Series'
         Location = @{ X = $script:AutoChartsDisplayMostRecentSeriesCheckBox.Location.X
@@ -1409,9 +1276,6 @@ script:Update-MultiSeriesChart
     $script:AutoChartsManipulationPanel.Controls.Add($script:AutoChartsDisplayPreviousSeriesCheckBox)
 
 
-    #=======================================
-    # Auto Create - Previous Results Button
-    #=======================================
     $script:AutoChartsResultsPreviousButton = New-Object Windows.Forms.Button -Property @{
         Text      = "View Results"
         Location = @{ X = $script:AutoChartsDisplayPreviousSeriesCheckBox.Location.X + $script:AutoChartsDisplayPreviousSeriesCheckBox.Size.Width + $($FormScale * 6)
@@ -1430,9 +1294,6 @@ script:Update-MultiSeriesChart
     if ($OptionsAutoSaveChartsAsImages.checked) { $script:AutoChartCharting.SaveImage("$AutosavedChartsDirectory\$FileDate-$FileName.png", 'png') }
 
 
-    #=====================================
-    # Auto Create Investigate Most Recent
-    #=====================================
     $script:AutoChartsInvestigatePreviousButton = New-Object Windows.Forms.Button -Property @{
         Text      = "Investigate"
         Location = @{ X = $script:AutoChartsResultsPreviousButton.Location.X + $script:AutoChartsResultsPreviousButton.Size.Width + $($FormScale * 6)
@@ -1452,9 +1313,6 @@ script:Update-MultiSeriesChart
     $script:AutoChartsManipulationPanel.controls.Add($script:AutoChartsInvestigatePreviousButton)
 
 
-    #======================================
-    # Auto Create Charts Select Chart Type
-    #======================================
     $script:AutoChartsChartTypePreviousComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
         Text      = 'Point'
         Location = @{ X = $script:AutoChartsInvestigatePreviousButton.Location.X + $script:AutoChartsInvestigatePreviousButton.Size.Width + $($FormScale * 6)
@@ -1475,9 +1333,6 @@ script:Update-MultiSeriesChart
     $script:AutoChartsManipulationPanel.Controls.Add($script:AutoChartsChartTypePreviousComboBox)
 
 
-    #===============================
-    # Change the color of the chart
-    #===============================
     $script:AutoChartsChangeColorPreviousComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
         Text      = "Red"
         Location = @{ X = $script:AutoChartsChartTypePreviousComboBox.Location.X + $script:AutoChartsChartTypePreviousComboBox.Size.Width + $($FormScale * 6)
@@ -1504,11 +1359,6 @@ script:Update-MultiSeriesChart
     $script:AutoChartsManipulationPanel.Controls.Add($script:AutoChartsChangeColorPreviousComboBox)
 
 
-    #==================================================================================================================
-    #==================================================================================================================
-    # Auto Chart - Display Baseline Series Checkbox
-    #==================================================================================================================
-    #==================================================================================================================
     $script:AutoChartsDisplayBaselineSeriesCheckBox = New-Object System.Windows.Forms.Checkbox -Property @{
         Text      = 'Baseline Series'
         Location = @{ X = $script:AutoChartsDisplayPreviousSeriesCheckBox.Location.X
@@ -1534,9 +1384,6 @@ script:Update-MultiSeriesChart
     $script:AutoChartsManipulationPanel.Controls.Add($script:AutoChartsDisplayBaselineSeriesCheckBox)
 
 
-    #=======================================
-    # Auto Create - Baseline Results Button
-    #=======================================
     $script:AutoChartsResultsBaselineButton = New-Object Windows.Forms.Button -Property @{
         Text      = "View Results"
         Location = @{ X = $script:AutoChartsDisplayBaselineSeriesCheckBox.Location.X + $script:AutoChartsDisplayBaselineSeriesCheckBox.Size.Width + $($FormScale * 6)
@@ -1555,9 +1402,6 @@ script:Update-MultiSeriesChart
     if ($OptionsAutoSaveChartsAsImages.checked) { $script:AutoChartCharting.SaveImage("$AutosavedChartsDirectory\$FileDate-$FileName.png", 'png') }
 
 
-    #==================================
-    # Auto Create Investigate Baseline
-    #==================================
     $script:AutoChartsInvestigateBaselineButton = New-Object Windows.Forms.Button -Property @{
         Text      = "Investigate"
         Location  = @{ X = $script:AutoChartsResultsBaselineButton.Location.X + $script:AutoChartsResultsBaselineButton.Size.Width + $($FormScale * 6)
@@ -1577,9 +1421,6 @@ script:Update-MultiSeriesChart
     $script:AutoChartsManipulationPanel.controls.Add($script:AutoChartsInvestigateBaselineButton)
 
 
-    #======================================
-    # Auto Create Charts Select Chart Type
-    #======================================
     $script:AutoChartsChartTypeBaselineComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
         Text      = 'Point'
         Location = @{ X = $script:AutoChartsInvestigateBaselineButton.Location.X + $script:AutoChartsInvestigateBaselineButton.Size.Width + $($FormScale * 6)
@@ -1600,9 +1441,6 @@ script:Update-MultiSeriesChart
     $script:AutoChartsManipulationPanel.Controls.Add($script:AutoChartsChartTypeBaselineComboBox)
 
 
-    #===============================
-    # Change the color of the chart
-    #===============================
     $script:AutoChartsChangeColorBaselineComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
         Text      = "Orange"
         Location = @{ X = $script:AutoChartsChartTypeBaselineComboBox.Location.X + $script:AutoChartsChartTypeBaselineComboBox.Size.Width + $($FormScale * 6)
@@ -1629,11 +1467,6 @@ script:Update-MultiSeriesChart
     $script:AutoChartsManipulationPanel.Controls.Add($script:AutoChartsChangeColorBaselineComboBox)
 
 
-    #==================================================================================================================
-    #==================================================================================================================
-    # Auto Chart - Display Legend Checkbox
-    #==================================================================================================================
-    #==================================================================================================================
     $script:AutoChartsLegendCheckBox = New-Object System.Windows.Forms.Checkbox -Property @{
         Text      = 'Display Legend'
         Location  = @{ X = $script:AutoChartsDisplayBaselineSeriesCheckBox.Location.X
@@ -1650,9 +1483,6 @@ script:Update-MultiSeriesChart
     $script:AutoChartsManipulationPanel.Controls.Add($script:AutoChartsLegendCheckBox)
 
 
-    #=======================================
-    # Auto Create Charts Select Chart Label
-    #=======================================
     $script:AutoChartsChartTypeApplyAllLabel = New-Object System.Windows.Forms.Label -Property @{
         Text     = 'Apply To All -->'
         Location = @{ X = $script:AutoChartsInvestigateBaselineButton.Location.X
@@ -1664,9 +1494,6 @@ script:Update-MultiSeriesChart
     $script:AutoChartsManipulationPanel.Controls.Add($script:AutoChartsChartTypeApplyAllLabel)
 
 
-    #======================================
-    # Auto Create Charts Select Chart Type
-    #======================================
     $script:AutoChartsChartTypeComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
         Text      = 'Column'
         Location = @{ X = $script:AutoChartsChartTypeBaselineComboBox.Location.X
@@ -1702,9 +1529,6 @@ script:Update-MultiSeriesChart
     $script:AutoChartsManipulationPanel.Controls.Add($script:AutoChartsChartTypeComboBox)
 
 
-    #====================================================
-    # Auto Charts Toggle 3D on/off and inclination angle
-    #====================================================
     $script:AutoCharts3DToggleButton = New-Object Windows.Forms.Button -Property @{
         Text      = "3D Off"
         Location  = @{ X = $script:AutoChartsResultsBaselineButton.Location.X
@@ -1745,8 +1569,8 @@ script:Update-MultiSeriesChart
 # SIG # Begin signature block
 # MIIFuAYJKoZIhvcNAQcCoIIFqTCCBaUCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUoA0e5egSMOQw1wvKpOtX0Mr/
-# jymgggM6MIIDNjCCAh6gAwIBAgIQeugH5LewQKBKT6dPXhQ7sDANBgkqhkiG9w0B
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUgM9DILnP4B0c33bJ7A90+OD7
+# qiagggM6MIIDNjCCAh6gAwIBAgIQeugH5LewQKBKT6dPXhQ7sDANBgkqhkiG9w0B
 # AQUFADAzMTEwLwYDVQQDDChQb1NoLUVhc3lXaW4gQnkgRGFuIEtvbW5pY2sgKGhp
 # Z2gxMDFicm8pMB4XDTIxMTIxNDA1MDIwMFoXDTMxMTIxNDA1MTIwMFowMzExMC8G
 # A1UEAwwoUG9TaC1FYXN5V2luIEJ5IERhbiBLb21uaWNrIChoaWdoMTAxYnJvKTCC
@@ -1767,11 +1591,11 @@ script:Update-MultiSeriesChart
 # YXN5V2luIEJ5IERhbiBLb21uaWNrIChoaWdoMTAxYnJvKQIQeugH5LewQKBKT6dP
 # XhQ7sDAJBgUrDgMCGgUAoHgwGAYKKwYBBAGCNwIBDDEKMAigAoAAoQKAADAZBgkq
 # hkiG9w0BCQMxDAYKKwYBBAGCNwIBBDAcBgorBgEEAYI3AgELMQ4wDAYKKwYBBAGC
-# NwIBFTAjBgkqhkiG9w0BCQQxFgQUqpCXekkcfB1/iR+fQka1lIYaTRcwDQYJKoZI
-# hvcNAQEBBQAEggEAfQrCpn2HId/Gv+Wk+Bp2vRHauUlnkHNySDSf4xHODPVv7X9S
-# erDllbfrTzd0SpQCXhrh5WUMbP6sSQm68UE3sJKv0OFS0wjy9MxvB7x/C08MrJDT
-# LV1+h/SazuWdX7kjdnLxRAh9/0U5J/grMEvljtdqA8BnxImwpsivQAIbmseeFMSm
-# mIBDKqQzLB5Ms21sh4W3Jx7CcZCup+SgBzv7HsRnCInDotIT8dEAkc+ff6zbYS3K
-# I+K6Y6oGtlEVoJR1pqN0ouxdiyiAzJCYdlFlH5Qax7PvikvgIERe3eJBI2kn2A2A
-# h+XJ/0rZlmPAJQw3FR5+9XqXgnkfN6lEgGOaNg==
+# NwIBFTAjBgkqhkiG9w0BCQQxFgQU1Jcu++++M2tiu5TeYwlqz9/LEDowDQYJKoZI
+# hvcNAQEBBQAEggEAeFjYNrlfrV2bpgVGABvGKsIlp/TK1nZjZpWbkNSuLECVQIM4
+# IIDeASqRSeA5EufVwlfItD8ls7BFMFKh/hGBROUWv4ZUSttGEh6/n1ifWhYIM2Mn
+# CNdoDPSlmrPlRtTIC2rVZxj7BuMGZbEkgQo2GtxrWmON+9LymMYl1CI5qV0fTZJg
+# szMnAWLg2k1WtMwvF1k/VtooT7Av4sW6OToTvpuw0/rMpUCvExiMzYb8eudA4dK5
+# P/vNvzeAsGrclQEMhy2KIMtLlsvTM8UCfDPwe7bUSLzd1i8fuW8xkoo4h4/VKY5A
+# bhULz7pwIw74V9+jV5WNzASItJlj3wlwyFvuog==
 # SIG # End signature block

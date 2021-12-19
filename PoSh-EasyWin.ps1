@@ -115,11 +115,8 @@
 #>
 
 [CmdletBinding(
-    #ConfirmImpact=<String>,
     DefaultParameterSetName='GUI',
     HelpURI='https://github.com/high101bro/PoSh-EasyWin',
-    #SupportsPaging=$true,
-    #SupportsShouldProcess=$true,
     PositionalBinding = $true)]
 
 param (
@@ -1549,12 +1546,13 @@ $script:WinRmCommandCountHistory = $false
 $ExecuteScriptHandler = {
     [System.Windows.Forms.Application]::UseWaitCursor = $true
 
+    $GetDate = (Get-Date).ToString('yyyy-MM-dd HH.mm.ss')
     if ($ResultsFolderAutoTimestampCheckbox.Checked -eq $true -and $SaveResultsToFileShareCheckbox.Checked -eq $false) {
-        $script:CollectedDataTimeStampDirectory = "$CollectedDataDirectory\$((Get-Date).ToString('yyyy-MM-dd HH.mm.ss'))"
+        $script:CollectedDataTimeStampDirectory = "$CollectedDataDirectory\$GetDate"
         $script:CollectionSavedDirectoryTextBox.Text = $script:CollectedDataTimeStampDirectory
     }
     elseif ($ResultsFolderAutoTimestampCheckbox.Checked -eq $true -and $SaveResultsToFileShareCheckbox.Checked -eq $true) {
-        $script:CollectionSavedDirectoryTextBox.Text = "$($script:SmbShareDriveLetter):\$((Get-Date).ToString('yyyy-MM-dd HH.mm.ss'))"
+        $script:CollectionSavedDirectoryTextBox.Text = "$($script:SmbShareDriveLetter):\$GetDate"
     }
 
     # Clears the Progress bars
@@ -2044,11 +2042,13 @@ if ((Test-Path "$PoShHome\Settings\User Notice And Acknowledgement.txt")) {
     $script:ProgressBarSelectionForm.Topmost = $false
 }
 
+
+
 # SIG # Begin signature block
 # MIIFuAYJKoZIhvcNAQcCoIIFqTCCBaUCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUeU3tnU0P3WKxDaUUAkFy3SzI
-# BSqgggM6MIIDNjCCAh6gAwIBAgIQeugH5LewQKBKT6dPXhQ7sDANBgkqhkiG9w0B
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQU3YqxkrZsrCNrWUTEUdj8ojla
+# 1bygggM6MIIDNjCCAh6gAwIBAgIQeugH5LewQKBKT6dPXhQ7sDANBgkqhkiG9w0B
 # AQUFADAzMTEwLwYDVQQDDChQb1NoLUVhc3lXaW4gQnkgRGFuIEtvbW5pY2sgKGhp
 # Z2gxMDFicm8pMB4XDTIxMTIxNDA1MDIwMFoXDTMxMTIxNDA1MTIwMFowMzExMC8G
 # A1UEAwwoUG9TaC1FYXN5V2luIEJ5IERhbiBLb21uaWNrIChoaWdoMTAxYnJvKTCC
@@ -2069,11 +2069,11 @@ if ((Test-Path "$PoShHome\Settings\User Notice And Acknowledgement.txt")) {
 # YXN5V2luIEJ5IERhbiBLb21uaWNrIChoaWdoMTAxYnJvKQIQeugH5LewQKBKT6dP
 # XhQ7sDAJBgUrDgMCGgUAoHgwGAYKKwYBBAGCNwIBDDEKMAigAoAAoQKAADAZBgkq
 # hkiG9w0BCQMxDAYKKwYBBAGCNwIBBDAcBgorBgEEAYI3AgELMQ4wDAYKKwYBBAGC
-# NwIBFTAjBgkqhkiG9w0BCQQxFgQUN3/3avdYoGPU3lQFAzClJ4N+6FAwDQYJKoZI
-# hvcNAQEBBQAEggEASEyYweOO4eATL36Q8TfNSNum1cYB/s4Dk6YRu8LQc4LTxg/o
-# lDTh/fQioNn5sWD/7FJ2o8p7pa105Z/ZSis9FMKi91C08PXFG/KY0U26TugkUH3Y
-# M3j1Sr7sKQlvHw1hXAyj1eXL/X4Ix79trI9z7T6R5SwVHb3f9uCDtkCZgrmaQY/Q
-# cbHkglLGtHTSs/O1WhARviijtr38GUlS1t/EsVkbxx9Ro5071PvN8X3o6N47htsK
-# +AAtRBjhC3/PUgKGIJxbuQ5cWQGQKJvKgiKy2KOr9YIdnFqtpG2FpZNtygE4nxF9
-# 9sToRin2VR0K/PjQT4qsD+/BsIeh4bjFMl4+3Q==
+# NwIBFTAjBgkqhkiG9w0BCQQxFgQUzYKpCd/lP3OEP2dVssUbt09kar8wDQYJKoZI
+# hvcNAQEBBQAEggEAlITjWKgfMgY97wi0FIvPQ/uMZAAlsh+yz6Z1ryGZ59J7C1uX
+# 2YSG4mzm0iKh4RcS2KlAyWV5kQhUC2zh98jKgxlPoqSxMkVklqVZk5b238uh4TXN
+# YJRHrBSyUfTMJwRUtPx4QkZO4TwS0l4QvmiM+SD89TWBklAuTVMeSrAG8Fd0FOj/
+# WmYIpe3QPV8s6/UThKhWSxGPspcZSv34qXeoy8nBErOtvXTtMd7W4aDtaZON1M4T
+# 7Av+imZG/iQeU7JkMfHOisiaSeUO0ssjvhP4QCNNzvPnpsLPcmctwPkAXyUNtdle
+# c78Ly2i+vQ2iOuubQAJpJlvF7SuaNJsWFiUw4g==
 # SIG # End signature block

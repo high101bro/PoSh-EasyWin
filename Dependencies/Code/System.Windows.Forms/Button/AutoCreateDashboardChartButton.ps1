@@ -40,7 +40,7 @@ $AutoCreateDashboardChartButtonAdd_Click = {
         Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         ForeColor = 'Red'
         AutoCompleteSource = "ListItems"
-        AutoCompleteMode   = "SuggestAppend" # Options are: "Suggest", "Append", "SuggestAppend"
+        AutoCompleteMode   = "SuggestAppend"
     }
     $AutoChartSelectChartComboBox.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { Launch-AutoChartsViewCharts }})
     $AutoChartSelectChartComboBox.Add_Click({
@@ -172,8 +172,8 @@ $AutoCreateDashboardChartButtonAdd_MouseHover = {
 # SIG # Begin signature block
 # MIIFuAYJKoZIhvcNAQcCoIIFqTCCBaUCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUkKzuJoMiiu1JJSjKYFl3EV5w
-# 7t+gggM6MIIDNjCCAh6gAwIBAgIQeugH5LewQKBKT6dPXhQ7sDANBgkqhkiG9w0B
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUTq01qzwPOpo5KbadUliOjWYv
+# 5YygggM6MIIDNjCCAh6gAwIBAgIQeugH5LewQKBKT6dPXhQ7sDANBgkqhkiG9w0B
 # AQUFADAzMTEwLwYDVQQDDChQb1NoLUVhc3lXaW4gQnkgRGFuIEtvbW5pY2sgKGhp
 # Z2gxMDFicm8pMB4XDTIxMTIxNDA1MDIwMFoXDTMxMTIxNDA1MTIwMFowMzExMC8G
 # A1UEAwwoUG9TaC1FYXN5V2luIEJ5IERhbiBLb21uaWNrIChoaWdoMTAxYnJvKTCC
@@ -194,11 +194,11 @@ $AutoCreateDashboardChartButtonAdd_MouseHover = {
 # YXN5V2luIEJ5IERhbiBLb21uaWNrIChoaWdoMTAxYnJvKQIQeugH5LewQKBKT6dP
 # XhQ7sDAJBgUrDgMCGgUAoHgwGAYKKwYBBAGCNwIBDDEKMAigAoAAoQKAADAZBgkq
 # hkiG9w0BCQMxDAYKKwYBBAGCNwIBBDAcBgorBgEEAYI3AgELMQ4wDAYKKwYBBAGC
-# NwIBFTAjBgkqhkiG9w0BCQQxFgQU97dLR06SSlelse/V8tBaxPKzxFAwDQYJKoZI
-# hvcNAQEBBQAEggEASGEuscKK/cl0qW6TCZJK4NhPGLEe7khHyrWG7QV5rK43nCQO
-# OTa/nADvdrgzNkQANOskTKBFS9+jhfHkS+VbwFbVlNy3kTdvXiuczy26vhEv67Ct
-# Uw6Mb/OQGZFoV95AouEYyYkXDjZP/q8R5DWeM8fN3BlpS7xNZK5divfFCmN76nzc
-# evLGNT3SBBBXzago/bLHqLK0szI0Zwalqx25Bi8Zmnabrn8E3Cq3AkLFZdh0zGSB
-# LW1zHVQTugAusmkucwl3pvQb/SYfYddSkCWTdeNev1/nhVHJwLU1JciOgprQyzvE
-# yvQY1LncA0t+GVF1CrKv3ayL9138xzsebs2hzA==
+# NwIBFTAjBgkqhkiG9w0BCQQxFgQU0yoQr11d0/0J4NfkeBHyg1t9gK0wDQYJKoZI
+# hvcNAQEBBQAEggEATHtyNsfwzVfBxesntBdMIA2xW+OE1v1fNUx+2MKzxMnt8XIt
+# u2s2PW3huLxhit11zub16+50N+FwL0qbfWMmHIMroN/KZLbCi60wWWmeTgZjph0p
+# n75IW4KpfsUZPbR2enZtctS+Iq6ImS0rTaVsLdOrEjGUdmDvLk39NlEemfQ8Adxg
+# S068EyUWUa70uGRbaIklNtFCK0WKUhsnNsKiYUUoojCfLI9YX7MpAHQtLThqf623
+# UAujh5AXe30MJ8kU5gBHx8pTI0nsx/94DFgNwSc2Zb8nSXWKSEAPlmwpj5fv395C
+# 2wIyFoBLxqX8tj7oJq5irbclcmXuC+hUjpvLPA==
 # SIG # End signature block

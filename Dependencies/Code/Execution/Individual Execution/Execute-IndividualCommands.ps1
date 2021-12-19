@@ -161,8 +161,6 @@
         $CollectionSavedDirectory = "$script:IndividualHostResults\$CollectionName"
 
         $script:ProgressBarEndpointsProgressBar.Maximum = $script:ComputerList.count
-
-        #batman
         
         $script:Section3AccountDataNotesRichTextBoxPreSave = $Section3HostDataNotesRichTextBox.text
         $Section3HostDataNotesRichTextBox.text = 
@@ -596,11 +594,13 @@ $script:commandstring
     }
 # }
 
+
+
 # SIG # Begin signature block
 # MIIFuAYJKoZIhvcNAQcCoIIFqTCCBaUCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUfZQDrzdUVNxnsGMjgfTk39Gc
-# WUGgggM6MIIDNjCCAh6gAwIBAgIQeugH5LewQKBKT6dPXhQ7sDANBgkqhkiG9w0B
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQU0ACZB0O91YlJV01WMrlWulP8
+# IxSgggM6MIIDNjCCAh6gAwIBAgIQeugH5LewQKBKT6dPXhQ7sDANBgkqhkiG9w0B
 # AQUFADAzMTEwLwYDVQQDDChQb1NoLUVhc3lXaW4gQnkgRGFuIEtvbW5pY2sgKGhp
 # Z2gxMDFicm8pMB4XDTIxMTIxNDA1MDIwMFoXDTMxMTIxNDA1MTIwMFowMzExMC8G
 # A1UEAwwoUG9TaC1FYXN5V2luIEJ5IERhbiBLb21uaWNrIChoaWdoMTAxYnJvKTCC
@@ -621,11 +621,11 @@ $script:commandstring
 # YXN5V2luIEJ5IERhbiBLb21uaWNrIChoaWdoMTAxYnJvKQIQeugH5LewQKBKT6dP
 # XhQ7sDAJBgUrDgMCGgUAoHgwGAYKKwYBBAGCNwIBDDEKMAigAoAAoQKAADAZBgkq
 # hkiG9w0BCQMxDAYKKwYBBAGCNwIBBDAcBgorBgEEAYI3AgELMQ4wDAYKKwYBBAGC
-# NwIBFTAjBgkqhkiG9w0BCQQxFgQUU/LFOvXYHAGcpPohO3P6qLSBxrMwDQYJKoZI
-# hvcNAQEBBQAEggEAh/xJ29fYInrzRBjFlhDGq02P6X1kEq55wJUV2KkUL8W2oQWi
-# Pd0nF+6e3/3H2GLev1u0sDbpDy3GP7BPILj5oMhw1pGDrjljdFbWmUTc7fOGXqI7
-# ebg4iaxwqVqcKOBd/rioB24QzLhFO65zoh0GYnkg2imrwNRLkx5XMEGd8k/Wmf1G
-# oKML44CQk1dU8D8xhNcr3qcLzTrzh9J19fSvYmROsI5ntLaInUi7yb2SJtAX+Hos
-# cdAgOAMwLFR0lpMW5TOVLkQbMclcn7QhVUzClSEw2fSvtoi4qIFKoQYxsrRM1PjD
-# jNiRKAEM4piThOni7FXAgejg3uPfkrIVqLN+9Q==
+# NwIBFTAjBgkqhkiG9w0BCQQxFgQUYDrAAV9nGGznR+7TymhYg5hyIo4wDQYJKoZI
+# hvcNAQEBBQAEggEAhOY87JH5pbNuv3Nmit9+oJlsf0ObYI1LSUCp5fXFyu5fBdfk
+# W0f59yiCPEHXLZ1qSb4MtQoETxYB368aa9W+VtvI3pRQfTpl7A+/LbIEKuvlzigz
+# f4LCuZDeHsaGG0IudWA48/A+K0QKlQ2F+QDCAm352+BHwzT42+qwSMIwwJG/cmp5
+# lSzjCEwdgBBBRazFHmf3RHvSGBJ67ClnojpEQKiWTVLdFeAi/GghM3DB4SHZ+WbY
+# efUY2agh/BYxEKL/Q11dujy+nDNY2HjAZLskp4Yg2CzgDPUCqFH0V6mBVtZvIJAb
+# 4s8tAKRf4quWMp1yeqkiHlWCfqcgvtKRCN1e2A==
 # SIG # End signature block

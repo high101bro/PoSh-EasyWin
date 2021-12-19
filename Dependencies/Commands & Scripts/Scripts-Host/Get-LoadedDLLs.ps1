@@ -1,25 +1,25 @@
-	[cmdletbinding()]
-	Param([bool] $NoHash = $false)
-	$results = Get-Process | Select-Object -ExpandProperty Modules -ErrorAction SilentlyContinue | Sort-Object FileName -Unique | ForEach-Object {
-		if ($_.FileName -ne $null -AND -NOT $NoHash) {
-			$md5  = New-Object -TypeName System.Security.Cryptography.MD5CryptoServiceProvider
-			$hash = [System.BitConverter]::ToString($md5.ComputeHash([System.IO.File]::ReadAllBytes($_.FileName)))
-			$_ | Add-Member -MemberType NoteProperty MD5 $($hash -replace "-","")
-		}
-		else {
-			$_ | Add-Member -MemberType NoteProperty MD5 $null
-		}
-		$_
+[cmdletbinding()]
+Param([bool] $NoHash = $false)
+$results = Get-Process | Select-Object -ExpandProperty Modules -ErrorAction SilentlyContinue | Sort-Object FileName -Unique | ForEach-Object {
+	if ($_.FileName -ne $null -AND -NOT $NoHash) {
+		$md5  = New-Object -TypeName System.Security.Cryptography.MD5CryptoServiceProvider
+		$hash = [System.BitConverter]::ToString($md5.ComputeHash([System.IO.File]::ReadAllBytes($_.FileName)))
+		$_ | Add-Member -MemberType NoteProperty MD5 $($hash -replace "-","")
 	}
-	$results | Select-Object -Property ModuleName,FileName,MD5,Size,Company,Description,FileVersion,Product,ProductVersion
+	else {
+		$_ | Add-Member -MemberType NoteProperty MD5 $null
+	}
+	$_
+}
+$results | Select-Object -Property ModuleName,FileName,MD5,Size,Company,Description,FileVersion,Product,ProductVersion
 
 
 
 # SIG # Begin signature block
 # MIIFuAYJKoZIhvcNAQcCoIIFqTCCBaUCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUPlyq0X/MyuiqcX6+o/lDtTBO
-# n7ygggM6MIIDNjCCAh6gAwIBAgIQeugH5LewQKBKT6dPXhQ7sDANBgkqhkiG9w0B
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUCXcwdAyw3+8SlLjqwd1Px9X0
+# wOKgggM6MIIDNjCCAh6gAwIBAgIQeugH5LewQKBKT6dPXhQ7sDANBgkqhkiG9w0B
 # AQUFADAzMTEwLwYDVQQDDChQb1NoLUVhc3lXaW4gQnkgRGFuIEtvbW5pY2sgKGhp
 # Z2gxMDFicm8pMB4XDTIxMTIxNDA1MDIwMFoXDTMxMTIxNDA1MTIwMFowMzExMC8G
 # A1UEAwwoUG9TaC1FYXN5V2luIEJ5IERhbiBLb21uaWNrIChoaWdoMTAxYnJvKTCC
@@ -40,11 +40,11 @@
 # YXN5V2luIEJ5IERhbiBLb21uaWNrIChoaWdoMTAxYnJvKQIQeugH5LewQKBKT6dP
 # XhQ7sDAJBgUrDgMCGgUAoHgwGAYKKwYBBAGCNwIBDDEKMAigAoAAoQKAADAZBgkq
 # hkiG9w0BCQMxDAYKKwYBBAGCNwIBBDAcBgorBgEEAYI3AgELMQ4wDAYKKwYBBAGC
-# NwIBFTAjBgkqhkiG9w0BCQQxFgQUqZZnIhmxCnTuYWM+hdjQoXTuP5wwDQYJKoZI
-# hvcNAQEBBQAEggEAr6ySAHK9L4hmmx9Xx9NY5zcgq4d2F6BdKPFGg9T8VQ3njTNe
-# cyn34kDeURpcJ5F8olT0huNnmFP0wEixXJzLkAuiGzlK5lT2yHLOhaOsQLqeL9mr
-# Ik1xB5s0LJgpweiXPHK0ohtekHioHcMH9F/SX8dBbUj2RNSzxQ2ZOBMCKp3OrQ2b
-# Mya4KsvD+/AnEhaQkRsqgqfqf7nuvkVos32OUeX7SkZ26wBIdMeGtLgopFJ2XBv1
-# Q9I6i/+X0I3YYrAwnveYsQRLpLcbV8DgfhugMYCgktO8gOWhK8chocBhpfOfP7ux
-# IsdG5mnLj6px3ZpNSXb2xl2knG0ineb+zwUWOw==
+# NwIBFTAjBgkqhkiG9w0BCQQxFgQUHGDgBduZGdGH9bPutcAFBXU5WR4wDQYJKoZI
+# hvcNAQEBBQAEggEAtVVRTdk3nRn4OYi49wu8valBxdVI/lPo2iCJOhkAMkKxSSXq
+# XlLoqhHC0VminBB/LIZ3tRho5utP+jsf7Q3aVkas87bhh0+UX6bNnRsy5G8F96ZM
+# BiY7sAC+b88X5lv6mT6UH6E1gswk5igvC18J20QMJDmZv/2nz637l9c4RsnJJDY8
+# 7jgpcdU+GfHRtpRK3ZnqQYTU86OsgZ28O5HYlboSB5mdhttamrvMvZZAVGNLepZk
+# LrCY30joJ2w9RNR6Y0XS9Eya/1WHpUYPAiN8JXHqVeLfc4iCR2n1tefr1mbmWPWz
+# DOUW2Y+5x41VSnIqRU562grKbntZ3pD6gGyhjA==
 # SIG # End signature block

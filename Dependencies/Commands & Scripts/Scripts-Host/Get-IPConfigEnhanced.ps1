@@ -21,11 +21,12 @@ foreach ($NetAdapter in $GetNetAdapter) {
 $GetNetAdapter | Select-Object -Property Name, InterfaceName, InterfaceDescription, Status, ConnectorPresent, Virtual, AddressFamily, IPAddress, Type, MacAddress, MediaConnectionState, PromiscuousMode, AdminStatus, MediaType, LinkSpeed, MtuSize, FullDuplex, AddressState, PrefixLength, PrefixOrigin, SuffixOrigin, DriverInformation, DriverProvider, DriverVersion, DriverDate, ifIndex, PolicyStore, Speed, ReceiveLinkSpeed, TransmitLinkSpeed, DeviceWakeUpEnable, AdminLocked, NotUserRemovable, ComponentID, HardwareInterface, Hidden, * -ErrorAction SilentlyContinue
 
 
+
 # SIG # Begin signature block
 # MIIFuAYJKoZIhvcNAQcCoIIFqTCCBaUCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUsy+rE82wVSr7PojhnSROGV4M
-# dV6gggM6MIIDNjCCAh6gAwIBAgIQeugH5LewQKBKT6dPXhQ7sDANBgkqhkiG9w0B
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUtPJcdAU1yVgFuvMn4OY/rUHo
+# U3+gggM6MIIDNjCCAh6gAwIBAgIQeugH5LewQKBKT6dPXhQ7sDANBgkqhkiG9w0B
 # AQUFADAzMTEwLwYDVQQDDChQb1NoLUVhc3lXaW4gQnkgRGFuIEtvbW5pY2sgKGhp
 # Z2gxMDFicm8pMB4XDTIxMTIxNDA1MDIwMFoXDTMxMTIxNDA1MTIwMFowMzExMC8G
 # A1UEAwwoUG9TaC1FYXN5V2luIEJ5IERhbiBLb21uaWNrIChoaWdoMTAxYnJvKTCC
@@ -46,11 +47,11 @@ $GetNetAdapter | Select-Object -Property Name, InterfaceName, InterfaceDescripti
 # YXN5V2luIEJ5IERhbiBLb21uaWNrIChoaWdoMTAxYnJvKQIQeugH5LewQKBKT6dP
 # XhQ7sDAJBgUrDgMCGgUAoHgwGAYKKwYBBAGCNwIBDDEKMAigAoAAoQKAADAZBgkq
 # hkiG9w0BCQMxDAYKKwYBBAGCNwIBBDAcBgorBgEEAYI3AgELMQ4wDAYKKwYBBAGC
-# NwIBFTAjBgkqhkiG9w0BCQQxFgQUWRSzB7bS0xrQKe05ThP6tDIt+74wDQYJKoZI
-# hvcNAQEBBQAEggEAoaEtHVq/vdIR63Z9bFRgj2eNeBYFMm4/DZFscDUq3u5xzUk9
-# F/MCRFtSj1Rp+CLOp7vBwstGF3FNwQZt/xoECGr6tKKJXqZdDjQGh/O2q5V3xqZD
-# wd2awpcgCbeCc2TWlk0lKrriqSBpVKDt3enjrq0GEsUqk1AbOEtGj2id+jwUt/dU
-# iXtG9Ri6g5sejuIUilGg51FhZ1Q4ajKu4HOGxJapW9aT8YkUI3qP16czKHCztxIY
-# xaGyX82QqqU25Qn7GubeKoRA4rW7UhAw3rthHtljOtjQ8LvhELrCxFceICAiVFDg
-# sLTp/xq0XfwR+CbAA48CMGkEPHMYn3dp3+AwGA==
+# NwIBFTAjBgkqhkiG9w0BCQQxFgQUyhEraDszbgRHjqCzc1aOFRphUYwwDQYJKoZI
+# hvcNAQEBBQAEggEARV7+LgKBWgqfH3/1Hu5/jFWSlJUcA7b5S6ddu7hvCdOh2jzd
+# 6+RLgczgteGW3iRjlkRSzFQ6Xr35emOIzm+/GCMiXbESB1xS+88Fj3P8lCw6/LqD
+# 9HEVjPXloJF4UwJ072EfV7eCIXBy+mbqP878xtuWFbMQTi+K+WxHG2dM//FfDHCQ
+# ZTnpT5WeP/tHNWTBvnx4Cw6QkF+rt4NyGLRJ/GcuCOygOn5owmC0XpI3WzYcZJkD
+# 0V2mET9pM4l2V+TQ70m7+GuZQHrvADSirGiWYpFj4UsMokWXEKo2EsTiakoV/g3y
+# HvNl0JfT35wSlRJONNmqinqD2Ghic3zd3n/3OQ==
 # SIG # End signature block

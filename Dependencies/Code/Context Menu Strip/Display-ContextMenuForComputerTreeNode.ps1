@@ -391,8 +391,8 @@ Command:
                     Top    = $ComputerTreeNodePopupAddTextBox.Top + $ComputerTreeNodePopupAddTextBox.Height + $($FormScale * 10)
                     Width  = $FormScale * 300
                     Height = $FormScale * 25
-                    AutoCompleteSource = "ListItems" # Options are: FileSystem, HistoryList, RecentlyUsedList, AllURL, AllSystemSources, FileSystemDirectories, CustomSource, ListItems, None
-                    AutoCompleteMode   = "SuggestAppend" # Options are: "Suggest", "Append", "SuggestAppend"
+                    AutoCompleteSource = "ListItems"
+                    AutoCompleteMode   = "SuggestAppend"
                     Font               = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
                 }
                 $ComputerTreeNodeOSCategoryList = $script:ComputerTreeViewData | Select-Object -ExpandProperty OperatingSystem -Unique
@@ -409,8 +409,8 @@ Command:
                     Top    = $ComputerTreeNodePopupOSComboBox.Top + $ComputerTreeNodePopupOSComboBox.Height + $($FormScale * 10)
                     Width  = $FormScale * 300
                     Height = $FormScale * 25
-                    AutoCompleteSource = "ListItems" # Options are: FileSystem, HistoryList, RecentlyUsedList, AllURL, AllSystemSources, FileSystemDirectories, CustomSource, ListItems, None
-                    AutoCompleteMode   = "SuggestAppend" # Options are: "Suggest", "Append", "SuggestAppend"
+                    AutoCompleteSource = "ListItems"
+                    AutoCompleteMode   = "SuggestAppend"
                     Font               = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
                 }
                 $ComputerTreeNodeOUCategoryList = $script:ComputerTreeViewData | Select-Object -ExpandProperty CanonicalName -Unique
@@ -1413,8 +1413,8 @@ function:MultiEndpoint-PSSession -ComputerName <endpoints(s)> -Credential <`$cre
 # SIG # Begin signature block
 # MIIFuAYJKoZIhvcNAQcCoIIFqTCCBaUCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUNbaC8FnEKwXUEWSyxEelfzg9
-# EHOgggM6MIIDNjCCAh6gAwIBAgIQeugH5LewQKBKT6dPXhQ7sDANBgkqhkiG9w0B
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUrjgcLlN6pjY32N+oJ72bkEZb
+# GJygggM6MIIDNjCCAh6gAwIBAgIQeugH5LewQKBKT6dPXhQ7sDANBgkqhkiG9w0B
 # AQUFADAzMTEwLwYDVQQDDChQb1NoLUVhc3lXaW4gQnkgRGFuIEtvbW5pY2sgKGhp
 # Z2gxMDFicm8pMB4XDTIxMTIxNDA1MDIwMFoXDTMxMTIxNDA1MTIwMFowMzExMC8G
 # A1UEAwwoUG9TaC1FYXN5V2luIEJ5IERhbiBLb21uaWNrIChoaWdoMTAxYnJvKTCC
@@ -1435,11 +1435,11 @@ function:MultiEndpoint-PSSession -ComputerName <endpoints(s)> -Credential <`$cre
 # YXN5V2luIEJ5IERhbiBLb21uaWNrIChoaWdoMTAxYnJvKQIQeugH5LewQKBKT6dP
 # XhQ7sDAJBgUrDgMCGgUAoHgwGAYKKwYBBAGCNwIBDDEKMAigAoAAoQKAADAZBgkq
 # hkiG9w0BCQMxDAYKKwYBBAGCNwIBBDAcBgorBgEEAYI3AgELMQ4wDAYKKwYBBAGC
-# NwIBFTAjBgkqhkiG9w0BCQQxFgQUdd/2ekJVlUnoGiLQnGXIC9yEQI8wDQYJKoZI
-# hvcNAQEBBQAEggEAdhA7K7734dEgJWLS6CF6w41loI6h9gc9w7T/D6Zg+sac/t8l
-# nYJ2ghdqvvalVVU0ngGOGQiB0G92vdSGYtU0deZEzE9/Xk8edepAoiaFOBX7GOQm
-# SKshr9Ex5CmUkWeXtuyrdHOqWs+s2pM7Xc+xmlAF4gve2RYM/d/QF42FxwLNhJ05
-# TmOYcGuAYjU2RPTQJ8wwDb4ZBCgicn31K2xeR5gq3qFKMnOlhgSYPaa4wltagfED
-# VJGO4VOtgyiM1A+8pFkw12JnVRq7KC9e1fIfJb90CDd1GCl5OkLVy7mCO/KsMeED
-# NHfxacHGLOUzXiglnwgWixv+OLmWK9sPeWH6lg==
+# NwIBFTAjBgkqhkiG9w0BCQQxFgQUufVpIx3GCR2j5Y7sNl74d7/VK4cwDQYJKoZI
+# hvcNAQEBBQAEggEAZvsx1Waj/ozNswGwp+wAeuNnEH3+rFOs15M/V5L4+gbQAOjS
+# XZ9+sxBj3guSlGWEwf1fkEjFaXSvy8bo0E9PUUZvG6vcCE0ePNrYxM9VCSc+KcJs
+# J/PUwP4o9F8r6MYvaxvHNdo0sV1gZSyL4UhMwh61IQqfcz0UmhRBMq33jx3hMvMh
+# aeVsUpkqynovSsBszti7+F1YLORJvqK6oXrIe5SMJopDB4mQNsVurl/5ltgMvraX
+# FmkU+us951CLbOcUNEMuJUpYaHrHv7lmwLG4OnXsyNrmt+Mqhq3LicGC3zCR+jPf
+# 6i5twOIB596s48pkp0UNz/c1N+tTz9TN/1OIaw==
 # SIG # End signature block

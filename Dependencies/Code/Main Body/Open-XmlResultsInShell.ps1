@@ -101,10 +101,6 @@ function script:Open-XmlResultsInShell {
         { `$ErrorActionPreference = 'Continue'; }
 "@
     Invoke-Expression $Command
-
-    #Start-Sleep 1
-    #Remove-Item C:\Windows\Temp\PoSh-EasyWin -Force -ErrorAction SilentlyContinue
-
 }
 
 
@@ -112,8 +108,8 @@ function script:Open-XmlResultsInShell {
 # SIG # Begin signature block
 # MIIFuAYJKoZIhvcNAQcCoIIFqTCCBaUCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUlzhXRFSogfd+YAIFYilhq6Cw
-# X5egggM6MIIDNjCCAh6gAwIBAgIQeugH5LewQKBKT6dPXhQ7sDANBgkqhkiG9w0B
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUTVaeIlzlU28UaSgtxoENWo3T
+# U3mgggM6MIIDNjCCAh6gAwIBAgIQeugH5LewQKBKT6dPXhQ7sDANBgkqhkiG9w0B
 # AQUFADAzMTEwLwYDVQQDDChQb1NoLUVhc3lXaW4gQnkgRGFuIEtvbW5pY2sgKGhp
 # Z2gxMDFicm8pMB4XDTIxMTIxNDA1MDIwMFoXDTMxMTIxNDA1MTIwMFowMzExMC8G
 # A1UEAwwoUG9TaC1FYXN5V2luIEJ5IERhbiBLb21uaWNrIChoaWdoMTAxYnJvKTCC
@@ -134,11 +130,11 @@ function script:Open-XmlResultsInShell {
 # YXN5V2luIEJ5IERhbiBLb21uaWNrIChoaWdoMTAxYnJvKQIQeugH5LewQKBKT6dP
 # XhQ7sDAJBgUrDgMCGgUAoHgwGAYKKwYBBAGCNwIBDDEKMAigAoAAoQKAADAZBgkq
 # hkiG9w0BCQMxDAYKKwYBBAGCNwIBBDAcBgorBgEEAYI3AgELMQ4wDAYKKwYBBAGC
-# NwIBFTAjBgkqhkiG9w0BCQQxFgQUGxL06n5uLprXmICePnaSt7P6GLEwDQYJKoZI
-# hvcNAQEBBQAEggEAUcLPNdi0iOnCa7ietds2dTij/xIDOJV7zlrD3BW2x01bWupG
-# BeP7xEkxGFO1/YN6r9XskmMxfVKEXnNevlt0mze38SoMXPUdYNFvVGnz4qTpciTq
-# fQpO5WyWqYjyfAUCK0ssENfXIiD/FbWR6xZTGVitlun3xu2/vXKYhmORu1ngcGWG
-# 25ZExPDzlAxT7cSkX903FJoLauWgWnu1C+7MMZlVp8btDuztCwAo35+ydRM7i7p/
-# zSzWa2BmLM4rTf4FCZiaRd4NBbCc0iUCO8vjiwLfE5A6Wp3THMD3MeDDhmRobBd2
-# IEPaCNZIKU0sGFZRZguNpgfRA3GEnNw0ApgSIw==
+# NwIBFTAjBgkqhkiG9w0BCQQxFgQUTTLeUB0emhwGTeC0wnHIl2rnvD8wDQYJKoZI
+# hvcNAQEBBQAEggEAMcnONhUS6Jmyvrx7a+EUSHIV4aL/RTcQCEnMFJs7yHZjYr1A
+# avxvL+hv3ETgdDiWF0Jm9eHWODSbNXi1tqNajdcWpZPGWclbFK/doAsBk/taypHU
+# KNAFrmUzyPNMUNhvncweG3pB4keuATObwBjI5HN196hXy85rvdIHSWJ10QapiZNP
+# u8OrndZ/5nZGxQF3gRVkPGKZFAqFv2Ym9sS2TepHUS1Z+iOK6cYNDz9cts8Clkya
+# p8/N2tjDpI42Ekao4sK+BT5YDYOfotmlAzx8nS3vsQXgUTd5V+79Q7BGEEsgZBbk
+# iJsR+5LHZbkkiCljgpM++3ivjE98EHh/vcMMXA==
 # SIG # End signature block

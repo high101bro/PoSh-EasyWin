@@ -585,7 +585,6 @@ function Monitor-Jobs {
             Width     = `$FormScale * 100
             Height    = `$FormScale * 23
             Add_Click = { 
-                #batman
                 #script:New-PowerShellChart -SourceCSVData `$script:AutoChartDataSourceCsv$JobId -ChartNumber `$count -SeriesName `$Property -TitleAxisX `$Property -TitleAxisY 'Endpoint Count' -PropertyX `$Property -PropertyY 'ComputerName'
                 Generate-AutoChartsCommand -FilePath `$script:AutoChartDataSourceCsv$JobId -QueryName "Processes" -QueryTabName `$script:SeriesName$ChartNumber -PropertyX `$script:PropertyX$ChartNumber -PropertyY `$script:PropertyY$ChartNumber 
             }
@@ -694,8 +693,8 @@ if ($MonitorMode) {
     }
 
     # Creates locations to saves the results from jobs
-    if (-not (Test-Path "$($script:CollectionSavedDirectoryTextBox.Text)\$($CollectionName)")){
-        New-Item -Type Directory "$($script:CollectionSavedDirectoryTextBox.Text)\$($CollectionName)" -Force -ErrorAction SilentlyContinue
+    if (-not (Test-Path "$($script:CollectionSavedDirectoryTextBox.Text)")){
+        New-Item -Type Directory "$($script:CollectionSavedDirectoryTextBox.Text)" -Force -ErrorAction SilentlyContinue
     }
 
     #Get-Job | Sort-Object Id | Select-Object -Last 1 -ExpandProperty ID
@@ -718,7 +717,6 @@ if ($MonitorMode) {
                 `$_.Value.top = `$_.Value.Top - `$script:JobsRowHeight - `$script:JobsRowGap - (`$FormScale * 4)
             }
         }
-
 
         `$script:MonitorJobsTopPosition -= `$script:Section3MonitorJobPanel$JobId.Height + `$script:JobsRowGap
 
@@ -778,14 +776,11 @@ if ($MonitorMode) {
         [System.GC]::Collect()                    
     }
 
-    `$script:SmithScript$JobId         = `$SmithScript
-    `$script:RestartTime$JobId         = `$RestartTime
-    `$script:InputValues$JobId         = `$InputValues
-    `$script:ArgumentList$JobId        = `$ArgumentList 
-    `$script:PSWriteHTMLFilePath$JobId = `$PSWriteHTMLFilePath
-    `$script:PSWriteHTMLOptions$JobId  = `$PSWriteHTMLOptions
-    `$CollectionName$JobId      = `$ComputerName
-
+    `$script:SmithScript$JobId  = `$SmithScript
+    `$script:RestartTime$JobId  = `$RestartTime
+    `$script:InputValues$JobId  = `$InputValues
+    `$script:ArgumentList$JobId = `$ArgumentList 
+    `$CollectionName$JobId      = `$CollectionName
 "@
 
     if ($SMITH) {
@@ -799,31 +794,37 @@ if ($MonitorMode) {
 
     if ($PSWriteHTMLSwitch) {
         Invoke-Expression @"
-        if ("$PSWriteHTML" -eq 'EndpointDataSystemSnapshot') {
+        `$script:PSWriteHTML$JobId         = `$PSWriteHTML
+        `$script:PSWriteHTMLFilePath$JobId = `$PSWriteHTMLFilePath
+        `$script:PSWriteHTMLOptions$JobId  = `$PSWriteHTMLOptions
+        `$CollectionName$JobId             = `$CollectionName
+
+
+        if (`$script:PSWriteHTML$JobId -eq 'EndpointDataSystemSnapshot') {
             `$script:JobName$JobId = "Endpoint Analysis `$(`$(`$script:PSWriteHTMLOptions$JobId).count) `$(`$CollectionName$JobId) (Browser)"
         }
-        elseif ("$PSWriteHTML" -eq 'PSWriteHTMLProcesses') {
+        elseif (`$script:PSWriteHTML$JobId -eq 'PSWriteHTMLProcesses') {
             `$script:JobName$JobId = 'Process Data (Browser)'
         }
-        elseif ("$PSWriteHTML" -eq 'EndpointDataNetworkConnections') {
+        elseif (`$script:PSWriteHTML$JobId -eq 'EndpointDataNetworkConnections') {
             `$script:JobName$JobId = 'Network Connections (Browser)'
         }
-        elseif ("$PSWriteHTML" -eq 'EndpointDataConsoleLogons') {
+        elseif (`$script:PSWriteHTML$JobId -eq 'EndpointDataConsoleLogons') {
             `$script:JobName$JobId = 'Console Logons (Browser)'
         }
-        elseif ("$PSWriteHTML" -eq 'PowerShellSessionsData') {
+        elseif (`$script:PSWriteHTML$JobId -eq 'PowerShellSessionsData') {
             `$script:JobName$JobId = 'PowerShell Sessions (Browser)'
         }
-        elseif ("$PSWriteHTML" -eq 'EndpointApplicationCrashes') {
+        elseif (`$script:PSWriteHTML$JobId -eq 'EndpointApplicationCrashes') {
             `$script:JobName$JobId = 'Application Crashes (Browser)'
         }
-        elseif ("$PSWriteHTML" -eq 'EndpointLogonActivity') {
+        elseif (`$script:PSWriteHTML$JobId -eq 'EndpointLogonActivity') {
             `$script:JobName$JobId = 'Logon Activity (Browser)'
         }
-        elseif ("$PSWriteHTML" -eq 'PSWriteHTMLADUsers') {
+        elseif (`$script:PSWriteHTML$JobId -eq 'PSWriteHTMLADUsers') {
             `$script:JobName$JobId = 'Active Directory Users (Browser)'
         }
-        elseif ("$PSWriteHTML" -eq 'PSWriteHTMLADComputers') {
+        elseif (`$script:PSWriteHTML$JobId -eq 'PSWriteHTMLADComputers') {
             `$script:JobName$JobId = 'Active Directory Computers (Browser)'
         }
 "@
@@ -872,7 +873,7 @@ if ($MonitorMode) {
         `$script:Section3MonitorJobPanel$JobId = New-Object System.Windows.Forms.panel -Property @{
             Left      = `$script:MonitorJobsLeftPosition
             Top       = `$script:MonitorJobsTopPosition
-            Width     = `$FormScale * 730 #batman
+            Width     = `$FormScale * 730
             Height    = `$script:JobsRowHeight + (`$FormScale * 4)
         }
     
@@ -1074,19 +1075,20 @@ if ($MonitorMode) {
                     }
                     `$script:PSWriteHTMLResults$JobId = `$script:CurrentJobs$JobId | Receive-Job -Keep
                     if (`$script:PSWriteHTMLResults$JobId) {
-                        if ("$PSWriteHTML" -eq 'EndpointDataSystemSnapshot') {                            
-                            script:Individual-PSWriteHTML -Title 'Endpoint Snapshot' -Data { script:Invoke-PSWriteHTMLEndpointSnapshot -InputData `$script:PSWriteHTMLResults$JobId -CheckedItems `$script:PSWriteHTMLOptions$JobId -MenuPrompt }
+                        if (`$script:PSWriteHTML$JobId -eq 'EndpointDataSystemSnapshot') {
+                            script:Individual-PSWriteHTML -Title 'Endpoint Snapshot' -Data { 
+                                script:Invoke-PSWriteHTMLEndpointSnapshot -InputData `$script:PSWriteHTMLResults$JobId -CheckedItems `$script:PSWriteHTMLOptions$JobId -MenuPrompt 
+                            } -FilePath `$script:PSWriteHTMLFilePath$JobId
                         }
-                        elseif ("$PSWriteHTML" -eq 'EndpointDataNetworkConnections') {
-                            `$script:PSWriteHTMLResults$JobId = `$script:CurrentJobs$JobId | Receive-Job -Keep
+                        elseif (`$script:PSWriteHTML$JobId -eq 'EndpointDataNetworkConnections') {
                             script:Individual-PSWriteHTML -Title 'Network Connections' -Data {                         
                                 script:Invoke-PSWriteHTMLNetworkConnections -InputData `$script:PSWriteHTMLResults$JobId -MenuPrompt
-                            }
+                            } -FilePath `$script:PSWriteHTMLFilePath$JobId
                         }
                         Invoke-Item `$script:PSWriteHTMLFilePath$JobId
                     }
                     elseif ((Test-Path "`$script:PSWriteHTMLFilePath$JobId")) {
-                        Invoke-Item `$script:PSWriteHTMLFilePath$JobId                    
+                        Invoke-Item `$script:PSWriteHTMLFilePath$JobId
                     }
                     else {
                         [System.Windows.Forms.MessageBox]::Show("There is currently on data available.",'PoSh-EasyWin - Console')
@@ -1869,12 +1871,24 @@ Start-Process 'PowerShell' -ArgumentList '-NoProfile',
                                                                                             `$script:ProgressBarSelectionForm.Hide()
                                                                                         }
 
-                                                                                        `$ChartGenerationOptionsForm.Hide()
+                                                                                        if (`$(`$script:ChartGenerationPropertyList1ListBox.SelectedItems.Count) -gt 6) {
+                                                                                            if (Verify-Action -Title "Generate Charts [`$(`$script:ChartGenerationPropertyList1ListBox.SelectedItems.Count)/`$(`$script:ChartGenerationPropertyList1ListBox.Items.Count)]" -Question "There are a total of `$(`$script:ChartGenerationPropertyList1ListBox.SelectedItems.Count)/`$(`$script:ChartGenerationPropertyList1ListBox.Items.Count) properties selected to generate charts from. This feature is limited to generating charts from the first 50.`n`nIt is highly NOT recommended to generate numerous charts at the same time, as this can cause the GUI to lock up or the tool to crash as charts are being generated.`n`nDo you want to generate charts?") {
+                                                                                                `$ChartGenerationOptionsForm.Hide()
 
-                                                                                        # Generates Column Charts
-                                                                                        Launch-ProgressBarForm -FormTitle "Generating Charts [Column] Unique Values Found" -ProgressBarImage "$Dependencies\Images\PowerShell_Charts.png" -ShowImage -ScriptBlockProgressBarInput `$ScriptBlockProgressBar1Input$JobId
+                                                                                                # Generates Column Charts
+                                                                                                Launch-ProgressBarForm -FormTitle "Generating Charts [Column] Unique Values Found" -ProgressBarImage "$Dependencies\Images\PowerShell_Charts.png" -ShowImage -ScriptBlockProgressBarInput `$ScriptBlockProgressBar1Input$JobId
+        
+                                                                                                `$script:AutoChartsForm.ShowDialog()
+                                                                                            }
+                                                                                        }
+                                                                                        else {
+                                                                                            `$ChartGenerationOptionsForm.Hide()
 
-                                                                                        `$script:AutoChartsForm.ShowDialog()
+                                                                                            # Generates Column Charts
+                                                                                            Launch-ProgressBarForm -FormTitle "Generating Charts [Column] Unique Values Found" -ProgressBarImage "$Dependencies\Images\PowerShell_Charts.png" -ShowImage -ScriptBlockProgressBarInput `$ScriptBlockProgressBar1Input$JobId
+    
+                                                                                            `$script:AutoChartsForm.ShowDialog()
+                                                                                        }
                                                                                     }
                                                                                 }
                                                                                 `$ChartGenerationOptionsForm.Controls.Add(`$ChartGenerationPropertyList3Button)
@@ -2725,7 +2739,6 @@ Start-Process 'PowerShell' -ArgumentList '-NoProfile',
         `$script:PreviousJobFormItemsList += "Section3MonitorJobNotifyCheckbox$JobId"
 "@
 
-
     #############
     #  Tickers  #
     #############
@@ -2851,8 +2864,8 @@ Start-Process 'PowerShell' -ArgumentList '-NoProfile',
                 
                 #if (`$OptionSaveCliXmlDataCheckBox.checked -eq `$false) { `$script:MonitorJobsButtonThree$JobId.BackColor = 'LightCoral' }
                 #else { `$script:MonitorJobsButtonThree$JobId.BackColor = 'LightGreen' }
-                `$script:MonitorJobsButtonThree$JobId.BackColor = 'LightGreen'
 
+                `$script:MonitorJobsButtonThree$JobId.BackColor = 'LightGreen'
                 `$script:MonitorJobsButtonFour$JobId.BackColor = 'LightGreen'
 
                 `$script:JobsTimeCompleted$JobId = Get-Date
@@ -2866,49 +2879,44 @@ Start-Process 'PowerShell' -ArgumentList '-NoProfile',
                     `$script:CurrentJobs$JobId | Receive-Job -Keep | Export-CliXml "`$(`$script:CollectionSavedDirectoryTextBox.Text)\`$script:JobName$JobId (`$(`$JobStartTimeFileFriendly$JobId)).xml"
                 }
 
-                if ("$PSWriteHTML" -eq 'EndpointDataSystemSnapshot') {
+                if (`$script:PSWriteHTML$JobId -eq 'EndpointDataSystemSnapshot') {
                     `$script:PSWriteHTMLResults$JobId = `$script:CurrentJobs$JobId | Receive-Job -Keep
-                    script:Individual-PSWriteHTML -Title 'Endpoint Snapshot' -Data { script:Invoke-PSWriteHTMLEndpointSnapshot -InputData `$script:PSWriteHTMLResults$JobId -CheckedItems `$script:PSWriteHTMLOptions$JobId }
+                    script:Individual-PSWriteHTML -Title 'Endpoint Snapshot' -Data { script:Invoke-PSWriteHTMLEndpointSnapshot -InputData `$script:PSWriteHTMLResults$JobId -CheckedItems `$script:PSWriteHTMLOptions$JobId } -FilePath `$script:PSWriteHTMLFilePath$JobId
                 }
-                elseif ("$PSWriteHTML" -eq 'PSWriteHTMLProcesses') {
+                if (`$script:PSWriteHTML$JobId -eq 'PSWriteHTMLProcesses') {
                     `$script:PSWriteHTMLResults$JobId = `$script:CurrentJobs$JobId | Receive-Job -Keep
-                    script:Individual-PSWriteHTML -Title 'Process Data' -Data { script:Invoke-PSWriteHTMLProcess -InputData `$script:PSWriteHTMLResults$JobId }
+                    script:Individual-PSWriteHTML -Title 'Process Data' -Data { script:Invoke-PSWriteHTMLProcess -InputData `$script:PSWriteHTMLResults$JobId } -FilePath `$script:PSWriteHTMLFilePath$JobId
                 }
-                elseif ("$PSWriteHTML" -eq 'EndpointDataNetworkConnections') {
+                if (`$script:PSWriteHTML$JobId -eq 'EndpointDataNetworkConnections') {
                     `$script:PSWriteHTMLResults$JobId = `$script:CurrentJobs$JobId | Receive-Job -Keep
-                    script:Individual-PSWriteHTML -Title 'Network Connections' -Data {                         
-                        script:Invoke-PSWriteHTMLNetworkConnections -InputData `$script:PSWriteHTMLResults$JobId 
-                    }
+                    script:Individual-PSWriteHTML -Title 'Network Connections' -Data { script:Invoke-PSWriteHTMLNetworkConnections -InputData `$script:PSWriteHTMLResults$JobId } -FilePath `$script:PSWriteHTMLFilePath$JobId
                 }
-                elseif ("$PSWriteHTML" -eq 'EndpointDataConsoleLogons') {
+                if (`$script:PSWriteHTML$JobId -eq 'EndpointDataConsoleLogons') {
                     `$script:PSWriteHTMLResults$JobId = `$script:CurrentJobs$JobId | Receive-Job -Keep
-                    script:Individual-PSWriteHTML -Title 'Console Logons' -Data { script:Invoke-PSWriteHTMLConsoleLogons -InputData `$script:PSWriteHTMLResults$JobId }
+                    script:Individual-PSWriteHTML -Title 'Console Logons' -Data { script:Invoke-PSWriteHTMLConsoleLogons -InputData `$script:PSWriteHTMLResults$JobId } -FilePath `$script:PSWriteHTMLFilePath$JobId
                 }
-                elseif ("$PSWriteHTML" -eq 'PowerShellSessionsData') {
+                if (`$script:PSWriteHTML$JobId -eq 'PowerShellSessionsData') {
                     `$script:PSWriteHTMLResults$JobId = `$script:CurrentJobs$JobId | Receive-Job -Keep
-                    script:Individual-PSWriteHTML -Title 'PowerShell Sessions' -Data { script:Invoke-PSWriteHTMLPowerShellSessions -InputData `$script:PSWriteHTMLResults$JobId }
+                    script:Individual-PSWriteHTML -Title 'PowerShell Sessions' -Data { script:Invoke-PSWriteHTMLPowerShellSessions -InputData `$script:PSWriteHTMLResults$JobId } -FilePath `$script:PSWriteHTMLFilePath$JobId
                 }
-                elseif ("$PSWriteHTML" -eq 'EndpointLogonActivity') {
+                if (`$script:PSWriteHTML$JobId -eq 'EndpointLogonActivity') {
                     `$script:PSWriteHTMLResults$JobId = `$script:CurrentJobs$JobId | Receive-Job -Keep
-                    script:Individual-PSWriteHTML -Title 'Logon Activity' -Data { script:Invoke-PSWriteHTMLLogonActivity -InputData `$script:PSWriteHTMLResults$JobId }
+                    script:Individual-PSWriteHTML -Title 'Logon Activity' -Data { script:Invoke-PSWriteHTMLLogonActivity -InputData `$script:PSWriteHTMLResults$JobId } -FilePath `$script:PSWriteHTMLFilePath$JobId
                 }
-                elseif ("$PSWriteHTML" -eq 'PSWriteHTMLADUsers') {
+                if (`$script:PSWriteHTML$JobId -eq 'PSWriteHTMLADUsers') {
                     `$script:PSWriteHTMLResults$JobId = `$script:CurrentJobs$JobId | Receive-Job -Keep
-                    script:Individual-PSWriteHTML -Title 'AD Users' -Data { script:Start-PSWriteHTMLActiveDirectoryUsers }
+                    script:Individual-PSWriteHTML -Title 'AD Users' -Data { script:Start-PSWriteHTMLActiveDirectoryUsers } -FilePath `$script:PSWriteHTMLFilePath$JobId
                 }
-                elseif ("$PSWriteHTML" -eq 'PSWriteHTMLADComputers') {
+                if (`$script:PSWriteHTML$JobId -eq 'PSWriteHTMLADComputers') {
                     `$script:PSWriteHTMLResults$JobId = `$script:CurrentJobs$JobId | Receive-Job -Keep
-                    script:Individual-PSWriteHTML -Title 'AD Computers' -Data { script:Start-PSWriteHTMLActiveDirectoryComputers }
+                    script:Individual-PSWriteHTML -Title 'AD Computers' -Data { script:Start-PSWriteHTMLActiveDirectoryComputers } -FilePath `$script:PSWriteHTMLFilePath$JobId
                 }
 
-                
                 `$script:Section3MonitorJobProgressBar$JobId.Maximum = 1
                 `$script:Section3MonitorJobProgressBar$JobId.Value = 1
                 `$script:Section3MonitorJobProgressBar$JobId.Refresh()
 
-                if (`$script:Section3MonitorJobNotifyCheckbox$JobId.checked -eq `$true){
-                    [System.Windows.Forms.MessageBox]::Show("`$(`$script:JobName$JobId)`n`nTime Completed:`n     `$(`$script:JobsTimeCompleted$JobId)",'PoSh-EasyWin')
-                }
+                if (`$script:Section3MonitorJobNotifyCheckbox$JobId.checked -eq `$true){ [System.Windows.Forms.MessageBox]::Show("`$(`$script:JobName$JobId)`n`nTime Completed:`n     `$(`$script:JobsTimeCompleted$JobId)",'PoSh-EasyWin') }
             }
             else {
                 `$script:Section3MonitorJobLabel$JobId.text = "`$(`$script:JobStartTime$JobId)`n   `$(`$((New-TimeSpan -Start (`$script:JobStartTime$JobId)).ToString()))"
@@ -3312,159 +3320,159 @@ Start-Process 'PowerShell' -ArgumentList '-NoProfile',
 
 
 
-#########################################################
-# Individual Execution, is not the same as Monitor Mode #
-#########################################################
+    #########################################################
+    # Individual Execution, is not the same as Monitor Mode #
+    #########################################################
 
-if (-not $MonitorMode) {
-    $MainBottomTabControl.SelectedTab = $Section3ResultsTab
+    if (-not $MonitorMode) {
+        $MainBottomTabControl.SelectedTab = $Section3ResultsTab
 
-    # Creates locations to saves the results from jobs
-    if (-not (Test-Path "$($script:CollectionSavedDirectoryTextBox.Text)\$($CollectionName)")){
-        New-Item -Type Directory "$($script:CollectionSavedDirectoryTextBox.Text)\$($CollectionName)" -Force -ErrorAction SilentlyContinue
-    }
-
-    # Initially updates statistics
-    $StatisticsResults = Get-PoShEasyWinStatistics
-    $StatisticsNumberOfCSVs.text = $StatisticsResults
-
-    $SleepMilliSeconds = 250
-    $script:ProgressBarEndpointsProgressBar.Value = 0
-    $script:ProgressBarFormProgressBar.Value      = 0
-
-    # Sets the job timeout value, so they don't run forever
-    $script:JobsTimer  = [int]$($script:OptionJobTimeoutSelectionComboBox.Text)
-    # This is how often the statistics page updates, be default it is 20 which is 5 Seconds (250 ms x 4)
-    $StatisticsUpdateInterval      = (1000 / $SleepMilliSeconds) * 5
-    $StatisticsUpdateIntervalCount = 0
-
-    # The number of Jobs created by PoSh-EasyWin
-    $JobsCount = (Get-Job -Name "PoSh-EasyWin:*").count
-    $script:ProgressBarEndpointsProgressBar.Maximum = $JobsCount
-    $script:ProgressBarFormProgressBar.Maximum      = $JobsCount
-
-    $Done = 0
-
-    do {
-        # Updates Statistics
-        $StatisticsUpdateIntervalCount++
-        if (($StatisticsUpdateIntervalCount % $StatisticsUpdateInterval) -eq 0) {
-            $StatisticsResults = Get-PoShEasyWinStatistics
-            $StatisticsNumberOfCSVs.text = $StatisticsResults
+        # Creates locations to saves the results from jobs
+        if (-not (Test-Path "$($script:CollectionSavedDirectoryTextBox.Text)\$($CollectionName)")){
+            New-Item -Type Directory "$($script:CollectionSavedDirectoryTextBox.Text)\$($CollectionName)" -Force -ErrorAction SilentlyContinue
         }
+
+        # Initially updates statistics
+        $StatisticsResults = Get-PoShEasyWinStatistics
+        $StatisticsNumberOfCSVs.text = $StatisticsResults
+
+        $SleepMilliSeconds = 250
+        $script:ProgressBarEndpointsProgressBar.Value = 0
+        $script:ProgressBarFormProgressBar.Value      = 0
+
+        # Sets the job timeout value, so they don't run forever
+        $script:JobsTimer  = [int]$($script:OptionJobTimeoutSelectionComboBox.Text)
+        # This is how often the statistics page updates, be default it is 20 which is 5 Seconds (250 ms x 4)
+        $StatisticsUpdateInterval      = (1000 / $SleepMilliSeconds) * 5
+        $StatisticsUpdateIntervalCount = 0
 
         # The number of Jobs created by PoSh-EasyWin
-        $CurrentJobs = Get-Job -Name "PoSh-EasyWin:*"
+        $JobsCount = (Get-Job -Name "PoSh-EasyWin:*").count
+        $script:ProgressBarEndpointsProgressBar.Maximum = $JobsCount
+        $script:ProgressBarFormProgressBar.Maximum      = $JobsCount
 
-        # Breaks loops if there are not jobs
-        if ($CurrentJobs.count -eq 0) {break}
+        $Done = 0
+
+        do {
+            # Updates Statistics
+            $StatisticsUpdateIntervalCount++
+            if (($StatisticsUpdateIntervalCount % $StatisticsUpdateInterval) -eq 0) {
+                $StatisticsResults = Get-PoShEasyWinStatistics
+                $StatisticsNumberOfCSVs.text = $StatisticsResults
+            }
+
+            # The number of Jobs created by PoSh-EasyWin
+            $CurrentJobs = Get-Job -Name "PoSh-EasyWin:*"
+
+            # Breaks loops if there are not jobs
+            if ($CurrentJobs.count -eq 0) {break}
 
 
 
-        # Calcualtes and formats time elaspsed
-        $CurrentTime = Get-Date
-        $Timecount   = $ExecutionStartTime - $CurrentTime
-        $Hour        = [Math]::Truncate($Timecount)
-        $Minute      = ($CollectionTime - $Hour) * 60
-        $Second      = [int](($Minute - ([Math]::Truncate($Minute))) * 60)
-        $Minute      = [Math]::Truncate($Minute)
-        $Timecount   = [datetime]::Parse("$Hour`:$Minute`:$Second")
+            # Calcualtes and formats time elaspsed
+            $CurrentTime = Get-Date
+            $Timecount   = $ExecutionStartTime - $CurrentTime
+            $Hour        = [Math]::Truncate($Timecount)
+            $Minute      = ($CollectionTime - $Hour) * 60
+            $Second      = [int](($Minute - ([Math]::Truncate($Minute))) * 60)
+            $Minute      = [Math]::Truncate($Minute)
+            $Timecount   = [datetime]::Parse("$Hour`:$Minute`:$Second")
 
-        # Provides updates on the jobs
-        $ResultsListBox.Items.Insert(0,"Running Jobs:  $($JobsCount - $Done)")
-        $ResultsListBox.Items.Insert(1,"Current Time:  $($CurrentTime)")
-        $ResultsListBox.Items.Insert(2,"Elasped Time:  $($Timecount -replace '-','')")
-        $ResultsListBox.Items.Insert(3,"")
+            # Provides updates on the jobs
+            $ResultsListBox.Items.Insert(0,"Running Jobs:  $($JobsCount - $Done)")
+            $ResultsListBox.Items.Insert(1,"Current Time:  $($CurrentTime)")
+            $ResultsListBox.Items.Insert(2,"Elasped Time:  $($Timecount -replace '-','')")
+            $ResultsListBox.Items.Insert(3,"")
 
-        # From ProgressBar Update (if used)
-        $script:ProgressBarMainLabel.text = "Status:
-   Running Jobs:  $($JobsCount - $Done)
-   Current Time:  $($CurrentTime)
-   Elasped Time:  $($Timecount -replace '-','')"
+            # From ProgressBar Update (if used)
+            $script:ProgressBarMainLabel.text = "Status:
+Running Jobs:  $($JobsCount - $Done)
+Current Time:  $($CurrentTime)
+Elasped Time:  $($Timecount -replace '-','')"
 
-        # This is how often PoSoh-EasyWin's GUI will refresh when provide the status of the jobs
-        # Default have is 250 ms. If you change this, be sure to update the $StatisticsUpdateInterval variarible within this function
-        Start-Sleep -MilliSeconds $SleepMilliSeconds
-        $ResultsListBox.Refresh()
+            # This is how often PoSoh-EasyWin's GUI will refresh when provide the status of the jobs
+            # Default have is 250 ms. If you change this, be sure to update the $StatisticsUpdateInterval variarible within this function
+            Start-Sleep -MilliSeconds $SleepMilliSeconds
+            $ResultsListBox.Refresh()
 
-        # Checks if the current job is running too long and stops it
-        foreach ($Job in $CurrentJobs) {
-            # Gets the results from jobs that are completed, saves them, and deletes the job
-            if ( $Job.State -eq 'Completed' ) {
-                $Done++
-                $script:ProgressBarEndpointsProgressBar.Value = $Done
-                $script:ProgressBarFormProgressBar.Value      = $Done
+            # Checks if the current job is running too long and stops it
+            foreach ($Job in $CurrentJobs) {
+                # Gets the results from jobs that are completed, saves them, and deletes the job
+                if ( $Job.State -eq 'Completed' ) {
+                    $Done++
+                    $script:ProgressBarEndpointsProgressBar.Value = $Done
+                    $script:ProgressBarFormProgressBar.Value      = $Done
 
-                $JobName     = $Job.Name  -replace 'PoSh-EasyWin: ',''
-                $JobReceived = $Job | Receive-Job #-Keep
+                    $JobName     = $Job.Name  -replace 'PoSh-EasyWin: ',''
+                    $JobReceived = $Job | Receive-Job #-Keep
 
-                if (-not $NotExportFiles) {
-                    if ($job.Location -notmatch $(($Job.Name -split ' ')[-1]) ) {
-                        if ($SaveProperties) {
-                            # This is needed because when jobs are started locally that use invoke-command, the localhost is used as the PSComputerName becuase it started the job rather than the invoke-command to a remote computer
-                            $JobReceived | Select-Object @{n='PSComputerName';e={"$(($Job.Name -split ' ')[-1])"}},* -ErrorAction SilentlyContinue | Select-Object $(iex $SaveProperties) | Export-CSV    "$($script:CollectionSavedDirectoryTextBox.Text)\$CollectionName\$JobName.csv" $NoTypeInfo
-                            if ($OptionSaveCliXmlDataCheckBox.checked -eq $true) {
-                                $JobReceived | Select-Object @{n='PSComputerName';e={"$(($Job.Name -split ' ')[-1])"}},* -ErrorAction SilentlyContinue | Select-Object $(iex $SaveProperties) | Export-Clixml "$($script:CollectionSavedDirectoryTextBox.Text)\$CollectionName\$JobName.xml"
+                    if (-not $NotExportFiles) {
+                        if ($job.Location -notmatch $(($Job.Name -split ' ')[-1]) ) {
+                            if ($SaveProperties) {
+                                # This is needed because when jobs are started locally that use invoke-command, the localhost is used as the PSComputerName becuase it started the job rather than the invoke-command to a remote computer
+                                $JobReceived | Select-Object @{n='PSComputerName';e={"$(($Job.Name -split ' ')[-1])"}},* -ErrorAction SilentlyContinue | Select-Object $(iex $SaveProperties) | Export-CSV    "$($script:CollectionSavedDirectoryTextBox.Text)\$CollectionName\$JobName.csv" $NoTypeInfo
+                                if ($OptionSaveCliXmlDataCheckBox.checked -eq $true) {
+                                    $JobReceived | Select-Object @{n='PSComputerName';e={"$(($Job.Name -split ' ')[-1])"}},* -ErrorAction SilentlyContinue | Select-Object $(iex $SaveProperties) | Export-Clixml "$($script:CollectionSavedDirectoryTextBox.Text)\$CollectionName\$JobName.xml"
+                                }
+                            }
+                            else {
+                                # This is needed because when jobs are started locally that use inovke-command, the localhost is used as the PSComputerName becuase it started the job rather than the invoke-command to a remote computer
+                                $JobReceived | Select-Object @{n='PSComputerName';e={"$(($Job.Name -split ' ')[-1])"}},* -ErrorAction SilentlyContinue | Export-CSV "$($script:CollectionSavedDirectoryTextBox.Text)\$CollectionName\$JobName.csv" $NoTypeInfo
+                                if ($OptionSaveCliXmlDataCheckBox.checked -eq $true) {
+                                    $JobReceived | Select-Object @{n='PSComputerName';e={"$(($Job.Name -split ' ')[-1])"}},* -ErrorAction SilentlyContinue | Export-Clixml "$($script:CollectionSavedDirectoryTextBox.Text)\$CollectionName\$JobName.xml"
+                                }
                             }
                         }
                         else {
-                            # This is needed because when jobs are started locally that use inovke-command, the localhost is used as the PSComputerName becuase it started the job rather than the invoke-command to a remote computer
-                            $JobReceived | Select-Object @{n='PSComputerName';e={"$(($Job.Name -split ' ')[-1])"}},* -ErrorAction SilentlyContinue | Export-CSV "$($script:CollectionSavedDirectoryTextBox.Text)\$CollectionName\$JobName.csv" $NoTypeInfo
-                            if ($OptionSaveCliXmlDataCheckBox.checked -eq $true) {
-                                $JobReceived | Select-Object @{n='PSComputerName';e={"$(($Job.Name -split ' ')[-1])"}},* -ErrorAction SilentlyContinue | Export-Clixml "$($script:CollectionSavedDirectoryTextBox.Text)\$CollectionName\$JobName.xml"
+                            if ($SaveProperties) {
+                                $JobReceived | Select-Object $(iex $SaveProperties) | Export-CSV    "$($script:CollectionSavedDirectoryTextBox.Text)\$CollectionName\$JobName.csv" $NoTypeInfo
+                                if ($OptionSaveCliXmlDataCheckBox.checked -eq $true) {
+                                    $JobReceived | Select-Object $(iex $SaveProperties) | Export-Clixml "$($script:CollectionSavedDirectoryTextBox.Text)\$CollectionName\$JobName.xml"
+                                }
+                            }
+                            else {
+                                $JobReceived | Export-CSV    "$($script:CollectionSavedDirectoryTextBox.Text)\$CollectionName\$JobName.csv" $NoTypeInfo
+                                if ($OptionSaveCliXmlDataCheckBox.checked -eq $true) {
+                                    $JobReceived | Export-Clixml "$($script:CollectionSavedDirectoryTextBox.Text)\$CollectionName\$JobName.xml"
+                                }
                             }
                         }
                     }
-                    else {
-                        if ($SaveProperties) {
-                            $JobReceived | Select-Object $(iex $SaveProperties) | Export-CSV    "$($script:CollectionSavedDirectoryTextBox.Text)\$CollectionName\$JobName.csv" $NoTypeInfo
-                            if ($OptionSaveCliXmlDataCheckBox.checked -eq $true) {
-                                $JobReceived | Select-Object $(iex $SaveProperties) | Export-Clixml "$($script:CollectionSavedDirectoryTextBox.Text)\$CollectionName\$JobName.xml"
-                            }
-                        }
-                        else {
-                            $JobReceived | Export-CSV    "$($script:CollectionSavedDirectoryTextBox.Text)\$CollectionName\$JobName.csv" $NoTypeInfo
-                            if ($OptionSaveCliXmlDataCheckBox.checked -eq $true) {
-                                $JobReceived | Export-Clixml "$($script:CollectionSavedDirectoryTextBox.Text)\$CollectionName\$JobName.xml"
-                            }
-                        }
-                    }
+                    $Job | Remove-Job -Force
                 }
-                $Job | Remove-Job -Force
+                elseif ($CurrentTime -gt ($Job.PSBeginTime).AddSeconds($script:JobsTimer)) {
+                    $TimeStamp = $($CurrentTime).ToString('yyyy/MM/dd HH:mm:ss')
+                    $ResultsListBox.Items.insert(5,"$($TimeStamp)   - Job Timed Out: $((($Job | Select-Object -ExpandProperty Name) -split '-')[-1])")
+                    $Job | Stop-Job
+                    $Job | Receive-Job -Force
+                    $Job | Remove-Job -Force
+                    Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message " - Job [TIMED OUT]: `"$($Job.Name)`" - Started at $($Job.PSBeginTime) - Ran for $($CurrentTime - $Job.PSBeginTime)"
+                    break
+                }
             }
-            elseif ($CurrentTime -gt ($Job.PSBeginTime).AddSeconds($script:JobsTimer)) {
-                $TimeStamp = $($CurrentTime).ToString('yyyy/MM/dd HH:mm:ss')
-                $ResultsListBox.Items.insert(5,"$($TimeStamp)   - Job Timed Out: $((($Job | Select-Object -ExpandProperty Name) -split '-')[-1])")
-                $Job | Stop-Job
-                $Job | Receive-Job -Force
-                $Job | Remove-Job -Force
-                Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message " - Job [TIMED OUT]: `"$($Job.Name)`" - Started at $($Job.PSBeginTime) - Ran for $($CurrentTime - $Job.PSBeginTime)"
-                break
+
+            $ResultsListBox.Items.RemoveAt(0)
+            $ResultsListBox.Items.RemoveAt(0)
+            $ResultsListBox.Items.RemoveAt(0)
+            $ResultsListBox.Items.RemoveAt(0)
+        } while ($Done -lt $JobsCount)
+
+        # Logs Jobs Beginning and Ending Times
+        foreach ($Job in $CurrentJobs) {
+            if ($($Job.PSEndTime -ne $null)) {
+            # $TimeStamp = $(Get-Date).ToString('yyyy/MM/dd HH:mm:ss')
+                #$ResultsListBox.Items.insert(1,"$($TimeStamp)   - Job Completed: $((($Job | Select-Object -ExpandProperty Name) -split ' ')[-1])")
+                Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "$($TimeStamp)  Job [COMPLETED]: `"$($Job.Name)`" - Started at $($Job.PSBeginTime) - Ended at $($Job.PSEndTime)"
             }
         }
 
-        $ResultsListBox.Items.RemoveAt(0)
-        $ResultsListBox.Items.RemoveAt(0)
-        $ResultsListBox.Items.RemoveAt(0)
-        $ResultsListBox.Items.RemoveAt(0)
-    } while ($Done -lt $JobsCount)
-
-    # Logs Jobs Beginning and Ending Times
-    foreach ($Job in $CurrentJobs) {
-        if ($($Job.PSEndTime -ne $null)) {
-           # $TimeStamp = $(Get-Date).ToString('yyyy/MM/dd HH:mm:ss')
-            #$ResultsListBox.Items.insert(1,"$($TimeStamp)   - Job Completed: $((($Job | Select-Object -ExpandProperty Name) -split ' ')[-1])")
-            Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "$($TimeStamp)  Job [COMPLETED]: `"$($Job.Name)`" - Started at $($Job.PSBeginTime) - Ended at $($Job.PSEndTime)"
-        }
+        # Updates Statistics One last time
+        $StatisticsResults           = Get-PoShEasyWinStatistics
+        $StatisticsNumberOfCSVs.text = $StatisticsResults
+        Get-Job -Name "PoSh-EasyWin:*" | Remove-Job -Force -ErrorAction SilentlyContinue
+        $PoShEasyWin.Refresh()
+        Start-Sleep -Seconds 1
     }
-
-    # Updates Statistics One last time
-    $StatisticsResults           = Get-PoShEasyWinStatistics
-    $StatisticsNumberOfCSVs.text = $StatisticsResults
-    Get-Job -Name "PoSh-EasyWin:*" | Remove-Job -Force -ErrorAction SilentlyContinue
-    $PoShEasyWin.Refresh()
-    Start-Sleep -Seconds 1
-}
 
 
 }
@@ -3473,8 +3481,8 @@ if (-not $MonitorMode) {
 # SIG # Begin signature block
 # MIIFuAYJKoZIhvcNAQcCoIIFqTCCBaUCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUtn7iyo34PERB0S51jTzTiLOf
-# a06gggM6MIIDNjCCAh6gAwIBAgIQeugH5LewQKBKT6dPXhQ7sDANBgkqhkiG9w0B
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUzWb91PPsuWjZs9TxZCTsYI7V
+# +OSgggM6MIIDNjCCAh6gAwIBAgIQeugH5LewQKBKT6dPXhQ7sDANBgkqhkiG9w0B
 # AQUFADAzMTEwLwYDVQQDDChQb1NoLUVhc3lXaW4gQnkgRGFuIEtvbW5pY2sgKGhp
 # Z2gxMDFicm8pMB4XDTIxMTIxNDA1MDIwMFoXDTMxMTIxNDA1MTIwMFowMzExMC8G
 # A1UEAwwoUG9TaC1FYXN5V2luIEJ5IERhbiBLb21uaWNrIChoaWdoMTAxYnJvKTCC
@@ -3495,11 +3503,11 @@ if (-not $MonitorMode) {
 # YXN5V2luIEJ5IERhbiBLb21uaWNrIChoaWdoMTAxYnJvKQIQeugH5LewQKBKT6dP
 # XhQ7sDAJBgUrDgMCGgUAoHgwGAYKKwYBBAGCNwIBDDEKMAigAoAAoQKAADAZBgkq
 # hkiG9w0BCQMxDAYKKwYBBAGCNwIBBDAcBgorBgEEAYI3AgELMQ4wDAYKKwYBBAGC
-# NwIBFTAjBgkqhkiG9w0BCQQxFgQUkRnp/p8fsp3XJli43cyu3179MXEwDQYJKoZI
-# hvcNAQEBBQAEggEAeEaGzLuoGceibF1jHxT5fI+xdIcOeGLAaNT3edINJLEjFs4U
-# t40GadMF0cFhi+klPe+McpXnfBKWfcD2JZL7cCdwJRJDBwFM4aK3LRwMoGyhR0zu
-# j8hzHJfpAJYioSSccdQ1C48jOCouC7OCh01a6KrkIQ6llFQfaZk7YxWFvJ14I2AG
-# gLHSHXY+5AUfn2FdKH1iPM+7xaxJVgNlFChH8i/1pXarNUuKffxt5CaFjKZ7fF4O
-# TMOJ3nWC8aH/4nBzTx2eGVwKjivkAB9WWJ4tzN/rkaMZLyHNPBmcX3Ll7RqnR//z
-# 7WXc4/6Svh+v/OxcOAxBww/Yr73U/WhAgdWaVw==
+# NwIBFTAjBgkqhkiG9w0BCQQxFgQUBDDFG4/U7dtchY8234Z2ZvWC55wwDQYJKoZI
+# hvcNAQEBBQAEggEAFDgKBS8HGgrraZpwuPKVOtGch+eLHe+oXFyIwOT7m1xjxzDR
+# s8V8EaSotVhiK8wY6QfBGKd/JZhFSvZMFQA9o+B0dtmetkhgu/MHdRxRaUgjILSH
+# 3VrePS5jxRRVaq1RRpBHRPfhywvtjknyuD3Q7VT6cBst+kNzv91ifuamejlV+kcj
+# +D9KGvIF+wlzTfsnmPc5UCwVxLlwfDKNH0wv/47cDYLcX8ivRHLWL+fP3xk51nqz
+# wO/fiLmUKSL1lPQ5EuRaIe3SIAPbofBRbh22CKjjHps9jleICGxhJEtGk9KAyEZd
+# UcZbv3tHXw7t9/z063xuudVq2SshYEDuenf7zg==
 # SIG # End signature block

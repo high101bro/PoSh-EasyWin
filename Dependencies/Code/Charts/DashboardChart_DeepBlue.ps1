@@ -326,9 +326,7 @@ $script:AutoChart01DeepBlueTrimOffLastGroupBoX = New-Object System.Windows.Forms
 $script:AutoChart01DeepBlueTrimOffLastGroupBox.Controls.Add($script:AutoChart01DeepBlueTrimOffLastTrackBar)
 $script:AutoChart01DeepBlueManipulationPanel.Controls.Add($script:AutoChart01DeepBlueTrimOffLastGroupBox)
 
-#======================================
-# Auto Create Charts Select Chart Type
-#======================================
+
 $script:AutoChart01DeepBlueChartTypeComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
     Text      = 'Bar'
     Location  = @{ X = $script:AutoChart01DeepBlueTrimOffFirstGroupBox.Location.X + $($FormScale * 80)
@@ -397,9 +395,7 @@ $script:AutoChart01DeepBlueChangeColorComboBox.add_SelectedIndexChanged({
 $script:AutoChart01DeepBlueManipulationPanel.Controls.Add($script:AutoChart01DeepBlueChangeColorComboBox)
 
 
-#=====================================
-# AutoCharts - Investigate Difference
-#=====================================
+
 function script:InvestigateDifference-AutoChart01DeepBlue {
     # List of Positive Endpoints that positively match
     $script:AutoChart01DeepBlueImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object {$_.Message -eq $($script:AutoChart01DeepBlueInvestDiffDropDownComboBox.Text)} | Select-Object -ExpandProperty 'ComputerName' -Unique
@@ -422,9 +418,7 @@ function script:InvestigateDifference-AutoChart01DeepBlue {
     $script:AutoChart01DeepBlueInvestDiffNegResultsLabel.Text = "Negative Match ($($script:AutoChart01DeepBlueImportCsvNegResults.count))"
 }
 
-#==============================
-# Auto Chart Buttons
-#==============================
+
 ### Auto Create Charts Check Diff Button
 $script:AutoChart01DeepBlueCheckDiffButton = New-Object Windows.Forms.Button -Property @{
     Text      = 'Investigate'
@@ -612,9 +606,7 @@ $script:AutoChart01DeepBlueSaveButton.Add_Click({
 })
 $script:AutoChart01DeepBlueManipulationPanel.controls.Add($script:AutoChart01DeepBlueSaveButton)
 
-#==============================
-# Auto Charts - Notice Textbox
-#==============================
+
 $script:AutoChart01DeepBlueNoticeTextboX = New-Object System.Windows.Forms.Textbox -Property @{
     Location    = @{ X = $script:AutoChart01DeepBlueSortButton.Location.X
                         Y = $script:AutoChart01DeepBlueSortButton.Location.Y + $script:AutoChart01DeepBlueSortButton.Size.Height + $($FormScale * 6) }
@@ -878,9 +870,7 @@ $script:AutoChart02DeepBlueTrimOffLastGroupBoX = New-Object System.Windows.Forms
 $script:AutoChart02DeepBlueTrimOffLastGroupBox.Controls.Add($script:AutoChart02DeepBlueTrimOffLastTrackBar)
 $script:AutoChart02DeepBlueManipulationPanel.Controls.Add($script:AutoChart02DeepBlueTrimOffLastGroupBox)
 
-#======================================
-# Auto Create Charts Select Chart Type
-#======================================
+
 $script:AutoChart02DeepBlueChartTypeComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
     Text      = 'Pie'
     Location  = @{ X = $script:AutoChart02DeepBlueTrimOffFirstGroupBox.Location.X + $($FormScale * 80)
@@ -949,9 +939,7 @@ $script:AutoChart02DeepBlueChangeColorComboBox.add_SelectedIndexChanged({
 $script:AutoChart02DeepBlueManipulationPanel.Controls.Add($script:AutoChart02DeepBlueChangeColorComboBox)
 
 
-#=====================================
-# AutoCharts - Investigate Difference
-#=====================================
+
 function script:InvestigateDifference-AutoChart02DeepBlue {
     # List of Positive Endpoints that positively match
     $script:AutoChart02DeepBlueImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object {$_.Message -eq $($script:AutoChart02DeepBlueInvestDiffDropDownComboBox.Text)} | Select-Object -ExpandProperty 'ComputerName' -Unique
@@ -974,9 +962,7 @@ function script:InvestigateDifference-AutoChart02DeepBlue {
     $script:AutoChart02DeepBlueInvestDiffNegResultsLabel.Text = "Negative Match ($($script:AutoChart02DeepBlueImportCsvNegResults.count))"
 }
 
-#==============================
-# Auto Chart Buttons
-#==============================
+
 ### Auto Create Charts Check Diff Button
 $script:AutoChart02DeepBlueCheckDiffButton = New-Object Windows.Forms.Button -Property @{
     Text      = 'Investigate'
@@ -1164,9 +1150,7 @@ $script:AutoChart02DeepBlueSaveButton.Add_Click({
 })
 $script:AutoChart02DeepBlueManipulationPanel.controls.Add($script:AutoChart02DeepBlueSaveButton)
 
-#==============================
-# Auto Charts - Notice Textbox
-#==============================
+
 $script:AutoChart02DeepBlueNoticeTextboX = New-Object System.Windows.Forms.Textbox -Property @{
     Location    = @{ X = $script:AutoChart02DeepBlueSortButton.Location.X
                         Y = $script:AutoChart02DeepBlueSortButton.Location.Y + $script:AutoChart02DeepBlueSortButton.Size.Height + $($FormScale * 6) }
@@ -1183,13 +1167,11 @@ $script:AutoChart02DeepBlueNoticeTextboX = New-Object System.Windows.Forms.Textb
 $script:AutoChart02DeepBlueManipulationPanel.Controls.Add($script:AutoChart02DeepBlueNoticeTextbox)
 
 
-
-
 # SIG # Begin signature block
 # MIIFuAYJKoZIhvcNAQcCoIIFqTCCBaUCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQU/LhBxlz+wGohDQMZnBV3mEwk
-# N4GgggM6MIIDNjCCAh6gAwIBAgIQeugH5LewQKBKT6dPXhQ7sDANBgkqhkiG9w0B
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUDyJBAXxSnwi+/861UJHPj1RY
+# 21igggM6MIIDNjCCAh6gAwIBAgIQeugH5LewQKBKT6dPXhQ7sDANBgkqhkiG9w0B
 # AQUFADAzMTEwLwYDVQQDDChQb1NoLUVhc3lXaW4gQnkgRGFuIEtvbW5pY2sgKGhp
 # Z2gxMDFicm8pMB4XDTIxMTIxNDA1MDIwMFoXDTMxMTIxNDA1MTIwMFowMzExMC8G
 # A1UEAwwoUG9TaC1FYXN5V2luIEJ5IERhbiBLb21uaWNrIChoaWdoMTAxYnJvKTCC
@@ -1210,11 +1192,11 @@ $script:AutoChart02DeepBlueManipulationPanel.Controls.Add($script:AutoChart02Dee
 # YXN5V2luIEJ5IERhbiBLb21uaWNrIChoaWdoMTAxYnJvKQIQeugH5LewQKBKT6dP
 # XhQ7sDAJBgUrDgMCGgUAoHgwGAYKKwYBBAGCNwIBDDEKMAigAoAAoQKAADAZBgkq
 # hkiG9w0BCQMxDAYKKwYBBAGCNwIBBDAcBgorBgEEAYI3AgELMQ4wDAYKKwYBBAGC
-# NwIBFTAjBgkqhkiG9w0BCQQxFgQUIIMXg3eQLMevFYkjlYgWpWzgihUwDQYJKoZI
-# hvcNAQEBBQAEggEAKSTLvLQarOOb+V5NeUBoxC6zFAUa77eBW2nx58Sp8pHyPUOT
-# LqglWGk4VsXa6BstM04KRtUmk1hD1WvZ7h3020ZQ19GUizhKaroQULe9tI2KAQvg
-# ggh3t2yWM8iyf+/qB1V+MLeqT/AdkwrH8HbqiUdlxhhD9IRAOZc7LgtSPQ6BQs8P
-# Z5lMBREEHQ4kD5WkNUkgLRUE3Jx2FRbsViSf8C7auzjLLB26ly9zi8LK8C+znP8s
-# cZ5B0BUl1NH0SpFMF8J9TEgDQNhHko/bVRNLATwp/bc/K6pHYmEGfiAMBDW4aNan
-# g9rq8QV1VHyAxMFvgV2YXbWjSfUclVdqO0TwmA==
+# NwIBFTAjBgkqhkiG9w0BCQQxFgQUVJANc3Cp64ZFnJuwtBFvBZ7a5tEwDQYJKoZI
+# hvcNAQEBBQAEggEAbySr8r9phShdu7bl79XYFZuj9FUSo8SwWSBVcT+ZUpity6/W
+# f/yyq0sZmvHY9Kn9FZebwPm8b7EjLxaG/YqnrB0MwRx53+pXxzfB2mZFpoFjhzUI
+# 2N5YKiwM5Cl8N8lwl37uRQifNQ7uIniucDXUXB9+eLl+NPynOH+B9emGhvWGRl41
+# uihzJwyjNnfbLa0NMz8fdStoW9Sp96MxEoFaTg9ASWpz9k/IwfjIkolNnox0Sx+H
+# 0zQIoPDFHqHdrLVJYLqKoJAbdLJbdgKss5U76yaff1n0F2hIMk6fkukMafEAXPhJ
+# C+atY4hdDN3hfVQm6yAViL3Nz7yRqvAbk6ywRw==
 # SIG # End signature block

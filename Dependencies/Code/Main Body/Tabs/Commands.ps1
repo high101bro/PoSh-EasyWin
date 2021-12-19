@@ -323,7 +323,7 @@ Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\CommandsTree
 . "$Dependencies\Code\System.Windows.Forms\Button\CommandsTreeViewSearchButton.ps1"
 $CommandsTreeViewSearchButton = New-Object System.Windows.Forms.Button -Property @{
     Text   = "Search"
-    Left   =  $CommandsTreeViewSearchComboBox.Width + $($FormScale * 5)
+    Left   =  $CommandsTreeViewSearchComboBox.Left + $CommandsTreeViewSearchComboBox.Width + $($FormScale * 5)
     Top    = $FormScale * 45
     Width  = $FormScale * 55
     Height = $FormScale * 20
@@ -657,11 +657,14 @@ $script:CommandsTreeView.Nodes.Add($script:TreeNodeCommandSearch)
 $script:CommandsTreeView.Nodes.Add($script:TreeNodeCustomGroupCommands)
 $script:CommandsTreeView.Nodes.Add($script:TreeNodeUserAddedCommands)
 #$script:CommandsTreeView.ExpandAll()
+
+
+
 # SIG # Begin signature block
 # MIIFuAYJKoZIhvcNAQcCoIIFqTCCBaUCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQU94XlX8x56YKQWu1ypjttu3nF
-# EMegggM6MIIDNjCCAh6gAwIBAgIQeugH5LewQKBKT6dPXhQ7sDANBgkqhkiG9w0B
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUcq4pabYUB0ZJ/YJe/Co422bi
+# +32gggM6MIIDNjCCAh6gAwIBAgIQeugH5LewQKBKT6dPXhQ7sDANBgkqhkiG9w0B
 # AQUFADAzMTEwLwYDVQQDDChQb1NoLUVhc3lXaW4gQnkgRGFuIEtvbW5pY2sgKGhp
 # Z2gxMDFicm8pMB4XDTIxMTIxNDA1MDIwMFoXDTMxMTIxNDA1MTIwMFowMzExMC8G
 # A1UEAwwoUG9TaC1FYXN5V2luIEJ5IERhbiBLb21uaWNrIChoaWdoMTAxYnJvKTCC
@@ -682,11 +685,11 @@ $script:CommandsTreeView.Nodes.Add($script:TreeNodeUserAddedCommands)
 # YXN5V2luIEJ5IERhbiBLb21uaWNrIChoaWdoMTAxYnJvKQIQeugH5LewQKBKT6dP
 # XhQ7sDAJBgUrDgMCGgUAoHgwGAYKKwYBBAGCNwIBDDEKMAigAoAAoQKAADAZBgkq
 # hkiG9w0BCQMxDAYKKwYBBAGCNwIBBDAcBgorBgEEAYI3AgELMQ4wDAYKKwYBBAGC
-# NwIBFTAjBgkqhkiG9w0BCQQxFgQUVG2t8Sx7niOhr3x3OTAxgWrTGmswDQYJKoZI
-# hvcNAQEBBQAEggEAbuulgKLW3YMYgK8+G9ooz+5Vqf8eKA3wPo+ffR1OlS8d4DFm
-# rswsnTD0xqNBma5mHT9zuWL4uwYumX4SFQ27NwqhPG+kNdRWoHKEZG/MOwROMNVE
-# mLWMTSAPAtO8fiC9UCPgLmrlknCfmUirKOxxxHdrsQvYIfLJHrFZAxa0SSYNHGdR
-# TSt4wIXGTuI2+ckr8KlKUWLAASBfPuPI0+hXteGXErcsnGZwtPTnomElUGS8J8fz
-# 91CWWc+LY9BlaS+L4rOBfneASKjm1SltVPLJ7ASP49dDuOXkhPePba28xZt0wOtH
-# hV0NLjElchNooOmLjxpFmyomii0KhEql7B+evQ==
+# NwIBFTAjBgkqhkiG9w0BCQQxFgQUXGCdSOKCQY4Eg6zKekpScpGJbIkwDQYJKoZI
+# hvcNAQEBBQAEggEACuIEUeIfW1cGnR1T3qo0IDbzS/e3k+alHk06XEXHdfQW1k1Z
+# 5fhpg8pEjT8y75dGVma4SOLCUfKAoAKie3Lao9+4ZECpbMlHmfc3Z5u8nmis47FA
+# dcCyFU6KUslVtT0M7+txEL/kMXFptPyZwfj1Tp4dT7jtbjuzfKpVGqx2ZGJFtXjk
+# tzxm0yJ7GBJ11RJqw8eIzYzDKi2fMpHkS+iwGTxyEZR+YrTRY+bopxmR9xmBORoJ
+# S9rwYfORN1YXjq1kWICbeUPSVWB+VHvcwiZ6Mz1vcfCsyEClNjHk5Y4xr9M8oznv
+# DxbhZU9K61MF5v6a2Oc7aMBVhEC4AKWuBakhBQ==
 # SIG # End signature block

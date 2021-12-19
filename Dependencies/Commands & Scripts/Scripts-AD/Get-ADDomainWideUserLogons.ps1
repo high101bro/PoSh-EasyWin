@@ -3,9 +3,9 @@
     Get all logged on Users per Computer/OU/Domain
 
 .Description
-    Shows all logged on users by computer name or OU. It’s also possible to query all computers in the entire domain... which could take some time. In one test environment it took about 4 seconds per computer on average, so do the math.
+    Shows all logged on users by computer name or OU. Itï¿½s also possible to query all computers in the entire domain... which could take some time. In one test environment it took about 4 seconds per computer on average, so do the math.
 
-    Be aware that the function above uses the quser command that outputs plain text. There are differences between e.g. German servers and English servers. This means, that you’ll get the output shown above only on Englisch operating systems.
+    Be aware that the function above uses the quser command that outputs plain text. There are differences between e.g. German servers and English servers. This means, that youï¿½ll get the output shown above only on Englisch operating systems.
 
     You can make this a permament by creating a directory in C:\Program Files\Windows PowerShell\Modules and save the code as a .psm1 file. Make sure that the file name and folder name match.
 
@@ -133,8 +133,8 @@ Get-UserLogon -All
 # SIG # Begin signature block
 # MIIFuAYJKoZIhvcNAQcCoIIFqTCCBaUCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUNJectAi9Myb9datp/gSCc/3g
-# XzSgggM6MIIDNjCCAh6gAwIBAgIQeugH5LewQKBKT6dPXhQ7sDANBgkqhkiG9w0B
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUPUVBTeOV1t6ZwxH7eMP5ZOoY
+# wAigggM6MIIDNjCCAh6gAwIBAgIQeugH5LewQKBKT6dPXhQ7sDANBgkqhkiG9w0B
 # AQUFADAzMTEwLwYDVQQDDChQb1NoLUVhc3lXaW4gQnkgRGFuIEtvbW5pY2sgKGhp
 # Z2gxMDFicm8pMB4XDTIxMTIxNDA1MDIwMFoXDTMxMTIxNDA1MTIwMFowMzExMC8G
 # A1UEAwwoUG9TaC1FYXN5V2luIEJ5IERhbiBLb21uaWNrIChoaWdoMTAxYnJvKTCC
@@ -155,11 +155,11 @@ Get-UserLogon -All
 # YXN5V2luIEJ5IERhbiBLb21uaWNrIChoaWdoMTAxYnJvKQIQeugH5LewQKBKT6dP
 # XhQ7sDAJBgUrDgMCGgUAoHgwGAYKKwYBBAGCNwIBDDEKMAigAoAAoQKAADAZBgkq
 # hkiG9w0BCQMxDAYKKwYBBAGCNwIBBDAcBgorBgEEAYI3AgELMQ4wDAYKKwYBBAGC
-# NwIBFTAjBgkqhkiG9w0BCQQxFgQURO9/McsHxH9IIu3JuA3Tgh3MOSgwDQYJKoZI
-# hvcNAQEBBQAEggEAA/Muw0sWBRON8lGJa8bahOOKk25JHIoW5W/I8WEHns1Lx7tP
-# B03udjjvL/FI0g2VRFQLPf3dyHBog/t996IJ4OUcGShpINE93fBio2ow7ayT0gwT
-# 6Z0J/MYZA3L2+e9veN54xYFJ5mx65TwvtWAarUNUQDifX8kCakfWAABLVsCXDx6x
-# FT4uEDoD3a8vpp2/265Nl7XrAyPL4CWzrOp/cueV7DO99ahbS1AA1IY6D/TQD2jk
-# lEsyBfJvQWKhMlsjp7ytCVNsJAyChhEY917O6Vw8yJv4IrDzspE/FYZVpJsia/Vb
-# BhzEuHERqokHrKwx694HoHbAtwDj0KuVEDvSGw==
+# NwIBFTAjBgkqhkiG9w0BCQQxFgQUYsmnnjp/v3nvoVX4nZ9lGNWSs8owDQYJKoZI
+# hvcNAQEBBQAEggEATn1y8nLbtRpRqzANhTe1dxRmz/0RLz6bPi4Wg/QP6c2Koqzi
+# y7ir4j0LtbcsjRgn+qHSf78+04FDqiiIRKhmWGku62hPJnF7UR/8RbjX9tPer2yv
+# +N0ppbBuSM6fEcKul91kd1EesAnIbd7fRw+FDIlTe2FD4ejGutBFb+O2bhNICP1K
+# sbN/jgPLqSMLMT4OQMTBudwzG7WvXg+ZpzlN1f0eNHNBrog68+L/B/V3+RoGfRIt
+# xiljvq2BpzNtIWDQV2HmtRSFQvk/TEn7bl12MVVnbkYHAAjS0uaFMKb8Sen6QxrW
+# 1Tjdl4081G7VRJZPy/PDHIO3izyMkXL8wYKoNw==
 # SIG # End signature block

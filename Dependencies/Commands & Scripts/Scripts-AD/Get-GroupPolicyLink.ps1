@@ -121,13 +121,11 @@ ForEach ($SOM in $gPLinks) {
 $report | Select-Object @{name='ScopeOfManagement';expression={$_.name}},@{name='SOM_Nested';expression={$_.name.PadLeft($_.name.length + ($_.depth * 5),'_')}}, DistinguishedName, BlockInheritance, LinkEnabled, Enforced, Precedence, DisplayName, GPOStatus, WMIFilter, GUID, PolicyDN
 
 
-
-
 # SIG # Begin signature block
 # MIIFuAYJKoZIhvcNAQcCoIIFqTCCBaUCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUl9jbGzi5Rz4kEfdWOLmSWCDs
-# bRegggM6MIIDNjCCAh6gAwIBAgIQeugH5LewQKBKT6dPXhQ7sDANBgkqhkiG9w0B
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUDSkdnv9jGrSdvXMGuXoyjXsY
+# DsqgggM6MIIDNjCCAh6gAwIBAgIQeugH5LewQKBKT6dPXhQ7sDANBgkqhkiG9w0B
 # AQUFADAzMTEwLwYDVQQDDChQb1NoLUVhc3lXaW4gQnkgRGFuIEtvbW5pY2sgKGhp
 # Z2gxMDFicm8pMB4XDTIxMTIxNDA1MDIwMFoXDTMxMTIxNDA1MTIwMFowMzExMC8G
 # A1UEAwwoUG9TaC1FYXN5V2luIEJ5IERhbiBLb21uaWNrIChoaWdoMTAxYnJvKTCC
@@ -148,11 +146,11 @@ $report | Select-Object @{name='ScopeOfManagement';expression={$_.name}},@{name=
 # YXN5V2luIEJ5IERhbiBLb21uaWNrIChoaWdoMTAxYnJvKQIQeugH5LewQKBKT6dP
 # XhQ7sDAJBgUrDgMCGgUAoHgwGAYKKwYBBAGCNwIBDDEKMAigAoAAoQKAADAZBgkq
 # hkiG9w0BCQMxDAYKKwYBBAGCNwIBBDAcBgorBgEEAYI3AgELMQ4wDAYKKwYBBAGC
-# NwIBFTAjBgkqhkiG9w0BCQQxFgQU6smeS15lMwS7ka0hz8TAP+BA9HMwDQYJKoZI
-# hvcNAQEBBQAEggEAtinaeK9ArNwgrSvlTZJxdUMe/pTwbNVSbf/jIylcfY177jYh
-# BXXGwouLPmvP5XGGX8wTa9nYnG0FVdk7uOjb+Fem2sAZj/eAWlkCdU8GdCdKXCt6
-# HfYb96veIYImgoWZNTteinL4muv7r9/6+St8segW3HOTm57JGiMmpCfRDhiPdr2f
-# nkBRr1Zm/QU4owy5e8oj5yfSOmh/h8tFGRKOS2EDo221LLyi+w9BhPtcpr7JXecV
-# 2+0YK6AST5Rx36rJodPej21x5owwLxZBisRc2rMAp2LXGwb853h/JpKrzAIg+U2S
-# xjM4ALAPY2gNQzB2W+icTwZAm2fzJmeIlAdNiw==
+# NwIBFTAjBgkqhkiG9w0BCQQxFgQU9iQpoJmaRMWVRegLbEZ2bfH2jRcwDQYJKoZI
+# hvcNAQEBBQAEggEAi/QqIrWmMTHek36mG3VA9OvNRUU7XgLgaUpAPoRouSpDvtX9
+# F6kWF2ms2Z05qztgQl6BCM098RDUwZiGeVCnP6D5DfS3z6vcePH+Fzkea0Him1FV
+# rFMr2hF4jQrLuel8IOaOaGjEgv/o+CgCC64uDm7iBKH+JUefEMy9wI6n6WHck0cK
+# kLCtJs7aU8CbeXe2ZSKprGURdpVKaBaNwu4iuHvdYaMXy3y+psDb1BHCZXawfv96
+# SvrXXJnP9U9WhizY3wuQ0YCNBuCGyL9TamJqKPL/L1OpoZE/bd70Y3kr/W+IhFg3
+# VMob+u2xG2sRk1TB6F7mKS9XksS/FROfvTs94g==
 # SIG # End signature block

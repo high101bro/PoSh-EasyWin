@@ -35,7 +35,6 @@ Update-FormProgress "$Dependencies\Code\Execution\Enumeration\Conduct-PortScan.p
 . "$Dependencies\Code\Execution\Enumeration\Conduct-PortScan.ps1"
 
 
-#batman
 function Check-IfScanExecutionReady {
     Generate-ComputerList
     $IPv4Pattern = "([1-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])(\.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])){3}"
@@ -658,11 +657,13 @@ $EnumerationComputerListBoxClearButton = New-Object System.Windows.Forms.Button 
 $Section1EnumerationTab.Controls.Add($EnumerationComputerListBoxClearButton)
 Apply-CommonButtonSettings -Button $EnumerationComputerListBoxClearButton
 
+
+
 # SIG # Begin signature block
 # MIIFuAYJKoZIhvcNAQcCoIIFqTCCBaUCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQU3XsaoFVHbrLNVUmiUOxepxSD
-# L5ugggM6MIIDNjCCAh6gAwIBAgIQeugH5LewQKBKT6dPXhQ7sDANBgkqhkiG9w0B
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUVp99F74tn4RNveYR7UQ1rx93
+# Y0KgggM6MIIDNjCCAh6gAwIBAgIQeugH5LewQKBKT6dPXhQ7sDANBgkqhkiG9w0B
 # AQUFADAzMTEwLwYDVQQDDChQb1NoLUVhc3lXaW4gQnkgRGFuIEtvbW5pY2sgKGhp
 # Z2gxMDFicm8pMB4XDTIxMTIxNDA1MDIwMFoXDTMxMTIxNDA1MTIwMFowMzExMC8G
 # A1UEAwwoUG9TaC1FYXN5V2luIEJ5IERhbiBLb21uaWNrIChoaWdoMTAxYnJvKTCC
@@ -683,11 +684,11 @@ Apply-CommonButtonSettings -Button $EnumerationComputerListBoxClearButton
 # YXN5V2luIEJ5IERhbiBLb21uaWNrIChoaWdoMTAxYnJvKQIQeugH5LewQKBKT6dP
 # XhQ7sDAJBgUrDgMCGgUAoHgwGAYKKwYBBAGCNwIBDDEKMAigAoAAoQKAADAZBgkq
 # hkiG9w0BCQMxDAYKKwYBBAGCNwIBBDAcBgorBgEEAYI3AgELMQ4wDAYKKwYBBAGC
-# NwIBFTAjBgkqhkiG9w0BCQQxFgQU0ugUxSzj1lfIn3rOgsMOa52pDmkwDQYJKoZI
-# hvcNAQEBBQAEggEAInaFId4jaJmb4vshE4Pc6yGMSOeazh/E/3MxSdOzYfSFRIE0
-# 0eqw1lJORm/k9qaBG1xogw/DUI0EQPvv04o/pjRAlF0/kwAt5L/U4xStFn2Q6b/H
-# Qmmcxe2y/x8cWh0+FYV0rjNMb1xBKAETUyxTxKx5wy91agnmHEGELeu5XG87yeK8
-# PSDVV7ysaGKkZOZQrL2nmiuxLcQb3rkGHjZXGOKY3FKY6L311fEdvtbW42rZbKrP
-# Rt4axLN7MOo2+kh/3ecPhbDKRxaTIc2YvYZbz8jy5fHAHiYvN71EA9XT/7BBuZbV
-# n888AV4d/iMN4epmwlM6WtU/pmvAABC4y1aZ2A==
+# NwIBFTAjBgkqhkiG9w0BCQQxFgQU8mhsSevhINH7Cabu8UHbZ6LJDt4wDQYJKoZI
+# hvcNAQEBBQAEggEAucRN5bfVwB4Fn8QPULFrgx/lAzF/rZMPGTWtd6xIXCOjR/6p
+# JjNDbOxJEwBF61h3XroV6IaQ9YV0XKzHDbkw/1fEgQn3me9otl/xH+CN1tLw7l1o
+# KZHlqt4WPizAytgjLZEZ8Ke898fDqUDmwbeRd1WYFZFMweZpJ/t8Xx/o8/UH7/T6
+# 3xZ4IbbRMBN++csdj91OPKuDRsP+5z1Wk0DzXfjK3h4sESUTQCtnje1pxnFfuyBH
+# +TD1tGZxA0SysQZ0Us8nhCgSz41k1MCdo75KFcdvuwQ7W/AbSBBm060ANPM3cZC+
+# S4aS0BDSWRj4U3xXguFZUu0Ra5pWn8Avpte0UQ==
 # SIG # End signature block

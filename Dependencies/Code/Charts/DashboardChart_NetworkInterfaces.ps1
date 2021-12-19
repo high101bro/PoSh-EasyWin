@@ -315,9 +315,7 @@ $script:AutoChart01NetworkInterfacesTrimOffLastGroupBoX = New-Object System.Wind
 $script:AutoChart01NetworkInterfacesTrimOffLastGroupBox.Controls.Add($script:AutoChart01NetworkInterfacesTrimOffLastTrackBar)
 $script:AutoChart01NetworkInterfacesManipulationPanel.Controls.Add($script:AutoChart01NetworkInterfacesTrimOffLastGroupBox)
 
-#======================================
-# Auto Create Charts Select Chart Type
-#======================================
+
 $script:AutoChart01NetworkInterfacesChartTypeComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
     Text      = 'Column'
     Location  = @{ X = $script:AutoChart01NetworkInterfacesTrimOffFirstGroupBox.Location.X + $($FormScale * 80)
@@ -394,9 +392,7 @@ $script:AutoChart01NetworkInterfacesChangeColorComboBox.add_SelectedIndexChanged
 $script:AutoChart01NetworkInterfacesManipulationPanel.Controls.Add($script:AutoChart01NetworkInterfacesChangeColorComboBox)
 
 
-#=====================================
-# AutoCharts - Investigate Difference
-#=====================================
+
 function script:InvestigateDifference-AutoChart01NetworkInterfaces {
     # List of Positive Endpoints that positively match
     $script:AutoChart01NetworkInterfacesImportCsvPosResults = $script:AutoChartDataSourceCsvNetworkInterfaces | Where-Object 'InterfaceAlias' -eq $($script:AutoChart01NetworkInterfacesInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
@@ -419,9 +415,7 @@ function script:InvestigateDifference-AutoChart01NetworkInterfaces {
     $script:AutoChart01NetworkInterfacesInvestDiffNegResultsLabel.Text = "Negative Match ($($script:AutoChart01NetworkInterfacesImportCsvNegResults.count))"
 }
 
-#==============================
-# Auto Chart Buttons
-#==============================
+
 ### Auto Create Charts Check Diff Button
 $script:AutoChart01NetworkInterfacesCheckDiffButton = New-Object Windows.Forms.Button -Property @{
     Text      = 'Investigate'
@@ -585,9 +579,7 @@ $script:AutoChart01NetworkInterfacesSaveButton.Add_Click({
 })
 $script:AutoChart01NetworkInterfacesManipulationPanel.controls.Add($script:AutoChart01NetworkInterfacesSaveButton)
 
-#==============================
-# Auto Charts - Notice Textbox
-#==============================
+
 $script:AutoChart01NetworkInterfacesNoticeTextboX = New-Object System.Windows.Forms.Textbox -Property @{
     Location    = @{ X = $script:AutoChart01NetworkInterfacesSaveButton.Location.X
                         Y = $script:AutoChart01NetworkInterfacesSaveButton.Location.Y + $script:AutoChart01NetworkInterfacesSaveButton.Size.Height + $($FormScale * 6) }
@@ -844,9 +836,7 @@ $script:AutoChart02NetworkInterfacesTrimOffLastGroupBoX = New-Object System.Wind
 $script:AutoChart02NetworkInterfacesTrimOffLastGroupBox.Controls.Add($script:AutoChart02NetworkInterfacesTrimOffLastTrackBar)
 $script:AutoChart02NetworkInterfacesManipulationPanel.Controls.Add($script:AutoChart02NetworkInterfacesTrimOffLastGroupBox)
 
-#======================================
-# Auto Create Charts Select Chart Type
-#======================================
+
 $script:AutoChart02NetworkInterfacesChartTypeComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
     Text      = 'Column'
     Location  = @{ X = $script:AutoChart02NetworkInterfacesTrimOffFirstGroupBox.Location.X + $($FormScale * 80)
@@ -921,9 +911,7 @@ $script:AutoChart02NetworkInterfacesChangeColorComboBox.add_SelectedIndexChanged
 })
 $script:AutoChart02NetworkInterfacesManipulationPanel.Controls.Add($script:AutoChart02NetworkInterfacesChangeColorComboBox)
 
-#=====================================
-# AutoCharts - Investigate Difference
-#=====================================
+
 function script:InvestigateDifference-AutoChart02NetworkInterfaces {
     # List of Positive Endpoints that positively match
     $script:AutoChart02NetworkInterfacesImportCsvPosResults = $script:AutoChartDataSourceCsvNetworkInterfaces | Where-Object 'Name' -eq $($script:AutoChart02NetworkInterfacesInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
@@ -946,9 +934,7 @@ function script:InvestigateDifference-AutoChart02NetworkInterfaces {
     $script:AutoChart02NetworkInterfacesInvestDiffNegResultsLabel.Text = "Negative Match ($($script:AutoChart02NetworkInterfacesImportCsvNegResults.count))"
 }
 
-#==============================
-# Auto Chart Buttons
-#==============================
+
 ### Auto Create Charts Check Diff Button
 $script:AutoChart02NetworkInterfacesCheckDiffButton = New-Object Windows.Forms.Button -Property @{
     Text      = 'Investigate'
@@ -1112,9 +1098,7 @@ $script:AutoChart02NetworkInterfacesSaveButton.Add_Click({
 })
 $script:AutoChart02NetworkInterfacesManipulationPanel.controls.Add($script:AutoChart02NetworkInterfacesSaveButton)
 
-#==============================
-# Auto Charts - Notice Textbox
-#==============================
+
 $script:AutoChart02NetworkInterfacesNoticeTextboX = New-Object System.Windows.Forms.Textbox -Property @{
     Location    = @{ X = $script:AutoChart02NetworkInterfacesSaveButton.Location.X
                         Y = $script:AutoChart02NetworkInterfacesSaveButton.Location.Y + $script:AutoChart02NetworkInterfacesSaveButton.Size.Height + $($FormScale * 6) }
@@ -1373,9 +1357,7 @@ $script:AutoChart03NetworkInterfacesTrimOffLastGroupBoX = New-Object System.Wind
 $script:AutoChart03NetworkInterfacesTrimOffLastGroupBox.Controls.Add($script:AutoChart03NetworkInterfacesTrimOffLastTrackBar)
 $script:AutoChart03NetworkInterfacesManipulationPanel.Controls.Add($script:AutoChart03NetworkInterfacesTrimOffLastGroupBox)
 
-#======================================
-# Auto Create Charts Select Chart Type
-#======================================
+
 $script:AutoChart03NetworkInterfacesChartTypeComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
     Text      = 'Column'
     Location  = @{ X = $script:AutoChart03NetworkInterfacesTrimOffFirstGroupBox.Location.X + $($FormScale * 80)
@@ -1450,9 +1432,7 @@ $script:AutoChart03NetworkInterfacesChangeColorComboBox.add_SelectedIndexChanged
 })
 $script:AutoChart03NetworkInterfacesManipulationPanel.Controls.Add($script:AutoChart03NetworkInterfacesChangeColorComboBox)
 
-#=====================================
-# AutoCharts - Investigate Difference
-#=====================================
+
 function script:InvestigateDifference-AutoChart03NetworkInterfaces {
     # List of Positive Endpoints that positively match
     $script:AutoChart03NetworkInterfacesImportCsvPosResults = $script:AutoChartDataSourceCsvNetworkInterfaces | Where-Object 'Name' -eq $($script:AutoChart03NetworkInterfacesInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
@@ -1475,9 +1455,7 @@ function script:InvestigateDifference-AutoChart03NetworkInterfaces {
     $script:AutoChart03NetworkInterfacesInvestDiffNegResultsLabel.Text = "Negative Match ($($script:AutoChart03NetworkInterfacesImportCsvNegResults.count))"
 }
 
-#==============================
-# Auto Chart Buttons
-#==============================
+
 ### Auto Create Charts Check Diff Button
 $script:AutoChart03NetworkInterfacesCheckDiffButton = New-Object Windows.Forms.Button -Property @{
     Text      = 'Investigate'
@@ -1641,9 +1619,7 @@ $script:AutoChart03NetworkInterfacesSaveButton.Add_Click({
 })
 $script:AutoChart03NetworkInterfacesManipulationPanel.controls.Add($script:AutoChart03NetworkInterfacesSaveButton)
 
-#==============================
-# Auto Charts - Notice Textbox
-#==============================
+
 $script:AutoChart03NetworkInterfacesNoticeTextboX = New-Object System.Windows.Forms.Textbox -Property @{
     Location    = @{ X = $script:AutoChart03NetworkInterfacesSaveButton.Location.X
                         Y = $script:AutoChart03NetworkInterfacesSaveButton.Location.Y + $script:AutoChart03NetworkInterfacesSaveButton.Size.Height + $($FormScale * 6) }
@@ -1905,9 +1881,7 @@ $script:AutoChart04NetworkInterfacesTrimOffLastGroupBoX = New-Object System.Wind
 $script:AutoChart04NetworkInterfacesTrimOffLastGroupBox.Controls.Add($script:AutoChart04NetworkInterfacesTrimOffLastTrackBar)
 $script:AutoChart04NetworkInterfacesManipulationPanel.Controls.Add($script:AutoChart04NetworkInterfacesTrimOffLastGroupBox)
 
-#======================================
-# Auto Create Charts Select Chart Type
-#======================================
+
 $script:AutoChart04NetworkInterfacesChartTypeComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
     Text      = 'Column'
     Location  = @{ X = $script:AutoChart04NetworkInterfacesTrimOffFirstGroupBox.Location.X + $($FormScale * 80)
@@ -1982,9 +1956,7 @@ $script:AutoChart04NetworkInterfacesChangeColorComboBox.add_SelectedIndexChanged
 })
 $script:AutoChart04NetworkInterfacesManipulationPanel.Controls.Add($script:AutoChart04NetworkInterfacesChangeColorComboBox)
 
-#=====================================
-# AutoCharts - Investigate Difference
-#=====================================
+
 function script:InvestigateDifference-AutoChart04NetworkInterfaces {
     # List of Positive Endpoints that positively match
     $script:AutoChart04NetworkInterfacesImportCsvPosResults = $script:AutoChartDataSourceCsvNetworkInterfaces | Where-Object 'Name' -eq $($script:AutoChart04NetworkInterfacesInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
@@ -2007,9 +1979,7 @@ function script:InvestigateDifference-AutoChart04NetworkInterfaces {
     $script:AutoChart04NetworkInterfacesInvestDiffNegResultsLabel.Text = "Negative Match ($($script:AutoChart04NetworkInterfacesImportCsvNegResults.count))"
 }
 
-#==============================
-# Auto Chart Buttons
-#==============================
+
 ### Auto Create Charts Check Diff Button
 $script:AutoChart04NetworkInterfacesCheckDiffButton = New-Object Windows.Forms.Button -Property @{
     Text      = 'Investigate'
@@ -2173,9 +2143,7 @@ $script:AutoChart04NetworkInterfacesSaveButton.Add_Click({
 })
 $script:AutoChart04NetworkInterfacesManipulationPanel.controls.Add($script:AutoChart04NetworkInterfacesSaveButton)
 
-#==============================
-# Auto Charts - Notice Textbox
-#==============================
+
 $script:AutoChart04NetworkInterfacesNoticeTextboX = New-Object System.Windows.Forms.Textbox -Property @{
     Location    = @{ X = $script:AutoChart04NetworkInterfacesSaveButton.Location.X
                         Y = $script:AutoChart04NetworkInterfacesSaveButton.Location.Y + $script:AutoChart04NetworkInterfacesSaveButton.Size.Height + $($FormScale * 6) }
@@ -2436,9 +2404,7 @@ $script:AutoChart05NetworkInterfacesTrimOffLastGroupBoX = New-Object System.Wind
 $script:AutoChart05NetworkInterfacesTrimOffLastGroupBox.Controls.Add($script:AutoChart05NetworkInterfacesTrimOffLastTrackBar)
 $script:AutoChart05NetworkInterfacesManipulationPanel.Controls.Add($script:AutoChart05NetworkInterfacesTrimOffLastGroupBox)
 
-#======================================
-# Auto Create Charts Select Chart Type
-#======================================
+
 $script:AutoChart05NetworkInterfacesChartTypeComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
     Text      = 'Column'
     Location  = @{ X = $script:AutoChart05NetworkInterfacesTrimOffFirstGroupBox.Location.X + $($FormScale * 80)
@@ -2513,9 +2479,7 @@ $script:AutoChart05NetworkInterfacesChangeColorComboBox.add_SelectedIndexChanged
 })
 $script:AutoChart05NetworkInterfacesManipulationPanel.Controls.Add($script:AutoChart05NetworkInterfacesChangeColorComboBox)
 
-#=====================================
-# AutoCharts - Investigate Difference
-#=====================================
+
 function script:InvestigateDifference-AutoChart05NetworkInterfaces {
     # List of Positive Endpoints that positively match
     $script:AutoChart05NetworkInterfacesImportCsvPosResults = $script:AutoChartDataSourceCsvNetworkInterfaces | Where-Object 'Name' -eq $($script:AutoChart05NetworkInterfacesInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
@@ -2538,9 +2502,7 @@ function script:InvestigateDifference-AutoChart05NetworkInterfaces {
     $script:AutoChart05NetworkInterfacesInvestDiffNegResultsLabel.Text = "Negative Match ($($script:AutoChart05NetworkInterfacesImportCsvNegResults.count))"
 }
 
-#==============================
-# Auto Chart Buttons
-#==============================
+
 ### Auto Create Charts Check Diff Button
 $script:AutoChart05NetworkInterfacesCheckDiffButton = New-Object Windows.Forms.Button -Property @{
     Text      = 'Investigate'
@@ -2704,9 +2666,7 @@ $script:AutoChart05NetworkInterfacesSaveButton.Add_Click({
 })
 $script:AutoChart05NetworkInterfacesManipulationPanel.controls.Add($script:AutoChart05NetworkInterfacesSaveButton)
 
-#==============================
-# Auto Charts - Notice Textbox
-#==============================
+
 $script:AutoChart05NetworkInterfacesNoticeTextboX = New-Object System.Windows.Forms.Textbox -Property @{
     Location    = @{ X = $script:AutoChart05NetworkInterfacesSaveButton.Location.X
                         Y = $script:AutoChart05NetworkInterfacesSaveButton.Location.Y + $script:AutoChart05NetworkInterfacesSaveButton.Size.Height + $($FormScale * 6) }
@@ -2965,9 +2925,7 @@ $script:AutoChart06NetworkInterfacesTrimOffLastGroupBoX = New-Object System.Wind
 $script:AutoChart06NetworkInterfacesTrimOffLastGroupBox.Controls.Add($script:AutoChart06NetworkInterfacesTrimOffLastTrackBar)
 $script:AutoChart06NetworkInterfacesManipulationPanel.Controls.Add($script:AutoChart06NetworkInterfacesTrimOffLastGroupBox)
 
-#======================================
-# Auto Create Charts Select Chart Type
-#======================================
+
 $script:AutoChart06NetworkInterfacesChartTypeComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
     Text      = 'Column'
     Location  = @{ X = $script:AutoChart06NetworkInterfacesTrimOffFirstGroupBox.Location.X + $($FormScale * 80)
@@ -3042,9 +3000,7 @@ $script:AutoChart06NetworkInterfacesChangeColorComboBox.add_SelectedIndexChanged
 })
 $script:AutoChart06NetworkInterfacesManipulationPanel.Controls.Add($script:AutoChart06NetworkInterfacesChangeColorComboBox)
 
-#=====================================
-# AutoCharts - Investigate Difference
-#=====================================
+
 function script:InvestigateDifference-AutoChart06NetworkInterfaces {
     # List of Positive Endpoints that positively match
     $script:AutoChart06NetworkInterfacesImportCsvPosResults = $script:AutoChartDataSourceCsvNetworkInterfaces | Where-Object 'Name' -eq $($script:AutoChart06NetworkInterfacesInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
@@ -3067,9 +3023,7 @@ function script:InvestigateDifference-AutoChart06NetworkInterfaces {
     $script:AutoChart06NetworkInterfacesInvestDiffNegResultsLabel.Text = "Negative Match ($($script:AutoChart06NetworkInterfacesImportCsvNegResults.count))"
 }
 
-#==============================
-# Auto Chart Buttons
-#==============================
+
 ### Auto Create Charts Check Diff Button
 $script:AutoChart06NetworkInterfacesCheckDiffButton = New-Object Windows.Forms.Button -Property @{
     Text      = 'Investigate'
@@ -3233,9 +3187,7 @@ $script:AutoChart06NetworkInterfacesSaveButton.Add_Click({
 })
 $script:AutoChart06NetworkInterfacesManipulationPanel.controls.Add($script:AutoChart06NetworkInterfacesSaveButton)
 
-#==============================
-# Auto Charts - Notice Textbox
-#==============================
+
 $script:AutoChart06NetworkInterfacesNoticeTextboX = New-Object System.Windows.Forms.Textbox -Property @{
     Location    = @{ X = $script:AutoChart06NetworkInterfacesSaveButton.Location.X
                         Y = $script:AutoChart06NetworkInterfacesSaveButton.Location.Y + $script:AutoChart06NetworkInterfacesSaveButton.Size.Height + $($FormScale * 6) }
@@ -3490,9 +3442,7 @@ $script:AutoChart07NetworkInterfacesTrimOffLastGroupBoX = New-Object System.Wind
 $script:AutoChart07NetworkInterfacesTrimOffLastGroupBox.Controls.Add($script:AutoChart07NetworkInterfacesTrimOffLastTrackBar)
 $script:AutoChart07NetworkInterfacesManipulationPanel.Controls.Add($script:AutoChart07NetworkInterfacesTrimOffLastGroupBox)
 
-#======================================
-# Auto Create Charts Select Chart Type
-#======================================
+
 $script:AutoChart07NetworkInterfacesChartTypeComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
     Text      = 'Column'
     Location  = @{ X = $script:AutoChart07NetworkInterfacesTrimOffFirstGroupBox.Location.X + $($FormScale * 80)
@@ -3567,9 +3517,7 @@ $script:AutoChart07NetworkInterfacesChangeColorComboBox.add_SelectedIndexChanged
 })
 $script:AutoChart07NetworkInterfacesManipulationPanel.Controls.Add($script:AutoChart07NetworkInterfacesChangeColorComboBox)
 
-#=====================================
-# AutoCharts - Investigate Difference
-#=====================================
+
 function script:InvestigateDifference-AutoChart07NetworkInterfaces {
     # List of Positive Endpoints that positively match
     $script:AutoChart07NetworkInterfacesImportCsvPosResults = $script:AutoChartDataSourceCsvNetworkInterfaces | Where-Object 'Name' -eq $($script:AutoChart07NetworkInterfacesInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
@@ -3592,9 +3540,7 @@ function script:InvestigateDifference-AutoChart07NetworkInterfaces {
     $script:AutoChart07NetworkInterfacesInvestDiffNegResultsLabel.Text = "Negative Match ($($script:AutoChart07NetworkInterfacesImportCsvNegResults.count))"
 }
 
-#==============================
-# Auto Chart Buttons
-#==============================
+
 ### Auto Create Charts Check Diff Button
 $script:AutoChart07NetworkInterfacesCheckDiffButton = New-Object Windows.Forms.Button -Property @{
     Text      = 'Investigate'
@@ -3758,9 +3704,7 @@ $script:AutoChart07NetworkInterfacesSaveButton.Add_Click({
 })
 $script:AutoChart07NetworkInterfacesManipulationPanel.controls.Add($script:AutoChart07NetworkInterfacesSaveButton)
 
-#==============================
-# Auto Charts - Notice Textbox
-#==============================
+
 $script:AutoChart07NetworkInterfacesNoticeTextboX = New-Object System.Windows.Forms.Textbox -Property @{
     Location    = @{ X = $script:AutoChart07NetworkInterfacesSaveButton.Location.X
                         Y = $script:AutoChart07NetworkInterfacesSaveButton.Location.Y + $script:AutoChart07NetworkInterfacesSaveButton.Size.Height + $($FormScale * 6) }
@@ -4020,9 +3964,7 @@ $script:AutoChart08NetworkInterfacesTrimOffLastGroupBoX = New-Object System.Wind
 $script:AutoChart08NetworkInterfacesTrimOffLastGroupBox.Controls.Add($script:AutoChart08NetworkInterfacesTrimOffLastTrackBar)
 $script:AutoChart08NetworkInterfacesManipulationPanel.Controls.Add($script:AutoChart08NetworkInterfacesTrimOffLastGroupBox)
 
-#======================================
-# Auto Create Charts Select Chart Type
-#======================================
+
 $script:AutoChart08NetworkInterfacesChartTypeComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
     Text      = 'Column'
     Location  = @{ X = $script:AutoChart08NetworkInterfacesTrimOffFirstGroupBox.Location.X + $($FormScale * 80)
@@ -4097,9 +4039,7 @@ $script:AutoChart08NetworkInterfacesChangeColorComboBox.add_SelectedIndexChanged
 })
 $script:AutoChart08NetworkInterfacesManipulationPanel.Controls.Add($script:AutoChart08NetworkInterfacesChangeColorComboBox)
 
-#=====================================
-# AutoCharts - Investigate Difference
-#=====================================
+
 function script:InvestigateDifference-AutoChart08NetworkInterfaces {
     # List of Positive Endpoints that positively match
     $script:AutoChart08NetworkInterfacesImportCsvPosResults = $script:AutoChartDataSourceCsvNetworkInterfaces | Where-Object 'Name' -eq $($script:AutoChart08NetworkInterfacesInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
@@ -4122,9 +4062,7 @@ function script:InvestigateDifference-AutoChart08NetworkInterfaces {
     $script:AutoChart08NetworkInterfacesInvestDiffNegResultsLabel.Text = "Negative Match ($($script:AutoChart08NetworkInterfacesImportCsvNegResults.count))"
 }
 
-#==============================
-# Auto Chart Buttons
-#==============================
+
 ### Auto Create Charts Check Diff Button
 $script:AutoChart08NetworkInterfacesCheckDiffButton = New-Object Windows.Forms.Button -Property @{
     Text      = 'Investigate'
@@ -4288,9 +4226,7 @@ $script:AutoChart08NetworkInterfacesSaveButton.Add_Click({
 })
 $script:AutoChart08NetworkInterfacesManipulationPanel.controls.Add($script:AutoChart08NetworkInterfacesSaveButton)
 
-#==============================
-# Auto Charts - Notice Textbox
-#==============================
+
 $script:AutoChart08NetworkInterfacesNoticeTextboX = New-Object System.Windows.Forms.Textbox -Property @{
     Location    = @{ X = $script:AutoChart08NetworkInterfacesSaveButton.Location.X
                         Y = $script:AutoChart08NetworkInterfacesSaveButton.Location.Y + $script:AutoChart08NetworkInterfacesSaveButton.Size.Height + $($FormScale * 6) }
@@ -4536,9 +4472,7 @@ $script:AutoChart09NetworkInterfacesTrimOffLastGroupBoX = New-Object System.Wind
 $script:AutoChart09NetworkInterfacesTrimOffLastGroupBox.Controls.Add($script:AutoChart09NetworkInterfacesTrimOffLastTrackBar)
 $script:AutoChart09NetworkInterfacesManipulationPanel.Controls.Add($script:AutoChart09NetworkInterfacesTrimOffLastGroupBox)
 
-#======================================
-# Auto Create Charts Select Chart Type
-#======================================
+
 $script:AutoChart09NetworkInterfacesChartTypeComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
     Text      = 'Column'
     Location  = @{ X = $script:AutoChart09NetworkInterfacesTrimOffFirstGroupBox.Location.X + $($FormScale * 80)
@@ -4613,9 +4547,7 @@ $script:AutoChart09NetworkInterfacesChangeColorComboBox.add_SelectedIndexChanged
 $script:AutoChart09NetworkInterfacesManipulationPanel.Controls.Add($script:AutoChart09NetworkInterfacesChangeColorComboBox)
 
 
-#=====================================
-# AutoCharts - Investigate Difference
-#=====================================
+
 function script:InvestigateDifference-AutoChart09NetworkInterfaces {
     # List of Positive Endpoints that positively match
     $script:AutoChart09NetworkInterfacesImportCsvPosResults = $script:AutoChartDataSourceCsvNetworkInterfaces | Where-Object 'AddressState' -eq $($script:AutoChart09NetworkInterfacesInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
@@ -4638,9 +4570,7 @@ function script:InvestigateDifference-AutoChart09NetworkInterfaces {
     $script:AutoChart09NetworkInterfacesInvestDiffNegResultsLabel.Text = "Negative Match ($($script:AutoChart09NetworkInterfacesImportCsvNegResults.count))"
 }
 
-#==============================
-# Auto Chart Buttons
-#==============================
+
 ### Auto Create Charts Check Diff Button
 $script:AutoChart09NetworkInterfacesCheckDiffButton = New-Object Windows.Forms.Button -Property @{
     Text      = 'Investigate'
@@ -4804,9 +4734,7 @@ $script:AutoChart09NetworkInterfacesSaveButton.Add_Click({
 })
 $script:AutoChart09NetworkInterfacesManipulationPanel.controls.Add($script:AutoChart09NetworkInterfacesSaveButton)
 
-#==============================
-# Auto Charts - Notice Textbox
-#==============================
+
 $script:AutoChart09NetworkInterfacesNoticeTextboX = New-Object System.Windows.Forms.Textbox -Property @{
     Location    = @{ X = $script:AutoChart09NetworkInterfacesSaveButton.Location.X
                         Y = $script:AutoChart09NetworkInterfacesSaveButton.Location.Y + $script:AutoChart09NetworkInterfacesSaveButton.Size.Height + $($FormScale * 6) }
@@ -5047,9 +4975,7 @@ $script:AutoChart10NetworkInterfacesTrimOffLastGroupBoX = New-Object System.Wind
 $script:AutoChart10NetworkInterfacesTrimOffLastGroupBox.Controls.Add($script:AutoChart10NetworkInterfacesTrimOffLastTrackBar)
 $script:AutoChart10NetworkInterfacesManipulationPanel.Controls.Add($script:AutoChart10NetworkInterfacesTrimOffLastGroupBox)
 
-#======================================
-# Auto Create Charts Select Chart Type
-#======================================
+
 $script:AutoChart10NetworkInterfacesChartTypeComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
     Text      = 'Column'
     Location  = @{ X = $script:AutoChart10NetworkInterfacesTrimOffFirstGroupBox.Location.X + $($FormScale * 80)
@@ -5124,9 +5050,7 @@ $script:AutoChart10NetworkInterfacesChangeColorComboBox.add_SelectedIndexChanged
 $script:AutoChart10NetworkInterfacesManipulationPanel.Controls.Add($script:AutoChart10NetworkInterfacesChangeColorComboBox)
 
 
-#=====================================
-# AutoCharts - Investigate Difference
-#=====================================
+
 function script:InvestigateDifference-AutoChart10NetworkInterfaces {
     # List of Positive Endpoints that positively match
     $script:AutoChart10NetworkInterfacesImportCsvPosResults = $script:AutoChartDataSourceCsvNetworkInterfaces | Where-Object 'AddressFamily' -eq $($script:AutoChart10NetworkInterfacesInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
@@ -5149,9 +5073,7 @@ function script:InvestigateDifference-AutoChart10NetworkInterfaces {
     $script:AutoChart10NetworkInterfacesInvestDiffNegResultsLabel.Text = "Negative Match ($($script:AutoChart10NetworkInterfacesImportCsvNegResults.count))"
 }
 
-#==============================
-# Auto Chart Buttons
-#==============================
+
 ### Auto Create Charts Check Diff Button
 $script:AutoChart10NetworkInterfacesCheckDiffButton = New-Object Windows.Forms.Button -Property @{
     Text      = 'Investigate'
@@ -5315,9 +5237,7 @@ $script:AutoChart10NetworkInterfacesSaveButton.Add_Click({
 })
 $script:AutoChart10NetworkInterfacesManipulationPanel.controls.Add($script:AutoChart10NetworkInterfacesSaveButton)
 
-#==============================
-# Auto Charts - Notice Textbox
-#==============================
+
 $script:AutoChart10NetworkInterfacesNoticeTextboX = New-Object System.Windows.Forms.Textbox -Property @{
     Location    = @{ X = $script:AutoChart10NetworkInterfacesSaveButton.Location.X
                         Y = $script:AutoChart10NetworkInterfacesSaveButton.Location.Y + $script:AutoChart10NetworkInterfacesSaveButton.Size.Height + $($FormScale * 6) }
@@ -5337,14 +5257,11 @@ $script:AutoChart10NetworkInterfaces.Series["Address Family"].Points.Clear()
 $script:AutoChart10NetworkInterfacesOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart10NetworkInterfacesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart10NetworkInterfacesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart10NetworkInterfaces.Series["Address Family"].Points.AddXY($_.DataField.AddressFamily,$_.UniqueCount)}
 
 
-
-
-
 # SIG # Begin signature block
 # MIIFuAYJKoZIhvcNAQcCoIIFqTCCBaUCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUhXcPgIVJStTuOxH/KZTaID4Z
-# zrmgggM6MIIDNjCCAh6gAwIBAgIQeugH5LewQKBKT6dPXhQ7sDANBgkqhkiG9w0B
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUeeAt0TP0ezokLuFwEBjIt/kJ
+# HLegggM6MIIDNjCCAh6gAwIBAgIQeugH5LewQKBKT6dPXhQ7sDANBgkqhkiG9w0B
 # AQUFADAzMTEwLwYDVQQDDChQb1NoLUVhc3lXaW4gQnkgRGFuIEtvbW5pY2sgKGhp
 # Z2gxMDFicm8pMB4XDTIxMTIxNDA1MDIwMFoXDTMxMTIxNDA1MTIwMFowMzExMC8G
 # A1UEAwwoUG9TaC1FYXN5V2luIEJ5IERhbiBLb21uaWNrIChoaWdoMTAxYnJvKTCC
@@ -5365,11 +5282,11 @@ $script:AutoChart10NetworkInterfacesOverallDataResults | Sort-Object -Property U
 # YXN5V2luIEJ5IERhbiBLb21uaWNrIChoaWdoMTAxYnJvKQIQeugH5LewQKBKT6dP
 # XhQ7sDAJBgUrDgMCGgUAoHgwGAYKKwYBBAGCNwIBDDEKMAigAoAAoQKAADAZBgkq
 # hkiG9w0BCQMxDAYKKwYBBAGCNwIBBDAcBgorBgEEAYI3AgELMQ4wDAYKKwYBBAGC
-# NwIBFTAjBgkqhkiG9w0BCQQxFgQUBLK3Fmcyfo3/OyJ8sVeDR/3pHdMwDQYJKoZI
-# hvcNAQEBBQAEggEAfr5tL4z2A8/rFG68lKQNw6xOfEttLFhksRuFxt9n9XyySVdJ
-# wfvGg4NRH66cAJzaDsOMt8zDnu/gE5axuAWiCxu7+xJCxyiU/Mb88YF1sAHSLuUa
-# qhxN/SwVpam3oofUIzF/Cz5NfA/UvagyPdYl9w9as/8wgCtFXcqvIJi0U9hgfrtN
-# Kr7qhrSWurkgXpM9B1RIsa1x5F4JcUgRvb0gTMURQCKCnJO9Ic5XGJFyghgmmoca
-# Z6vCkfk7dKzuUM/ebMCrjrzI0C1d2WqnrKT1E1m6HqGYdju88SQSC7YOtNcD8bHC
-# rK/ABiAvT4s+1GUsUaxjvZmOTPFtLSkpZulTOQ==
+# NwIBFTAjBgkqhkiG9w0BCQQxFgQUKFPnP492n1ERKM5QB3R/BaLwEhowDQYJKoZI
+# hvcNAQEBBQAEggEARQ/kLmI5OXopAtdukGQ9EKHiDHF7LatIYdgtOLGULTRFWH5n
+# LUfcpdY/5g0uFminZiTJkXHEi06ilhN0K/BypNFuFMuAhY+FMoHeJsKk87usM3XQ
+# FVsKJUu1WCM7o4v4V90nf7ZrKja2EiGoOMQv6RBNp6CnnEHqPuios0DKN4Ik6cXe
+# mHSnU1xlLLveS0FaD7J2opiYvlfrYliWb3alyOrZwfUGyyKlSSf7dtL7Fy7xjO6x
+# yQYQnUMPboQmlv1fy7sBdAWIbMG7WfqJUY8CKaZLNOOl+0lIK/BykG/X925uksyL
+# P4lsLUeIyovwMa5nNDWDC5d+1E+sC4UWnkBygg==
 # SIG # End signature block

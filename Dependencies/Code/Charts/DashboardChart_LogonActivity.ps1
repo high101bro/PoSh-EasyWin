@@ -313,9 +313,7 @@ $script:AutoChart01LogonActivityTrimOffLastGroupBox = New-Object System.Windows.
 $script:AutoChart01LogonActivityTrimOffLastGroupBox.Controls.Add($script:AutoChart01LogonActivityTrimOffLastTrackBar)
 $script:AutoChart01LogonActivityManipulationPanel.Controls.Add($script:AutoChart01LogonActivityTrimOffLastGroupBox)
 
-#======================================
-# Auto Create Charts Select Chart Type
-#======================================
+
 $script:AutoChart01LogonActivityChartTypeComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
     Text      = 'Column'
     Location  = @{ X = $script:AutoChart01LogonActivityTrimOffFirstGroupBox.Location.X + $($FormScale * 80)
@@ -392,9 +390,7 @@ $script:AutoChart01LogonActivityChangeColorComboBox.add_SelectedIndexChanged({
 $script:AutoChart01LogonActivityManipulationPanel.Controls.Add($script:AutoChart01LogonActivityChangeColorComboBox)
 
 
-#=====================================
-# AutoCharts - Investigate Difference
-#=====================================
+
 function script:InvestigateDifference-AutoChart01 {
     # List of Positive Endpoints that positively match
     $script:AutoChart01LogonActivityImportCsvPosResults = $script:AutoChartDataSourceCsvLogonActivity | Where-Object 'Owner' -eq $($script:AutoChart01LogonActivityInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
@@ -417,9 +413,7 @@ function script:InvestigateDifference-AutoChart01 {
     $script:AutoChart01LogonActivityInvestDiffNegResultsLabel.Text = "Negative Match ($($script:AutoChart01LogonActivityImportCsvNegResults.count))"
 }
 
-#==============================
-# Auto Chart Buttons
-#==============================
+
 ### Auto Create Charts Check Diff Button
 $script:AutoChart01LogonActivityCheckDiffButton = New-Object Windows.Forms.Button -Property @{
     Text      = 'Investigate'
@@ -583,9 +577,7 @@ $script:AutoChart01LogonActivitySaveButton.Add_Click({
 })
 $script:AutoChart01LogonActivityManipulationPanel.controls.Add($script:AutoChart01LogonActivitySaveButton)
 
-#==============================
-# Auto Charts - Notice Textbox
-#==============================
+
 $script:AutoChart01LogonActivityNoticeTextbox = New-Object System.Windows.Forms.Textbox -Property @{
     Location    = @{ X = $script:AutoChart01LogonActivitySaveButton.Location.X
                         Y = $script:AutoChart01LogonActivitySaveButton.Location.Y + $script:AutoChart01LogonActivitySaveButton.Size.Height + $($FormScale * 6) }
@@ -842,9 +834,7 @@ $script:AutoChart02LogonActivityTrimOffLastGroupBox = New-Object System.Windows.
 $script:AutoChart02LogonActivityTrimOffLastGroupBox.Controls.Add($script:AutoChart02LogonActivityTrimOffLastTrackBar)
 $script:AutoChart02LogonActivityManipulationPanel.Controls.Add($script:AutoChart02LogonActivityTrimOffLastGroupBox)
 
-#======================================
-# Auto Create Charts Select Chart Type
-#======================================
+
 $script:AutoChart02LogonActivityChartTypeComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
     Text      = 'Column'
     Location  = @{ X = $script:AutoChart02LogonActivityTrimOffFirstGroupBox.Location.X + $($FormScale * 80)
@@ -919,9 +909,7 @@ $script:AutoChart02LogonActivityChangeColorComboBox.add_SelectedIndexChanged({
 })
 $script:AutoChart02LogonActivityManipulationPanel.Controls.Add($script:AutoChart02LogonActivityChangeColorComboBox)
 
-#=====================================
-# AutoCharts - Investigate Difference
-#=====================================
+
 function script:InvestigateDifference-AutoChart02 {
     # List of Positive Endpoints that positively match
     $script:AutoChart02LogonActivityImportCsvPosResults = $script:AutoChartDataSourceCsvLogonActivity | Where-Object 'Name' -eq $($script:AutoChart02LogonActivityInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
@@ -944,9 +932,7 @@ function script:InvestigateDifference-AutoChart02 {
     $script:AutoChart02LogonActivityInvestDiffNegResultsLabel.Text = "Negative Match ($($script:AutoChart02LogonActivityImportCsvNegResults.count))"
 }
 
-#==============================
-# Auto Chart Buttons
-#==============================
+
 ### Auto Create Charts Check Diff Button
 $script:AutoChart02LogonActivityCheckDiffButton = New-Object Windows.Forms.Button -Property @{
     Text      = 'Investigate'
@@ -1110,9 +1096,7 @@ $script:AutoChart02LogonActivitySaveButton.Add_Click({
 })
 $script:AutoChart02LogonActivityManipulationPanel.controls.Add($script:AutoChart02LogonActivitySaveButton)
 
-#==============================
-# Auto Charts - Notice Textbox
-#==============================
+
 $script:AutoChart02LogonActivityNoticeTextbox = New-Object System.Windows.Forms.Textbox -Property @{
     Location    = @{ X = $script:AutoChart02LogonActivitySaveButton.Location.X
                         Y = $script:AutoChart02LogonActivitySaveButton.Location.Y + $script:AutoChart02LogonActivitySaveButton.Size.Height + $($FormScale * 6) }
@@ -1351,9 +1335,7 @@ $script:AutoChart03LogonActivityTrimOffLastGroupBox = New-Object System.Windows.
 $script:AutoChart03LogonActivityTrimOffLastGroupBox.Controls.Add($script:AutoChart03LogonActivityTrimOffLastTrackBar)
 $script:AutoChart03LogonActivityManipulationPanel.Controls.Add($script:AutoChart03LogonActivityTrimOffLastGroupBox)
 
-#======================================
-# Auto Create Charts Select Chart Type
-#======================================
+
 $script:AutoChart03LogonActivityChartTypeComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
     Text      = 'Column'
     Location  = @{ X = $script:AutoChart03LogonActivityTrimOffFirstGroupBox.Location.X + $($FormScale * 80)
@@ -1427,9 +1409,7 @@ $script:AutoChart03LogonActivityChangeColorComboBox.add_SelectedIndexChanged({
 })
 $script:AutoChart03LogonActivityManipulationPanel.Controls.Add($script:AutoChart03LogonActivityChangeColorComboBox)
 
-#=====================================
-# AutoCharts - Investigate Difference
-#=====================================
+
 function script:InvestigateDifference-AutoChart03 {
     # List of Positive Endpoints that positively match
     $script:AutoChart03LogonActivityImportCsvPosResults = $script:AutoChartDataSourceCsvLogonActivity | Where-Object 'ClientIP' -eq $($script:AutoChart03LogonActivityInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
@@ -1452,9 +1432,7 @@ function script:InvestigateDifference-AutoChart03 {
     $script:AutoChart03LogonActivityInvestDiffNegResultsLabel.Text = "Negative Match ($($script:AutoChart03LogonActivityImportCsvNegResults.count))"
 }
 
-#==============================
-# Auto Chart Buttons
-#==============================
+
 ### Auto Create Charts Check Diff Button
 $script:AutoChart03LogonActivityCheckDiffButton = New-Object Windows.Forms.Button -Property @{
     Text      = 'Investigate'
@@ -1618,9 +1596,7 @@ $script:AutoChart03LogonActivitySaveButton.Add_Click({
 })
 $script:AutoChart03LogonActivityManipulationPanel.controls.Add($script:AutoChart03LogonActivitySaveButton)
 
-#==============================
-# Auto Charts - Notice Textbox
-#==============================
+
 $script:AutoChart03LogonActivityNoticeTextbox = New-Object System.Windows.Forms.Textbox -Property @{
     Location    = @{ X = $script:AutoChart03LogonActivitySaveButton.Location.X
                         Y = $script:AutoChart03LogonActivitySaveButton.Location.Y + $script:AutoChart03LogonActivitySaveButton.Size.Height + $($FormScale * 6) }
@@ -1860,9 +1836,7 @@ $script:AutoChart04LogonActivityTrimOffLastGroupBox = New-Object System.Windows.
 $script:AutoChart04LogonActivityTrimOffLastGroupBox.Controls.Add($script:AutoChart04LogonActivityTrimOffLastTrackBar)
 $script:AutoChart04LogonActivityManipulationPanel.Controls.Add($script:AutoChart04LogonActivityTrimOffLastGroupBox)
 
-#======================================
-# Auto Create Charts Select Chart Type
-#======================================
+
 $script:AutoChart04LogonActivityChartTypeComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
     Text      = 'Column'
     Location  = @{ X = $script:AutoChart04LogonActivityTrimOffFirstGroupBox.Location.X + $($FormScale * 80)
@@ -1936,9 +1910,7 @@ $script:AutoChart04LogonActivityChangeColorComboBox.add_SelectedIndexChanged({
 })
 $script:AutoChart04LogonActivityManipulationPanel.Controls.Add($script:AutoChart04LogonActivityChangeColorComboBox)
 
-#=====================================
-# AutoCharts - Investigate Difference
-#=====================================
+
 function script:InvestigateDifference-AutoChart04 {
     # List of Positive Endpoints that positively match
     $script:AutoChart04LogonActivityImportCsvPosResults = $script:AutoChartDataSourceCsvLogonActivity | Where-Object 'State' -eq $($script:AutoChart04LogonActivityInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
@@ -1961,9 +1933,7 @@ function script:InvestigateDifference-AutoChart04 {
     $script:AutoChart04LogonActivityInvestDiffNegResultsLabel.Text = "Negative Match ($($script:AutoChart04LogonActivityImportCsvNegResults.count))"
 }
 
-#==============================
-# Auto Chart Buttons
-#==============================
+
 ### Auto Create Charts Check Diff Button
 $script:AutoChart04LogonActivityCheckDiffButton = New-Object Windows.Forms.Button -Property @{
     Text      = 'Investigate'
@@ -2127,9 +2097,7 @@ $script:AutoChart04LogonActivitySaveButton.Add_Click({
 })
 $script:AutoChart04LogonActivityManipulationPanel.controls.Add($script:AutoChart04LogonActivitySaveButton)
 
-#==============================
-# Auto Charts - Notice Textbox
-#==============================
+
 $script:AutoChart04LogonActivityNoticeTextbox = New-Object System.Windows.Forms.Textbox -Property @{
     Location    = @{ X = $script:AutoChart04LogonActivitySaveButton.Location.X
                         Y = $script:AutoChart04LogonActivitySaveButton.Location.Y + $script:AutoChart04LogonActivitySaveButton.Size.Height + $($FormScale * 6) }
@@ -2368,9 +2336,7 @@ $script:AutoChart05LogonActivityTrimOffLastGroupBox = New-Object System.Windows.
 $script:AutoChart05LogonActivityTrimOffLastGroupBox.Controls.Add($script:AutoChart05LogonActivityTrimOffLastTrackBar)
 $script:AutoChart05LogonActivityManipulationPanel.Controls.Add($script:AutoChart05LogonActivityTrimOffLastGroupBox)
 
-#======================================
-# Auto Create Charts Select Chart Type
-#======================================
+
 $script:AutoChart05LogonActivityChartTypeComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
     Text      = 'Bar'
     Location  = @{ X = $script:AutoChart05LogonActivityTrimOffFirstGroupBox.Location.X + $($FormScale * 80)
@@ -2444,9 +2410,7 @@ $script:AutoChart05LogonActivityChangeColorComboBox.add_SelectedIndexChanged({
 })
 $script:AutoChart05LogonActivityManipulationPanel.Controls.Add($script:AutoChart05LogonActivityChangeColorComboBox)
 
-#=====================================
-# AutoCharts - Investigate Difference
-#=====================================
+
 function script:InvestigateDifference-AutoChart05 {
     # List of Positive Endpoints that positively match
     $script:AutoChart05LogonActivityImportCsvPosResults = $script:AutoChartDataSourceCsvLogonActivity | Where-Object 'ShellRunTime' -eq $($script:AutoChart05LogonActivityInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
@@ -2469,9 +2433,7 @@ function script:InvestigateDifference-AutoChart05 {
     $script:AutoChart05LogonActivityInvestDiffNegResultsLabel.Text = "Negative Match ($($script:AutoChart05LogonActivityImportCsvNegResults.count))"
 }
 
-#==============================
-# Auto Chart Buttons
-#==============================
+
 ### Auto Create Charts Check Diff Button
 $script:AutoChart05LogonActivityCheckDiffButton = New-Object Windows.Forms.Button -Property @{
     Text      = 'Investigate'
@@ -2635,9 +2597,7 @@ $script:AutoChart05LogonActivitySaveButton.Add_Click({
 })
 $script:AutoChart05LogonActivityManipulationPanel.controls.Add($script:AutoChart05LogonActivitySaveButton)
 
-#==============================
-# Auto Charts - Notice Textbox
-#==============================
+
 $script:AutoChart05LogonActivityNoticeTextbox = New-Object System.Windows.Forms.Textbox -Property @{
     Location    = @{ X = $script:AutoChart05LogonActivitySaveButton.Location.X
                         Y = $script:AutoChart05LogonActivitySaveButton.Location.Y + $script:AutoChart05LogonActivitySaveButton.Size.Height + $($FormScale * 6) }
@@ -2876,9 +2836,7 @@ $script:AutoChart06LogonActivityTrimOffLastGroupBox = New-Object System.Windows.
 $script:AutoChart06LogonActivityTrimOffLastGroupBox.Controls.Add($script:AutoChart06LogonActivityTrimOffLastTrackBar)
 $script:AutoChart06LogonActivityManipulationPanel.Controls.Add($script:AutoChart06LogonActivityTrimOffLastGroupBox)
 
-#======================================
-# Auto Create Charts Select Chart Type
-#======================================
+
 $script:AutoChart06LogonActivityChartTypeComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
     Text      = 'Bar'
     Location  = @{ X = $script:AutoChart06LogonActivityTrimOffFirstGroupBox.Location.X + $($FormScale * 80)
@@ -2952,9 +2910,7 @@ $script:AutoChart06LogonActivityChangeColorComboBox.add_SelectedIndexChanged({
 })
 $script:AutoChart06LogonActivityManipulationPanel.Controls.Add($script:AutoChart06LogonActivityChangeColorComboBox)
 
-#=====================================
-# AutoCharts - Investigate Difference
-#=====================================
+
 function script:InvestigateDifference-AutoChart06 {
     # List of Positive Endpoints that positively match
     $script:AutoChart06LogonActivityImportCsvPosResults = $script:AutoChartDataSourceCsvLogonActivity | Where-Object 'ShellInactivity' -eq $($script:AutoChart06LogonActivityInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
@@ -2977,9 +2933,7 @@ function script:InvestigateDifference-AutoChart06 {
     $script:AutoChart06LogonActivityInvestDiffNegResultsLabel.Text = "Negative Match ($($script:AutoChart06LogonActivityImportCsvNegResults.count))"
 }
 
-#==============================
-# Auto Chart Buttons
-#==============================
+
 ### Auto Create Charts Check Diff Button
 $script:AutoChart06LogonActivityCheckDiffButton = New-Object Windows.Forms.Button -Property @{
     Text      = 'Investigate'
@@ -3143,9 +3097,7 @@ $script:AutoChart06LogonActivitySaveButton.Add_Click({
 })
 $script:AutoChart06LogonActivityManipulationPanel.controls.Add($script:AutoChart06LogonActivitySaveButton)
 
-#==============================
-# Auto Charts - Notice Textbox
-#==============================
+
 $script:AutoChart06LogonActivityNoticeTextbox = New-Object System.Windows.Forms.Textbox -Property @{
     Location    = @{ X = $script:AutoChart06LogonActivitySaveButton.Location.X
                         Y = $script:AutoChart06LogonActivitySaveButton.Location.Y + $script:AutoChart06LogonActivitySaveButton.Size.Height + $($FormScale * 6) }
@@ -3385,9 +3337,7 @@ $script:AutoChart07LogonActivityTrimOffLastGroupBox = New-Object System.Windows.
 $script:AutoChart07LogonActivityTrimOffLastGroupBox.Controls.Add($script:AutoChart07LogonActivityTrimOffLastTrackBar)
 $script:AutoChart07LogonActivityManipulationPanel.Controls.Add($script:AutoChart07LogonActivityTrimOffLastGroupBox)
 
-#======================================
-# Auto Create Charts Select Chart Type
-#======================================
+
 $script:AutoChart07LogonActivityChartTypeComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
     Text      = 'Column'
     Location  = @{ X = $script:AutoChart07LogonActivityTrimOffFirstGroupBox.Location.X + $($FormScale * 80)
@@ -3461,9 +3411,7 @@ $script:AutoChart07LogonActivityChangeColorComboBox.add_SelectedIndexChanged({
 })
 $script:AutoChart07LogonActivityManipulationPanel.Controls.Add($script:AutoChart07LogonActivityChangeColorComboBox)
 
-#=====================================
-# AutoCharts - Investigate Difference
-#=====================================
+
 function script:InvestigateDifference-AutoChart07 {
     # List of Positive Endpoints that positively match
     $script:AutoChart07LogonActivityImportCsvPosResults = $script:AutoChartDataSourceCsvLogonActivity | Where-Object 'ChildProcesses' -eq $($script:AutoChart07LogonActivityInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
@@ -3486,9 +3434,7 @@ function script:InvestigateDifference-AutoChart07 {
     $script:AutoChart07LogonActivityInvestDiffNegResultsLabel.Text = "Negative Match ($($script:AutoChart07LogonActivityImportCsvNegResults.count))"
 }
 
-#==============================
-# Auto Chart Buttons
-#==============================
+
 ### Auto Create Charts Check Diff Button
 $script:AutoChart07LogonActivityCheckDiffButton = New-Object Windows.Forms.Button -Property @{
     Text      = 'Investigate'
@@ -3652,9 +3598,7 @@ $script:AutoChart07LogonActivitySaveButton.Add_Click({
 })
 $script:AutoChart07LogonActivityManipulationPanel.controls.Add($script:AutoChart07LogonActivitySaveButton)
 
-#==============================
-# Auto Charts - Notice Textbox
-#==============================
+
 $script:AutoChart07LogonActivityNoticeTextbox = New-Object System.Windows.Forms.Textbox -Property @{
     Location    = @{ X = $script:AutoChart07LogonActivitySaveButton.Location.X
                         Y = $script:AutoChart07LogonActivitySaveButton.Location.Y + $script:AutoChart07LogonActivitySaveButton.Size.Height + $($FormScale * 6) }
@@ -3895,9 +3839,7 @@ $script:AutoChart08LogonActivityTrimOffLastGroupBox = New-Object System.Windows.
 $script:AutoChart08LogonActivityTrimOffLastGroupBox.Controls.Add($script:AutoChart08LogonActivityTrimOffLastTrackBar)
 $script:AutoChart08LogonActivityManipulationPanel.Controls.Add($script:AutoChart08LogonActivityTrimOffLastGroupBox)
 
-#======================================
-# Auto Create Charts Select Chart Type
-#======================================
+
 $script:AutoChart08LogonActivityChartTypeComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
     Text      = 'Column'
     Location  = @{ X = $script:AutoChart08LogonActivityTrimOffFirstGroupBox.Location.X + $($FormScale * 80)
@@ -3972,9 +3914,7 @@ $script:AutoChart08LogonActivityChangeColorComboBox.add_SelectedIndexChanged({
 $script:AutoChart08LogonActivityManipulationPanel.Controls.Add($script:AutoChart08LogonActivityChangeColorComboBox)
 
 
-#=====================================
-# AutoCharts - Investigate Difference
-#=====================================
+
 function script:InvestigateDifference-AutoChart08 {
     # List of Positive Endpoints that positively match
     $script:AutoChart08LogonActivityImportCsvPosResults = $script:AutoChartDataSourceCsvLogonActivity | Where-Object 'MemoryUsed' -eq $($script:AutoChart08LogonActivityInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
@@ -3997,9 +3937,7 @@ function script:InvestigateDifference-AutoChart08 {
     $script:AutoChart08LogonActivityInvestDiffNegResultsLabel.Text = "Negative Match ($($script:AutoChart08LogonActivityImportCsvNegResults.count))"
 }
 
-#==============================
-# Auto Chart Buttons
-#==============================
+
 ### Auto Create Charts Check Diff Button
 $script:AutoChart08LogonActivityCheckDiffButton = New-Object Windows.Forms.Button -Property @{
     Text      = 'Investigate'
@@ -4163,9 +4101,7 @@ $script:AutoChart08LogonActivitySaveButton.Add_Click({
 })
 $script:AutoChart08LogonActivityManipulationPanel.controls.Add($script:AutoChart08LogonActivitySaveButton)
 
-#==============================
-# Auto Charts - Notice Textbox
-#==============================
+
 $script:AutoChart08LogonActivityNoticeTextbox = New-Object System.Windows.Forms.Textbox -Property @{
     Location    = @{ X = $script:AutoChart08LogonActivitySaveButton.Location.X
                         Y = $script:AutoChart08LogonActivitySaveButton.Location.Y + $script:AutoChart08LogonActivitySaveButton.Size.Height + $($FormScale * 6) }
@@ -4406,9 +4342,7 @@ $script:AutoChart09LogonActivityTrimOffLastGroupBox = New-Object System.Windows.
 $script:AutoChart09LogonActivityTrimOffLastGroupBox.Controls.Add($script:AutoChart09LogonActivityTrimOffLastTrackBar)
 $script:AutoChart09LogonActivityManipulationPanel.Controls.Add($script:AutoChart09LogonActivityTrimOffLastGroupBox)
 
-#======================================
-# Auto Create Charts Select Chart Type
-#======================================
+
 $script:AutoChart09LogonActivityChartTypeComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
     Text      = 'Column'
     Location  = @{ X = $script:AutoChart09LogonActivityTrimOffFirstGroupBox.Location.X + $($FormScale * 80)
@@ -4483,9 +4417,7 @@ $script:AutoChart09LogonActivityChangeColorComboBox.add_SelectedIndexChanged({
 $script:AutoChart09LogonActivityManipulationPanel.Controls.Add($script:AutoChart09LogonActivityChangeColorComboBox)
 
 
-#=====================================
-# AutoCharts - Investigate Difference
-#=====================================
+
 function script:InvestigateDifference-AutoChart09 {
     # List of Positive Endpoints that positively match
     $script:AutoChart09LogonActivityImportCsvPosResults = $script:AutoChartDataSourceCsvLogonActivity | Where-Object 'ProfileLoaded' -eq $($script:AutoChart09LogonActivityInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
@@ -4508,9 +4440,7 @@ function script:InvestigateDifference-AutoChart09 {
     $script:AutoChart09LogonActivityInvestDiffNegResultsLabel.Text = "Negative Match ($($script:AutoChart09LogonActivityImportCsvNegResults.count))"
 }
 
-#==============================
-# Auto Chart Buttons
-#==============================
+
 ### Auto Create Charts Check Diff Button
 $script:AutoChart09LogonActivityCheckDiffButton = New-Object Windows.Forms.Button -Property @{
     Text      = 'Investigate'
@@ -4674,9 +4604,7 @@ $script:AutoChart09LogonActivitySaveButton.Add_Click({
 })
 $script:AutoChart09LogonActivityManipulationPanel.controls.Add($script:AutoChart09LogonActivitySaveButton)
 
-#==============================
-# Auto Charts - Notice Textbox
-#==============================
+
 $script:AutoChart09LogonActivityNoticeTextbox = New-Object System.Windows.Forms.Textbox -Property @{
     Location    = @{ X = $script:AutoChart09LogonActivitySaveButton.Location.X
                         Y = $script:AutoChart09LogonActivitySaveButton.Location.Y + $script:AutoChart09LogonActivitySaveButton.Size.Height + $($FormScale * 6) }
@@ -4917,9 +4845,7 @@ $script:AutoChart10LogonActivityTrimOffLastGroupBox = New-Object System.Windows.
 $script:AutoChart10LogonActivityTrimOffLastGroupBox.Controls.Add($script:AutoChart10LogonActivityTrimOffLastTrackBar)
 $script:AutoChart10LogonActivityManipulationPanel.Controls.Add($script:AutoChart10LogonActivityTrimOffLastGroupBox)
 
-#======================================
-# Auto Create Charts Select Chart Type
-#======================================
+
 $script:AutoChart10LogonActivityChartTypeComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
     Text      = 'Column'
     Location  = @{ X = $script:AutoChart10LogonActivityTrimOffFirstGroupBox.Location.X + $($FormScale * 80)
@@ -4994,9 +4920,7 @@ $script:AutoChart10LogonActivityChangeColorComboBox.add_SelectedIndexChanged({
 $script:AutoChart10LogonActivityManipulationPanel.Controls.Add($script:AutoChart10LogonActivityChangeColorComboBox)
 
 
-#=====================================
-# AutoCharts - Investigate Difference
-#=====================================
+
 function script:InvestigateDifference-AutoChart10 {
     # List of Positive Endpoints that positively match
     $script:AutoChart10LogonActivityImportCsvPosResults = $script:AutoChartDataSourceCsvLogonActivity | Where-Object 'CompressionMode' -eq $($script:AutoChart10LogonActivityInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
@@ -5019,9 +4943,7 @@ function script:InvestigateDifference-AutoChart10 {
     $script:AutoChart10LogonActivityInvestDiffNegResultsLabel.Text = "Negative Match ($($script:AutoChart10LogonActivityImportCsvNegResults.count))"
 }
 
-#==============================
-# Auto Chart Buttons
-#==============================
+
 ### Auto Create Charts Check Diff Button
 $script:AutoChart10LogonActivityCheckDiffButton = New-Object Windows.Forms.Button -Property @{
     Text      = 'Investigate'
@@ -5185,9 +5107,7 @@ $script:AutoChart10LogonActivitySaveButton.Add_Click({
 })
 $script:AutoChart10LogonActivityManipulationPanel.controls.Add($script:AutoChart10LogonActivitySaveButton)
 
-#==============================
-# Auto Charts - Notice Textbox
-#==============================
+
 $script:AutoChart10LogonActivityNoticeTextbox = New-Object System.Windows.Forms.Textbox -Property @{
     Location    = @{ X = $script:AutoChart10LogonActivitySaveButton.Location.X
                         Y = $script:AutoChart10LogonActivitySaveButton.Location.Y + $script:AutoChart10LogonActivitySaveButton.Size.Height + $($FormScale * 6) }
@@ -5207,13 +5127,11 @@ $script:AutoChart10LogonActivity.Series["Compression Mode"].Points.Clear()
 $script:AutoChart10LogonActivityOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart10LogonActivityTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart10LogonActivityTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart10LogonActivity.Series["Compression Mode"].Points.AddXY($_.DataField.CompressionMode,$_.UniqueCount)}
 
 
-
-
 # SIG # Begin signature block
 # MIIFuAYJKoZIhvcNAQcCoIIFqTCCBaUCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQU+yfVl76J8Zfhy/ncIpEyp31t
-# 5vCgggM6MIIDNjCCAh6gAwIBAgIQeugH5LewQKBKT6dPXhQ7sDANBgkqhkiG9w0B
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUowpTgeIjnNs2EicEZ9rzAAtR
+# c2CgggM6MIIDNjCCAh6gAwIBAgIQeugH5LewQKBKT6dPXhQ7sDANBgkqhkiG9w0B
 # AQUFADAzMTEwLwYDVQQDDChQb1NoLUVhc3lXaW4gQnkgRGFuIEtvbW5pY2sgKGhp
 # Z2gxMDFicm8pMB4XDTIxMTIxNDA1MDIwMFoXDTMxMTIxNDA1MTIwMFowMzExMC8G
 # A1UEAwwoUG9TaC1FYXN5V2luIEJ5IERhbiBLb21uaWNrIChoaWdoMTAxYnJvKTCC
@@ -5234,11 +5152,11 @@ $script:AutoChart10LogonActivityOverallDataResults | Sort-Object -Property Uniqu
 # YXN5V2luIEJ5IERhbiBLb21uaWNrIChoaWdoMTAxYnJvKQIQeugH5LewQKBKT6dP
 # XhQ7sDAJBgUrDgMCGgUAoHgwGAYKKwYBBAGCNwIBDDEKMAigAoAAoQKAADAZBgkq
 # hkiG9w0BCQMxDAYKKwYBBAGCNwIBBDAcBgorBgEEAYI3AgELMQ4wDAYKKwYBBAGC
-# NwIBFTAjBgkqhkiG9w0BCQQxFgQUF1m5hlLYeUZy87Y14nfVpGzGcTEwDQYJKoZI
-# hvcNAQEBBQAEggEAr5gP41aK3QamoN4n7eBO/Hoomp1qwyWPqFRtGIU99E75qe62
-# 64LJE0hmN4mJES590P4iesovtlBCNQPqZNptHuva8LFNAT/ODe4NCThBqYVu0KA/
-# 6s8kWzDm1utp64MF8gFeAntjEsQmqmxmLkVeVVdo66UCgrRWCyxGi6RI96TpNuUq
-# SpSaHYYPVRa4PJmiePOVZqed357RL7Ext58JO8NE8VAw+zjinU7xQ1+8jMObkvFl
-# wcutdqL2Boez7Lt4kgeB3bhb43Shdrq8is2PZmk4img3ZjHO8VVnufk3Pw/2skf/
-# OuTbIdgA6BJK2j8CeMZ76LGp6ylD77Dp3wXVlw==
+# NwIBFTAjBgkqhkiG9w0BCQQxFgQUjJ8NBBF642ZHRX1GgWWiCI4BNkQwDQYJKoZI
+# hvcNAQEBBQAEggEAfJxL81pJ1ZWZhpDH+rcTOW/7vmrUjux+17VQDr0MfHwc3R/z
+# Aq/NHPkanMFXfcDVMkXuVWIOonuaL8qM5ClK+Jn/CTfEneF9Xbf12fr4V+4idd/1
+# iEz6zzIZw+PTKtOQ4xSK8dXs0p5msXAhOPgZytlT2A7Va9knlpCLTz67HnqQ///w
+# S581BXT9CdE4ym2vp6hNNdUmH1mY/bK5bs2i/UeDMe4WGhOs9QObq+3ofumRkZQQ
+# XeQ6ytZ0/4fc+zTqcsIG1BKQ8vmP93M9qa3kj6GZGwCm8n6KOkzKNUsaj1SPbrZr
+# 8Q3SitxFDksZ5WY9u7pvBPFAPWs9vaY4NUlpXg==
 # SIG # End signature block

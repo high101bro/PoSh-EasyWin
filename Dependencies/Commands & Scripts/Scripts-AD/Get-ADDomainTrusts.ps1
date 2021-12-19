@@ -31,8 +31,8 @@ Function Get-ADTrustsInfo {
                 }
                 switch ($_.Properties.trusttype)
                 {
-                    1 {$TrustType="Windows NT"}       #Downlevel (2000 et inférieur)
-                    2 {$TrustType="Active Directory"} #Uplevel (2003 et supérieur)
+                    1 {$TrustType="Windows NT"}       #Downlevel (2000 et infï¿½rieur)
+                    2 {$TrustType="Active Directory"} #Uplevel (2003 et supï¿½rieur)
                     3 {$TrustType="Kerberos realm"}   #Not AD Based
                     4 {$TrustType="DCE"}
                     default {$TrustType="N/A"}
@@ -77,8 +77,8 @@ Get-ADTrustsInfo | Select-Object @{name="PSComputerName";expression={$env:COMPUT
 # SIG # Begin signature block
 # MIIFuAYJKoZIhvcNAQcCoIIFqTCCBaUCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUyW1JjiqBr5/Z7YgAFmAotnHW
-# yLigggM6MIIDNjCCAh6gAwIBAgIQeugH5LewQKBKT6dPXhQ7sDANBgkqhkiG9w0B
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUBsRyGShi9lJ8TdNSrBGW2ybO
+# vMigggM6MIIDNjCCAh6gAwIBAgIQeugH5LewQKBKT6dPXhQ7sDANBgkqhkiG9w0B
 # AQUFADAzMTEwLwYDVQQDDChQb1NoLUVhc3lXaW4gQnkgRGFuIEtvbW5pY2sgKGhp
 # Z2gxMDFicm8pMB4XDTIxMTIxNDA1MDIwMFoXDTMxMTIxNDA1MTIwMFowMzExMC8G
 # A1UEAwwoUG9TaC1FYXN5V2luIEJ5IERhbiBLb21uaWNrIChoaWdoMTAxYnJvKTCC
@@ -99,11 +99,11 @@ Get-ADTrustsInfo | Select-Object @{name="PSComputerName";expression={$env:COMPUT
 # YXN5V2luIEJ5IERhbiBLb21uaWNrIChoaWdoMTAxYnJvKQIQeugH5LewQKBKT6dP
 # XhQ7sDAJBgUrDgMCGgUAoHgwGAYKKwYBBAGCNwIBDDEKMAigAoAAoQKAADAZBgkq
 # hkiG9w0BCQMxDAYKKwYBBAGCNwIBBDAcBgorBgEEAYI3AgELMQ4wDAYKKwYBBAGC
-# NwIBFTAjBgkqhkiG9w0BCQQxFgQUdcw5btlaJs+NqqhqJisbqV/9Q1AwDQYJKoZI
-# hvcNAQEBBQAEggEAPBUMGQQ1bsM8Am2OoZYiq6w64QI5wb48X3AbCzz6n708ziiZ
-# 3IFFFr9uZnDLFkx2NsxsIfHpt/JT8g2veHDQkz2p/WCvbt9em2vCsGVacEqqOYW7
-# NXF+ZN4TjKommSTfop5bNJXmxNEknihTnxDuU2xMwUqAxOahakf6Mf8CtuO54NXM
-# VdBuuzK5FjyJW6or5KSRwcSYe1H+arDLfGsG1Fm2Be2H9wSRddRgX/4znbuTHVfw
-# AhY7KpGfiDYPnzhilY8RqnfSMF8M8K4KkSOiSM0UpKuajGeydCwwCU44hu5WiGMv
-# 25RBvfbWhCuK/bfJDAMTKL3P3YxLWmB+J4kg4g==
+# NwIBFTAjBgkqhkiG9w0BCQQxFgQUfNVaCQj7teYN7HoMKdrl0uuTIJ0wDQYJKoZI
+# hvcNAQEBBQAEggEAAzNzTJcw7/xf3M70aBQrXj02cWzvyr5Ya+zYqMhQXvrILcF5
+# qGWV01BX+oD3Txk08/sodZP5u52i++F1xlg/ZZmmHiLJ9YcUPIurAdw1lp1gme0t
+# 8q2e28QsqDYJweXs5KNT45UrA0sb15BKXCi52Dnp4YliTFZnc05cFoCJS5EgR2A9
+# 8Il81x90hnlIDik9/b5K7+DOteycFIMWJla/Z4trI6VmApwoRSOJJ+I+6wiaQAvC
+# HbX/a81mDdBVgqdHSskHYm5YRrU0SPZeMx1KagcH0j3x5gUuGVviIZMTdKE6WD7H
+# Y53MbneuwY0Tl4J3C5xmfQ0lpzxWZ8ajOweYSg==
 # SIG # End signature block

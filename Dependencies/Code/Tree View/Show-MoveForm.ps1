@@ -24,8 +24,8 @@ function Show-MoveForm {
                           Y = $FormScale * 10 }
             Size     = @{ Width  = $FormScale * 300
                           Height = $FormScale * 25 }
-            AutoCompleteSource = "ListItems" # Options are: FileSystem, HistoryList, RecentlyUsedList, AllURL, AllSystemSources, FileSystemDirectories, CustomSource, ListItems, None
-            AutoCompleteMode   = "SuggestAppend" # Options are: "Suggest", "Append", "SuggestAppend"
+            AutoCompleteSource = "ListItems"
+            AutoCompleteMode   = "SuggestAppend"
             Font               = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         }
         # Dynamically creates the combobox's Category list used for the move destination
@@ -80,8 +80,8 @@ function Show-MoveForm {
                           Y = $FormScale * 10 }
             Size     = @{ Width  = $FormScale * 300
                           Height = $FormScale * 25 }
-            AutoCompleteSource = "ListItems" # Options are: FileSystem, HistoryList, RecentlyUsedList, AllURL, AllSystemSources, FileSystemDirectories, CustomSource, ListItems, None
-            AutoCompleteMode   = "SuggestAppend" # Options are: "Suggest", "Append", "SuggestAppend"
+            AutoCompleteSource = "ListItems"
+            AutoCompleteMode   = "SuggestAppend"
             Font               = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         }
         # Dynamically creates the combobox's Category list used for the move destination
@@ -120,11 +120,13 @@ function Show-MoveForm {
         $ComputerTreeNodePopup.ShowDialog()
     }
 }
+
+
 # SIG # Begin signature block
 # MIIFuAYJKoZIhvcNAQcCoIIFqTCCBaUCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQU2AL4qOcNRU1p5UTMAItJfZAj
-# w9+gggM6MIIDNjCCAh6gAwIBAgIQeugH5LewQKBKT6dPXhQ7sDANBgkqhkiG9w0B
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUgdgyQiHmZu5B97ghqObd5fpI
+# heKgggM6MIIDNjCCAh6gAwIBAgIQeugH5LewQKBKT6dPXhQ7sDANBgkqhkiG9w0B
 # AQUFADAzMTEwLwYDVQQDDChQb1NoLUVhc3lXaW4gQnkgRGFuIEtvbW5pY2sgKGhp
 # Z2gxMDFicm8pMB4XDTIxMTIxNDA1MDIwMFoXDTMxMTIxNDA1MTIwMFowMzExMC8G
 # A1UEAwwoUG9TaC1FYXN5V2luIEJ5IERhbiBLb21uaWNrIChoaWdoMTAxYnJvKTCC
@@ -145,11 +147,11 @@ function Show-MoveForm {
 # YXN5V2luIEJ5IERhbiBLb21uaWNrIChoaWdoMTAxYnJvKQIQeugH5LewQKBKT6dP
 # XhQ7sDAJBgUrDgMCGgUAoHgwGAYKKwYBBAGCNwIBDDEKMAigAoAAoQKAADAZBgkq
 # hkiG9w0BCQMxDAYKKwYBBAGCNwIBBDAcBgorBgEEAYI3AgELMQ4wDAYKKwYBBAGC
-# NwIBFTAjBgkqhkiG9w0BCQQxFgQUWUKcTXACSUZiKGdYkaI3PxhaETMwDQYJKoZI
-# hvcNAQEBBQAEggEAHZRM4MNUFovsNHfkmXOhUNyka0wi3voG+hRG0CIgwPldwox+
-# tuOoflWWunpFjROIPkrjFtHHyrcsT7t7HlMUNW05naWHsLqAO2gVpag0VrlGKN06
-# WCXTpOJt2ooO+efxZuXFOde490GVsTLLioURmpRFsoCHc/FZUSXJiUh5jB0HN/WV
-# 0ea36k2X40bxonBdouzzaFfEWODs8/Y267NfrbdyGiYV61mrt65On7KODB8g8C4O
-# HyQQ1KPt6EE30YzEWCsMiey3daJk8rcojoTPVPBqa2JCCswxe3aetgPmED90mVZR
-# RPZrj30A7icFo6Mlr+ErD6zXP7H7VwLA3sTs9Q==
+# NwIBFTAjBgkqhkiG9w0BCQQxFgQUqCozuCUwP7qu8sS7e3CUMT9eIUcwDQYJKoZI
+# hvcNAQEBBQAEggEApmqUZXs8ZjSotM+93b3QEWETZI2cYX348OB3m4pVhn2ft/Bx
+# /xUsZPJpSrxKib6/fe6zxJ58ItqUWMb7e4DIVsYKVSvi5sQvXNDZh7l2Zgen6LrG
+# zB+Sf8bbGR0IGh3esBuH3iRUQTNlwHAVtHA0A8yI9ToigiIP5DEmebnbhOY0UOYO
+# /jndSfZnKP1hsWGDGFDrwUSpECtYd8PhQ/t2EXft16STLryIT2Ey/Ju0VmY+usrL
+# aZ/I+iXff/USYdLFZCtq2QN5RxtNaxnoyPVBFgmaYt9wR8ELYodI7tyj/flR5ToI
+# yeY+kJ2Sp38iGFjbCaPo2e9j602+ax5SQvfTkA==
 # SIG # End signature block

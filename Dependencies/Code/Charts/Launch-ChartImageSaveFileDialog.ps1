@@ -1,9 +1,7 @@
 Function Launch-ChartImageSaveFileDialog {
-    #$FileTypes = [enum]::GetNames('System.Windows.Forms.DataVisualization.Charting.ChartImageFormat')| ForEach { $_.Insert(0,'*.') }
     $SaveFileDlg = New-Object System.Windows.Forms.SaveFileDialog
     $SaveFileDlg.FileName   =  "{0:yyyy-MM-dd @ HHmm.ss} - {1}" -f (Get-Date),"PoSh-EasyWin Chart"
     $SaveFileDlg.DefaultExt = 'PNG'
-    #$SaveFileDlg.Filter = "Image Files ($($FileTypes)) | All Files (*.*)|*.*"
     $SaveFileDlg.filter = "PNG (*.png)|*.png|JPEG (*.jpeg)|*.jpeg|BMP (*.bmp)|*.bmp|GIF (*.gif)|*.gif|TIFF (*.tiff)|*.tiff|All files (*.*)|*.*"
     $return = $SaveFileDlg.ShowDialog()
     If ($Return -eq 'OK') {
@@ -19,8 +17,8 @@ Function Launch-ChartImageSaveFileDialog {
 # SIG # Begin signature block
 # MIIFuAYJKoZIhvcNAQcCoIIFqTCCBaUCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUFbAfF7kO74+lY5cAs0IbF+mx
-# JzigggM6MIIDNjCCAh6gAwIBAgIQeugH5LewQKBKT6dPXhQ7sDANBgkqhkiG9w0B
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUZPOWNiy11vqM7Y1Auj1GC4Rg
+# wqqgggM6MIIDNjCCAh6gAwIBAgIQeugH5LewQKBKT6dPXhQ7sDANBgkqhkiG9w0B
 # AQUFADAzMTEwLwYDVQQDDChQb1NoLUVhc3lXaW4gQnkgRGFuIEtvbW5pY2sgKGhp
 # Z2gxMDFicm8pMB4XDTIxMTIxNDA1MDIwMFoXDTMxMTIxNDA1MTIwMFowMzExMC8G
 # A1UEAwwoUG9TaC1FYXN5V2luIEJ5IERhbiBLb21uaWNrIChoaWdoMTAxYnJvKTCC
@@ -41,11 +39,11 @@ Function Launch-ChartImageSaveFileDialog {
 # YXN5V2luIEJ5IERhbiBLb21uaWNrIChoaWdoMTAxYnJvKQIQeugH5LewQKBKT6dP
 # XhQ7sDAJBgUrDgMCGgUAoHgwGAYKKwYBBAGCNwIBDDEKMAigAoAAoQKAADAZBgkq
 # hkiG9w0BCQMxDAYKKwYBBAGCNwIBBDAcBgorBgEEAYI3AgELMQ4wDAYKKwYBBAGC
-# NwIBFTAjBgkqhkiG9w0BCQQxFgQUUUVRgSL/9ZGYGK0uv8ns7KSUR+wwDQYJKoZI
-# hvcNAQEBBQAEggEAkx1pGSljSgrQyE3NxZS4BCv3jPuWXh8q/CkJVVPGvGzOEbBB
-# E8NP83tqEaGcaj0ZIpfab2iOgTvhDVqEKzPSMAT3ivsj/NPDRDpa6PwJsah+ORA8
-# tXKfEtFl2J+oqAjBamCjYG8a0JweEd7HaNTG+CCiAb3HIVz2ClcmqdsjLgaA8e9T
-# a8iHvfAY3Z9IGIu9WHwY4gYEAOCxtCv5MIipTIlxiJlW7PWP8VvI1gy3pohYbYB7
-# TU4kKVzal8D7YBPVfxXabMwqKSxg1F1pXDMM0ifsbiYnaWglQ68Zc67u6MfCCHxq
-# bGGMDTi6i1WIeGVGtwcqx5fipcYsm77LPYFMzA==
+# NwIBFTAjBgkqhkiG9w0BCQQxFgQUu1PxQXVTSTStHrfUwd0pjLCCrRcwDQYJKoZI
+# hvcNAQEBBQAEggEAp2roUJiUS9cBMmQT/0slkPFtBTD9GPlIbC8lyc3xt9C9fztA
+# yIXMtbVhWzao8+jPSyaw+9Pw+c2jOGHRnZ1ZkpVC2xGh89u/NxRZNJKN2roW6eM9
+# jODfAM2jhsoLBkf7xaN6d2xSpl+pTYL1sov2GJ0wK6B0z/IZRkRZPGSUBBNtxcy8
+# q5rlVXlIIhsCXnf+6FCFcYYkdtjZK++QAYIVJbtaOorE24pfC+ZN6MgVrR1ivMWD
+# xYvgQGFwEjW+WJY06hHE/5ngJc69fqObuCWyD32pVcUGql5z/X1INmY3Ww7WmvO2
+# lpEAE40BpE+VG+n1DiUvxPlldSJNBGW02cc3DQ==
 # SIG # End signature block

@@ -39,7 +39,7 @@ function Query-EventLog {
 "@
 
         # TODO Batman... look into why Get-AccountLogonActivity is here... 
-        Invoke-Expression -Command "Invoke-Command -ScriptBlock `${function:Get-AccountLogonActivity} -ArgumentList @(`$AccountsStartTimePickerValue,`$AccountsStopTimePickerValue) -ComputerName $TargetComputer -AsJob -JobName 'PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)' -Credential `$script:Credential"
+        #Invoke-Expression -Command "Invoke-Command -ScriptBlock `${function:Get-AccountLogonActivity} -ArgumentList @(`$AccountsStartTimePickerValue,`$AccountsStopTimePickerValue) -ComputerName $TargetComputer -AsJob -JobName 'PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)' -Credential `$script:Credential"
     }
 
 
@@ -114,11 +114,13 @@ function Query-EventLog {
 
 Update-EndpointNotes
 
+
+
 # SIG # Begin signature block
 # MIIFuAYJKoZIhvcNAQcCoIIFqTCCBaUCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUOZUf8CEWRhol5aCyn7IpzAQD
-# vuOgggM6MIIDNjCCAh6gAwIBAgIQeugH5LewQKBKT6dPXhQ7sDANBgkqhkiG9w0B
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUXkP+TJ3KJxUzvnX3R5qFUj5u
+# Q4KgggM6MIIDNjCCAh6gAwIBAgIQeugH5LewQKBKT6dPXhQ7sDANBgkqhkiG9w0B
 # AQUFADAzMTEwLwYDVQQDDChQb1NoLUVhc3lXaW4gQnkgRGFuIEtvbW5pY2sgKGhp
 # Z2gxMDFicm8pMB4XDTIxMTIxNDA1MDIwMFoXDTMxMTIxNDA1MTIwMFowMzExMC8G
 # A1UEAwwoUG9TaC1FYXN5V2luIEJ5IERhbiBLb21uaWNrIChoaWdoMTAxYnJvKTCC
@@ -139,11 +141,11 @@ Update-EndpointNotes
 # YXN5V2luIEJ5IERhbiBLb21uaWNrIChoaWdoMTAxYnJvKQIQeugH5LewQKBKT6dP
 # XhQ7sDAJBgUrDgMCGgUAoHgwGAYKKwYBBAGCNwIBDDEKMAigAoAAoQKAADAZBgkq
 # hkiG9w0BCQMxDAYKKwYBBAGCNwIBBDAcBgorBgEEAYI3AgELMQ4wDAYKKwYBBAGC
-# NwIBFTAjBgkqhkiG9w0BCQQxFgQUBxxlq2pPVDABMHR3lgYKI+t1lL8wDQYJKoZI
-# hvcNAQEBBQAEggEAOCcrKZMGJ2mNA70SOjoPqUd31Ih0V7WVeNJPmiXdwWjuM5Kn
-# SAC224lgCkp4RJMa8l7q2qelZ3WuEuSSIvPZ+CHQ403sY3qSHqhzlpLxTnGsntmL
-# 98lxYqeAFt2kI4nsbK8+lVRabVZN283vHdqwbGYZPG8peOKG6iS7jBjnXOx4ynw0
-# iBOboG/kNL5+PCpCdVaHbbJh6615HJtZJqJbzyBjjJTarKkF4nghyekpIxqg35Ll
-# EdFgfCgcBDdGqd9sdP+3sfTS8bLfRGpavaLJxQTndJjb79WXVRmbsKz9HbIfPLXc
-# uhtaC5KcemkJKPaUg50f2cq7E9tor3bnL6Wrbw==
+# NwIBFTAjBgkqhkiG9w0BCQQxFgQUaxLV/y12VHh1OsI21xXluH8cl7gwDQYJKoZI
+# hvcNAQEBBQAEggEALhG0Y8amFI9TKeCK31TFr+ZxuUu756fKZpdJEfAKvHDrf/M7
+# cCJ2NpwhMxFpmSa+duoITwDZ4NyDwRf2LqzJOl3saxkBBm/8J0HYvpqypCA+hOrL
+# 9n/48+pnNePin2xm8t8uHTQ4gz7NcjRxJ80Nvt9PIpxrSsU+1KJiFxpKvKlckokq
+# Mh29mhHshJa230r16xQQOWnLMvJBzMWUdvECRbC4fXkug1UprdZtEYcnVipaECR3
+# yxhRfmoXIMXCozmD0Oow+pWV7LR1wMHmqi5F0KZ/uXxEwNnltjbCJMKuqt5c9HVd
+# oK11HTaSFeHjiADpTB8UjHves6T2iqvRFZRIQg==
 # SIG # End signature block

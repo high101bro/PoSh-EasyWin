@@ -1,5 +1,3 @@
-#batman
-
 $CollectedDataDirectory = "$PoShHome\Collected Data"
 
 Add-Type -AssemblyName System.Windows.Forms
@@ -688,14 +686,11 @@ Generate-Chart -ByEndpoint -Title 'Process Data' -ChartWidth 560 -ChartHeight 37
 Generate-Chart -ByEndpoint -Title 'Process Data' -ChartWidth 560 -ChartHeight 375 -ChartLeft (560+25) -ChartTop (50+((375+20)*4)) -ChartType 'Column' -SeriesName 'Services Started by Processes' -Property 'ServiceInfo' -ChartColor 'Red'
 
 
-
-
-
 # SIG # Begin signature block
 # MIIFuAYJKoZIhvcNAQcCoIIFqTCCBaUCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUEE+S8xdDc4wUkS/IVSMpnnGL
-# d/mgggM6MIIDNjCCAh6gAwIBAgIQeugH5LewQKBKT6dPXhQ7sDANBgkqhkiG9w0B
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUgEaSxFpkyh9JmTBLAuQMYrWJ
+# TougggM6MIIDNjCCAh6gAwIBAgIQeugH5LewQKBKT6dPXhQ7sDANBgkqhkiG9w0B
 # AQUFADAzMTEwLwYDVQQDDChQb1NoLUVhc3lXaW4gQnkgRGFuIEtvbW5pY2sgKGhp
 # Z2gxMDFicm8pMB4XDTIxMTIxNDA1MDIwMFoXDTMxMTIxNDA1MTIwMFowMzExMC8G
 # A1UEAwwoUG9TaC1FYXN5V2luIEJ5IERhbiBLb21uaWNrIChoaWdoMTAxYnJvKTCC
@@ -716,11 +711,11 @@ Generate-Chart -ByEndpoint -Title 'Process Data' -ChartWidth 560 -ChartHeight 37
 # YXN5V2luIEJ5IERhbiBLb21uaWNrIChoaWdoMTAxYnJvKQIQeugH5LewQKBKT6dP
 # XhQ7sDAJBgUrDgMCGgUAoHgwGAYKKwYBBAGCNwIBDDEKMAigAoAAoQKAADAZBgkq
 # hkiG9w0BCQMxDAYKKwYBBAGCNwIBBDAcBgorBgEEAYI3AgELMQ4wDAYKKwYBBAGC
-# NwIBFTAjBgkqhkiG9w0BCQQxFgQUXMrz7b5yQj9e29CB8wcreqXn/8AwDQYJKoZI
-# hvcNAQEBBQAEggEANNyLAa4OzMoI97BBwv5HALlq6UI18W/+Pllg69sDBMQBxu3J
-# LSPixV4olMu51EA+16zjoxMCxjGUObU7nMT2ijFiGOrmGOWD9n/BJ4MhX6k3Kk8V
-# 7EcWrWJ8jDGgFbUL5snyst9i2GF4b5dDivrCxEcErmr3K/+MxgThf3O2VGVVAAar
-# lHjgGcuUcW551DFd7N00BQH892n5+puuIOAUgHYPgsD9SVlK2ObPN3mYzQgEvICZ
-# M9Zjmvr+vAiyE+YApE/cJY0LxQkC186sUlB84bXmJpgGnw4UcrzDGAhySdNs5wrX
-# Gmm0KtcW5nKkEmvArBOEb15hv/ARPUFI5XxWEw==
+# NwIBFTAjBgkqhkiG9w0BCQQxFgQULsp4NlRaelZ/C46Ve3HuHXdBhcUwDQYJKoZI
+# hvcNAQEBBQAEggEAXTl3H5cStuI+Ej64qYDk7C645nXBqWxECSzzQGaHXUUHCJxl
+# t0iD24oG90ytJ2Oh+t1tiMYk65yHR8RBYcuRQ4Bv0gp/B7kJqYmkgfEvY7JB1tCM
+# MnNx3qn/dtsXTL391Et6SNUZkykH2+wIcUkMd6W4n6ZkCGBOyoOI3k/XxDCqC7BG
+# Ew6ZHjfCONBN06242f7FNpyLU2N70s0o6NL4XU9cr6SXpC2BxKx/wg3IDxg/81ib
+# tF+2iL+Sd0BNKNa9r9Q73P0r3aOza+LIvTJQgbPdIdp62KN8na2KraaDIkNWhj6J
+# 8fsdFgFvygdf2CBu1JOZp6+qiYrxspx03tJrrQ==
 # SIG # End signature block

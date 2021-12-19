@@ -29,117 +29,117 @@ function script:Launch-NetworkConnectionGUI {
     $script:PSWriteHTMLSupportForm.Controls.Add($script:PoShEasyWinIPToExcludeLabel)
 
 
-                $script:ConnectionStatesFilterCheckedListBox = New-Object -TypeName System.Windows.Forms.CheckedListBox -Property @{
-                    Left   = $script:PoShEasyWinIPToExcludeLabel.Left
-                    Top    = $script:PoShEasyWinIPToExcludeLabel.Top + $script:PoShEasyWinIPToExcludeLabel.Height
-                    Width  = $script:PoShEasyWinIPToExcludeLabel.Width
-                    Height = $FormScale * 90
-                    Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-                    ScrollAlwaysVisible = $true
-                }
-                $ConnectionFilterStates = @('Established','TimeWait','CloseWait','Listen','Bound','All Others: Closed,Closing,DeleteTCB,FinWait1,FinWait2,LastAck,SynReceived,SynSent')
-                        foreach ( $State in $ConnectionFilterStates ) { 
-                            $script:ConnectionStatesFilterCheckedListBox.Items.Add($State) 
-                        }                
-                        if ((Test-Path "$PoShHome\Settings\Network Connection Selected States.txt")){
-                            $ConnectionFilterStatesImportedChecked = Get-Content "$PoShHome\Settings\Network Connection Selected States.txt"
-                            foreach ($State in $ConnectionFilterStatesImportedChecked) {
-                                Set-CheckState -Check -CheckedlistBox $script:ConnectionStatesFilterCheckedListBox -Match $State
-                            }
-                            $script:PSWriteHTMLSupportForm.Controls.Add($script:ConnectionStatesFilterCheckedListBox)
-                        }
-                        else {
-                            $ConnectionFilterStatesDefaultChecked = @('Established','TimeWait','CloseWait')
-                            foreach ($State in $ConnectionFilterStatesDefaultChecked) {
-                                Set-CheckState -Check -CheckedlistBox $script:ConnectionStatesFilterCheckedListBox -Match $State
-                            }
-                            $script:PSWriteHTMLSupportForm.Controls.Add($script:ConnectionStatesFilterCheckedListBox)    
-                        }
-
-    
-                $script:PSWriteHTMLResolveDNSCheckbox = New-Object System.Windows.Forms.checkbox -Property @{
-                    Text   = "Resolve DNS"
-                    Left   = $script:ConnectionStatesFilterCheckedListBox.Left
-                    Top    = $script:ConnectionStatesFilterCheckedListBox.Top + $script:ConnectionStatesFilterCheckedListBox.Height
-                    Width  = $script:ConnectionStatesFilterCheckedListBox.Width / 3
-                    Height = $FormScale * 22
-                    Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-                    checked = $false
-                }
-                $script:PSWriteHTMLSupportForm.Controls.Add($script:PSWriteHTMLResolveDNSCheckbox)
+    $script:ConnectionStatesFilterCheckedListBox = New-Object -TypeName System.Windows.Forms.CheckedListBox -Property @{
+        Left   = $script:PoShEasyWinIPToExcludeLabel.Left
+        Top    = $script:PoShEasyWinIPToExcludeLabel.Top + $script:PoShEasyWinIPToExcludeLabel.Height
+        Width  = $script:PoShEasyWinIPToExcludeLabel.Width
+        Height = $FormScale * 90
+        Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+        ScrollAlwaysVisible = $true
+    }
+    $ConnectionFilterStates = @('Established','TimeWait','CloseWait','Listen','Bound','All Others: Closed,Closing,DeleteTCB,FinWait1,FinWait2,LastAck,SynReceived,SynSent')
+    foreach ( $State in $ConnectionFilterStates ) { 
+        $script:ConnectionStatesFilterCheckedListBox.Items.Add($State) 
+    }                
+    if ((Test-Path "$PoShHome\Settings\Network Connection Selected States.txt")){
+        $ConnectionFilterStatesImportedChecked = Get-Content "$PoShHome\Settings\Network Connection Selected States.txt"
+        foreach ($State in $ConnectionFilterStatesImportedChecked) {
+            Set-CheckState -Check -CheckedlistBox $script:ConnectionStatesFilterCheckedListBox -Match $State
+        }
+        $script:PSWriteHTMLSupportForm.Controls.Add($script:ConnectionStatesFilterCheckedListBox)
+    }
+    else {
+        $ConnectionFilterStatesDefaultChecked = @('Established','TimeWait','CloseWait')
+        foreach ($State in $ConnectionFilterStatesDefaultChecked) {
+            Set-CheckState -Check -CheckedlistBox $script:ConnectionStatesFilterCheckedListBox -Match $State
+        }
+        $script:PSWriteHTMLSupportForm.Controls.Add($script:ConnectionStatesFilterCheckedListBox)    
+    }
 
 
-                            $script:PSWriteHTMLNameServerLabel = New-Object System.Windows.Forms.Label -Property @{
-                                Text   = "Name Server:"
-                                Left   = $script:PSWriteHTMLResolveDNSCheckbox.Left + $script:PSWriteHTMLResolveDNSCheckbox.Width
-                                Top    = $script:PSWriteHTMLResolveDNSCheckbox.Top + ($FormScale * 4)
-                                Width  = $script:PSWriteHTMLResolveDNSCheckbox.Width
-                                Height = $FormScale * 22
-                                Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-                            }
-                            $script:PSWriteHTMLSupportForm.Controls.Add($script:PSWriteHTMLNameServerLabel)
+    $script:PSWriteHTMLResolveDNSCheckbox = New-Object System.Windows.Forms.checkbox -Property @{
+        Text   = "Resolve DNS"
+        Left   = $script:ConnectionStatesFilterCheckedListBox.Left
+        Top    = $script:ConnectionStatesFilterCheckedListBox.Top + $script:ConnectionStatesFilterCheckedListBox.Height
+        Width  = $script:ConnectionStatesFilterCheckedListBox.Width / 3
+        Height = $FormScale * 22
+        Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+        checked = $false
+    }
+    $script:PSWriteHTMLSupportForm.Controls.Add($script:PSWriteHTMLResolveDNSCheckbox)
 
 
-                            $script:PSWriteHTMLNameServerTextBox = New-Object System.Windows.Forms.TextBox -Property @{
-                                Text   = "Disabled"
-                                Left   = $script:PSWriteHTMLNameServerLabel.Left + $script:PSWriteHTMLNameServerLabel.Width
-                                Top    = $script:PSWriteHTMLNameServerLabel.Top
-                                Width  = $script:PSWriteHTMLNameServerLabel.Width - ($FormScale * 5)
-                                Height = $FormScale * 22
-                                Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-                                Enabled = $false
-                            }
-                            $script:PSWriteHTMLSupportForm.Controls.Add($script:PSWriteHTMLNameServerTextBox)
+    $script:PSWriteHTMLNameServerLabel = New-Object System.Windows.Forms.Label -Property @{
+        Text   = "Name Server:"
+        Left   = $script:PSWriteHTMLResolveDNSCheckbox.Left + $script:PSWriteHTMLResolveDNSCheckbox.Width
+        Top    = $script:PSWriteHTMLResolveDNSCheckbox.Top + ($FormScale * 4)
+        Width  = $script:PSWriteHTMLResolveDNSCheckbox.Width
+        Height = $FormScale * 22
+        Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    }
+    $script:PSWriteHTMLSupportForm.Controls.Add($script:PSWriteHTMLNameServerLabel)
 
 
-                $script:PSWriteHTMLExcludeIPv6FromGraphsCheckbox = New-Object System.Windows.Forms.checkbox -Property @{
-                    Text    = "Exclude IPv6"
-                    Left    = $script:PSWriteHTMLResolveDNSCheckbox.Left
-                    Top     = $script:PSWriteHTMLResolveDNSCheckbox.Top + $script:PSWriteHTMLResolveDNSCheckbox.Height
-                    Width   = $script:PSWriteHTMLResolveDNSCheckbox.Width
-                    Height  = $FormScale * 22
-                    Font    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-                    checked = $true
-                }
-                $script:PSWriteHTMLSupportForm.Controls.Add($script:PSWriteHTMLExcludeIPv6FromGraphsCheckbox)
+    $script:PSWriteHTMLNameServerTextBox = New-Object System.Windows.Forms.TextBox -Property @{
+        Text   = "Disabled"
+        Left   = $script:PSWriteHTMLNameServerLabel.Left + $script:PSWriteHTMLNameServerLabel.Width
+        Top    = $script:PSWriteHTMLNameServerLabel.Top
+        Width  = $script:PSWriteHTMLNameServerLabel.Width - ($FormScale * 5)
+        Height = $FormScale * 22
+        Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+        Enabled = $false
+    }
+    $script:PSWriteHTMLSupportForm.Controls.Add($script:PSWriteHTMLNameServerTextBox)
 
 
-                $script:PSWriteHTMLExcludeEasyWinFromGraphsCheckbox = New-Object System.Windows.Forms.checkbox -Property @{
-                    Text    = "Exclude the following from the Graphs"
-                    Left    = $script:PSWriteHTMLExcludeIPv6FromGraphsCheckbox.Left
-                    Top     = $script:PSWriteHTMLExcludeIPv6FromGraphsCheckbox.Top + $script:PSWriteHTMLExcludeIPv6FromGraphsCheckbox.Height
-                    Width   = $script:ConnectionStatesFilterCheckedListBox.Width
-                    Height  = $FormScale * 22
-                    Font    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-                    checked = $true
-                }
-                $script:PSWriteHTMLSupportForm.Controls.Add($script:PSWriteHTMLExcludeEasyWinFromGraphsCheckbox)
+    $script:PSWriteHTMLExcludeIPv6FromGraphsCheckbox = New-Object System.Windows.Forms.checkbox -Property @{
+        Text    = "Exclude IPv6"
+        Left    = $script:PSWriteHTMLResolveDNSCheckbox.Left
+        Top     = $script:PSWriteHTMLResolveDNSCheckbox.Top + $script:PSWriteHTMLResolveDNSCheckbox.Height
+        Width   = $script:PSWriteHTMLResolveDNSCheckbox.Width
+        Height  = $FormScale * 22
+        Font    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+        checked = $true
+    }
+    $script:PSWriteHTMLSupportForm.Controls.Add($script:PSWriteHTMLExcludeIPv6FromGraphsCheckbox)
 
 
-                $script:IPAddressesToExcludeTextbox = New-Object System.Windows.Forms.TextBox -Property @{
-                    Left   = $script:PSWriteHTMLExcludeEasyWinFromGraphsCheckbox.Left
-                    Top    = $script:PSWriteHTMLExcludeEasyWinFromGraphsCheckbox.Top + $script:PSWriteHTMLExcludeEasyWinFromGraphsCheckbox.Height
-                    Width  = $script:PoShEasyWinIPToExcludeLabel.Width
-                    Height = $FormScale * 80
-                    Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-                    Multiline  = $true
-                    ScrollBars = 'Vertical'
-            #        ScrollAlwaysVisible = $true
-                }
-                $script:PSWriteHTMLSupportForm.Controls.Add($script:IPAddressesToExcludeTextbox)
-                if ((Test-Path "$PoShHome\Settings\Network Connection IP's to Exclude.txt")){
-                    $script:IPAddressesToExcludeTextbox.text = ''
-                    foreach ($line in (Get-Content "$PoShHome\Settings\Network Connection IP's to Exclude.txt")) {
-                        $script:IPAddressesToExcludeTextbox.text += "$line`r`n"
-                    }
-                }
-                else {
-                    $DefaultIPListToExclude = @('127.0.0.1','0.0.0.0','::1','::')
-                    $script:IPAddressesToExcludeTextbox.text = ''
-                    foreach ($IP in $DefaultIPListToExclude) {
-                        $script:IPAddressesToExcludeTextbox.text += "$IP`r`n"
-                    }                    
-                }
+    $script:PSWriteHTMLExcludeEasyWinFromGraphsCheckbox = New-Object System.Windows.Forms.checkbox -Property @{
+        Text    = "Exclude the following from the Graphs"
+        Left    = $script:PSWriteHTMLExcludeIPv6FromGraphsCheckbox.Left
+        Top     = $script:PSWriteHTMLExcludeIPv6FromGraphsCheckbox.Top + $script:PSWriteHTMLExcludeIPv6FromGraphsCheckbox.Height
+        Width   = $script:ConnectionStatesFilterCheckedListBox.Width
+        Height  = $FormScale * 22
+        Font    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+        checked = $true
+    }
+    $script:PSWriteHTMLSupportForm.Controls.Add($script:PSWriteHTMLExcludeEasyWinFromGraphsCheckbox)
+
+
+    $script:IPAddressesToExcludeTextbox = New-Object System.Windows.Forms.TextBox -Property @{
+        Left   = $script:PSWriteHTMLExcludeEasyWinFromGraphsCheckbox.Left
+        Top    = $script:PSWriteHTMLExcludeEasyWinFromGraphsCheckbox.Top + $script:PSWriteHTMLExcludeEasyWinFromGraphsCheckbox.Height
+        Width  = $script:PoShEasyWinIPToExcludeLabel.Width
+        Height = $FormScale * 80
+        Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+        Multiline  = $true
+        ScrollBars = 'Vertical'
+#        ScrollAlwaysVisible = $true
+    }
+    $script:PSWriteHTMLSupportForm.Controls.Add($script:IPAddressesToExcludeTextbox)
+    if ((Test-Path "$PoShHome\Settings\Network Connection IP's to Exclude.txt")){
+        $script:IPAddressesToExcludeTextbox.text = ''
+        foreach ($line in (Get-Content "$PoShHome\Settings\Network Connection IP's to Exclude.txt")) {
+            $script:IPAddressesToExcludeTextbox.text += "$line`r`n"
+        }
+    }
+    else {
+        $DefaultIPListToExclude = @('127.0.0.1','0.0.0.0','::1','::')
+        $script:IPAddressesToExcludeTextbox.text = ''
+        foreach ($IP in $DefaultIPListToExclude) {
+            $script:IPAddressesToExcludeTextbox.text += "$IP`r`n"
+        }                    
+    }
 
 
     $PSWriteHTMLSupportOkayButton = New-Object System.Windows.Forms.Button -Property @{
@@ -164,12 +164,15 @@ function script:Launch-NetworkConnectionGUI {
     Apply-CommonButtonSettings -Button $PSWriteHTMLSupportOkayButton
 
     $script:PSWriteHTMLSupportForm.ShowDialog()    
+}
 
+
+   
 # SIG # Begin signature block
 # MIIFuAYJKoZIhvcNAQcCoIIFqTCCBaUCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUXY549ig3v6s0sk4eqoCP+4RT
-# bJGgggM6MIIDNjCCAh6gAwIBAgIQeugH5LewQKBKT6dPXhQ7sDANBgkqhkiG9w0B
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUb5OzoWCEntsol1MjjqheNvgY
+# OASgggM6MIIDNjCCAh6gAwIBAgIQeugH5LewQKBKT6dPXhQ7sDANBgkqhkiG9w0B
 # AQUFADAzMTEwLwYDVQQDDChQb1NoLUVhc3lXaW4gQnkgRGFuIEtvbW5pY2sgKGhp
 # Z2gxMDFicm8pMB4XDTIxMTIxNDA1MDIwMFoXDTMxMTIxNDA1MTIwMFowMzExMC8G
 # A1UEAwwoUG9TaC1FYXN5V2luIEJ5IERhbiBLb21uaWNrIChoaWdoMTAxYnJvKTCC
@@ -190,11 +193,11 @@ function script:Launch-NetworkConnectionGUI {
 # YXN5V2luIEJ5IERhbiBLb21uaWNrIChoaWdoMTAxYnJvKQIQeugH5LewQKBKT6dP
 # XhQ7sDAJBgUrDgMCGgUAoHgwGAYKKwYBBAGCNwIBDDEKMAigAoAAoQKAADAZBgkq
 # hkiG9w0BCQMxDAYKKwYBBAGCNwIBBDAcBgorBgEEAYI3AgELMQ4wDAYKKwYBBAGC
-# NwIBFTAjBgkqhkiG9w0BCQQxFgQUOWV4Lirc0oLrZeQOjmDjMxu+OUkwDQYJKoZI
-# hvcNAQEBBQAEggEAoWrsRzuhIAHsguXIc04NyloNGFljH4HzDdjKMaAKyQ51sx95
-# QwycnVept4mz7c8qxJWxQWMzHcfQJuRsBZ/aCm5q//UVDVOViQ/Kiew5+3mQVRG+
-# lmuIdOKKeQMYp7AH9wXozTnsPCekQuuX4wnhDZA7umwG4q4aZUN1XQbMPBoFSKcy
-# MoK9oqiaTfSnye93lzyI+oP1fsyATZHm96tAzRj0al+ON+YiEcfKGXdL5l8q3yEG
-# 79yqyDSdEgugvjVlZUx4ZdBbmIUmiSnJV7WUIreaMRg9Qx2morl0CAgYLXWfJoeT
-# wpqXVa8Z2ZGiQrX+jq5wXWOEA3rkawpjqeuv/w==
+# NwIBFTAjBgkqhkiG9w0BCQQxFgQU0QV3dbdc6N7nniIDUrMoHZImz+UwDQYJKoZI
+# hvcNAQEBBQAEggEAPxyiniKg/s5Sr13w++ha5r9TADNWVG7RwruZG01nB7QaIEDn
+# cHqFjIYnyH2kCg4AmngrUf9Yq931l9I/zN/P371D2DLgs+e93ECgPCreYb2JAwT8
+# mIr/XgTyQhmqugJNUoqStXH9ap5TyRt4lvfMwKhKaAdQGTbtaKAGcZoD/YZJwBbM
+# vA8NqFbu8OulerX4p0gpU7WW3ocM4c52tbXuBfCBhe3Y9Yu7QZ7aGd+wII3bpFT/
+# NL4pKZymordEUG1qrZCOLI/Ukh6RBcH8ah0pfmQnl4bJ+CNmZdnvLLINtf2XVyoR
+# 3RE5ZqS2mheWtjFsIM14FGMF77cOxnWg5+AsbA==
 # SIG # End signature block
