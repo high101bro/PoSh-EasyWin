@@ -1,3 +1,149 @@
+####################################################################################################
+# ScriptBlocks
+####################################################################################################
+
+$OpNotesSelectAllButtonAdd_Click = {
+    for($i = 0; $i -lt $OpNotesListBox.Items.Count; $i++) {
+        $OpNotesListBox.SetSelected($i, $true)
+    }
+}
+
+$OpNotesRemoveButtonAdd_Click = {
+    while($OpNotesListBox.SelectedItems) {
+        $OpNotesListBox.Items.Remove($OpNotesListBox.SelectedItems[0])
+    }
+    Save-OpNotes
+}
+
+$OpNotesMoveUpButtonAdd_Click = {
+    if($OpNotesListBox.SelectedIndex -gt 0) {
+        $OpNotesListBox.BeginUpdate()
+        $OpNotesToMove         = @()
+        $SelectedItemPositions = @()
+        $SelectedItemIndices   = $($OpNotesListBox.SelectedIndices)
+
+        $BufferLine = $null
+        #Checks if the lines are contiguous, if they are not it will not move the lines
+        foreach ($line in $SelectedItemIndices) {
+            if (($BufferLine - $line) -ne -1 -and $BufferLine -ne $null) {
+                $OpNotesListBox.EndUpdate()
+                $StatusListBox.Items.Clear()
+                $StatusListBox.Items.Add("Error: OpNotes")
+                #Removed For Testing#$ResultsListBox.Items.Clear()
+                $ResultsListBox.Items.Add('Error: You can only move contiguous lines up or down.')
+                [system.media.systemsounds]::Exclamation.play()
+                #[console]::beep(500,100)
+                return
+            }
+            $BufferLine = [int]$line
+        }
+        #Adds lines to variable to be moved and removes each line
+        while($OpNotesListBox.SelectedItems) {
+            $SelectedItemPositions += $OpNotesListBox.SelectedIndex
+            $OpNotesToMove         += $OpNotesListBox.SelectedItems[0]
+            $OpNotesListBox.Items.Remove($OpNotesListBox.SelectedItems[0])
+        }
+        #Reverses Array order... [array]::reverse($OpNotesToMove) was not working
+        if ($a.Length -gt 999) {$OpNotesToMove = $OpNotesToMove[-1..-10000]}
+        else {$OpNotesToMove = $OpNotesToMove[-1..-1000]}
+
+        #Adds lines to their new location
+        foreach ($note in $OpNotesToMove) {
+            $OpNotesListBox.items.insert($SelectedItemPositions[0] -1,$note)
+        }
+        $OpNotesListBox.EndUpdate()
+        $StatusListBox.Items.Clear()
+        $StatusListBox.Items.Add("Success: OpNotes Action")
+        #Removed For Testing#$ResultsListBox.Items.Clear()
+        $ResultsListBox.Items.Add("Moved OpNote lines up.")
+        $ResultsListBox.Items.Add('Opnotes have been saved.')
+        Save-OpNotes
+
+        #the index location of the line
+        $IndexCount = $SelectedItemIndices.count
+        foreach ($Index in $SelectedItemIndices) { $OpNotesListBox.SetSelected(($Index - 1),$true) }
+    }
+    else {
+        [system.media.systemsounds]::Exclamation.play()
+        #[console]::beep(500,100)
+    }
+}
+
+$OpNotesMoveDownButtonAdd_Click = {
+    if(($OpNotesListBox.Items).Count -ne (($OpNotesListBox.SelectedIndices)[-1] + 1) ) {
+        $OpNotesListBox.BeginUpdate()
+        $OpNotesToMove = @()
+        $SelectedItemPositions = @()
+        $SelectedItemIndices = $($OpNotesListBox.SelectedIndices)
+
+        $BufferLine = $null
+        #Checks if the lines are contiguous, if they are not it will not move the lines
+        foreach ($line in $SelectedItemIndices) {
+            if (($BufferLine - $line) -ne -1 -and $BufferLine -ne $null) {
+                $OpNotesListBox.EndUpdate()
+                $StatusListBox.Items.Clear()
+                $StatusListBox.Items.Add("Error: OpNotes")
+                #Removed For Testing#$ResultsListBox.Items.Clear()
+                $ResultsListBox.Items.Add('Error: You can only move contiguous lines up or down.')
+                [system.media.systemsounds]::Exclamation.play()
+                #[console]::beep(500,100)
+                return
+            }
+            $BufferLine = [int]$line
+        }
+        #Adds lines to variable to be moved and removes each line
+        while($OpNotesListBox.SelectedItems) {
+            $SelectedItemPositions += $OpNotesListBox.SelectedIndex
+            $OpNotesToMove         += $OpNotesListBox.SelectedItems[0]
+            $OpNotesListBox.Items.Remove($OpNotesListBox.SelectedItems[0])
+        }
+        #Reverses Array order... [array]::reverse($OpNotesToMove) was not working
+        if ($a.Length -gt 999) {$OpNotesToMove = $OpNotesToMove[-1..-10000]}
+        else {$OpNotesToMove = $OpNotesToMove[-1..-1000]}
+
+        #Adds lines to their new location
+        foreach ($note in $OpNotesToMove) { $OpNotesListBox.items.insert($SelectedItemPositions[0] +1,$note)
+        }
+        $OpNotesListBox.EndUpdate()
+        $StatusListBox.Items.Clear()
+        $StatusListBox.Items.Add("Success: OpNotes Action")
+        #Removed For Testing#$ResultsListBox.Items.Clear()
+        $ResultsListBox.Items.Add("Moved OpNote lines down.")
+        $ResultsListBox.Items.Add('Opnotes have been saved.')
+        Save-OpNotes
+
+        #the index location of the line
+        $IndexCount = $SelectedItemIndices.count
+        foreach ($Index in $SelectedItemIndices) { $OpNotesListBox.SetSelected(($Index + 1),$true) }
+    }
+    else {
+        [system.media.systemsounds]::Exclamation.play()
+        #[console]::beep(500,100)
+    }
+}
+
+$OpNotesCreateReportButtonAdd_Click = {
+    New-Item -ItemType Directory "$PoShHome\Reports" -ErrorAction SilentlyContinue | Out-Null
+    if ($OpNotesListBox.SelectedItems.Count -gt 0) {
+        # Popup that allows you select where to save the Report
+        [System.Reflection.Assembly]::LoadWithPartialName("PresentationFramework") | Out-Null
+        #$OpNotesSaveLocation                 = New-Object -Typename System.Windows.Forms.SaveFileDialog
+        $OpNotesSaveLocation                  = New-Object Microsoft.Win32.SaveFileDialog
+        $OpNotesSaveLocation.InitialDirectory = "$PoShHome\Reports"
+        $OpNotesSaveLocation.MultiSelect      = $false
+        $OpNotesSaveLocation.Filter           = "Text files (*.txt)| *.txt"
+        $OpNotesSaveLocation.ShowDialog()
+        Write-Output $($OpNotesListBox.SelectedItems) | Out-File "$($OpNotesSaveLocation.Filename)"
+    }
+    else {
+        #Removed For Testing#$ResultsListBox.Items.Clear()
+        $ResultsListBox.Items.Add('You must select at least one line to add to a report!')
+    }
+}
+
+####################################################################################################
+# WinForms
+####################################################################################################
 
 $Section1OpNotesTab = New-Object System.Windows.Forms.TabPage -Property @{
     Text = "OpNotes  "
@@ -42,30 +188,26 @@ $Section1OpNotesTab.Controls.Add($OpNotesLabel)
 $OpNotesDownPosition += $OpNotesDownPositionShift + $($FormScale + 5)
 
 
-Update-FormProgress "$Dependencies\Code\System.Windows.Forms\TextBox\OpNotesInputTextBox.ps1"
-. "$Dependencies\Code\System.Windows.Forms\TextBox\OpNotesInputTextBox.ps1"
 $OpNotesInputTextBox = New-Object System.Windows.Forms.TextBox -Property @{
     Location = @{ X = $FormScale * $OpNotesRightPosition
                   Y = $FormScale * $OpNotesDownPosition }
     Size     = @{ Width  = $FormScale * $OpNotesInputTextBoxWidth
                   Height = $FormScale * $OpNotesInputTextBoxHeight }
     Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    Add_KeyDown = $OpNotesInputTextBoxAdd_KeyDown
+    Add_KeyDown = { if ($_.KeyCode -eq "Enter") { if ($OpNotesInputTextBox.Text -ne "") { OpNoteTextBoxEntry } } }
 }
 $Section1OpNotesTab.Controls.Add($OpNotesInputTextBox)
 
 $OpNotesDownPosition += $OpNotesDownPositionShift + $($FormScale + 5)
 
 
-Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\OpNotesAddButton.ps1"
-. "$Dependencies\Code\System.Windows.Forms\Button\OpNotesAddButton.ps1"
 $OpNotesAddButton = New-Object System.Windows.Forms.Button -Property @{
     Text     = "Add"
     Location = @{ X = $FormScale * $OpNotesRightPosition
                   Y = $FormScale * $OpNotesDownPosition }
     Size     = @{ Width  = $FormScale * $OpNotesButtonWidth
                   Height = $FormScale * $OpNotesButtonHeight }
-    Add_Click = $OpNotesAddButtonAdd_Click
+    Add_Click = { if ($OpNotesInputTextBox.Text -ne "") { OpNoteTextBoxEntry } }    
 }
 $Section1OpNotesTab.Controls.Add($OpNotesAddButton)
 Apply-CommonButtonSettings -Button $OpNotesAddButton
@@ -73,8 +215,6 @@ Apply-CommonButtonSettings -Button $OpNotesAddButton
 $OpNotesRightPosition += $OpNotesRightPositionShift
 
 
-Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\OpNotesSelectAllButton.ps1"
-. "$Dependencies\Code\System.Windows.Forms\Button\OpNotesSelectAllButton.ps1"
 $OpNotesSelectAllButton = New-Object System.Windows.Forms.Button -Property @{
     Text     = "Select All"
     Location = @{ X = $FormScale * $OpNotesRightPosition
@@ -89,15 +229,14 @@ Apply-CommonButtonSettings -Button $OpNotesSelectAllButton
 $OpNotesRightPosition += $OpNotesRightPositionShift
 
 
-Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\OpNotesOpenOpNotesButton.ps1"
-. "$Dependencies\Code\System.Windows.Forms\Button\OpNotesOpenOpNotesButton.ps1"
 $OpNotesOpenOpNotesButton = New-Object System.Windows.Forms.Button -Property @{
     Text     = "Open OpNotes"
     Location = @{ X = $FormScale * $OpNotesRightPosition
                   Y = $FormScale * $OpNotesDownPosition }
     Size     = @{ Width  = $FormScale * $OpNotesButtonWidth
                   Height = $FormScale * $OpNotesButtonHeight }
-    Add_Click = $OpNotesOpenOpNotesButtonAdd_Click
+    Add_Click = { Invoke-Item -Path "$PoShHome\OpNotes.txt" }
+    
 }
 $Section1OpNotesTab.Controls.Add($OpNotesOpenOpNotesButton)
 Apply-CommonButtonSettings -Button $OpNotesOpenOpNotesButton
@@ -105,8 +244,6 @@ Apply-CommonButtonSettings -Button $OpNotesOpenOpNotesButton
 $OpNotesRightPosition += $OpNotesRightPositionShift
 
 
-Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\OpNotesMoveUpButton.ps1"
-. "$Dependencies\Code\System.Windows.Forms\Button\OpNotesMoveUpButton.ps1"
 $OpNotesMoveUpButton = New-Object System.Windows.Forms.Button -Property @{
     Text     = 'Move Up'
     Location = @{ X = $FormScale * $OpNotesRightPosition
@@ -122,8 +259,6 @@ $OpNotesDownPosition += $OpNotesDownPositionShift + $($FormScale + 5)
 $OpNotesRightPosition = $OpNotesRightPositionStart
 
 
-Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\OpNotesRemoveButton.ps1"
-. "$Dependencies\Code\System.Windows.Forms\Button\OpNotesRemoveButton.ps1"
 $OpNotesRemoveButton = New-Object System.Windows.Forms.Button -Property @{
     Text     = 'Remove'
     Location = @{ X = $FormScale * $OpNotesRightPosition
@@ -138,8 +273,6 @@ Apply-CommonButtonSettings -Button $OpNotesRemoveButton
 $OpNotesRightPosition += $OpNotesRightPositionShift
 
 
-Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\OpNotesCreateReportButton.ps1"
-. "$Dependencies\Code\System.Windows.Forms\Button\OpNotesCreateReportButton.ps1"
 $OpNotesCreateReportButton = New-Object System.Windows.Forms.Button -Property @{
     Text     = "Create Report"
     Location = @{ X = $FormScale * $OpNotesRightPosition
@@ -168,8 +301,6 @@ Apply-CommonButtonSettings -Button $OpNotesOpenReportsButton
 $OpNotesRightPosition += $OpNotesRightPositionShift
 
 
-Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\OpNotesMoveDownButton.ps1"
-. "$Dependencies\Code\System.Windows.Forms\Button\OpNotesMoveDownButton.ps1"
 $OpNotesMoveDownButton = New-Object System.Windows.Forms.Button -Property @{
     Text     = 'Move Down'
     Location = @{ X = $FormScale * $OpNotesRightPosition
@@ -184,8 +315,6 @@ Apply-CommonButtonSettings -Button $OpNotesMoveDownButton
 $OpNotesDownPosition += $OpNotesDownPositionShift + $($FormScale + 5)
 
 
-Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ListBox\OpNotesListBox.ps1"
-. "$Dependencies\Code\System.Windows.Forms\ListBox\OpNotesListBox.ps1"
 $OpNotesListBox = New-Object System.Windows.Forms.ListBox -Property @{
     Name     = "OpNotesListBox"
     Location = @{ X = $FormScale * $OpNotesRightPositionStart
@@ -197,9 +326,6 @@ $OpNotesListBox = New-Object System.Windows.Forms.ListBox -Property @{
     SelectionMode       = 'MultiExtended'
     ScrollAlwaysVisible = $True
     AutoSize            = $false
-    #Add_MouseEnter = $OpNotesListBoxAdd_MouseEnter
-    #Add_MouseLeave = $OpNotesListBoxAdd_MouseLeave
-
 }
 $Section1OpNotesTab.Controls.Add($OpNotesListBox)
 

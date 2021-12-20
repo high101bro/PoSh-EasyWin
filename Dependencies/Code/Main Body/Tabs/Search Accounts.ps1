@@ -61,7 +61,6 @@ $AccountsOptionsGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
 
 
             <#
-            . "$Dependencies\Code\System.Windows.Forms\Label\AccountsMaximumCollectionLabel.ps1"
             $AccountsMaximumCollectionLabel = New-Object System.Windows.Forms.Label -Property @{
                 Text   = "Max Collection:"
                 Left   = $AccountsRPCRadioButton.Left + $AccountsRPCRadioButton.Width + $($FormScale * 35)
@@ -75,7 +74,6 @@ $AccountsOptionsGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
             $AccountsOptionsGroupBox.Controls.Add($AccountsMaximumCollectionLabel)
 
 
-            . "$Dependencies\Code\System.Windows.Forms\TextBox\AccountsMaximumCollectionTextBox.ps1"
             $AccountsMaximumCollectionTextBox = New-Object System.Windows.Forms.TextBox -Property @{
                     Text   = 100
                     Left   = $AccountsMaximumCollectionLabel.Left + $AccountsMaximumCollectionLabel.Width

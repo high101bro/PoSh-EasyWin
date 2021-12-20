@@ -116,7 +116,7 @@ $script:Section3AccountDataIconPictureBox= New-Object Windows.Forms.PictureBox -
                 
                 $script:AccountsTreeView.Nodes.Add($script:TreeNodeAccountsList)
                 Foreach($Account in $script:AccountsTreeViewData) {
-                    AddTreeNodeTo-TreeViewData -Accounts -RootNode $script:TreeNodeAccountsList -Category $Account.CanonicalName -Entry $Account.Name -ToolTip $Account.IPv4Address -Metadata $Account
+                    Add-TreeViewData -Accounts -RootNode $script:TreeNodeAccountsList -Category $Account.CanonicalName -Entry $Account.Name -ToolTip $Account.IPv4Address -Metadata $Account
                 }
 
                 Save-TreeViewData -Accounts

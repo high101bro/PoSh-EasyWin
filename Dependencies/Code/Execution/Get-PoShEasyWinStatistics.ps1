@@ -1,5 +1,5 @@
 function Get-PoShEasyWinStatistics {
-    Compile-SelectedCommandTreeNode
+    Compile-TreeViewCommand
 
     $StatisticsResults             = ""
     $StatisticsAllCSVFiles         = Get-Childitem -Path $CollectedDataDirectory -Recurse -Include "*.csv"

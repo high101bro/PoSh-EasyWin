@@ -36,30 +36,24 @@ function Quarantine-EndpointsWithFirewallRules {
 
     Generate-ComputerList
     if ($script:ComputerList.count -eq 0){
-        [System.Windows.MessageBox]::Show('Ensure you checkbox one or more endpoints.','Error: No Endpoints Selected')
+        Show-MessageBox -Message 'Ensure you checkbox one or more endpoints.' -Title "PoSh-EasyWin - No Endpoints Selected" -Options "Ok" -Type "Error" -Sound
     }
     elseif ($ActionsTabCopyEndpointFirewallRulesRadioButton.checked -and $script:ActionsTabQuarantineEndpointAccessFromIPSubnetTextbox.text -eq "Enter IP, Range, or Subnet"){
-        [System.Windows.MessageBox]::Show("Make sure you enter a valid IP, Range, or Subnet.
-
-NOTE: Mouse hover over the textbox for a list of references.
-
-CAUTION! If you make a bad entry, you may cause the endpoints to become inaccessible over the network.",'Error: Enter A Valid Entry')
+        Show-MessageBox -Message "Error: Make sure you enter a valid IP, Range, or Subnet.`n
+NOTE: Mouse hover over the textbox for a list of references.`n
+CAUTION! If you make a bad entry, you may cause the endpoints to become inaccessible over the network." -Title "PoSh-EasyWin - Enter A Valid Entry" -Options "Ok" -Type "Error" -Sound
     }
     else {
         # Provides a messagebox with the proper prompt depending on which radiobutton was seclected
         if ($ActionsTabCopyEndpointFirewallRulesRadioButton.checked){
-            $BackupAndQuarantineMessageBox = [System.Windows.MessageBox]::Show("Backup the firewall rules and quarantine the following endpoints:
-
-$($script:ComputerList -join ', ')
-
-These endpoints will only be accessable from the following:
-
-$($script:ActionsTabQuarantineEndpointAccessFromIPSubnetTextbox.text)
-
-CAUTION! If you make a bad entry, you may cause the endpoints to become inaccessible over the network.",'Backup and Quarantine','YesNo')
+            $BackupAndQuarantineMessageBox = Show-MessageBox -Message "Backup the firewall rules and quarantine the following endpoints:`n
+$($script:ComputerList -join ', ')`n
+These endpoints will only be accessable from the following:`n
+$($script:ActionsTabQuarantineEndpointAccessFromIPSubnetTextbox.text)`n
+CAUTION! If you make a bad entry, you may cause the endpoints to become inaccessible over the network." -Title "PoSh-EasyWin - Backup and Quarantine" -Options "YesNo" -Type "Error" -Sound
         }
         elseif ($ActionsTabApplyFirewallRulesLocalCopyToEndpointsRadioButton.checked){
-            $BackupAndQuarantineMessageBox = [System.Windows.MessageBox]::Show("Restore the firewall rules and Un-Quarantine the following endpoints:`n`n$($script:ComputerList -join ', ')",'Restore and Un-Quarantine','YesNo')
+            $BackupAndQuarantineMessageBox = Show-MessageBox -Message "Restore the firewall rules and Un-Quarantine the following endpoints:`n`n$($script:ComputerList -join ', ')" -Title "PoSh-EasyWin - Restore and Un-Quarantine" -Options "YesNo" -Type "Error" -Sound
         }
 
         # If the messagebox was 'Yes', then...
@@ -102,8 +96,7 @@ CAUTION! If you make a bad entry, you may cause the endpoints to become inaccess
                         $CancelQuarantine = $false
 
                         if (Test-Path "$OutputFirewallRulesDirectory\$Computer - Firewall Rules.wfw"){
-                            [system.media.systemsounds]::Exclamation.play()
-                            $OverwriteFirewallFile = [System.Windows.MessageBox]::Show("Warning: A version of the firewall rules for $Computer already exists.`n`nDo you want to overwrite the local copy?",'Overwrite Local Copy','YesNoCancel')
+                            $OverwriteFirewallFile = Show-MessageBox -Message "Warning: A version of the firewall rules for $Computer already exists.`n`nDo you want to overwrite the local copy?" -Title "PoSh-EasyWin - Overwrite Local Copy" -Options "YesNoCancel" -Type "Warning" -Sound
                             switch ($OverwriteFirewallFile) {
                                 'Yes'{
                                     Invoke-Command -ScriptBlock { netsh advfirewall export "C:\Windows\Temp\firewall-export.wfw" } -Session $Session

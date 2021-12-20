@@ -1,3 +1,67 @@
+####################################################################################################
+# ScriptBlocks
+####################################################################################################
+
+
+$FileSearchDirectoryListingTextboxAdd_MouseHover = {
+    Show-ToolTip -Title "Directory Listing (WinRM)" -Icon "Info" -Message @"
++  Enter a single directory
++  Example - C:\Windows\System32
+"@
+}
+
+$FileSearchFileSearchFileRichTextboxAdd_MouseHover = {
+    Show-ToolTip -Title "File Search (WinRM)" -Icon "Info" -Message @"
++  Enter FileNames
++  One Per Line
++  Support Regular Expressions (RegEx)
++  Filenames don't have to include file extension
++  This search will also find the keyword within the filename
+"@
+}
+
+$FileSearchFileSearchDirectoryRichTextboxAdd_MouseHover = {
+    Show-ToolTip -Title "File Search (WinRM)" -Icon "Info" -Message @"
++  Enter Directories
++  One Per Line
++  You can include wild cards in directory paths:
+     Ex:  c:\users\*\appdata\local\temp\*
+"@
+}
+
+$FileSearchAlternateDataStreamDirectoryRichTextboxAdd_MouseHover = {
+    Show-ToolTip -Title "Alternate Data Stream Search (WinRM)" -Icon "Info" -Message @"
++  Enter Directories
++  One Per Line
+"@ }
+
+$FileSearchAlternateDataStreamDirectoryExtractStreamDataButtonAdd_Click = {
+    try {
+#       [System.Reflection.Assembly]::LoadWithPartialName("System .Windows.Forms") | Out-Null
+        $ExtractStreamDataOpenFileDialog = New-Object System.Windows.Forms.OpenFileDialog -Property @{
+            Title            = "Select An Alternate Data Stream CSV File"
+            InitialDirectory = "$(if (Test-Path $($script:CollectionSavedDirectoryTextBox.Text)) {$($script:CollectionSavedDirectoryTextBox.Text)} else {$CollectedDataDirectory})"
+            Filter           = "CSV (*.csv)|*.csv|All files (*.*)|*.*"
+            ShowHelp         = $true
+        }
+        $ExtractStreamDataOpenFileDialog.ShowDialog() | Out-Null
+        $ExtractStreamDataFrom = Import-Csv $($ExtractStreamDataOpenFileDialog.FileName)
+        $StatuListBox.Items.Clear()
+        $StatusListBox.Items.Add("Retrieve & Extract Alternate Data Stream")
+    }
+    catch{}
+
+    $SelectedFilesToExtractStreamData = $null
+    $SelectedFilesToExtractStreamData = $ExtractStreamDataFrom | Out-GridView -Title 'Retrieve & Extract Alternate Data Stream' -PassThru
+
+    Get-RemoteAlternateDataStream -Files $SelectedFilesToExtractStreamData
+    Remove-Variable -Name SelectedFilesToExtractStreamData
+}
+
+
+####################################################################################################
+# WinForms
+####################################################################################################
 
 $Section1FileSearchTab = New-Object System.Windows.Forms.TabPage -Property @{
     Text   = "File Search  "
@@ -75,8 +139,6 @@ $FileSearchDirectoryListingLabel = New-Object System.Windows.Forms.Label -Proper
 $Section1FileSearchTab.Controls.Add($FileSearchDirectoryListingLabel)
 
 
-Update-FormProgress "$Dependencies\Code\System.Windows.Forms\TextBox\FileSearchDirectoryListingTextbox.ps1"
-. "$Dependencies\Code\System.Windows.Forms\TextBox\FileSearchDirectoryListingTextbox.ps1"
 $FileSearchDirectoryListingTextbox = New-Object System.Windows.Forms.TextBox -Property @{
     Left   = $FormScale * 3
     Top    = $FileSearchDirectoryListingLabel.Top + $FileSearchDirectoryListingLabel.Height + $($FormScale * 5)
@@ -88,8 +150,8 @@ $FileSearchDirectoryListingTextbox = New-Object System.Windows.Forms.TextBox -Pr
     AutoCompleteSource = "FileSystem"
     AutoCompleteMode   = "SuggestAppend"
     Font               = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    Add_MouseEnter = $FileSearchDirectoryListingTextboxAdd_MouseEnter
-    Add_MouseLeave = $FileSearchDirectoryListingTextboxAdd_MouseLeave
+    Add_MouseEnter = { if ($this.text -eq "Enter a single directory") { $this.text = "" } }
+    Add_MouseLeave = { if ($this.text -eq "") { $this.text = "Enter a single directory" } }
     Add_MouseHover = $FileSearchDirectoryListingTextboxAdd_MouseHover
 }
 $Section1FileSearchTab.Controls.Add($FileSearchDirectoryListingTextbox)
@@ -177,8 +239,6 @@ ForEach ($Hash in $HashingAlgorithms) { $FileSearchSelectFileHashComboBox.Items.
 $Section1FileSearchTab.Controls.Add($FileSearchSelectFileHashComboBox)
 
 
-Update-FormProgress "$Dependencies\Code\System.Windows.Forms\RichTextBox\FileSearchFileSearchDirectoryRichTextbox.ps1"
-. "$Dependencies\Code\System.Windows.Forms\RichTextBox\FileSearchFileSearchDirectoryRichTextbox.ps1"
 $FileSearchFileSearchDirectoryRichTextbox = New-Object System.Windows.Forms.RichTextBox -Property @{
     Text   = "Enter Directories; One Per Line"
     Left   = $FormScale * 3
@@ -187,15 +247,13 @@ $FileSearchFileSearchDirectoryRichTextbox = New-Object System.Windows.Forms.Rich
     Height = $FormScale * 80
     MultiLine = $True
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    Add_MouseEnter = $FileSearchFileSearchDirectoryRichTextboxAdd_MouseEnter
-    Add_MouseLeave = $FileSearchFileSearchDirectoryRichTextboxAdd_MouseLeave
+    Add_MouseEnter = { if ($this.text -eq "Enter Directories; One Per Line") { $this.text = "" } }
+    Add_MouseLeave = { if ($this.text -eq "") { $this.text = "Enter Directories; One Per Line" } }
     Add_MouseHover = $FileSearchFileSearchDirectoryRichTextboxAdd_MouseHover
 }
 $Section1FileSearchTab.Controls.Add($FileSearchFileSearchDirectoryRichTextbox)
 
 
-Update-FormProgress "$Dependencies\Code\System.Windows.Forms\RichTextBox\FileSearchFileSearchFileRichTextbox.ps1"
-. "$Dependencies\Code\System.Windows.Forms\RichTextBox\FileSearchFileSearchFileRichTextbox.ps1"
 $FileSearchFileSearchFileRichTextbox = New-Object System.Windows.Forms.RichTextBox -Property @{
     Text   = "Enter FileNames; One Per Line"
     Left   = $FormScale * 3
@@ -205,8 +263,8 @@ $FileSearchFileSearchFileRichTextbox = New-Object System.Windows.Forms.RichTextB
     MultiLine  = $True
     ScrollBars = "Vertical" #Horizontal
     Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    Add_MouseEnter = $FileSearchFileSearchFileRichTextboxAdd_MouseEnter
-    Add_MouseLeave = $FileSearchFileSearchFileRichTextboxAdd_MouseLeave
+    Add_MouseEnter = { if ($this.text -eq "Enter FileNames; One Per Line") { $this.text = "" } }
+    Add_MouseLeave = { if ($this.text -eq "") { $this.text = "Enter FileNames; One Per Line" } }
     Add_MouseHover = $FileSearchFileSearchFileRichTextboxAdd_MouseHover
 }
 $Section1FileSearchTab.Controls.Add($FileSearchFileSearchFileRichTextbox)
@@ -267,8 +325,6 @@ $FileSearchAlternateDataStreamLabel = New-Object System.Windows.Forms.Label -Pro
 $Section1FileSearchTab.Controls.Add($FileSearchAlternateDataStreamLabel)
 
 
-Update-FormProgress "$Dependencies\Code\System.Windows.Forms\RichTextBox\FileSearchAlternateDataStreamDirectoryRichTextbox.ps1"
-. "$Dependencies\Code\System.Windows.Forms\RichTextBox\FileSearchAlternateDataStreamDirectoryRichTextbox.ps1"
 $FileSearchAlternateDataStreamDirectoryRichTextbox = New-Object System.Windows.Forms.RichTextBox -Property @{
     Lines  = "Enter Directories; One Per Line"
     Left   = $FormScale * 3
@@ -278,14 +334,12 @@ $FileSearchAlternateDataStreamDirectoryRichTextbox = New-Object System.Windows.F
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     MultiLine     = $True
     Add_MouseEnter = $FileSearchAlternateDataStreamDirectoryRichTextboxAdd_MouseEnter
-    Add_MouseLeave = $FileSearchAlternateDataStreamDirectoryRichTextboxAdd_MouseLeave
-    Add_MouseHover = $FileSearchAlternateDataStreamDirectoryRichTextboxAdd_MouseHover
+    Add_MouseLeave = { if ($this.text -eq "Enter Directories; One Per Line") { $this.text = "" } }
+    Add_MouseHover = { if ($this.text -eq "") { $this.text = "Enter Directories; One Per Line" } }
 }
 $Section1FileSearchTab.Controls.Add($FileSearchAlternateDataStreamDirectoryRichTextbox)
 
 
-Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\FileSearchAlternateDataStreamDirectoryExtractStreamDataButton.ps1"
-. "$Dependencies\Code\System.Windows.Forms\Button\FileSearchAlternateDataStreamDirectoryExtractStreamDataButton.ps1"
 . "$Dependencies\Code\Main Body\Get-RemoteAlternateDataStream.ps1"
 $FileSearchAlternateDataStreamDirectoryExtractStreamDataButton = New-Object System.Windows.Forms.Button -Property @{
     Text   = 'Retrieve and Extract Stream Data'

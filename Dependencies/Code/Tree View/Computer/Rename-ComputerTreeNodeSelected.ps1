@@ -1,6 +1,6 @@
-function Rename-ComputerTreeNodeSelected {
+function Rename-TreeViewComputer {
     if ($script:ComputerTreeViewData.Name -contains $script:ComputerTreeNodeRenamePopupTextBox.Text) {
-        Message-NodeAlreadyExists -Endpoint -Message "Rename Hostname/IP:  Error" -computer $script:ComputerTreeNodeRenamePopupTextBox.Text
+        Message-TreeViewNodeAlreadyExists -Endpoint -Message "Rename Hostname/IP:  Error" -computer $script:ComputerTreeNodeRenamePopupTextBox.Text
 
     }
     else {
@@ -15,7 +15,7 @@ function Rename-ComputerTreeNodeSelected {
                 if ($Category.Checked) { $Category.Checked = $false }
                 foreach ($Entry in $Category.nodes) {
                     if ($Entry.IsSelected) {
-                        AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:TreeNodeComputerList -Category $Category.Text -Entry $script:ComputerTreeNodeRenamePopupTextBox.text #-ToolTip "No Unique Data Available"
+                        Add-TreeViewData -Endpoint -RootNode $script:TreeNodeComputerList -Category $Category.Text -Entry $script:ComputerTreeNodeRenamePopupTextBox.text #-ToolTip "No Unique Data Available"
                         $ComputerTreeNodeToRename.Add($Entry.text)
 
                         $script:PreviousEndpointName = $script:EntrySelected.Text

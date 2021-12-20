@@ -24,7 +24,7 @@ function Logout-AccountsOnMultipleComputers {
         Generate-ComputerList
 
         if ($script:ComputerList.count -eq 0){
-            [System.Windows.MessageBox]::Show('Ensure you checkbox one or more endpoints to collect accounts logon info from. Alternatively, you can select a CSV file from a previous Accounts Currently Logon collection.','Error: No Endpoints Selected')
+            Show-MessageBox -Message 'Error: Ensure you checkbox one or more endpoints to collect accounts logon info from. Alternatively, you can select a CSV file from a previous Accounts Currently Logon collection.' -Title "PoSh-EasyWin - No Endpoints Selected" -Options "Ok" -Type "Error" -Sound
         }
         else {
             if ($script:ComputerListProvideCredentialsCheckBox.Checked) {

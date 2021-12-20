@@ -1,3 +1,53 @@
+####################################################################################################
+# ScriptBlocks
+####################################################################################################
+
+$RegistryValueNameSearchRichTextboxAdd_MouseHover = {
+    Show-ToolTip -Title "Registry Search (WinRM)" -Icon "Info" -Message @"
++  Enter one Value Name per line
++  Supports RegEx, examples:
+    +  [aeiou]
+    +  ([0-9]{1,3}\.){3}[0-9]{1,3}
+    +  [(http)(https)]://
+    +  ^[(http)(https)]://
+    +  [a-z0-9]
++  Will return results with partial matches
+"@
+}
+
+$RegistryValueDataSearchRichTextboxAdd_MouseHover = {
+    Show-ToolTip -Title "Registry Search (WinRM)" -Icon "Info" -Message @"
++  Enter FileNames
++  One Per Line
++  Example: svchost
++  Filenames don't have to include file extension
++  This search will also find the keyword within the filename
+"@
+}
+
+$RegistrySearchDirectoryRichTextboxAdd_MouseHover = {
+    Show-ToolTip -Title "Registry Search (WinRM)" -Icon "Info" -Message @"
++  Enter Directories
++  One Per Line
++  Example: HKLM:\SYSTEM\CurrentControlSet\Services\
+"@
+}
+
+
+$RegistryKeyNameSearchRichTextboxAdd_MouseHover = {
+    Show-ToolTip -Title "Registry Search (WinRM)" -Icon "Info" -Message @"
++  Enter FileNames
++  One Per Line
++  Filenames don't have to include file extension
++  This search will also find the keyword within the filename
++  Example: dhcp
+"@
+}
+
+
+####################################################################################################
+# WinForms
+####################################################################################################
 
 Update-FormProgress "$Dependencies\Code\Main Body\Search-Registry.ps1"
 . "$Dependencies\Code\Main Body\Search-Registry.ps1"
@@ -122,8 +172,6 @@ $Section1RegistryTab.Controls.Add($RegistrySearchReferenceButton)
 Apply-CommonButtonSettings -Button $RegistrySearchReferenceButton
 
 
-Update-FormProgress "$Dependencies\Code\System.Windows.Forms\RichTextBox\RegistrySearchDirectoryRichTextbox.ps1"
-. "$Dependencies\Code\System.Windows.Forms\RichTextBox\RegistrySearchDirectoryRichTextbox.ps1"
 $script:RegistrySearchDirectoryRichTextbox = New-Object System.Windows.Forms.RichTextBox -Property @{
     Text     = "Enter Registry Paths; One Per Line"
     Location = @{ X = $RegistrySearchLabel.Location.X
@@ -133,8 +181,8 @@ $script:RegistrySearchDirectoryRichTextbox = New-Object System.Windows.Forms.Ric
     MultiLine     = $True
     ShortcutsEnabled = $true
     Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    Add_MouseEnter = $RegistrySearchDirectoryRichTextboxAdd_MouseEnter
-    Add_MouseLeave = $RegistrySearchDirectoryRichTextboxAdd_MouseLeave
+    Add_MouseEnter = { if ($this.text -eq "Enter Registry Paths; One Per Line") { $this.text = "" } }
+    Add_MouseLeave = { if ($this.text -eq "") { $this.text = "Enter Registry Paths; One Per Line" } }
     Add_MouseHover = $RegistrySearchDirectoryRichTextboxAdd_MouseHover
 }
 $Section1RegistryTab.Controls.Add($script:RegistrySearchDirectoryRichTextbox)
@@ -169,8 +217,6 @@ $Section1RegistryTab.Controls.Add($RegistryKeyItemPropertyNameCheckbox)
 
 
 #batman update the mouseover,hover,enter
-Update-FormProgress "$Dependencies\Code\System.Windows.Forms\RichTextBox\RegistryKeyNameSearchRichTextbox.ps1"
-. "$Dependencies\Code\System.Windows.Forms\RichTextBox\RegistryKeyNameSearchRichTextbox.ps1"
 $script:RegistryKeyItemPropertyNameSearchRichTextbox = New-Object System.Windows.Forms.RichTextBox -Property @{
     Text     = "Enter Key Name; One Per Line"
     Location = @{ X = $RegistryKeyItemPropertyNameCheckbox.Location.X
@@ -180,8 +226,8 @@ $script:RegistryKeyItemPropertyNameSearchRichTextbox = New-Object System.Windows
     MultiLine     = $True
     ShortcutsEnabled = $true
     Font           = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    Add_MouseEnter = $RegistryKeyNameSearchRichTextboxAdd_MouseEnter
-    Add_MouseLeave = $RegistryKeyNameSearchRichTextboxAdd_MouseLeave
+    Add_MouseEnter = { if ($this.text -eq "Enter Key Name; One Per Line") { $this.text = "" } }
+    Add_MouseLeave = { if ($this.text -eq "") { $this.text = "Enter Key Name; One Per Line" } }
     Add_MouseHover = $RegistryKeyNameSearchRichTextboxAdd_MouseHover
 }
 $Section1RegistryTab.Controls.Add($script:RegistryKeyItemPropertyNameSearchRichTextbox)
@@ -214,8 +260,6 @@ $RegistryKeyNameCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
 $Section1RegistryTab.Controls.Add($RegistryKeyNameCheckbox)
 
 
-Update-FormProgress "$Dependencies\Code\System.Windows.Forms\RichTextBox\RegistryKeyNameSearchRichTextbox.ps1"
-. "$Dependencies\Code\System.Windows.Forms\RichTextBox\RegistryKeyNameSearchRichTextbox.ps1"
 $script:RegistryKeyNameSearchRichTextbox = New-Object System.Windows.Forms.RichTextBox -Property @{
     Text     = "Enter Key Name; One Per Line"
     Location = @{ X = $RegistryKeyNameCheckbox.Location.X
@@ -225,8 +269,8 @@ $script:RegistryKeyNameSearchRichTextbox = New-Object System.Windows.Forms.RichT
     MultiLine     = $True
     ShortcutsEnabled = $true
     Font           = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    Add_MouseEnter = $RegistryKeyNameSearchRichTextboxAdd_MouseEnter
-    Add_MouseLeave = $RegistryKeyNameSearchRichTextboxAdd_MouseLeave
+    Add_MouseEnter = { if ($this.text -eq "Enter Key Name; One Per Line") { $this.text = "" } }
+    Add_MouseLeave = { if ($this.text -eq "") { $this.text = "Enter Key Name; One Per Line" } }
     Add_MouseHover = $RegistryKeyNameSearchRichTextboxAdd_MouseHover
 }
 $Section1RegistryTab.Controls.Add($script:RegistryKeyNameSearchRichTextbox)
@@ -260,8 +304,6 @@ $RegistryValueNameCheckbox = New-Object System.Windows.Forms.CheckBox -Property 
 $Section1RegistryTab.Controls.Add($RegistryValueNameCheckbox)
 
 
-Update-FormProgress "$Dependencies\Code\System.Windows.Forms\RichTextBox\RegistryValueNameSearchRichTextbox.ps1"
-. "$Dependencies\Code\System.Windows.Forms\RichTextBox\RegistryValueNameSearchRichTextbox.ps1"
 $script:RegistryValueNameSearchRichTextbox = New-Object System.Windows.Forms.RichTextBox -Property @{
     Text     = "Enter Value Name; One Per Line"
     Location = @{ X = $RegistryValueNameCheckbox.Location.X
@@ -271,8 +313,8 @@ $script:RegistryValueNameSearchRichTextbox = New-Object System.Windows.Forms.Ric
     MultiLine = $True
     ShortcutsEnabled = $true
     Font           = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    Add_MouseEnter = $RegistryValueNameSearchRichTextboxAdd_MouseEnter
-    Add_MouseLeave = $RegistryValueNameSearchRichTextboxAdd_MouseLeave
+    Add_MouseEnter = { if ($this.text -eq "Enter Value Name; One Per Line") { $this.text = "" } }
+    Add_MouseLeave = { if ($this.text -eq "") { $this.text = "Enter Value Name; One Per Line" } }
     Add_MouseHover = $RegistryValueNameSearchRichTextboxAdd_MouseHover
 }
 $Section1RegistryTab.Controls.Add($script:RegistryValueNameSearchRichTextbox)
@@ -306,8 +348,6 @@ $RegistryValueDataCheckbox = New-Object System.Windows.Forms.CheckBox -Property 
 $Section1RegistryTab.Controls.Add($RegistryValueDataCheckbox)
 
 
-Update-FormProgress "$Dependencies\Code\System.Windows.Forms\RichTextBox\RegistryValueDataSearchRichTextbox.ps1"
-. "$Dependencies\Code\System.Windows.Forms\RichTextBox\RegistryValueDataSearchRichTextbox.ps1"
 $script:RegistryValueDataSearchRichTextbox = New-Object System.Windows.Forms.RichTextBox -Property @{
     Text     = "Enter Value Data; One Per Line"
     Location = @{ X = $RegistryValueDataCheckbox.Location.X
@@ -316,9 +356,9 @@ $script:RegistryValueDataSearchRichTextbox = New-Object System.Windows.Forms.Ric
                   Height = $FormScale * 115 }
     MultiLine     = $True
     ShortcutsEnabled = $true
-    Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    Add_MouseEnter = $RegistryValueDataSearchRichTextboxAdd_MouseEnter
-    Add_MouseLeave = $RegistryValueDataSearchRichTextboxAdd_MouseLeave
+    Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)    
+    Add_MouseEnter = { if ($this.text -eq "Enter Value Data; One Per Line") { $this.text = "" } }
+    Add_MouseLeave = { if ($this.text -eq "") { $this.text = "Enter Value Data; One Per Line" } }
     Add_MouseHover = $RegistryValueDataSearchRichTextboxAdd_MouseHover
 }
 $Section1RegistryTab.Controls.Add($script:RegistryValueDataSearchRichTextbox)

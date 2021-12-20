@@ -1,3 +1,28 @@
+####################################################################################################
+# ScriptBlocks
+####################################################################################################
+
+$ActionsTabQuarantineEndpointAccessFromIPSubnetTextbox_MouseHover = {
+    Show-ToolTip -Title "Access Endpoints from IP or Subnet" -Icon "Info" -Message @"
++  This textbox identifies the host(s) that can access the quarantined endpoint(s).
++  CAUTION! If there's an error in the entry, the endpoint(s) may become completely inaccessible over the network.
++  Use the following list as guidelines to fill the textbox:
+     -  Single IPv4 Address: 1.2.3.4
+     -  Single IPv6 Address: fe80::1
+     -  IPv4 Subnet (by network bit count): 1.2.3.4/24
+     -  IPv6 Subnet (by network bit count): fe80::1/48
+     -  IPv4 Subnet (by network mask): 1.2.3.4/255.255.255.0
+     -  IPv4 Range: 1.2.3.4-1.2.3.7
+     -  IPv6 Range: fe80::1-fe80::9
+     -  Keyword: Any, LocalSubnet, DNS, DHCP, WINS, DefaultGateway, Internet, Intranet, IntranetRemoteAccess,
+     PlayToDevice. NOTE: Keywords can be restricted to IPv4 or IPv6 by appending a 4 or 6 (for example, keyword
+     "LocalSubnet4" means that all local IPv4 addresses are matching this rule).
+"@
+}
+
+####################################################################################################
+# WinForms
+####################################################################################################
 
 $Section1ActionOnEndpointTab = New-Object System.Windows.Forms.TabPage -Property @{
     Text   = "Multi-Endpoint Actions  "
@@ -304,8 +329,6 @@ $ActionsTabQuarantineEndpointGroupBox = New-Object System.Windows.Forms.GroupBox
             $ActionsTabQuarantineEndpointGroupBox.Controls.Add($ActionsTabQuarantineEndpointLabel)
 
 
-            Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Textbox\ActionsTabQuarantineEndpointAccessFromIPSubnetTextbox.ps1"
-            . "$Dependencies\Code\System.Windows.Forms\Textbox\ActionsTabQuarantineEndpointAccessFromIPSubnetTextbox.ps1"
             $script:ActionsTabQuarantineEndpointAccessFromIPSubnetTextbox = New-Object System.Windows.Forms.Textbox -Property @{
                 Text   = "Enter IP, Range, or Subnet"
                 Left   = $FormScale * 268
@@ -314,9 +337,9 @@ $ActionsTabQuarantineEndpointGroupBox = New-Object System.Windows.Forms.GroupBox
                 Height = $FormScale * 22
                 Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
                 ForeColor      = 'Black'
-                Add_MouseEnter = $script:ActionsTabQuarantineEndpointAccessFromIPSubnetTextbox_MouseEnter
-                Add_MouseLeave = $script:ActionsTabQuarantineEndpointAccessFromIPSubnetTextbox_MouseLeave
-                Add_MouseHover = $script:ActionsTabQuarantineEndpointAccessFromIPSubnetTextbox_MouseHover
+                Add_MouseEnter = { if ($this.text -eq "Enter IP, Range, or Subnet") { $this.text = "" } }
+                Add_MouseLeave = { if ($this.text -eq "") { $this.text = "Enter IP, Range, or Subnet" } }
+                Add_MouseHover = $ActionsTabQuarantineEndpointAccessFromIPSubnetTextbox_MouseHover
             }
             $ActionsTabQuarantineEndpointGroupBox.Controls.Add($script:ActionsTabQuarantineEndpointAccessFromIPSubnetTextbox)
 

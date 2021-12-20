@@ -706,12 +706,12 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel -Pr
         . "$Dependencies\Code\Tree View\Initialize-TreeViewData.ps1"
 
         # This will keep the Computer TreeNodes checked when switching between OS and OU/CN views
-        Update-FormProgress "$Dependencies\Code\Tree View\UpdateState-TreeViewData.ps1"
-        . "$Dependencies\Code\Tree View\UpdateState-TreeViewData.ps1"
+        Update-FormProgress "$Dependencies\Code\Tree View\Update-TreeViewState.ps1"
+        . "$Dependencies\Code\Tree View\Update-TreeViewState.ps1"
 
         # Adds a treenode to the specified root node... a computer node within a category node
-        Update-FormProgress "$Dependencies\Code\Tree View\AddTreeNodeTo-TreeViewData.ps1"
-        . "$Dependencies\Code\Tree View\AddTreeNodeTo-TreeViewData.ps1"
+        Update-FormProgress "$Dependencies\Code\Tree View\Add-TreeViewData.ps1"
+        . "$Dependencies\Code\Tree View\Add-TreeViewData.ps1"
 
         # Populate Auto Tag List used for Host Data tagging and Searching
         $TagListFileContents = Get-Content -Path $TagAutoListFile
@@ -722,32 +722,32 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel -Pr
         . "$Dependencies\Code\Tree View\Search-TreeViewData.ps1"
 
         # Code to remove empty categoryies
-        Update-FormProgress "$Dependencies\Code\Tree View\Remove-EmptyCategory.ps1"
-        . "$Dependencies\Code\Tree View\Remove-EmptyCategory.ps1"
+        Update-FormProgress "$Dependencies\Code\Tree View\Remove-TreeViewEmptyCategory.ps1"
+        . "$Dependencies\Code\Tree View\Remove-TreeViewEmptyCategory.ps1"
 
-        Update-FormProgress "$Dependencies\Code\Tree View\Message-NodeAlreadyExists.ps1"
-        . "$Dependencies\Code\Tree View\Message-NodeAlreadyExists.ps1"
+        Update-FormProgress "$Dependencies\Code\Tree View\Message-TreeViewNodeAlreadyExists.ps1"
+        . "$Dependencies\Code\Tree View\Message-TreeViewNodeAlreadyExists.ps1"
 
-        Update-FormProgress "$Dependencies\Code\Tree View\Show-MoveForm.ps1"
-        . "$Dependencies\Code\Tree View\Show-MoveForm.ps1"
+        Update-FormProgress "$Dependencies\Code\Tree View\Show-TreeViewMoveForm.ps1"
+        . "$Dependencies\Code\Tree View\Show-TreeViewMoveForm.ps1"
 
-        Update-FormProgress "$Dependencies\Code\Tree View\Show-TagForm.ps1"
-        . "$Dependencies\Code\Tree View\Show-TagForm.ps1"
+        Update-FormProgress "$Dependencies\Code\Tree View\Show-TreeViewTagForm.ps1"
+        . "$Dependencies\Code\Tree View\Show-TreeViewTagForm.ps1"
 
         Update-FormProgress "$Dependencies\Code\Execution\Action\Check-Connection.ps1"
         . "$Dependencies\Code\Execution\Action\Check-Connection.ps1"
 
-        Update-FormProgress "$Dependencies\Code\Tree View\MoveNode-TreeViewData.ps1"
-        . "$Dependencies\Code\Tree View\MoveNode-TreeViewData.ps1"
+        Update-FormProgress "$Dependencies\Code\Tree View\Move-TreeViewData.ps1"
+        . "$Dependencies\Code\Tree View\Move-TreeViewData.ps1"
 
-        Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\Import-DataFromActiveDirectory.ps1"
-        . "$Dependencies\Code\System.Windows.Forms\Button\Import-DataFromActiveDirectory.ps1"
+        Update-FormProgress "$Dependencies\Code\Main Body\Import-DataFromActiveDirectory.ps1"
+        . "$Dependencies\Code\Main Body\Import-DataFromActiveDirectory.ps1"
 
-        Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\Import-DataFromCsv.ps1"
-        . "$Dependencies\Code\System.Windows.Forms\Button\Import-DataFromCsv.ps1"
+        Update-FormProgress "$Dependencies\Code\Main Body\Import-DataFromCsv.ps1"
+        . "$Dependencies\Code\Main Body\Import-DataFromCsv.ps1"
         
-        Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\Import-DataFromTxt.ps1"
-        . "$Dependencies\Code\System.Windows.Forms\Button\Import-DataFromTxt.ps1"
+        Update-FormProgress "$Dependencies\Code\Main Body\Import-DataFromTxt.ps1"
+        . "$Dependencies\Code\Main Body\Import-DataFromTxt.ps1"
             
     $ComputerTreeviewTab = New-Object System.Windows.Forms.TabPage -Property @{
         Text = "Endpoints  "
@@ -778,9 +778,9 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel -Pr
 
             $script:ComputerTreeView.Nodes.Add($script:TreeNodeComputerList)
             Foreach($Computer in $script:ComputerTreeViewData) {
-                AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:TreeNodeComputerList -Category $Computer.$($This.SelectedItem) -Entry $Computer.Name -ToolTip $Computer.IPv4Address -Metadata $Computer
+                Add-TreeViewData -Endpoint -RootNode $script:TreeNodeComputerList -Category $Computer.$($This.SelectedItem) -Entry $Computer.Name -ToolTip $Computer.IPv4Address -Metadata $Computer
             }
-            UpdateState-TreeViewData -Endpoint
+            Update-TreeViewState -Endpoint
 
             Update-TreeViewData -Endpoint -TreeView $script:ComputerTreeView.Nodes
         }
@@ -820,8 +820,7 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel -Pr
 
         $script:ComputerTreeViewSelected = ""
 
-        Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ComboBox\ComputerTreeNodeSearchComboBox.ps1"
-        . "$Dependencies\Code\System.Windows.Forms\ComboBox\ComputerTreeNodeSearchComboBox.ps1"
+
         $ComputerTreeNodeSearchComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
             Name   = "Search TextBox"
             Left   = $script:ComputerTreeNodeComboBox.Left
@@ -831,15 +830,21 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel -Pr
             AutoCompleteSource = "ListItems"
             AutoCompleteMode   = "SuggestAppend"
             Font               = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-            Add_KeyDown        = $ComputerTreeNodeSearchComboBoxAdd_KeyDown
-            Add_MouseHover     = $ComputerTreeNodeSearchComboBoxAdd_MouseHover
+            Add_KeyDown        = { if ($_.KeyCode -eq "Enter") { Search-TreeViewData -Endpoint } }
+            Add_MouseHover     = {
+                Show-ToolTip -Title "Search for Hosts" -Icon "Info" -Message @"
++  Searches through host data and returns results as nodes.
++  Search can include any character.
++  Tags are pre-built to assist with standarized notes.
++  Can search CSV Results, enable them in the Options Tab.
+"@
+            }
+
         }
         ForEach ($Tag in $TagListFileContents) { [void] $ComputerTreeNodeSearchComboBox.Items.Add($Tag) }
         $ComputerTreeviewTab.Controls.Add($ComputerTreeNodeSearchComboBox)
 
 
-        Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\ComputerTreeNodeSearchButton.ps1"
-        . "$Dependencies\Code\System.Windows.Forms\Button\ComputerTreeNodeSearchButton.ps1"
         $ComputerTreeNodeSearchButton = New-Object System.Windows.Forms.Button -Property @{
             Text   = "Search"
             Left   = $ComputerTreeNodeSearchComboBox.Left + $ComputerTreeNodeSearchComboBox.Width + ($FormScale * 5)
@@ -849,16 +854,24 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel -Pr
             Add_Click = { 
                 Search-TreeViewData -Endpoint
             }
-            Add_MouseHover = $ComputerTreeNodeSearchButtonAdd_MouseHover
+            Add_MouseHover = {
+    Show-ToolTip -Title "Search for Hosts" -Icon "Info" -Message @"
++  Searches through host data and returns results as nodes.
++  Search can include any character.
++  Tags are pre-built to assist with standarized notes.
++  Can search CSV Results, enable them in the Options Tab.
+"@
+}
+
         }
         $ComputerTreeviewTab.Controls.Add($ComputerTreeNodeSearchButton)
         Apply-CommonButtonSettings -Button $ComputerTreeNodeSearchButton
 
-        Remove-EmptyCategory -Endpoint
+        Remove-TreeViewEmptyCategory -Endpoint
 
 
-        Update-FormProgress "$Dependencies\Code\Tree View\Computer\AddHost-ComputerTreeNode.ps1"
-        . "$Dependencies\Code\Tree View\Computer\AddHost-ComputerTreeNode.ps1"
+        Update-FormProgress "$Dependencies\Code\Tree View\Computer\Add-TreeViewComputer.ps1"
+        . "$Dependencies\Code\Tree View\Computer\Add-TreeViewComputer.ps1"
 
         Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListDeselectAllToolStripButton.ps1"
         . "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListDeselectAllToolStripButton.ps1"
@@ -1015,8 +1028,6 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel -Pr
         $EndpointTreeviewImageHashTable["$script:EndpointTreeviewImageHashTableCount"] = "$Dependencies\Images\high101bro Logo Color Transparent.png"
 
 
-        Update-FormProgress "$Dependencies\Code\System.Windows.Forms\TreeView\ComputerTreeView.ps1"
-        . "$Dependencies\Code\System.Windows.Forms\TreeView\ComputerTreeView.ps1"
         $script:ComputerTreeView = New-Object System.Windows.Forms.TreeView -Property @{
             Left   = $ComputerTreeNodeSearchComboBox.Left
             Top    = $ComputerTreeNodeSearchButton.Top + $ComputerTreeNodeSearchButton.Height + ($FormScale * 5)
@@ -1028,8 +1039,155 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel -Pr
             #LabelEdit         = $True  #Not implementing yet...
             ShowLines         = $True
             ShowNodeToolTips  = $True
-            Add_Click         = $ComputerTreeViewAdd_Click
-            Add_AfterSelect   = $ComputerTreeViewAdd_AfterSelect
+            Add_Click = {
+                Update-TreeViewData -Endpoint -TreeView $this.Nodes
+            
+                # When the node is checked, it updates various items
+                [System.Windows.Forms.TreeNodeCollection]$AllTreeViewNodes = $this.Nodes
+                foreach ($root in $AllTreeViewNodes) {
+                    if ($root.checked) {
+                        $root.Expand()
+                        foreach ($Category in $root.Nodes) {
+                            $Category.Expand()
+                            foreach ($Entry in $Category.nodes) {
+                                $Entry.Checked      = $True
+                                $Entry.NodeFont     = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,1,1)
+                                $Entry.ForeColor    = [System.Drawing.Color]::FromArgb(0,0,0,224)
+                                $Category.NodeFont  = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,1,1)
+                                $Category.ForeColor = [System.Drawing.Color]::FromArgb(0,0,0,224)
+                                $Root.NodeFont      = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,1,1)
+                                $Root.ForeColor     = [System.Drawing.Color]::FromArgb(0,0,0,224)
+                            }
+                        }
+                    }
+                    foreach ($Category in $root.Nodes) {
+                        $EntryNodeCheckedCount = 0
+                        if ($Category.checked) {
+                            $Category.Expand()
+                            $Category.NodeFont  = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,1,1)
+                            $Category.ForeColor = [System.Drawing.Color]::FromArgb(0,0,0,224)
+                            $Root.NodeFont      = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,1,1)
+                            $Root.ForeColor     = [System.Drawing.Color]::FromArgb(0,0,0,224)
+                            foreach ($Entry in $Category.nodes) {
+                                $EntryNodeCheckedCount  += 1
+                                $Entry.Checked      = $True
+                                $Entry.NodeFont     = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,1,1)
+                                $Entry.ForeColor    = [System.Drawing.Color]::FromArgb(0,0,0,224)
+                            }
+                        }
+                        if (!($Category.checked)) {
+                            foreach ($Entry in $Category.nodes) {
+                                #if ($Entry.isselected) {
+                                if ($Entry.checked) {
+                                    $EntryNodeCheckedCount  += 1
+                                    $Entry.NodeFont     = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,1,1)
+                                    $Entry.ForeColor    = [System.Drawing.Color]::FromArgb(0,0,0,224)
+                                    $Root.NodeFont      = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,1,1)
+                                    $Root.ForeColor     = [System.Drawing.Color]::FromArgb(0,0,0,224)
+                                }
+                                elseif (!($Entry.checked)) {
+                                    if ($CategoryCheck -eq $False) {$Category.Checked = $False}
+                                    $Entry.NodeFont     = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,1,1)
+                                    $Entry.ForeColor    = [System.Drawing.Color]::FromArgb(0,0,0,0)
+                                }
+                            }
+                        }
+                        if ($EntryNodeCheckedCount -gt 0) {
+                            $Category.NodeFont  = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,1,1)
+                            $Category.ForeColor = [System.Drawing.Color]::FromArgb(0,0,0,224)
+                            $Root.NodeFont      = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,1,1)
+                            $Root.ForeColor     = [System.Drawing.Color]::FromArgb(0,0,0,224)
+                        }
+                        else {
+                            $Category.NodeFont  = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,1,1)
+                            $Category.ForeColor = [System.Drawing.Color]::FromArgb(0,0,0,0)
+                            $Root.NodeFont      = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,1,1)
+                            $Root.ForeColor     = [System.Drawing.Color]::FromArgb(0,0,0,0)
+                        }
+                    }
+                }
+            }
+            Add_AfterSelect = {
+                Update-TreeViewData -Endpoint -TreeView $this.Nodes
+            
+                # This will return data on hosts selected/highlight, but not necessarily checked
+                [System.Windows.Forms.TreeNodeCollection]$AllTreeViewNodes = $this.Nodes
+                foreach ($root in $AllTreeViewNodes) {
+                    if ($root.isselected) {
+                        $script:ComputerTreeViewSelected = ""
+                        $StatusListBox.Items.clear()
+                        $StatusListBox.Items.Add("Category:  $($root.Text)")
+                        #Removed For Testing#$ResultsListBox.Items.Clear()
+                        #$ResultsListBox.Items.Add("- Checkbox this Category to query all its hosts")
+            
+                        $script:Section3HostDataNameTextBox.Text                     = 'N/A'
+                        $Section3HostDataOUTextBox.Text                              = 'N/A'
+                        $Section3EndpointDataCreatedTextBox.Text                     = 'N/A'
+                        $Section3EndpointDataModifiedTextBox.Text                    = 'N/A'
+                        $Section3EndpointDataLastLogonDateTextBox.Text               = 'N/A'
+                        $Section3HostDataIPTextBox.Text                              = 'N/A'
+                        $Section3HostDataMACTextBox.Text                             = 'N/A'
+                        $Section3EndpointDataEnabledTextBox.Text                     = 'N/A'
+                        $Section3EndpointDataisCriticalSystemObjectTextBox.Text      = 'N/A'
+                        $Section3EndpointDataSIDTextBox.Text                         = 'N/A'
+                        $Section3EndpointDataOperatingSystemTextBox.Text             = 'N/A'
+                        $Section3EndpointDataOperatingSystemHotfixComboBox.Text      = 'N/A'
+                        $Section3EndpointDataOperatingSystemServicePackComboBox.Text = 'N/A'
+                        $Section3EndpointDataMemberOfComboBox.Text                   = 'N/A'
+                        $Section3EndpointDataLockedOutTextBox.Text                   = 'N/A'
+                        $Section3EndpointDataLogonCountTextBox.Text                  = 'N/A'
+                        $Section3EndpointDataPortScanComboBox.Text                   = 'N/A'
+                        $Section3HostDataSelectionComboBox.Text                      = 'N/A'
+                        $Section3HostDataSelectionDateTimeComboBox.Text              = 'N/A'
+                        $Section3HostDataNotesRichTextBox.Text                       = 'N/A'
+            
+                        # Brings the Host Data Tab to the forefront/front view
+                        $InformationTabControl.SelectedTab   = $Section3HostDataTab
+                    }
+                    foreach ($Category in $root.Nodes) {
+                        if ($Category.isselected) {
+                            $script:ComputerTreeViewSelected = ""
+                            $StatusListBox.Items.clear()
+                            $StatusListBox.Items.Add("Category:  $($Category.Text)")
+                            #Removed For Testing#$ResultsListBox.Items.Clear()
+                            #$ResultsListBox.Items.Add("- Checkbox this Category to query all its hosts")
+            
+                            # The follwing fields are filled out with N/A when host nodes are not selected
+                            $script:Section3HostDataNameTextBox.Text                     = 'N/A'
+                            $Section3HostDataOUTextBox.Text                              = 'N/A'
+                            $Section3EndpointDataCreatedTextBox.Text                     = 'N/A'
+                            $Section3EndpointDataModifiedTextBox.Text                    = 'N/A'
+                            $Section3EndpointDataLastLogonDateTextBox.Text               = 'N/A'
+                            $Section3HostDataIPTextBox.Text                              = 'N/A'
+                            $Section3HostDataMACTextBox.Text                             = 'N/A'
+                            $Section3EndpointDataEnabledTextBox.Text                     = 'N/A'
+                            $Section3EndpointDataisCriticalSystemObjectTextBox.Text      = 'N/A'
+                            $Section3EndpointDataSIDTextBox.Text                         = 'N/A'
+                            $Section3EndpointDataOperatingSystemTextBox.Text             = 'N/A'
+                            $Section3EndpointDataOperatingSystemHotfixComboBox.Text      = 'N/A'
+                            $Section3EndpointDataOperatingSystemServicePackComboBox.Text = 'N/A'
+                            $Section3EndpointDataMemberOfComboBox.Text                   = 'N/A'
+                            $Section3EndpointDataLockedOutTextBox.Text                   = 'N/A'
+                            $Section3EndpointDataLogonCountTextBox.Text                  = 'N/A'
+                            $Section3EndpointDataPortScanComboBox.Text                   = 'N/A'
+                            $Section3HostDataSelectionComboBox.Text                      = 'N/A'
+                            $Section3HostDataSelectionDateTimeComboBox.Text              = 'N/A'
+                            $Section3HostDataNotesRichTextBox.Text                       = 'N/A'
+            
+                            # Brings the Host Data Tab to the forefront/front view
+                            $InformationTabControl.SelectedTab = $Section3HostDataTab
+                        }
+                        foreach ($Entry in $Category.nodes) {
+                            if ($Entry.isselected) {
+                                $InformationTabControl.SelectedTab = $Section3HostDataTab
+                                $script:ComputerTreeViewSelected = $Entry.Text
+                            }
+                        }
+                    }
+                }
+                $InformationTabControl.SelectedTab = $Section3HostDataTab
+                Display-ContextMenuForComputerTreeNode -ClickedOnArea
+            }
             Add_MouseHover = {
                 $ComputerAndAccountTreeNodeViewPanel.Height = $FormScale * 635
                 $ComputerAndAccountTreeViewTabControl.Height = $FormScale * 635
@@ -1061,7 +1219,7 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel -Pr
 
         # This will load data that is located in the saved file
         Foreach($Computer in $script:ComputerTreeViewData) {
-            AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:TreeNodeComputerList -Category $Computer.CanonicalName -Entry $Computer.Name -ToolTip $Computer.IPv4Address -IPv4Address $Computer.IPv4Address -Metadata $Computer 
+            Add-TreeViewData -Endpoint -RootNode $script:TreeNodeComputerList -Category $Computer.CanonicalName -Entry $Computer.Name -ToolTip $Computer.IPv4Address -IPv4Address $Computer.IPv4Address -Metadata $Computer 
         }
         $script:ComputerTreeView.Nodes.Add($script:TreeNodeComputerList)
 
@@ -1112,10 +1270,10 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel -Pr
                 Save-TreeViewData -Accounts
 
                 Foreach($Account in $script:AccountsTreeViewData) {
-                    AddTreeNodeTo-TreeViewData -Accounts -RootNode $script:TreeNodeAccountsList -Category $Account.$($This.SelectedItem) -Entry $Account.Name -ToolTip $Account.SID -Metadata $Account
+                    Add-TreeViewData -Accounts -RootNode $script:TreeNodeAccountsList -Category $Account.$($This.SelectedItem) -Entry $Account.Name -ToolTip $Account.SID -Metadata $Account
                 }
                 $script:AccountsTreeView.Nodes.Add($script:TreeNodeAccountsList)
-                UpdateState-TreeViewData -Accounts
+                Update-TreeViewState -Accounts
                 Update-TreeViewData -Accounts -TreeView $script:AccountsTreeView.Nodes
 
             }
@@ -1143,8 +1301,7 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel -Pr
 
         $script:AccountsTreeViewSelected = ""
 
-        Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ComboBox\AccountsTreeNodeSearchComboBox.ps1"
-        . "$Dependencies\Code\System.Windows.Forms\ComboBox\AccountsTreeNodeSearchComboBox.ps1"
+
         $AccountsTreeNodeSearchComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
             Name   = "Search TextBox"
             Left   = $script:AccountsTreeNodeComboBox.Left
@@ -1154,15 +1311,20 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel -Pr
             AutoCompleteSource = "ListItems"
             AutoCompleteMode   = "SuggestAppend"
             Font               = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-            Add_KeyDown        = $AccountsTreeNodeSearchComboBoxAdd_KeyDown
-            Add_MouseHover     = $AccountsTreeNodeSearchComboBoxAdd_MouseHover
+            Add_KeyDown        = { if ($_.KeyCode -eq "Enter") { Search-TreeViewData -Accounts } }
+            Add_MouseHover = {
+                Show-ToolTip -Title "Search for Accounts" -Icon "Info" -Message @"
++  Searches through Account data and returns results as nodes.
++  Search can include any character.
++  Tags are pre-built to assist with standarized notes.
++  Can search CSV Results, enable them in the Options Tab.
+"@
+            }
         }
         ForEach ($Tag in $TagListFileContents) { [void] $AccountsTreeNodeSearchComboBox.Items.Add($Tag) }
         $AccountsTreeviewTab.Controls.Add($AccountsTreeNodeSearchComboBox)
 
 
-        Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\AccountsTreeNodeSearchButton.ps1"
-        . "$Dependencies\Code\System.Windows.Forms\Button\AccountsTreeNodeSearchButton.ps1"
         $AccountsTreeNodeSearchButton = New-Object System.Windows.Forms.Button -Property @{
             Text   = "Search"
             Left   = $AccountsTreeNodeSearchComboBox.Left + $AccountsTreeNodeSearchComboBox.Width + ($FormScale * 5)
@@ -1172,15 +1334,22 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel -Pr
             Add_Click = { 
                 Search-TreeViewData -Accounts
             }
-            Add_MouseHover = $AccountsTreeNodeSearchButtonAdd_MouseHover
+            Add_MouseHover = {
+                Show-ToolTip -Title "Search for Accounts" -Icon "Info" -Message @"
++  Searches through Account data and returns results as nodes.
++  Search can include any character.
++  Tags are pre-built to assist with standarized notes.
++  Can search CSV Results, enable them in the Options Tab.
+"@
+            }
         }
         $AccountsTreeviewTab.Controls.Add($AccountsTreeNodeSearchButton)
         Apply-CommonButtonSettings -Button $AccountsTreeNodeSearchButton
 
-        Remove-EmptyCategory -Accounts
+        Remove-TreeViewEmptyCategory -Accounts
 
-        Update-FormProgress "$Dependencies\Code\Tree View\Accounts\AddAccount-AccountsTreeNode.ps1"
-        . "$Dependencies\Code\Tree View\Accounts\AddAccount-AccountsTreeNode.ps1"
+        Update-FormProgress "$Dependencies\Code\Tree View\Accounts\Add-TreeViewAccount.ps1"
+        . "$Dependencies\Code\Tree View\Accounts\Add-TreeViewAccount.ps1"
 
 
         # The .ImageList allows for the images to be loaded from disk to memory only once, then referenced using their index number
@@ -1220,8 +1389,6 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel -Pr
         $AccountsTreeviewImageHashTable["$AccountsTreeviewImageHashTableCount"] = "$Dependencies\Images\Icons\OU-Default.png"
 
 
-        Update-FormProgress "$Dependencies\Code\System.Windows.Forms\TreeView\AccountsTreeView.ps1"
-        . "$Dependencies\Code\System.Windows.Forms\TreeView\AccountsTreeView.ps1"
         $script:AccountsTreeView = New-Object System.Windows.Forms.TreeView -Property @{
             Left   = $AccountsTreeNodeSearchComboBox.Left
             Top    = $AccountsTreeNodeSearchButton.Top + $AccountsTreeNodeSearchButton.Height + ($FormScale * 5)
@@ -1231,8 +1398,147 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel -Pr
             CheckBoxes        = $True
             ShowLines         = $True
             ShowNodeToolTips  = $True
-            Add_Click         = $AccountsTreeViewAdd_Click
-            Add_AfterSelect   = $AccountsTreeViewAdd_AfterSelect
+            Add_Click = {
+                Update-TreeViewData -Accounts -TreeView $this.Nodes
+            
+                # When the node is checked, it updates various items
+                [System.Windows.Forms.TreeNodeCollection]$AllTreeViewNodes = $this.Nodes
+                foreach ($root in $AllTreeViewNodes) {
+                    if ($root.checked) {
+                        $root.Expand()
+                        foreach ($Category in $root.Nodes) {
+                            $Category.Expand()
+                            foreach ($Entry in $Category.nodes) {
+                                $Entry.Checked      = $True
+                                $Entry.NodeFont     = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,1,1)
+                                $Entry.ForeColor    = [System.Drawing.Color]::FromArgb(0,0,0,224)
+                                $Category.NodeFont  = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,1,1)
+                                $Category.ForeColor = [System.Drawing.Color]::FromArgb(0,0,0,224)
+                                $Root.NodeFont      = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,1,1)
+                                $Root.ForeColor     = [System.Drawing.Color]::FromArgb(0,0,0,224)
+                            }
+                        }
+                    }
+                    foreach ($Category in $root.Nodes) {
+                        $EntryNodeCheckedCount = 0
+                        if ($Category.checked) {
+                            $Category.Expand()
+                            $Category.NodeFont  = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,1,1)
+                            $Category.ForeColor = [System.Drawing.Color]::FromArgb(0,0,0,224)
+                            $Root.NodeFont      = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,1,1)
+                            $Root.ForeColor     = [System.Drawing.Color]::FromArgb(0,0,0,224)
+                            foreach ($Entry in $Category.nodes) {
+                                $EntryNodeCheckedCount  += 1
+                                $Entry.Checked      = $True
+                                $Entry.NodeFont     = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,1,1)
+                                $Entry.ForeColor    = [System.Drawing.Color]::FromArgb(0,0,0,224)
+                            }
+                        }
+                        if (!($Category.checked)) {
+                            foreach ($Entry in $Category.nodes) {
+                                #if ($Entry.isselected) {
+                                if ($Entry.checked) {
+                                    $EntryNodeCheckedCount  += 1
+                                    $Entry.NodeFont     = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,1,1)
+                                    $Entry.ForeColor    = [System.Drawing.Color]::FromArgb(0,0,0,224)
+                                    $Root.NodeFont      = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,1,1)
+                                    $Root.ForeColor     = [System.Drawing.Color]::FromArgb(0,0,0,224)
+                                }
+                                elseif (!($Entry.checked)) {
+                                    if ($CategoryCheck -eq $False) {$Category.Checked = $False}
+                                    $Entry.NodeFont     = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,1,1)
+                                    $Entry.ForeColor    = [System.Drawing.Color]::FromArgb(0,0,0,0)
+                                }
+                            }
+                        }
+                        if ($EntryNodeCheckedCount -gt 0) {
+                            $Category.NodeFont  = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,1,1)
+                            $Category.ForeColor = [System.Drawing.Color]::FromArgb(0,0,0,224)
+                            $Root.NodeFont      = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,1,1)
+                            $Root.ForeColor     = [System.Drawing.Color]::FromArgb(0,0,0,224)
+                        }
+                        else {
+                            $Category.NodeFont  = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,1,1)
+                            $Category.ForeColor = [System.Drawing.Color]::FromArgb(0,0,0,0)
+                            $Root.NodeFont      = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,1,1)
+                            $Root.ForeColor     = [System.Drawing.Color]::FromArgb(0,0,0,0)
+                        }
+                    }
+                }
+            }
+            Add_AfterSelect = {
+                Update-TreeViewData -Accounts -TreeView $this.Nodes
+            
+                # This will return data on hosts selected/highlight, but not necessarily checked
+                [System.Windows.Forms.TreeNodeCollection]$AllTreeViewNodes = $this.Nodes
+                foreach ($root in $AllTreeViewNodes) {
+                    if ($root.isselected) {
+                        $script:ComputerTreeViewSelected = ""
+                        $StatusListBox.Items.clear()
+                        $StatusListBox.Items.Add("Category:  $($root.Text)")
+                        #Removed For Testing#$ResultsListBox.Items.Clear()
+                        #$ResultsListBox.Items.Add("- Checkbox this Category to query all its hosts")
+            
+                        $script:Section3AccountDataNameTextBox.Text             = 'N/A'
+                        $Section3AccountDataEnabledTextBox.Text                 = 'N/A'
+                        $Section3AccountDataOUTextBox.Text                      = 'N/A'
+                        $Section3AccountDataLockedOutTextBox.Text               = 'N/A'
+                        $Section3AccountDataSmartCardLogonRequiredTextBox.Text  = 'N/A'
+                        $Section3AccountDataCreatedTextBox.Text                 = 'N/A'
+                        $Section3AccountDataModifiedTextBox.Text                = 'N/A'
+                        $Section3AccountDataLastLogonDateTextBox.Text           = 'N/A'
+                        $Section3AccountDataLastBadPasswordAttemptTextBox.Text  = 'N/A'
+                        $Section3AccountDataBadLogonCountTextBox.Text           = 'N/A'
+                        $Section3AccountDataPasswordExpiredTextBox.Text         = 'N/A'
+                        $Section3AccountDataPasswordNeverExpiresTextBox.Text    = 'N/A'
+                        $Section3AccountDataPasswordNotRequiredTextBox.Text     = 'N/A'
+                        $Section3AccountDataMemberOfComboBox.Text               = 'N/A'
+                        $Section3AccountDataSIDTextBox.Text                     = 'N/A'
+                        $Section3AccountDataScriptPathTextBox.Text              = 'N/A'
+                        $Section3AccountDataHomeDriveTextBox.Text               = 'N/A'
+                        $script:Section3AccountDataNotesRichTextBox.Text        = 'N/A'
+            
+                        # Brings the Host Data Tab to the forefront/front view
+                        $InformationTabControl.SelectedTab   = $Section3HostDataTab
+                    }
+                    foreach ($Category in $root.Nodes) {
+                        if ($Category.isselected) {
+                            $script:ComputerTreeViewSelected = ""
+                            $StatusListBox.Items.clear()
+                            $StatusListBox.Items.Add("Category:  $($Category.Text)")
+                            #Removed For Testing#$ResultsListBox.Items.Clear()
+                            #$ResultsListBox.Items.Add("- Checkbox this Category to query all its hosts")
+            
+                            # The follwing fields are filled out with N/A when host nodes are not selected
+                            $script:Section3AccountDataNameTextBox.Text             = 'N/A'
+                            $Section3AccountDataEnabledTextBox.Text                 = 'N/A'
+                            $Section3AccountDataOUTextBox.Text                      = 'N/A'
+                            $Section3AccountDataLockedOutTextBox.Text               = 'N/A'
+                            $Section3AccountDataSmartCardLogonRequiredTextBox.Text  = 'N/A'
+                            $Section3AccountDataCreatedTextBox.Text                 = 'N/A'
+                            $Section3AccountDataModifiedTextBox.Text                = 'N/A'
+                            $Section3AccountDataLastLogonDateTextBox.Text           = 'N/A'
+                            $Section3AccountDataLastBadPasswordAttemptTextBox.Text  = 'N/A'
+                            $Section3AccountDataBadLogonCountTextBox.Text           = 'N/A'
+                            $Section3AccountDataPasswordExpiredTextBox.Text         = 'N/A'
+                            $Section3AccountDataPasswordNeverExpiresTextBox.Text    = 'N/A'
+                            $Section3AccountDataPasswordNotRequiredTextBox.Text     = 'N/A'
+                            $Section3AccountDataMemberOfComboBox.Text               = 'N/A'
+                            $Section3AccountDataSIDTextBox.Text                     = 'N/A'
+                            $Section3AccountDataScriptPathTextBox.Text              = 'N/A'
+                            $Section3AccountDataHomeDriveTextBox.Text               = 'N/A'
+                            $script:Section3AccountDataNotesRichTextBox.Text        = 'N/A'
+                        }
+                        foreach ($Entry in $Category.nodes) {
+                            if ($Entry.isselected) {
+                                $script:ComputerTreeViewSelected = $Entry.Text
+                            }
+                        }
+                    }
+                }
+                $InformationTabControl.SelectedTab = $Section3AccountDataTab
+                Display-ContextMenuForAccountsTreeNode -ClickedOnArea
+            }
             Add_MouseEnter    = {
                 $ComputerAndAccountTreeNodeViewPanel.bringtofront()
                 $ComputerAndAccountTreeViewTabControl.bringtofront()
@@ -1253,7 +1559,7 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel -Pr
         
         # This will load data that is located in the saved file
         Foreach($Account in $script:AccountsTreeViewData) {
-            AddTreeNodeTo-TreeViewData -Accounts -RootNode $script:TreeNodeAccountsList -Category $Account.CanonicalName -Entry $Account.Name -ToolTip $Account.SID -Metadata $Account
+            Add-TreeViewData -Accounts -RootNode $script:TreeNodeAccountsList -Category $Account.CanonicalName -Entry $Account.Name -ToolTip $Account.SID -Metadata $Account
         }
         $script:AccountsTreeView.Nodes.Add($script:TreeNodeAccountsList)
 
@@ -1429,8 +1735,8 @@ Update-FormProgress "$Dependencies\Code\Charts\Convert-CsvNumberStringsToInterge
 
 # Checks and compiles selected command treenode to be execute
 # Those checked are either later executed individually or compiled
-Update-FormProgress "$Dependencies\Code\Tree View\Command\Compile-SelectedCommandTreeNode.ps1"
-. "$Dependencies\Code\Tree View\Command\Compile-SelectedCommandTreeNode.ps1"
+Update-FormProgress "$Dependencies\Code\Tree View\Command\Compile-TreeViewCommand.ps1"
+. "$Dependencies\Code\Tree View\Command\Compile-TreeViewCommand.ps1"
 
 # Allows you to search the any number of registry paths for key names, value names, and value data.
 Update-FormProgress "$Dependencies\Code\Execution\Search-Registry.ps1"
@@ -1571,7 +1877,7 @@ $ExecuteScriptHandler = {
     Generate-ComputerList
 
     # This function compiles the selected treeview comamnds, placing the proper command type and protocol into a variable list to be executed.
-    Compile-SelectedCommandTreeNode
+    Compile-TreeViewCommand
 
     # Assigns the path to save the Collections to
     $script:CollectedDataTimeStampDirectory = $script:CollectionSavedDirectoryTextBox.Text

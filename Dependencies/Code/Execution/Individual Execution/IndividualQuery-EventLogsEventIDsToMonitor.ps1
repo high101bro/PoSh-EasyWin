@@ -1,4 +1,14 @@
 #DEPRECATED
+
+
+            # # Clears the commands selected
+            # For ($i=0;$i -lt $EventLogsEventIDsToMonitorChecklistbox.Items.count;$i++) {
+            #     $EventLogsEventIDsToMonitorChecklistbox.SetSelected($i,$False)
+            #     $EventLogsEventIDsToMonitorChecklistbox.SetItemChecked($i,$False)
+            #     $EventLogsEventIDsToMonitorChecklistbox.SetItemCheckState($i,$False)
+            # }
+
+
 # $ExecutionStartTime = Get-Date
 # $CollectionName = "Event Logs - Event IDs To Monitor"
 # $StatusListBox.Items.Clear()

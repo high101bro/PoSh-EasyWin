@@ -1,15 +1,6 @@
 "Name","Enabled","CanonicalName","LockedOut","SmartCardLogonRequired","Created","Modified","LastLogonDate","LastBadPasswordAttempt","BadLogonCount","PasswordExpired","PasswordNeverExpires","PasswordNotRequired","MemberOf","SID","ScriptPath","HomeDrive","Notes","ImageIndex"
-"Guest","False","/Users","False","False","1/28/2020 7:53:25 PM","6/28/2020 11:12:29 PM","No TimeStamp","No TimeStamp","0","False","True","True","CN=Guests,CN=Builtin,DC=MobileLab,DC=home","S-1-5-21-3036625279-3127291219-2495432101-501","No Script Path","No Home Drive",,"2"
+"Guest","False","/Users","False","False","1/28/2020 7:53:25 PM","6/28/2020 11:12:29 PM","No TimeStamp","No TimeStamp","0","False","True","True","","S-1-5-21-3036625279-3127291219-2495432101-501","No Script Path","No Home Drive",,"2"
 "krbtgt","False","/Users","False","False","1/28/2020 7:55:07 PM","6/28/2020 11:12:29 PM","No TimeStamp","No TimeStamp","0","True","False","False","CN=Denied RODC Password Replication Group,CN=Users,DC=MobileLab,DC=home","S-1-5-21-3036625279-3127291219-2495432101-502","No Script Path","No Home Drive",,"2"
-"Administrator","True","/Users","False","False","1/28/2020 7:53:25 PM","11/22/2021 4:49:24 PM","11/22/2021 4:49:24 PM","6/27/2021 9:47:17 PM","0","False","True","False","CN=WMI Users,CN=Users,DC=MobileLab,DC=home
-CN=RDS Remote Access Servers,CN=Builtin,DC=MobileLab,DC=home
-CN=Remote Desktop Users,CN=Builtin,DC=MobileLab,DC=home
-CN=Remote Management Users,CN=Builtin,DC=MobileLab,DC=home
-CN=Group Policy Creator Owners,CN=Users,DC=MobileLab,DC=home
-CN=Enterprise Admins,CN=Users,DC=MobileLab,DC=home
-CN=Schema Admins,CN=Users,DC=MobileLab,DC=home
-CN=Domain Admins,CN=Users,DC=MobileLab,DC=home
-CN=Administrators,CN=Builtin,DC=MobileLab,DC=home","S-1-5-21-3036625279-3127291219-2495432101-500","No Script Path","No Home Drive",,"2"
 "admin","True","/East Coast Employees","False","False","04/15/2020 17:10:02","05/17/2021 00:37:12","03/23/2021 00:17:19","No TimeStamp","0","False","True","False","","S-1-5-21-3036625279-3127291219-2495432101-1135","No Script Path","No Home Drive","11/28/2021 23:44:33 -- [Tag] single tag
 11/28/2021 23:43:46 -- message
 ","21"
@@ -24,3 +15,14 @@ CN=Administrators,CN=Builtin,DC=MobileLab,DC=home","S-1-5-21-3036625279-31272912
 "LockedOne","False","/East Coast Employees","False","False","2/22/2021 2:38:43 AM","5/17/2021 12:37:12 AM","No TimeStamp","No TimeStamp","0","True","False","False","","S-1-5-21-3036625279-3127291219-2495432101-2615","No Script Path","No Home Drive",,"2"
 "LockedTwo","False","/West Coast Employees","False","False","2/22/2021 2:39:18 AM","5/17/2021 12:36:51 AM","No TimeStamp","No TimeStamp","0","True","False","False","","S-1-5-21-3036625279-3127291219-2495432101-2616","No Script Path","No Home Drive",,"2"
 "danny","True","/East Coast Employees","False","False","3/23/2021 12:15:43 AM","5/17/2021 12:37:12 AM","4/4/2021 12:55:13 AM","No TimeStamp","0","False","True","False","CN=Domain Admins,CN=Users,DC=MobileLab,DC=home","S-1-5-21-3036625279-3127291219-2495432101-2617","No Script Path","No Home Drive",,"2"
+"administrator","True","/Users","False","False","1/28/2020 7:53:25 PM","2/11/2022 12:01:20 PM","2/11/2022 12:01:20 PM","12/16/2021 12:21:59 AM","0","False","True","False","CN=WMI Users,CN=Users,DC=MobileLab,DC=home
+CN=RDS Remote Access Servers,CN=Builtin,DC=MobileLab,DC=home
+CN=Remote Desktop Users,CN=Builtin,DC=MobileLab,DC=home
+CN=Remote Management Users,CN=Builtin,DC=MobileLab,DC=home
+CN=Group Policy Creator Owners,CN=Users,DC=MobileLab,DC=home
+CN=Enterprise Admins,CN=Users,DC=MobileLab,DC=home
+CN=Schema Admins,CN=Users,DC=MobileLab,DC=home
+CN=Domain Admins,CN=Users,DC=MobileLab,DC=home
+CN=Administrators,CN=Builtin,DC=MobileLab,DC=home","S-1-5-21-3036625279-3127291219-2495432101-500","No Script Path","No Home Drive","12/20/2021 17:09:39 -- Pulled Updated Account Data
+12/20/2021 17:09:14 -- Pulled Updated Account Data
+","20"

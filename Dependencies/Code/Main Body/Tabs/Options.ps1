@@ -1,3 +1,32 @@
+####################################################################################################
+# ScriptBlocks
+####################################################################################################
+
+$PoShEasyWinLicenseAndAboutButtonAdd_Click = {
+    $InformationTabControl.SelectedTab = $Section3AboutTab
+
+    if ($PoShEasyWinLicenseAndAboutButton.Text -eq "License (GPLv3)" ) {
+        $PoShEasyWinLicenseAndAboutButton.Text = "About PoSh-EasyWin"
+        $Section1AboutSubTabRichTextBox.Text   = $(Get-Content "$Dependencies\GPLv3 - GNU General Public License.txt" -raw)
+    }
+    elseif ($PoShEasyWinLicenseAndAboutButton.Text -eq "About PoSh-EasyWin" ) {
+        $PoShEasyWinLicenseAndAboutButton.Text = "License (GPLv3)"
+        $Section1AboutSubTabRichTextBox.Text   = $(Get-Content "$Dependencies\About PoSh-EasyWin.txt" -raw)
+    }
+}
+
+$PoShEasyWinLicenseAndAboutButtonAdd_MouseHover = {
+    Show-ToolTip -Title "Posh-EasyWin" -Icon "Info" -Message @"
++  Switch between the following:
+     About PoSh-EasyWin
+     GNU General Public License v3
+"@
+}
+
+
+####################################################################################################
+# ScriptBlocks
+####################################################################################################
 
 $Section2OptionsTab = New-Object System.Windows.Forms.TabPage -Property @{
     Text = "Options  "
@@ -39,8 +68,6 @@ $Section2OptionsTab.Controls.Add($OptionViewReadMeButton)
 Apply-CommonButtonSettings -Button $OptionViewReadMeButton
 
 
-Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\PoShEasyWinLicenseAndAboutButton.ps1"
-. "$Dependencies\Code\System.Windows.Forms\Button\PoShEasyWinLicenseAndAboutButton.ps1"
 $PoShEasyWinLicenseAndAboutButton = New-Object Windows.Forms.Button -Property @{
     Text   = "License (GPLv3)"
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
@@ -64,87 +91,92 @@ $OptionSearchComputersForPreviouslyCollectedDataProcessesGroupBox = New-Object S
     Height = $FormScale * 100
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),1,2,1)
 }
-            Load-Code "$Dependencies\Code\System.Windows.Forms\ComboBox\CollectedDataDirectorySearchLimitComboBox.ps1"
-            . "$Dependencies\Code\System.Windows.Forms\ComboBox\CollectedDataDirectorySearchLimitComboBox.ps1"
-            $CollectedDataDirectorySearchLimitComboBox = New-Object System.Windows.Forms.Combobox -Property @{
-                Text   = 50
-                Left   = $FormScale * 10
-                Top    = $FormScale * 15
-                Width  = $FormScale * 50
-                Height = $FormScale * 22
-                Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-                Add_MouseHover = $CollectedDataDirectorySearchLimitComboBoxAdd_MouseHover
-                Add_SelectedIndexChanged = { $This.Text | Set-Content "$PoShHome\Settings\Directory Search Limit.txt" -Force }
-            }
-            $NumberOfDirectoriesToSearchBack = @(25,50,100,150,200,250,500,750,1000)
-            ForEach ($Item in $NumberOfDirectoriesToSearchBack) { $CollectedDataDirectorySearchLimitComboBox.Items.Add($Item) }
-            if (Test-Path "$PoShHome\Settings\Directory Search Limit.txt") { $CollectedDataDirectorySearchLimitComboBox.text = Get-Content "$PoShHome\Settings\Directory Search Limit.txt" }
-            $OptionSearchComputersForPreviouslyCollectedDataProcessesGroupBox.Controls.Add($CollectedDataDirectorySearchLimitCombobox)
+
+    $CollectedDataDirectorySearchLimitComboBox = New-Object System.Windows.Forms.Combobox -Property @{
+        Text   = 50
+        Left   = $FormScale * 10
+        Top    = $FormScale * 15
+        Width  = $FormScale * 50
+        Height = $FormScale * 22
+        Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+        Add_MouseHover  = {
+Show-ToolTip -Title "Statistics Update Interval" -Icon "Info" -Message @"
++  This is how many directories to search for data within the Collected Data directory.
++  It allows you to search for specified data within previous data collections.
++  The more directories you search, the longer the wait time.
+"@
+        }
+        Add_SelectedIndexChanged = { $This.Text | Set-Content "$PoShHome\Settings\Directory Search Limit.txt" -Force }
+    }
+    $NumberOfDirectoriesToSearchBack = @(25,50,100,150,200,250,500,750,1000)
+    ForEach ($Item in $NumberOfDirectoriesToSearchBack) { $CollectedDataDirectorySearchLimitComboBox.Items.Add($Item) }
+    if (Test-Path "$PoShHome\Settings\Directory Search Limit.txt") { $CollectedDataDirectorySearchLimitComboBox.text = Get-Content "$PoShHome\Settings\Directory Search Limit.txt" }
+    $OptionSearchComputersForPreviouslyCollectedDataProcessesGroupBox.Controls.Add($CollectedDataDirectorySearchLimitCombobox)
 
 
-            $CollectedDataDirectorySearchLimitLabel = New-Object System.Windows.Forms.Label -Property @{
-                Text   = "Number of Past Directories to Search"
-                Left   = $CollectedDataDirectorySearchLimitCombobox.Size.Width + $($FormScale * 10)
-                Top    = $CollectedDataDirectorySearchLimitCombobox.Top + $($FormScale + 3)
-                Width  = $FormScale * 200
-                Height = $FormScale * 22
-                Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-            }
-            $OptionSearchComputersForPreviouslyCollectedDataProcessesGroupBox.Controls.Add($CollectedDataDirectorySearchLimitLabel)
+    $CollectedDataDirectorySearchLimitLabel = New-Object System.Windows.Forms.Label -Property @{
+        Text   = "Number of Past Directories to Search"
+        Left   = $CollectedDataDirectorySearchLimitCombobox.Size.Width + $($FormScale * 10)
+        Top    = $CollectedDataDirectorySearchLimitCombobox.Top + $($FormScale + 3)
+        Width  = $FormScale * 200
+        Height = $FormScale * 22
+        Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    }
+    $OptionSearchComputersForPreviouslyCollectedDataProcessesGroupBox.Controls.Add($CollectedDataDirectorySearchLimitLabel)
 
 
-            $OptionSearchProcessesCheckBox = New-Object System.Windows.Forms.Checkbox -Property @{
-                Text    = "Processes"
-                Left    = $FormScale * 10
-                Top     = $CollectedDataDirectorySearchLimitLabel.Top + $CollectedDataDirectorySearchLimitLabel.Height
-                Width   = $FormScale * 200
-                Height  = $FormScale * 20
-                Enabled = $true
-                Checked = $False
-                Font    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-                Add_Click = { $This.Checked | Set-Content "$PoShHome\Settings\Search - Processes Checkbox.txt" -Force }
-            }
-            if (Test-Path "$PoShHome\Settings\Search - Processes Checkbox.txt") { 
-                if ((Get-Content "$PoShHome\Settings\Search - Processes Checkbox.txt") -eq 'True'){$OptionSearchProcessesCheckBox.checked = $true}
-                else {$OptionSearchProcessesCheckBox.checked = $false}
-            }
-            $OptionSearchComputersForPreviouslyCollectedDataProcessesGroupBox.Controls.Add($OptionSearchProcessesCheckBox)
+    $OptionSearchProcessesCheckBox = New-Object System.Windows.Forms.Checkbox -Property @{
+        Text    = "Processes"
+        Left    = $FormScale * 10
+        Top     = $CollectedDataDirectorySearchLimitLabel.Top + $CollectedDataDirectorySearchLimitLabel.Height
+        Width   = $FormScale * 200
+        Height  = $FormScale * 20
+        Enabled = $true
+        Checked = $False
+        Font    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+        Add_Click = { $This.Checked | Set-Content "$PoShHome\Settings\Search - Processes Checkbox.txt" -Force }
+    }
+    if (Test-Path "$PoShHome\Settings\Search - Processes Checkbox.txt") { 
+        if ((Get-Content "$PoShHome\Settings\Search - Processes Checkbox.txt") -eq 'True'){$OptionSearchProcessesCheckBox.checked = $true}
+        else {$OptionSearchProcessesCheckBox.checked = $false}
+    }
+    $OptionSearchComputersForPreviouslyCollectedDataProcessesGroupBox.Controls.Add($OptionSearchProcessesCheckBox)
 
 
-            $OptionSearchServicesCheckBox = New-Object System.Windows.Forms.Checkbox -Property @{
-                Text    = "Services"
-                Left    = $FormScale * 10
-                Top     = $OptionSearchProcessesCheckBox.Top + $OptionSearchProcessesCheckBox.Height
-                Width   = $FormScale * 200
-                Height  = $FormScale * 20
-                Enabled = $true
-                Checked = $False
-                Font    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-                Add_Click = { $This.Checked | Set-Content "$PoShHome\Settings\Search - Services Checkbox.txt" -Force }
-            }
-            if (Test-Path "$PoShHome\Settings\Search - Services Checkbox.txt") { 
-                if ((Get-Content "$PoShHome\Settings\Search - Services Checkbox.txt") -eq 'True'){$OptionSearchServicesCheckBox.checked = $true}
-                else {$OptionSearchServicesCheckBox.checked = $false}
-            }
-            $OptionSearchComputersForPreviouslyCollectedDataProcessesGroupBox.Controls.Add($OptionSearchServicesCheckBox)
+    $OptionSearchServicesCheckBox = New-Object System.Windows.Forms.Checkbox -Property @{
+        Text    = "Services"
+        Left    = $FormScale * 10
+        Top     = $OptionSearchProcessesCheckBox.Top + $OptionSearchProcessesCheckBox.Height
+        Width   = $FormScale * 200
+        Height  = $FormScale * 20
+        Enabled = $true
+        Checked = $False
+        Font    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+        Add_Click = { $This.Checked | Set-Content "$PoShHome\Settings\Search - Services Checkbox.txt" -Force }
+    }
+    if (Test-Path "$PoShHome\Settings\Search - Services Checkbox.txt") { 
+        if ((Get-Content "$PoShHome\Settings\Search - Services Checkbox.txt") -eq 'True'){$OptionSearchServicesCheckBox.checked = $true}
+        else {$OptionSearchServicesCheckBox.checked = $false}
+    }
+    $OptionSearchComputersForPreviouslyCollectedDataProcessesGroupBox.Controls.Add($OptionSearchServicesCheckBox)
 
 
-            $OptionSearchNetworkTCPConnectionsCheckBox = New-Object System.Windows.Forms.Checkbox -Property @{
-                Text    = "Network TCP Connections"
-                Left    = $FormScale * 10
-                Top     = $OptionSearchServicesCheckBox.Top + $OptionSearchServicesCheckBox.Height - $($FormScale + 1)
-                Width   = $FormScale * 200
-                Height  = $FormScale * 20
-                Enabled = $true
-                Checked = $False
-                Font    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-                Add_Click = { $This.Checked | Set-Content "$PoShHome\Settings\Search - Network TCP Connections Checkbox.txt" -Force }
-            }
-            if (Test-Path "$PoShHome\Settings\Search - Network TCP Connections Checkbox.txt") { 
-                if ((Get-Content "$PoShHome\Settings\Search - Network TCP Connections Checkbox.txt") -eq 'True'){$OptionSearchNetworkTCPConnectionsCheckBox.checked = $true}
-                else {$OptionSearchNetworkTCPConnectionsCheckBox.checked = $false}
-            }
-            $OptionSearchComputersForPreviouslyCollectedDataProcessesGroupBox.Controls.Add($OptionSearchNetworkTCPConnectionsCheckBox)
+    $OptionSearchNetworkTCPConnectionsCheckBox = New-Object System.Windows.Forms.Checkbox -Property @{
+        Text    = "Network TCP Connections"
+        Left    = $FormScale * 10
+        Top     = $OptionSearchServicesCheckBox.Top + $OptionSearchServicesCheckBox.Height - $($FormScale + 1)
+        Width   = $FormScale * 200
+        Height  = $FormScale * 20
+        Enabled = $true
+        Checked = $False
+        Font    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+        Add_Click = { $This.Checked | Set-Content "$PoShHome\Settings\Search - Network TCP Connections Checkbox.txt" -Force }
+    }
+    if (Test-Path "$PoShHome\Settings\Search - Network TCP Connections Checkbox.txt") { 
+        if ((Get-Content "$PoShHome\Settings\Search - Network TCP Connections Checkbox.txt") -eq 'True'){$OptionSearchNetworkTCPConnectionsCheckBox.checked = $true}
+        else {$OptionSearchNetworkTCPConnectionsCheckBox.checked = $false}
+    }
+    $OptionSearchComputersForPreviouslyCollectedDataProcessesGroupBox.Controls.Add($OptionSearchNetworkTCPConnectionsCheckBox)
 $Section2OptionsTab.Controls.Add($OptionSearchComputersForPreviouslyCollectedDataProcessesGroupBox)
 
 
@@ -191,71 +223,70 @@ if (Test-Path "$PoShHome\Settings\Log Commands in Endpoint Notes.txt") {
 
 $Section2OptionsTab.Controls.Add($script:LogCommandsInEndpointNotes)
 
+    $OptionGUITopWindowCheckBox = New-Object System.Windows.Forms.Checkbox -Property @{
+        Text    = "GUI always on top"
+        Left    = $FormScale * 300
+        Top     = $script:LogCommandsInEndpointNotes.Top
+        Width   = $FormScale * 200
+        Height  = $FormScale * 22
+        Enabled = $true
+        Checked = $false
+        Font    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+        Add_Click = {
+            $This.checked | Set-Content "$PoShHome\Settings\GUI Top Most Window.txt" -Force
 
-                $OptionGUITopWindowCheckBox = New-Object System.Windows.Forms.Checkbox -Property @{
-                    Text    = "GUI always on top"
-                    Left    = $FormScale * 300
-                    Top     = $script:LogCommandsInEndpointNotes.Top
-                    Width   = $FormScale * 200
-                    Height  = $FormScale * 22
-                    Enabled = $true
-                    Checked = $false
-                    Font    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-                    Add_Click = {
-                        $This.checked | Set-Content "$PoShHome\Settings\GUI Top Most Window.txt" -Force
-
-                        # Option to toggle if the Windows is not the top most
-                        if   ( $OptionGUITopWindowCheckBox.checked ) { $PoShEasyWin.Topmost = $true }
-                        else { $PoShEasyWin.Topmost = $false }                    
-                    }
-                }
-                if (Test-Path "$PoShHome\Settings\GUI Top Most Window.txt") { 
-                    if ((Get-Content "$PoShHome\Settings\GUI Top Most Window.txt") -eq 'True'){
-                        $OptionGUITopWindowCheckBox.checked = $true
-                        $PoShEasyWin.Topmost = $true
-                    }
-                    else {
-                        $OptionGUITopWindowCheckBox.checked = $false
-                        $PoShEasyWin.Topmost = $false
-                    }
-                }
-                $Section2OptionsTab.Controls.Add( $OptionGUITopWindowCheckBox )
-
-
-                $OptionShowToolTipCheckBox = New-Object System.Windows.Forms.Checkbox -Property @{
-                    Text    = "Show ToolTip"
-                    Left    = $OptionGUITopWindowCheckBox.Left
-                    Top     = $OptionGUITopWindowCheckBox.Top + $OptionGUITopWindowCheckBox.Height
-                    Width   = $FormScale * 200
-                    Height  = $FormScale * 22
-                    Enabled = $true
-                    Checked = $True
-                    Font    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-                    Add_Click = { $This.Checked | Set-Content "$PoShHome\Settings\Show Tool Tip.txt" -Force }
-                }
-                if (Test-Path "$PoShHome\Settings\Show Tool Tip.txt") { 
-                    if ((Get-Content "$PoShHome\Settings\Show Tool Tip.txt") -eq 'True'){$OptionShowToolTipCheckBox.checked = $true}
-                    else {$OptionShowToolTipCheckBox.checked = $false}
-                }
-                $Section2OptionsTab.Controls.Add($OptionShowToolTipCheckBox)
+            # Option to toggle if the Windows is not the top most
+            if   ( $OptionGUITopWindowCheckBox.checked ) { $PoShEasyWin.Topmost = $true }
+            else { $PoShEasyWin.Topmost = $false }                    
+        }
+    }
+    if (Test-Path "$PoShHome\Settings\GUI Top Most Window.txt") { 
+        if ((Get-Content "$PoShHome\Settings\GUI Top Most Window.txt") -eq 'True'){
+            $OptionGUITopWindowCheckBox.checked = $true
+            $PoShEasyWin.Topmost = $true
+        }
+        else {
+            $OptionGUITopWindowCheckBox.checked = $false
+            $PoShEasyWin.Topmost = $false
+        }
+    }
+    $Section2OptionsTab.Controls.Add( $OptionGUITopWindowCheckBox )
 
 
-                $script:OptionEventViewerCollectVerboseCheckBox = New-Object System.Windows.Forms.Checkbox -Property @{
-                    Text    = "Event Viewer Collect (Verbose)"
-                    Left    = $OptionShowToolTipCheckBox.Left
-                    Top     = $OptionShowToolTipCheckBox.Top + $OptionShowToolTipCheckBox.Height
-                    Width   = $FormScale * 200
-                    Height  = $FormScale * 22
-                    Enabled = $true
-                    Checked = $false
-                    Font    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-                    Add_Click = { $This.Checked | Set-Content "$PoShHome\Settings\Event Viewer Collect Verbose.txt" -Force }
-                }
-                if (Test-Path "$PoShHome\Settings\Event Viewer Collect Verbose.txt") { 
-                    if ((Get-Content "$PoShHome\Settings\Event Viewer Collect Verbose.txt") -eq 'True'){$script:OptionEventViewerCollectVerboseCheckBox.checked = $true}
-                    else {$script:OptionEventViewerCollectVerboseCheckBox.checked = $false}
-                }
-                $Section2OptionsTab.Controls.Add($script:OptionEventViewerCollectVerboseCheckBox)
+    $OptionShowToolTipCheckBox = New-Object System.Windows.Forms.Checkbox -Property @{
+        Text    = "Show ToolTip"
+        Left    = $OptionGUITopWindowCheckBox.Left
+        Top     = $OptionGUITopWindowCheckBox.Top + $OptionGUITopWindowCheckBox.Height
+        Width   = $FormScale * 200
+        Height  = $FormScale * 22
+        Enabled = $true
+        Checked = $True
+        Font    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+        Add_Click = { $This.Checked | Set-Content "$PoShHome\Settings\Show Tool Tip.txt" -Force }
+    }
+    if (Test-Path "$PoShHome\Settings\Show Tool Tip.txt") { 
+        if ((Get-Content "$PoShHome\Settings\Show Tool Tip.txt") -eq 'True'){$OptionShowToolTipCheckBox.checked = $true}
+        else {$OptionShowToolTipCheckBox.checked = $false}
+    }
+    $Section2OptionsTab.Controls.Add($OptionShowToolTipCheckBox)
+
+
+    $script:OptionEventViewerCollectVerboseCheckBox = New-Object System.Windows.Forms.Checkbox -Property @{
+        Text    = "Event Viewer Collect (Verbose)"
+        Left    = $OptionShowToolTipCheckBox.Left
+        Top     = $OptionShowToolTipCheckBox.Top + $OptionShowToolTipCheckBox.Height
+        Width   = $FormScale * 200
+        Height  = $FormScale * 22
+        Enabled = $true
+        Checked = $false
+        Font    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+        Add_Click = { $This.Checked | Set-Content "$PoShHome\Settings\Event Viewer Collect Verbose.txt" -Force }
+    }
+    if (Test-Path "$PoShHome\Settings\Event Viewer Collect Verbose.txt") { 
+        if ((Get-Content "$PoShHome\Settings\Event Viewer Collect Verbose.txt") -eq 'True'){$script:OptionEventViewerCollectVerboseCheckBox.checked = $true}
+        else {$script:OptionEventViewerCollectVerboseCheckBox.checked = $false}
+    }
+    $Section2OptionsTab.Controls.Add($script:OptionEventViewerCollectVerboseCheckBox)
 
 
 $OptionTextToSpeachCheckBox = New-Object System.Windows.Forms.Checkbox -Property @{

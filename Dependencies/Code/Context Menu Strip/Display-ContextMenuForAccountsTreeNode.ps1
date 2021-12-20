@@ -83,7 +83,7 @@ function Display-ContextMenuForAccountsTreeNode {
                     Height = $FormScale * 25
                     Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
                 }
-                $AccountsTreeNodePopupAddTextBox.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { AddAccount-AccountsTreeNode } })
+                $AccountsTreeNodePopupAddTextBox.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { Add-TreeViewAccount } })
                 $AccountsTreeNodePopup.Controls.Add($AccountsTreeNodePopupAddTextBox)
                    
             
@@ -100,7 +100,7 @@ function Display-ContextMenuForAccountsTreeNode {
                 $AccountsTreeNodeOUCategoryList = $script:AccountsTreeViewData | Select-Object -ExpandProperty CanonicalName -Unique
                 # Dynamically creates the OU Category combobox list used for OU Selection
                 ForEach ($OU in $AccountsTreeNodeOUCategoryList) { $AccountsTreeNodePopupOUComboBox.Items.Add($OU) }
-                $AccountsTreeNodePopupOUComboBox.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { AddAccount-AccountsTreeNode } })
+                $AccountsTreeNodePopupOUComboBox.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { Add-TreeViewAccount } })
                 $AccountsTreeNodePopup.Controls.Add($AccountsTreeNodePopupOUComboBox)
             
                 $AccountsAndAccountTreeViewTabControl.SelectedTab = $AccountsTreeviewTab
@@ -117,14 +117,14 @@ function Display-ContextMenuForAccountsTreeNode {
                                   Y = $AccountsTreeNodePopupOUComboBox.Location.Y + $AccountsTreeNodePopupOUComboBox.Size.Height + $($FormScale * 10) }
                     Width  = $FormScale * 100
                     Height = $FormScale * 25
-                    Add_Click = { AddAccount-AccountsTreeNode }
-                    Add_KeyDown = { if ($_.KeyCode -eq "Enter") { AddAccount-AccountsTreeNode } }    
+                    Add_Click = { Add-TreeViewAccount }
+                    Add_KeyDown = { if ($_.KeyCode -eq "Enter") { Add-TreeViewAccount } }    
                 }
                 Apply-CommonButtonSettings -Button $AccountsTreeNodePopupAddAccountButton
                 $AccountsTreeNodePopup.Controls.Add($AccountsTreeNodePopupAddAccountButton)
             
                 # $script:AccountsTreeView.ExpandAll()
-                # Remove-EmptyCategory -Accounts
+                # Remove-TreeViewEmptyCategory -Accounts
                 # Normalize-TreeViewData -Accounts
                 # Save-TreeViewData -Accounts
                 $AccountsTreeNodePopup.ShowDialog()
@@ -135,7 +135,7 @@ function Display-ContextMenuForAccountsTreeNode {
                 $InformationTabControl.SelectedTab = $Section3AccountDataTab
 
                 if ($script:EntrySelected) {
-                    Show-TagForm -Accounts
+                    Show-TreeViewTagForm -Accounts
                     if ($script:AccountsListMassTagValue) {
                         $script:Section3AccountDataNameTextBox.Text = $($script:AccountsTreeViewData | Where-Object {$_.Name -eq $script:EntrySelected.Text}).Name
                         $Section3AccountDataOSTextBox.Text          = $($script:AccountsTreeViewData | Where-Object {$_.Name -eq $script:EntrySelected.Text}).OperatingSystem
@@ -156,7 +156,7 @@ function Display-ContextMenuForAccountsTreeNode {
 
                 Create-TreeViewCheckBoxArray -Accounts
                 if ($script:EntrySelected) {
-                    Show-MoveForm -Accounts -Title "Move: $($script:EntrySelected.Text)" -SelectedAccounts
+                    Show-TreeViewMoveForm -Accounts -Title "Move: $($script:EntrySelected.Text)" -SelectedAccounts
             
                     $script:AccountsTreeView.Nodes.Clear()
                     Initialize-TreeViewData -Accounts
@@ -165,12 +165,12 @@ function Display-ContextMenuForAccountsTreeNode {
                     $script:AccountsTreeNodeComboBox.SelectedItem = 'CanonicalName'
             
                     Foreach($Account in $script:AccountsTreeViewData) {
-                        AddTreeNodeTo-TreeViewData -Accounts -RootNode $script:TreeNodeAccountsList -Category $Account.CanonicalName -Entry $Account.Name -ToolTip $Account.SID -Metadata $Account
+                        Add-TreeViewData -Accounts -RootNode $script:TreeNodeAccountsList -Category $Account.CanonicalName -Entry $Account.Name -ToolTip $Account.SID -Metadata $Account
                     }
             
-                    Remove-EmptyCategory -Accounts
+                    Remove-TreeViewEmptyCategory -Accounts
                     Save-TreeViewData -Accounts
-                    UpdateState-TreeViewData -Accounts -NoMessage
+                    Update-TreeViewState -Accounts -NoMessage
             
                     $StatusListBox.Items.Clear()
                     $StatusListBox.Items.Add("Moved:  $($script:EntrySelected.text)")
@@ -183,7 +183,7 @@ function Display-ContextMenuForAccountsTreeNode {
 
                 Create-TreeViewCheckBoxArray -Accounts
                 if ($script:EntrySelected) {
-                    $MessageBox = [System.Windows.MessageBox]::Show("Confirm Deletion of Account Node: $($script:EntrySelected.text)`r`n`r`nAll Account metadata and notes will be lost.`r`n`r`nAny previously collected data will still remain.",'Delete Account','YesNo')
+                    $MessageBox = Show-MessageBox -Message "Confirm Deletion of Account Node: $($script:EntrySelected.text)`r`n`r`nAll Account metadata and notes will be lost.`r`n`r`nAny previously collected data will still remain." -Title "PoSh-EasyWin - Delete Account" -Options "YesNo" -Type "Question" -Sound
     
                     Switch ( $MessageBox ) {
                         'Yes' {
@@ -210,7 +210,7 @@ function Display-ContextMenuForAccountsTreeNode {
                             #This is a bit of a workaround, but it prevents the Account data message from appearing after a Accounts node is deleted...
                             $script:FirstCheck = $false
     
-                            Remove-EmptyCategory -Accounts
+                            Remove-TreeViewEmptyCategory -Accounts
                             Save-TreeViewData -Accounts
                         }
                         'No' {
@@ -274,7 +274,7 @@ function Display-ContextMenuForAccountsTreeNode {
                 #elseif ($script:AccountsTreeViewSelected.count -lt 1) { AccountsNodeSelectedLessThanOne -Message 'Rename Selection' }
                 #elseif ($script:AccountsTreeViewSelected.count -gt 1) { AccountsNodeSelectedMoreThanOne -Message 'Rename Selection' }
 
-                Remove-EmptyCategory -Accounts
+                Remove-TreeViewEmptyCategory -Accounts
                 Save-TreeViewData -Accounts
             }
         }
@@ -329,7 +329,7 @@ function Display-ContextMenuForAccountsTreeNode {
 
                 Create-TreeViewCheckBoxArray -Accounts
                 if ($script:AccountsTreeViewSelected.count -eq 0){
-                    [System.Windows.MessageBox]::Show('Error: You need to check at least one Account.','Tag All')
+                    Show-MessageBox -Message 'Error: You need to check at least one Account.' -Title "PoSh-EasyWin - Tag All" -Options "Ok" -Type "Error" -Sound
                 }
                 else {
                     $InformationTabControl.SelectedTab = $Section3AccountDataTab
@@ -339,7 +339,7 @@ function Display-ContextMenuForAccountsTreeNode {
             
                     Create-TreeViewCheckBoxArray -Accounts
                     if ($script:AccountsTreeViewSelected.count -ge 0) {
-                        Show-TagForm -Accounts
+                        Show-TreeViewTagForm -Accounts
             
                         $script:ProgressBarAccountsProgressBar.Maximum  = $script:AccountsTreeViewSelected.count
                         [System.Windows.Forms.TreeNodeCollection]$AllTreeViewNodes = $script:AccountsTreeView.Nodes
@@ -379,13 +379,13 @@ function Display-ContextMenuForAccountsTreeNode {
                 Create-TreeViewCheckBoxArray -Accounts
 
                 if ($script:AccountsTreeViewSelected.count -eq 0){
-                    [System.Windows.MessageBox]::Show('Error: You need to check at least one Account.','Move All')
+                    Show-MessageBox -Message 'Error: You need to check at least one Account.' -Title "PoSh-EasyWin - Move All" -Options "Ok" -Type "Error" -Sound
                 }
                 else {
                     $InformationTabControl.SelectedTab = $Section3ResultsTab
             
                     if ($script:AccountsTreeViewSelected.count -ge 0) {
-                        Show-MoveForm -Accounts -Title "Moving $($script:AccountsTreeViewSelected.count) Accounts"
+                        Show-TreeViewMoveForm -Accounts -Title "Moving $($script:AccountsTreeViewSelected.count) Accounts"
             
                         $script:AccountsTreeView.Nodes.Clear()
                         Initialize-TreeViewData -Accounts
@@ -394,12 +394,12 @@ function Display-ContextMenuForAccountsTreeNode {
                         $script:AccountsTreeNodeComboBox.SelectedItem = 'CanonicalName'
             
                         Foreach($Account in $script:AccountsTreeViewData) {
-                            AddTreeNodeTo-TreeViewData -Accounts -RootNode $script:TreeNodeAccountsList -Category $Account.CanonicalName -Entry $Account.Name -ToolTip $Account.SID -Metadata $Account
+                            Add-TreeViewData -Accounts -RootNode $script:TreeNodeAccountsList -Category $Account.CanonicalName -Entry $Account.Name -ToolTip $Account.SID -Metadata $Account
                         }
             
-                        Remove-EmptyCategory -Accounts
+                        Remove-TreeViewEmptyCategory -Accounts
                         Save-TreeViewData -Accounts
-                        UpdateState-TreeViewData -Accounts -NoMessage
+                        Update-TreeViewState -Accounts -NoMessage
             
                         $StatusListBox.Items.Clear()
                         $StatusListBox.Items.Add("Moved $($script:AccountsTreeNodeToMove.Count) Accounts")
@@ -415,17 +415,17 @@ function Display-ContextMenuForAccountsTreeNode {
                 Create-TreeViewCheckBoxArray -Accounts
 
                 if ($script:AccountsTreeViewSelected.count -eq 0){
-                    [System.Windows.MessageBox]::Show('Error: You need to check at least one Account.','Delete All')
+                    Show-MessageBox -Message 'Error: You need to check at least one Account.' -Title "PoSh-EasyWin - Delete All" -Options "Ok" -Type "Error" -Sound
                 }
                 else {
                     
                     $InformationTabControl.SelectedTab = $Section3ResultsTab
             
                     if ($script:AccountsTreeViewSelected.count -eq 1) {
-                        $MessageBox = [System.Windows.MessageBox]::Show("Confirm Deletion of $($script:AccountsTreeViewSelected.count) Account Node.`r`n`r`nAll Account metadata and notes will be lost.`r`nAny previously collected data will still remain.",'Delete Account','YesNo')
+                        $MessageBox = Show-MessageBox -Message "Confirm Deletion of $($script:AccountsTreeViewSelected.count) Account Node.`r`n`r`nAll Account metadata and notes will be lost.`r`nAny previously collected data will still remain." -Title "PoSh-EasyWin - Delete Account" -Options "YesNo" -Type "Question" -Sound
                     }
                     elseif ($script:AccountsTreeViewSelected.count -gt 1) {
-                        $MessageBox = [System.Windows.MessageBox]::Show("Confirm Deletion of $($script:AccountsTreeViewSelected.count) Account Nodes.`r`n`r`nAll Account metadata and notes will be lost.`r`nAny previously collected data will still remain.",'Delete Accounts','YesNo')
+                        $MessageBox = Show-MessageBox -Message "Confirm Deletion of $($script:AccountsTreeViewSelected.count) Account Nodes.`r`n`r`nAll Account metadata and notes will be lost.`r`nAny previously collected data will still remain." -Title "PoSh-EasyWin - Delete Accounts" -Options "YesNo" -Type "Question" -Sound
                     }
             
                     Switch ( $MessageBox ) {
@@ -480,7 +480,7 @@ function Display-ContextMenuForAccountsTreeNode {
                                 $AccountsAndAccountTreeViewTabControl.SelectedTab = $AccountsTreeviewTab
                                 $script:AccountsTreeNodeComboBox.SelectedItem = 'CanonicalName'
                 
-                                Remove-EmptyCategory -Accounts
+                                Remove-TreeViewEmptyCategory -Accounts
                                 Save-TreeViewData -Accounts
                             }
                             else { AccountsNodeSelectedLessThanOne -Message 'Delete Selection' }

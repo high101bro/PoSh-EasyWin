@@ -24,7 +24,7 @@ function Stop-ServicesOnMultipleComputers {
         Generate-ComputerList
 
         if ($script:ComputerList.count -eq 0){
-            [System.Windows.MessageBox]::Show('Ensure you checkbox one or more endpoints to collect Service data from. Alternatively, you can select a CSV file from a previous Service collection.','Error: No Endpoints Selected')
+            Show-MessageBox -Message 'Ensure you checkbox one or more endpoints to collect Service data from. Alternatively, you can select a CSV file from a previous Service collection.' -Title "PoSh-EasyWin - No Endpoints Selected" -Options "Ok" -Type "Error" -Sound
         }
         else {
             if ($script:ComputerListProvideCredentialsCheckBox.Checked) {

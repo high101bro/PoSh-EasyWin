@@ -115,7 +115,7 @@ $script:Section3EndpointDataIconPictureBox = New-Object Windows.Forms.PictureBox
              
                 $script:ComputerTreeView.Nodes.Add($script:TreeNodeComputerList)
                 Foreach($Computer in $script:ComputerTreeViewData) {
-                    AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:TreeNodeComputerList -Category $Computer.CanonicalName -Entry $Computer.Name -ToolTip $Computer.IPv4Address -Metadata $Computer
+                    Add-TreeViewData -Endpoint -RootNode $script:TreeNodeComputerList -Category $Computer.CanonicalName -Entry $Computer.Name -ToolTip $Computer.IPv4Address -Metadata $Computer
                 }
                 Save-TreeViewData -Endpoint
                 $script:ComputerTreeView.ExpandAll()

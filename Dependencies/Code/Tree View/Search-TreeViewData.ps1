@@ -40,30 +40,30 @@ function Search-TreeViewData {
             if ($AccountsTreeNodeSearchGreedyCheckbox.checked) {
                 Foreach($Account in $script:AccountsTreeViewData) {
                     if (($SearchFoundNotes -inotcontains $Account.Name) -and ($Account.Notes -imatch $AccountsSearchText)) {
-                        AddTreeNodeTo-TreeViewData -Accounts -RootNode $script:AccountsListSearch -Category $($AccountsSearchText + ' [Notes]') -Entry $Account.Name -DoNotPopulateMetadata
+                        Add-TreeViewData -Accounts -RootNode $script:AccountsListSearch -Category $($AccountsSearchText + ' [Notes]') -Entry $Account.Name -DoNotPopulateMetadata
                         $SearchFoundNotes += $Account.Name
                     }
                     if (($SearchFoundName -inotcontains $Account.Name) -and ($Account.Name -imatch $AccountsSearchText)) {
-                        AddTreeNodeTo-TreeViewData -Accounts -RootNode $script:AccountsListSearch -Category $($AccountsSearchText + ' [Name]') -Entry $Account.Name -DoNotPopulateMetadata
+                        Add-TreeViewData -Accounts -RootNode $script:AccountsListSearch -Category $($AccountsSearchText + ' [Name]') -Entry $Account.Name -DoNotPopulateMetadata
                         $SearchFoundName += $Account.Name
                     }
                     if (($SearchFoundCanonicalName -inotcontains $Account.Name) -and ($Account.CanonicalName -imatch $AccountsSearchText)) {
-                        AddTreeNodeTo-TreeViewData -Accounts -RootNode $script:AccountsListSearch -Category $($AccountsSearchText + ' [OU/CN]') -Entry $Account.Name -DoNotPopulateMetadata
+                        Add-TreeViewData -Accounts -RootNode $script:AccountsListSearch -Category $($AccountsSearchText + ' [OU/CN]') -Entry $Account.Name -DoNotPopulateMetadata
                         $SearchFoundCanonicalName += $Account.Name
                     }
                     $AccountSearchGroupList = $Account.MemberOf.split("`n") | Sort-Object
                     ForEach ($Group in $AccountSearchGroupList) {
                         if (($SearchFoundMemberOf -inotcontains $Account.Name) -and ($Group -imatch $AccountsSearchText)) {
-                            AddTreeNodeTo-TreeViewData -Accounts -RootNode $script:AccountsListSearch -Category $($AccountsSearchText + ' [Group]') -Entry $Account.Name -DoNotPopulateMetadata
+                            Add-TreeViewData -Accounts -RootNode $script:AccountsListSearch -Category $($AccountsSearchText + ' [Group]') -Entry $Account.Name -DoNotPopulateMetadata
                             $SearchFoundMemberOf += $Account.Name
                         }
                     }
                     if (($SearchFoundScriptPath -inotcontains $Account.Name) -and ($Account.ScriptPath -imatch $AccountsSearchText)) {
-                        AddTreeNodeTo-TreeViewData -Accounts -RootNode $script:AccountsListSearch -Category $($AccountsSearchText + ' [Script Path]') -Entry $Account.Name -DoNotPopulateMetadata
+                        Add-TreeViewData -Accounts -RootNode $script:AccountsListSearch -Category $($AccountsSearchText + ' [Script Path]') -Entry $Account.Name -DoNotPopulateMetadata
                         $SearchFoundScriptPath += $Account.Name
                     }
                     if (($SearchFoundHomeDrive -inotcontains $Account.Name) -and ($Account.HomeDrive -imatch $AccountsSearchText)) {
-                        AddTreeNodeTo-TreeViewData -Accounts -RootNode $script:AccountsListSearch -Category $($AccountsSearchText + ' [Home Drive]') -Entry $Account.Name -DoNotPopulateMetadata
+                        Add-TreeViewData -Accounts -RootNode $script:AccountsListSearch -Category $($AccountsSearchText + ' [Home Drive]') -Entry $Account.Name -DoNotPopulateMetadata
                         $SearchFoundHomeDrive += $Account.Name
                     }
                 }
@@ -71,30 +71,30 @@ function Search-TreeViewData {
             else {
                 Foreach($Account in $script:AccountsTreeViewData) {
                     if (($SearchFoundNotes -inotcontains $Account.Name) -and ($Account.Notes -eq $AccountsSearchText)) {
-                        AddTreeNodeTo-TreeViewData -Accounts -RootNode $script:AccountsListSearch -Category $($AccountsSearchText + ' [Notes]') -Entry $Account.Name -DoNotPopulateMetadata
+                        Add-TreeViewData -Accounts -RootNode $script:AccountsListSearch -Category $($AccountsSearchText + ' [Notes]') -Entry $Account.Name -DoNotPopulateMetadata
                         $SearchFoundNotes += $Account.Name
                     }
                     if (($SearchFoundName -inotcontains $Account.Name) -and ($Account.Name -eq $AccountsSearchText)) {
-                        AddTreeNodeTo-TreeViewData -Accounts -RootNode $script:AccountsListSearch -Category $($AccountsSearchText + ' [Name]') -Entry $Account.Name -DoNotPopulateMetadata
+                        Add-TreeViewData -Accounts -RootNode $script:AccountsListSearch -Category $($AccountsSearchText + ' [Name]') -Entry $Account.Name -DoNotPopulateMetadata
                         $SearchFoundName += $Account.Name
                     }
                     if (($SearchFoundCanonicalName -inotcontains $Account.Name) -and ($Account.CanonicalName -eq $AccountsSearchText)) {
-                        AddTreeNodeTo-TreeViewData -Accounts -RootNode $script:AccountsListSearch -Category $($AccountsSearchText + ' [OU/CN]') -Entry $Account.Name -DoNotPopulateMetadata
+                        Add-TreeViewData -Accounts -RootNode $script:AccountsListSearch -Category $($AccountsSearchText + ' [OU/CN]') -Entry $Account.Name -DoNotPopulateMetadata
                         $SearchFoundCanonicalName += $Account.Name
                     }
                     $AccountSearchGroupList = $Account.MemberOf.split("`n") | Sort-Object
                     ForEach ($Group in $AccountSearchGroupList) {
                         if (($SearchFoundMemberOf -inotcontains $Account.Name) -and ($Group -eq $AccountsSearchText)) {
-                            AddTreeNodeTo-TreeViewData -Accounts -RootNode $script:AccountsListSearch -Category $($AccountsSearchText + ' [Group]') -Entry $Account.Name -DoNotPopulateMetadata
+                            Add-TreeViewData -Accounts -RootNode $script:AccountsListSearch -Category $($AccountsSearchText + ' [Group]') -Entry $Account.Name -DoNotPopulateMetadata
                             $SearchFoundMemberOf += $Account.Name
                         }
                     }
                     if (($SearchFoundScriptPath -inotcontains $Account.Name) -and ($Account.ScriptPath -eq $AccountsSearchText)) {
-                        AddTreeNodeTo-TreeViewData -Accounts -RootNode $script:AccountsListSearch -Category $($AccountsSearchText + ' [Script Path]') -Entry $Account.Name -DoNotPopulateMetadata
+                        Add-TreeViewData -Accounts -RootNode $script:AccountsListSearch -Category $($AccountsSearchText + ' [Script Path]') -Entry $Account.Name -DoNotPopulateMetadata
                         $SearchFoundScriptPath += $Account.Name
                     }
                     if (($SearchFoundHomeDrive -inotcontains $Account.Name) -and ($Account.HomeDrive -eq $AccountsSearchText)) {
-                        AddTreeNodeTo-TreeViewData -Accounts -RootNode $script:AccountsListSearch -Category $($AccountsSearchText + ' [Home Drive]') -Entry $Account.Name -DoNotPopulateMetadata
+                        Add-TreeViewData -Accounts -RootNode $script:AccountsListSearch -Category $($AccountsSearchText + ' [Home Drive]') -Entry $Account.Name -DoNotPopulateMetadata
                         $SearchFoundHomeDrive += $Account.Name
                     }
                 }
@@ -169,43 +169,43 @@ function Search-TreeViewData {
             if ($ComputerTreeNodeSearchGreedyCheckbox.checked) {
                 Foreach($Computer in $script:ComputerTreeViewData) {
                     if (($SearchFoundNotes -inotcontains $Computer.Name) -and ($Computer.Notes -imatch $ComputerSearchText)) {
-                        AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [Notes]') -Entry $Computer.Name -DoNotPopulateMetadata
+                        Add-TreeViewData -Endpoint -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [Notes]') -Entry $Computer.Name -DoNotPopulateMetadata
                         $SearchFoundNotes += $Computer.Name
                     }
                     if (($SearchFoundName -inotcontains $Computer.Name) -and ($Computer.Name -imatch $ComputerSearchText)) {
-                        AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [Name]') -Entry $Computer.Name -DoNotPopulateMetadata
+                        Add-TreeViewData -Endpoint -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [Name]') -Entry $Computer.Name -DoNotPopulateMetadata
                         $SearchFoundName += $Computer.Name
                     }
                     if (($SearchFoundOperatingSystem -inotcontains $Computer.Name) -and ($Computer.OperatingSystem -imatch $ComputerSearchText)) {
-                        AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [OS]') -Entry $Computer.Name -DoNotPopulateMetadata
+                        Add-TreeViewData -Endpoint -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [OS]') -Entry $Computer.Name -DoNotPopulateMetadata
                         $SearchFoundOperatingSystem += $Computer.Name
                     }
                     if (($SearchFoundCanonicalName -inotcontains $Computer.Name) -and ($Computer.CanonicalName -imatch $ComputerSearchText)) {
-                        AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [OU/CN]') -Entry $Computer.Name -DoNotPopulateMetadata
+                        Add-TreeViewData -Endpoint -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [OU/CN]') -Entry $Computer.Name -DoNotPopulateMetadata
                         $SearchFoundCanonicalName += $Computer.Name
                     }
                     if (($SearchFoundIPv4address -inotcontains $Computer.Name) -and ($Computer.IPv4address -imatch $ComputerSearchText)) {
-                        AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [IP]') -Entry $Computer.Name -DoNotPopulateMetadata
+                        Add-TreeViewData -Endpoint -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [IP]') -Entry $Computer.Name -DoNotPopulateMetadata
                         $SearchFoundIPv4address += $Computer.Name
                     }
                     if (($SearchFoundMACAddress -inotcontains $Computer.Name) -and ($Computer.MACAddress -imatch $ComputerSearchText)) {
-                        AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [MAC]') -Entry $Computer.Name -DoNotPopulateMetadata
+                        Add-TreeViewData -Endpoint -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [MAC]') -Entry $Computer.Name -DoNotPopulateMetadata
                         $SearchFoundMACAddress += $Computer.Name
                     }
                     if (($SearchFoundOperatingSystemHotfix -inotcontains $Computer.Name) -and ($Computer.OperatingSystemHotfix -imatch $ComputerSearchText)) {
-                        AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [Hotfix]') -Entry $Computer.Name -DoNotPopulateMetadata
+                        Add-TreeViewData -Endpoint -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [Hotfix]') -Entry $Computer.Name -DoNotPopulateMetadata
                         $SearchFoundOperatingSystemHotfix += $Computer.Name
                     }
                     if (($SearchFoundOperatingSystemServicePack -inotcontains $Computer.Name) -and ($Computer.OperatingSystemServicePack -imatch $ComputerSearchText)) {
-                        AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [Service Pack]') -Entry $Computer.Name -DoNotPopulateMetadata
+                        Add-TreeViewData -Endpoint -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [Service Pack]') -Entry $Computer.Name -DoNotPopulateMetadata
                         $SearchFoundOperatingSystemServicePack += $Computer.Name
                     }
                     if (($SearchFoundMemberOf -inotcontains $Computer.Name) -and ($Computer.MemberOf -imatch $ComputerSearchText)) {
-                        AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [Group]') -Entry $Computer.Name -DoNotPopulateMetadata
+                        Add-TreeViewData -Endpoint -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [Group]') -Entry $Computer.Name -DoNotPopulateMetadata
                         $SearchFoundMemberOf += $Computer.Name
                     }
                     if (($SearchFoundLocation -inotcontains $Computer.Name) -and ($Computer.Location -imatch $ComputerSearchText)) {
-                        AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [Location]') -Entry $Computer.Name -DoNotPopulateMetadata
+                        Add-TreeViewData -Endpoint -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [Location]') -Entry $Computer.Name -DoNotPopulateMetadata
                         $SearchFoundLocation += $Computer.Name
                     }
                     if ($Computer.PortScan) {
@@ -216,7 +216,7 @@ function Search-TreeViewData {
                     }
                     ForEach ($Port in $EndpointPortScanList) {
                         if (($SearchFoundPortScan -inotcontains $Computer.Name) -and ($Port -imatch $ComputerSearchText)) {
-                            AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [Port Scan]') -Entry $Computer.Name -DoNotPopulateMetadata
+                            Add-TreeViewData -Endpoint -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [Port Scan]') -Entry $Computer.Name -DoNotPopulateMetadata
                             $SearchFoundPortScan += $Computer.Name
                         }
                     }
@@ -225,43 +225,43 @@ function Search-TreeViewData {
             else {
                 Foreach($Computer in $script:ComputerTreeViewData) {
                     if (($SearchFoundNotes -inotcontains $Computer.Name) -and ($Computer.Notes -eq $ComputerSearchText)) {
-                        AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [Notes]') -Entry $Computer.Name -DoNotPopulateMetadata
+                        Add-TreeViewData -Endpoint -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [Notes]') -Entry $Computer.Name -DoNotPopulateMetadata
                         $SearchFoundNotes += $Computer.Name
                     }
                     if (($SearchFoundName -inotcontains $Computer.Name) -and ($Computer.Name -eq $ComputerSearchText)) {
-                        AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [Name]') -Entry $Computer.Name -DoNotPopulateMetadata
+                        Add-TreeViewData -Endpoint -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [Name]') -Entry $Computer.Name -DoNotPopulateMetadata
                         $SearchFoundName += $Computer.Name
                     }
                     if (($SearchFoundOperatingSystem -inotcontains $Computer.Name) -and ($Computer.OperatingSystem -eq $ComputerSearchText)) {
-                        AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [OS]') -Entry $Computer.Name -DoNotPopulateMetadata
+                        Add-TreeViewData -Endpoint -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [OS]') -Entry $Computer.Name -DoNotPopulateMetadata
                         $SearchFoundOperatingSystem += $Computer.Name
                     }
                     if (($SearchFoundCanonicalName -inotcontains $Computer.Name) -and ($Computer.CanonicalName -eq $ComputerSearchText)) {
-                        AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [OU/CN]') -Entry $Computer.Name -DoNotPopulateMetadata
+                        Add-TreeViewData -Endpoint -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [OU/CN]') -Entry $Computer.Name -DoNotPopulateMetadata
                         $SearchFoundCanonicalName += $Computer.Name
                     }
                     if (($SearchFoundIPv4address -inotcontains $Computer.Name) -and ($Computer.IPv4address -eq $ComputerSearchText)) {
-                        AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [IP]') -Entry $Computer.Name -DoNotPopulateMetadata
+                        Add-TreeViewData -Endpoint -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [IP]') -Entry $Computer.Name -DoNotPopulateMetadata
                         $SearchFoundIPv4address += $Computer.Name
                     }
                     if (($SearchFoundMACAddress -inotcontains $Computer.Name) -and ($Computer.MACAddress -eq $ComputerSearchText)) {
-                        AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [MAC]') -Entry $Computer.Name -DoNotPopulateMetadata
+                        Add-TreeViewData -Endpoint -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [MAC]') -Entry $Computer.Name -DoNotPopulateMetadata
                         $SearchFoundMACAddress += $Computer.Name
                     }
                     if (($SearchFoundOperatingSystemHotfix -inotcontains $Computer.Name) -and ($Computer.OperatingSystemHotfix -eq $ComputerSearchText)) {
-                        AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [HotFix]') -Entry $Computer.Name -DoNotPopulateMetadata
+                        Add-TreeViewData -Endpoint -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [HotFix]') -Entry $Computer.Name -DoNotPopulateMetadata
                         $SearchFoundOperatingSystemHotfix += $Computer.Name
                     }
                     if (($SearchFoundOperatingSystemServicePack -inotcontains $Computer.Name) -and ($Computer.OperatingSystemServicePack -eq $ComputerSearchText)) {
-                        AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [Service Pack]') -Entry $Computer.Name -DoNotPopulateMetadata
+                        Add-TreeViewData -Endpoint -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [Service Pack]') -Entry $Computer.Name -DoNotPopulateMetadata
                         $SearchFoundOperatingSystemServicePack += $Computer.Name
                     }
                     if (($SearchFoundMemberOf -inotcontains $Computer.Name) -and ($Computer.MemberOf -eq $ComputerSearchText)) {
-                        AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [Group]') -Entry $Computer.Name -DoNotPopulateMetadata
+                        Add-TreeViewData -Endpoint -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [Group]') -Entry $Computer.Name -DoNotPopulateMetadata
                         $SearchFoundMemberOf += $Computer.Name
                     }
                     if (($SearchFoundLocation -inotcontains $Computer.Name) -and ($Computer.Location -eq $ComputerSearchText)) {
-                        AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [Location]') -Entry $Computer.Name -DoNotPopulateMetadata
+                        Add-TreeViewData -Endpoint -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [Location]') -Entry $Computer.Name -DoNotPopulateMetadata
                         $SearchFoundLocation += $Computer.Name
                     }
                     if ($Computer.PortScan) {
@@ -272,7 +272,7 @@ function Search-TreeViewData {
                     }
                     ForEach ($Port in $EndpointPortScanList) {
                         if (($SearchFoundPortScan -inotcontains $Computer.Name) -and ($Port -eq $ComputerSearchText)) {
-                            AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [Port Scan]') -Entry $Computer.Name -DoNotPopulateMetadata
+                            Add-TreeViewData -Endpoint -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [Port Scan]') -Entry $Computer.Name -DoNotPopulateMetadata
                             $SearchFoundPortScan += $Computer.Name
                         }
                     }
@@ -301,7 +301,7 @@ function Search-TreeViewData {
                                 $SearchImportedCsvData = $SearchImportedCsvData | Select-Object -ExpandProperty ComputerName -Unique
                                 if ( $SearchImportedCsvData ) {
                                     foreach ($PSComputerName in $SearchImportedCsvData) {
-                                        AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [Process]') -Entry $PSComputerName -DoNotPopulateMetadata
+                                        Add-TreeViewData -Endpoint -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [Process]') -Entry $PSComputerName -DoNotPopulateMetadata
                                         $SearchFound += $ComputerWithResults
                                     }
                                 }
@@ -319,7 +319,7 @@ function Search-TreeViewData {
                                 $SearchImportedCsvData = $SearchImportedCsvData | Select-Object -ExpandProperty ComputerName -Unique
                                 if ( $SearchImportedCsvData ) {
                                     foreach ($PSComputerName in $SearchImportedCsvData) {
-                                        AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [Service]') -Entry $PSComputerName -DoNotPopulateMetadata
+                                        Add-TreeViewData -Endpoint -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [Service]') -Entry $PSComputerName -DoNotPopulateMetadata
                                         $SearchFound += $ComputerWithResults
                                     }
                                 }
@@ -338,7 +338,7 @@ function Search-TreeViewData {
                                 $SearchImportedCsvData = $SearchImportedCsvData | Select-Object -ExpandProperty ComputerName -Unique
                                 if ( $SearchImportedCsvData ) {
                                     foreach ($PSComputerName in $SearchImportedCsvData) {
-                                        AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [Network]') -Entry $PSComputerName -DoNotPopulateMetadata
+                                        Add-TreeViewData -Endpoint -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [Network]') -Entry $PSComputerName -DoNotPopulateMetadata
                                         $SearchFound += $ComputerWithResults
                                     }
                                 }

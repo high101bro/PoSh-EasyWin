@@ -47,7 +47,9 @@ function Check-Connection {
         }
     }
 
-    if ($script:ComputerTreeViewSelected.count -lt 1) { ComputerNodeSelectedLessThanOne -Message $CheckType }
+    if ($script:ComputerTreeViewSelected.count -lt 1) {
+        Show-MessageBox -Message "No hostname/IP selected`r`nMake sure to checkbox only one hostname/IP`r`nSelecting a Category will not allow you to connect to multiple hosts" -Title "$($CheckType):  Error"
+    }
     else {
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add("$($CheckType):  $($script:ComputerTreeViewSelected.count) hosts")

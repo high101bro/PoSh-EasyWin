@@ -1,3 +1,60 @@
+####################################################################################################
+# ScriptBlocks
+####################################################################################################
+
+$NetworkSysmonSearchDestinationPortSelectionButtonAdd_Click = {
+    Import-Csv "$Dependencies\Ports, Protocols, and Services.csv" | Out-GridView -Title 'PoSh-EasyWin: Port Selection' -OutputMode Multiple | Select-Object -Property Port | Set-Variable -Name PortManualEntrySelectionContents
+    $PortsColumn = $PortManualEntrySelectionContents | Select-Object -ExpandProperty Port
+    $PortsToBeScan = ""
+    Foreach ($Port in $PortsColumn) {
+        $PortsToBeScan += "$Port`r`n"
+    }
+    if ($NetworkSysmonSearchDestinationPortRichTextbox.Lines -eq "Enter Destination Ports; One Per Line") { $NetworkSysmonSearchDestinationPortRichTextbox.Text = "" }
+    $NetworkSysmonSearchDestinationPortRichTextbox.Text += $("`r`n" + $PortsToBeScan)
+    $NetworkSysmonSearchDestinationPortRichTextbox.Text  = $NetworkSysmonSearchDestinationPortRichTextbox.Text.Trim("")            
+}
+
+$NetworkLiveSearchRemotePortSelectionButtonAdd_Click = {
+    Import-Csv "$Dependencies\Ports, Protocols, and Services.csv" | Out-GridView -Title 'PoSh-EasyWin: Port Selection' -OutputMode Multiple | Select-Object -Property Port | Set-Variable -Name PortManualEntrySelectionContents
+    $PortsColumn = $PortManualEntrySelectionContents | Select-Object -ExpandProperty Port
+    $PortsToBeScan = ""
+    Foreach ($Port in $PortsColumn) {
+        $PortsToBeScan += "$Port`r`n"
+    }
+    if ($NetworkLiveSearchRemotePortRichTextbox.Lines -eq "Enter Remote Ports; One Per Line") { $NetworkLiveSearchRemotePortRichTextbox.Text = "" }
+    $NetworkLiveSearchRemotePortRichTextbox.Text += $("`r`n" + $PortsToBeScan)
+    $NetworkLiveSearchRemotePortRichTextbox.Text  = $NetworkLiveSearchRemotePortRichTextbox.Text.Trim("")
+}
+
+$NetworkLiveSearchLocalPortSelectionButtonAdd_Click = {
+    Import-Csv "$Dependencies\Ports, Protocols, and Services.csv" | Out-GridView -Title 'PoSh-EasyWin: Port Selection' -OutputMode Multiple | Select-Object -Property Port | Set-Variable -Name PortManualEntrySelectionContents
+    $PortsColumn = $PortManualEntrySelectionContents | Select-Object -ExpandProperty Port
+    $PortsToBeScan = ""
+    Foreach ($Port in $PortsColumn) {
+        $PortsToBeScan += "$Port`r`n"
+    }
+    if ($NetworkLiveSearchLocalPortRichTextbox.Lines -eq "Enter Local Ports; One Per Line") { $NetworkLiveSearchLocalPortRichTextbox.Text = "" }
+    $NetworkLiveSearchLocalPortRichTextbox.Text += $("`r`n" + $PortsToBeScan)
+    $NetworkLiveSearchLocalPortRichTextbox.Text  = $NetworkLiveSearchLocalPortRichTextbox.Text.Trim("")
+}
+
+$NetworkLiveSearchRemoteIPAddressSelectionButtonAdd_Click = {
+    Import-Csv "$script:EndpointTreeNodeFileSave"  | Out-GridView -Title 'PoSh-EasyWin: IP Address Selection' -OutputMode Multiple | Select-Object -Property IPv4Address | Set-Variable -Name IPAddressSelectionContents
+    $IPAddressColumn = $IPAddressSelectionContents | Select-Object -ExpandProperty IPv4Address
+    $IPAddressToBeScan = ""
+    Foreach ($Port in $IPAddressColumn) {
+        $IPAddressToBeScan += "$Port`r`n"
+    }
+    if ($NetworkLiveSearchRemoteIPAddressRichTextbox.Lines -eq "Enter Remote IPs; One Per Line") { $NetworkLiveSearchRemoteIPAddressRichTextbox.Text = "" }
+    $NetworkLiveSearchRemoteIPAddressRichTextbox.Text += $("`r`n" + $IPAddressToBeScan)
+    $NetworkLiveSearchRemoteIPAddressRichTextbox.Text  = $NetworkLiveSearchRemoteIPAddressRichTextbox.Text.Trim("")
+}
+
+
+####################################################################################################
+# WinForms
+####################################################################################################
+
 $Section1NetworkConnectionsSearchTab = New-Object System.Windows.Forms.TabPage -Property @{
     Text   = "Network  "
     Left   = $FormScale * 3
@@ -120,8 +177,6 @@ $NetworkLiveSearchRemoteIPAddressCheckbox = New-Object System.Windows.Forms.Chec
 $Section1NetworkLiveSearchTab.Controls.Add($NetworkLiveSearchRemoteIPAddressCheckbox)
 
 
-Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\NetworkLiveSearchRemoteIPAddressSelectionButton.ps1"
-. "$Dependencies\Code\System.Windows.Forms\Button\NetworkLiveSearchRemoteIPAddressSelectionButton.ps1"
 $NetworkLiveSearchRemoteIPAddressSelectionButton = New-Object System.Windows.Forms.Button -Property @{
     Text   = "Select IP Addresses"
     Left   = $NetworkLiveSearchRemoteIPAddressCheckbox.Left
@@ -134,8 +189,6 @@ $Section1NetworkLiveSearchTab.Controls.Add($NetworkLiveSearchRemoteIPAddressSele
 Apply-CommonButtonSettings -Button $NetworkLiveSearchRemoteIPAddressSelectionButton
 
 
-Update-FormProgress "$Dependencies\Code\System.Windows.Forms\RichTextBox\NetworkLiveSearchRemoteIPAddressRichTextbox.ps1"
-. "$Dependencies\Code\System.Windows.Forms\RichTextBox\NetworkLiveSearchRemoteIPAddressRichTextbox.ps1"
 $NetworkLiveSearchRemoteIPAddressRichTextbox = New-Object System.Windows.Forms.RichTextBox -Property @{
     Lines  = "Enter Remote IPs; One Per Line"
     Left   = $NetworkLiveSearchRemoteIPAddressSelectionButton.Left
@@ -178,8 +231,6 @@ $NetworkLiveSearchRemotePortCheckbox = New-Object System.Windows.Forms.CheckBox 
 $Section1NetworkLiveSearchTab.Controls.Add($NetworkLiveSearchRemotePortCheckbox)
 
 
-Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\NetworkLiveSearchRemotePortSelectionButton.ps1"
-. "$Dependencies\Code\System.Windows.Forms\Button\NetworkLiveSearchRemotePortSelectionButton.ps1"
 $NetworkLiveSearchRemotePortSelectionButton = New-Object System.Windows.Forms.Button -Property @{
     Text   = "Select Ports"
     Left   = $NetworkLiveSearchRemotePortCheckbox.Left
@@ -192,8 +243,6 @@ $Section1NetworkLiveSearchTab.Controls.Add($NetworkLiveSearchRemotePortSelection
 Apply-CommonButtonSettings -Button $NetworkLiveSearchRemotePortSelectionButton
 
 
-Update-FormProgress "$Dependencies\Code\System.Windows.Forms\RichTextBox\NetworkLiveSearchRemotePortRichTextbox.ps1"
-. "$Dependencies\Code\System.Windows.Forms\RichTextBox\NetworkLiveSearchRemotePortRichTextbox.ps1"
 $NetworkLiveSearchRemotePortRichTextbox = New-Object System.Windows.Forms.RichTextBox -Property @{
     Lines  = "Enter Remote Ports; One Per Line"
     Left   = $NetworkLiveSearchRemotePortSelectionButton.Left
@@ -236,8 +285,6 @@ $NetworkLiveSearchLocalPortCheckbox = New-Object System.Windows.Forms.CheckBox -
 $Section1NetworkLiveSearchTab.Controls.Add($NetworkLiveSearchLocalPortCheckbox)
 
 
-Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\NetworkLiveSearchLocalPortSelectionButton.ps1"
-. "$Dependencies\Code\System.Windows.Forms\Button\NetworkLiveSearchLocalPortSelectionButton.ps1"
 $NetworkLiveSearchLocalPortSelectionButton = New-Object System.Windows.Forms.Button -Property @{
     Text   = "Select Ports"
     Left   = $NetworkLiveSearchLocalPortCheckbox.Left
@@ -250,8 +297,6 @@ $Section1NetworkLiveSearchTab.Controls.Add($NetworkLiveSearchLocalPortSelectionB
 Apply-CommonButtonSettings -Button $NetworkLiveSearchLocalPortSelectionButton
 
 
-Update-FormProgress "$Dependencies\Code\System.Windows.Forms\RichTextBox\NetworkLiveSearchLocalPortRichTextbox.ps1"
-. "$Dependencies\Code\System.Windows.Forms\RichTextBox\NetworkLiveSearchLocalPortRichTextbox.ps1"
 $NetworkLiveSearchLocalPortRichTextbox = New-Object System.Windows.Forms.RichTextBox -Property @{
     Lines  = "Enter Local Ports; One Per Line"
     Left   = $NetworkLiveSearchLocalPortSelectionButton.Left
@@ -365,8 +410,6 @@ $NetworkLiveSearchProcessCheckbox = New-Object System.Windows.Forms.CheckBox -Pr
 $Section1NetworkLiveSearchTab.Controls.Add($NetworkLiveSearchProcessCheckbox)
 
 
-Update-FormProgress "$Dependencies\Code\System.Windows.Forms\RichTextBox\NetworkLiveSearchProcessRichTextbox.ps1"
-. "$Dependencies\Code\System.Windows.Forms\RichTextBox\NetworkLiveSearchProcessRichTextbox.ps1"
 $NetworkLiveSearchProcessRichTextbox = New-Object System.Windows.Forms.RichTextBox -Property @{
     Lines  = "Enter Process Names; One Per Line"
     Left   = $FormScale * 3
@@ -631,8 +674,6 @@ $Section1NetworkSysmonSearchTab.Controls.Add($NetworkSysmonSearchSourceIPAddress
 Apply-CommonButtonSettings -Button $NetworkSysmonSearchSourceIPAddressSelectionButton
 
 
-Update-FormProgress "$Dependencies\Code\System.Windows.Forms\RichTextBox\NetworkSysmonSearchSourceIPAddressRichTextbox.ps1"
-. "$Dependencies\Code\System.Windows.Forms\RichTextBox\NetworkSysmonSearchSourceIPAddressRichTextbox.ps1"
 $NetworkSysmonSearchSourceIPAddressRichTextbox = New-Object System.Windows.Forms.RichTextBox -Property @{
     Lines  = "Enter Source IPs; One Per Line"
     Left   = $NetworkSysmonSearchSourceIPAddressSelectionButton.Left
@@ -697,8 +738,6 @@ $Section1NetworkSysmonSearchTab.Controls.Add($NetworkSysmonSearchSourcePortSelec
 Apply-CommonButtonSettings -Button $NetworkSysmonSearchSourcePortSelectionButton
 
 
-Update-FormProgress "$Dependencies\Code\System.Windows.Forms\RichTextBox\NetworkSysmonSearchSourcePortRichTextbox.ps1"
-. "$Dependencies\Code\System.Windows.Forms\RichTextBox\NetworkSysmonSearchSourcePortRichTextbox.ps1"
 $NetworkSysmonSearchSourcePortRichTextbox = New-Object System.Windows.Forms.RichTextBox -Property @{
     Lines  = "Enter Source Ports; One Per Line"
     Left   = $NetworkSysmonSearchSourcePortSelectionButton.Left
@@ -764,8 +803,6 @@ $Section1NetworkSysmonSearchTab.Controls.Add($NetworkSysmonSearchDestinationIPAd
 Apply-CommonButtonSettings -Button $NetworkSysmonSearchDestinationIPAddressSelectionButton
 
 
-Update-FormProgress "$Dependencies\Code\System.Windows.Forms\RichTextBox\NetworkSysmonSearchDestinationIPAddressRichTextbox.ps1"
-. "$Dependencies\Code\System.Windows.Forms\RichTextBox\NetworkSysmonSearchDestinationIPAddressRichTextbox.ps1"
 $NetworkSysmonSearchDestinationIPAddressRichTextbox = New-Object System.Windows.Forms.RichTextBox -Property @{
     Lines  = "Enter Destination IPs; One Per Line"
     Left   = $NetworkSysmonSearchDestinationIPAddressSelectionButton.Left
@@ -808,32 +845,18 @@ $NetworkSysmonSearchDestinationPortCheckbox = New-Object System.Windows.Forms.Ch
 $Section1NetworkSysmonSearchTab.Controls.Add($NetworkSysmonSearchDestinationPortCheckbox)
 
 
-Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\NetworkSysmonSearchDestinationPortSelectionButton.ps1"
-. "$Dependencies\Code\System.Windows.Forms\Button\NetworkSysmonSearchDestinationPortSelectionButton.ps1"
 $NetworkSysmonSearchDestinationPortSelectionButton = New-Object System.Windows.Forms.Button -Property @{
     Text   = "Select Ports"
     Left   = $NetworkSysmonSearchDestinationPortCheckbox.Left
     Top    = $NetworkSysmonSearchDestinationPortCheckbox.Top + $NetworkSysmonSearchDestinationPortCheckbox.Height + $($FormScale * 3)
     Width  = $FormScale * 170
     Height = $FormScale * 20
-    Add_Click = {
-        Import-Csv "$Dependencies\Ports, Protocols, and Services.csv" | Out-GridView -Title 'PoSh-EasyWin: Port Selection' -OutputMode Multiple | Select-Object -Property Port | Set-Variable -Name PortManualEntrySelectionContents
-        $PortsColumn = $PortManualEntrySelectionContents | Select-Object -ExpandProperty Port
-        $PortsToBeScan = ""
-        Foreach ($Port in $PortsColumn) {
-            $PortsToBeScan += "$Port`r`n"
-        }
-        if ($NetworkSysmonSearchDestinationPortRichTextbox.Lines -eq "Enter Destination Ports; One Per Line") { $NetworkSysmonSearchDestinationPortRichTextbox.Text = "" }
-        $NetworkSysmonSearchDestinationPortRichTextbox.Text += $("`r`n" + $PortsToBeScan)
-        $NetworkSysmonSearchDestinationPortRichTextbox.Text  = $NetworkSysmonSearchDestinationPortRichTextbox.Text.Trim("")            
-    }
+    Add_Click = $NetworkSysmonSearchDestinationPortSelectionButtonAdd_Click
 }
 $Section1NetworkSysmonSearchTab.Controls.Add($NetworkSysmonSearchDestinationPortSelectionButton)
 Apply-CommonButtonSettings -Button $NetworkSysmonSearchDestinationPortSelectionButton
 
 
-Update-FormProgress "$Dependencies\Code\System.Windows.Forms\RichTextBox\NetworkSysmonSearchDestinationPortRichTextbox.ps1"
-. "$Dependencies\Code\System.Windows.Forms\RichTextBox\NetworkSysmonSearchDestinationPortRichTextbox.ps1"
 $NetworkSysmonSearchDestinationPortRichTextbox = New-Object System.Windows.Forms.RichTextBox -Property @{
     Lines  = "Enter Destination Ports; One Per Line"
     Left   = $NetworkSysmonSearchDestinationPortSelectionButton.Left

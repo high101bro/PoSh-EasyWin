@@ -1,3 +1,318 @@
+####################################################################################################
+# ScriptBlocks
+####################################################################################################
+
+$EnumerationPortScanPortQuickPickComboBoxItemsAddRange =@(
+    "N/A"
+    "Nmap Top 100 Ports"
+    "Nmap Top 1000 Ports"
+    "Well-Known Ports (0-1023)"
+    "Registered Ports (1024-49151)"
+    "Dynamic Ports (49152-65535)"
+    "All Ports (0-65535)"
+    "Previous Scan - Parses LogFile.txt"
+    "File: CustomPortsToScan.txt"
+)
+
+$EnumerationPortScanPortQuickPickComboBoxAdd_Click = {
+    #Removed For Testing#$ResultsListBox.Items.Clear()
+    if ($EnumerationPortScanPortQuickPickComboBox.SelectedItem -match "N/A") { $ResultsListBox.Items.Add("") }
+    elseif ($EnumerationPortScanPortQuickPickComboBox.SelectedItem -match "Nmap Top 100 Ports") { $ResultsListBox.Items.Add("Will conduct a connect scan the top 100 ports as reported by nmap on each target.") }
+    elseif ($EnumerationPortScanPortQuickPickComboBox.SelectedItem -match "Nmap Top 1000 Ports") { $ResultsListBox.Items.Add("Will conduct a connect scan the top 1000 ports as reported by nmap on each target.") }
+    elseif ($EnumerationPortScanPortQuickPickComboBox.SelectedItem -match "Well-Known Ports") { $ResultsListBox.Items.Add("Will conduct a connect scan all Well-Known Ports on each target [0-1023].") }
+    elseif ($EnumerationPortScanPortQuickPickComboBox.SelectedItem -match "Registered Ports") { $ResultsListBox.Items.Add("Will conduct a connect scan all Registered Ports on each target [1024-49151].") }
+    elseif ($EnumerationPortScanPortQuickPickComboBox.SelectedItem -match "Dynamic Ports") { $ResultsListBox.Items.Add("Will conduct a connect scan all Dynamic Ports, AKA Ephemeral Ports, on each target [49152-65535].") }
+    elseif ($EnumerationPortScanPortQuickPickComboBox.SelectedItem -match "All Ports") { $ResultsListBox.Items.Add("Will conduct a connect scan all 65535 ports on each target.") }
+    elseif ($EnumerationPortScanPortQuickPickComboBox.SelectedItem -match "Previous Scan") {
+        $LastPortsScanned = $((Get-Content $LogFile | Select-String -Pattern "Ports To Be Scanned" | Select-Object -Last 1) -split '  ')[2]
+        $LastPortsScannedConvertedToList = @()
+        Foreach ($Port in $(($LastPortsScanned) -split',')){ $LastPortsScannedConvertedToList += $Port }
+        $ResultsListBox.Items.Add("Will conduct a connect scan on ports listed below.")
+        $ResultsListBox.Items.Add("Previous Ports Scanned:  $($LastPortsScannedConvertedToList | Where {$_ -ne ''})")
+    }
+    elseif ($EnumerationPortScanPortQuickPickComboBox.SelectedItem -match "CustomPortsToScan") {
+        $CustomSavedPorts = $($PortList="";(Get-Content $CustomPortsToScan | foreach {$PortList += $_ + ','}); $PortList)
+        $CustomSavedPortsConvertedToList = @()
+        Foreach ($Port in $(($CustomSavedPorts) -split',')){ $CustomSavedPortsConvertedToList += $Port }
+        $ResultsListBox.Items.Add("Will conduct a connect scan on ports listed below.")
+        $ResultsListBox.Items.Add("Previous Ports Scanned:  $($CustomSavedPortsConvertedToList | Where {$_ -ne ''})")
+    }
+}
+
+$EnumerationComputerListBoxAddToListButtonAdd_Click = {
+    $InformationTabControl.SelectedTab = $Section3ResultsTab
+
+    $StatusListBox.Items.Clear()
+    $StatusListBox.Items.Add("Enumeration:  Added $($EnumerationComputerListBox.SelectedItems.Count) IPs")
+    #Removed For Testing#
+    $ResultsListBox.Items.Clear()
+    foreach ($Selected in $EnumerationComputerListBox.SelectedItems) {
+        if ($script:ComputerTreeViewData.Name -contains $Selected) {
+            Message-TreeViewNodeAlreadyExists -Endpoint -Message "Port Scan Import:  Warning" -Computer $Selected
+        }
+        else {
+            $ComputerAndAccountTreeViewTabControl.SelectedTab = $ComputerTreeviewTab
+            $script:ComputerTreeNodeComboBox.SelectedItem = 'CanonicalName'
+
+            $CanonicalName = $($($Computer.CanonicalName) -replace $Computer.Name,"" -replace $Computer.CanonicalName.split('/')[0],"").TrimEnd("/")
+            Add-TreeViewData -Endpoint -RootNode $script:TreeNodeComputerList -Category '/Unknown' -Entry $Selected -ToolTip 'Enumeration Scan' -IPv4Address $Computer.IPv4Address
+            $ResultsListBox.Items.Add("$($Selected) has been added to /Unknown category")
+
+            $ComputerTreeNodeAddHostnameIP = New-Object PSObject -Property @{
+                Name            = $Selected
+                OperatingSystem = 'Unknown'
+                CanonicalName   = '/Unknown'
+                IPv4Address     = $Selected
+            }
+            $script:ComputerTreeViewData += $ComputerTreeNodeAddHostnameIP
+        }
+    }
+    $script:ComputerTreeView.ExpandAll()
+    Normalize-TreeViewData -Endpoint
+    Save-TreeViewData -Endpoint
+}
+
+$EnumerationResolveDNSNameButtonAdd_Click = {
+    if ($($EnumerationComputerListBox.SelectedItems).count -eq 0){
+        [system.media.systemsounds]::Exclamation.play()
+        $StatusListBox.Items.Clear()
+        $StatusListBox.Items.Add("DNS Resolution:  Make at least one selection")
+    }
+    else {
+        if (Verify-Action -Title "Verification: Resolve DNS" -Question "Conduct a DNS Resolution of the following?" -Computer $($EnumerationComputerListBox.SelectedItems -join ', ')) {
+            #for($i = 0; $i -lt $EnumerationComputerListBox.Items.Count; $i++) { $EnumerationComputerListBox.SetSelected($i, $true) }
+
+            #$EnumerationComputerListBoxSelected = $EnumerationComputerListBox.SelectedItems
+            #$EnumerationComputerListBox.Items.Clear()
+
+            # Resolve DNS Names
+            $DNSResolutionList = @()
+            foreach ($Selected in $($EnumerationComputerListBox.SelectedItems)) {
+                $DNSResolution      = (((Resolve-DnsName $Selected).NameHost).split('.'))[0]
+                $DNSResolutionList += $DNSResolution
+                $EnumerationComputerListBox.Items.Remove($Selected)
+            }
+            foreach ($Item in $DNSResolutionList) { $EnumerationComputerListBox.Items.Add($Item) }
+        }
+        else {
+            [system.media.systemsounds]::Exclamation.play()
+            $StatusListBox.Items.Clear()
+            $StatusListBox.Items.Add("DNS Resolution:  Cancelled")
+        }
+    }
+}
+
+
+$EnumerationPortScanExecutionButtonAdd_Click = {
+    if (Verify-Action -Title "Verification: Port Scan" -Question "Conduct a Port Scan of the following?" -Computer $(
+        $CollectionName = 'Enumeration Scanning'
+    
+        if ( $script:EnumerationPortScanSpecificComputerNodeCheckbox.checked ) {
+            Generate-ComputerList
+            ($script:ComputerList.split(',') -join ', ')
+        }
+        else {
+            if ($EnumerationPortScanSpecificIPTextbox.Text -and $EnumerationPortScanIPRangeNetworkTextbox.Text -and $EnumerationPortScanIPRangeFirstTextbox.Text -and $EnumerationPortScanIPRangeLastTextbox.Text ) {
+                $EnumerationPortScanSpecificIPTextbox.Text + ', ' + $EnumerationPortScanIPRangeNetworkTextbox.Text + '.' + $EnumerationPortScanIPRangeFirstTextbox.Text + '-' + $EnumerationPortScanIPRangeLastTextbox.Text
+            }
+            elseif ($EnumerationPortScanSpecificIPTextbox.Text) {
+                $EnumerationPortScanSpecificIPTextbox.Text
+            }
+            elseif ($EnumerationPortScanIPRangeNetworkTextbox.Text -and $EnumerationPortScanIPRangeFirstTextbox.Text -and $EnumerationPortScanIPRangeLastTextbox.Text) {
+                $EnumerationPortScanIPRangeNetworkTextbox.Text + '.' + $EnumerationPortScanIPRangeFirstTextbox.Text + '-' + $EnumerationPortScanIPRangeLastTextbox.Text
+            }
+        }
+        )) {
+        $ResultsListBox.Items.Clear()
+        
+
+        if ($script:EnumerationPortScanSpecificComputerNodeCheckbox.checked) {
+            $EndpointString = ''
+            foreach ($item in $script:ComputerList) {$EndpointString += "$item`n"}
+        }
+        else {
+            $EndpointString = 'Details are listed in the section beneath'
+        }
+                
+        $InputValues = @"
+===========================================================================
+Collection Name:
+===========================================================================
+$CollectionName
+
+===========================================================================
+Execution Time:
+===========================================================================
+$(Get-Date)
+
+===========================================================================
+Credentials:
+===========================================================================
+$($script:Credential.UserName)
+
+===========================================================================
+Endpoints:
+===========================================================================
+$($EndpointString.trim())
+
+===========================================================================
+Specified IPs To Scan:
+===========================================================================
+$($EnumerationPortScanSpecificIPTextbox.Text)
+
+===========================================================================
+Network Range:
+===========================================================================
+$($EnumerationPortScanIPRangeNetworkTextbox.Text):$($EnumerationPortScanIPRangeFirstTextbox.Text)-$($EnumerationPortScanIPRangeLastTextbox.Text)
+
+===========================================================================
+Quick Port Selection:
+===========================================================================
+$($EnumerationPortScanPortQuickPickComboBox.SelectedItem)
+
+===========================================================================
+Specified Ports To Scan:
+===========================================================================
+$($EnumerationPortScanSpecificPortsTextbox.Text)
+
+===========================================================================
+Port Range:
+===========================================================================
+$($EnumerationPortScanPortRangeFirstTextbox.Text)-$($EnumerationPortScanPortRangeLastTextbox.Text)
+
+===========================================================================
+Test With ICMP First:
+===========================================================================
+$($EnumerationPortScanTestICMPFirstCheckBox.Checked)
+
+===========================================================================
+Timeout (ms):
+===========================================================================
+$($EnumerationPortScanTimeoutTextbox.Text)
+
+
+"@        
+
+        if ($script:ComputerListPivotExecutionCheckbox.checked -eq $false) {
+            $InformationTabControl.SelectedTab = $Section3ResultsTab
+            
+            # NOTE: Credentials are not necessarily needed to conduct scanning
+            if ($script:EnumerationPortScanSpecificComputerNodeCheckbox.checked -eq $true){
+                Conduct-PortScan `
+                    -ComputerList $ComputerList `
+                    -EnumerationPortScanPortQuickPickComboBoxSelectedItem $EnumerationPortScanPortQuickPickComboBox.SelectedItem `
+                    -Timeout_ms $EnumerationPortScanTimeoutTextbox.Text `
+                    -TestWithICMPFirst $EnumerationPortScanTestICMPFirstCheckBox.Checked `
+                    -EndpointList `
+                    -SpecificPortsToScan $EnumerationPortScanSpecificPortsTextbox.Text `
+                    -FirstPort $EnumerationPortScanPortRangeFirstTextbox.Text `
+                    -LastPort $EnumerationPortScanPortRangeLastTextbox.Text
+            }
+            elseif ($script:EnumerationPortScanSpecificComputerNodeCheckbox.checked -eq $false){
+                Conduct-PortScan `
+                    -EnumerationPortScanPortQuickPickComboBoxSelectedItem $EnumerationPortScanPortQuickPickComboBox.SelectedItem `
+                    -Timeout_ms $EnumerationPortScanTimeoutTextbox.Text `
+                    -TestWithICMPFirst $EnumerationPortScanTestICMPFirstCheckBox.Checked `
+                    -SpecificIPsToScan $EnumerationPortScanSpecificIPTextbox.Text `
+                    -SpecificPortsToScan $EnumerationPortScanSpecificPortsTextbox.Text `
+                    -Network $EnumerationPortScanIPRangeNetworkTextbox.Text `
+                    -FirstIP $EnumerationPortScanIPRangeFirstTextbox.Text `
+                    -LastIP $EnumerationPortScanIPRangeLastTextbox.Text `
+                    -FirstPort $EnumerationPortScanPortRangeFirstTextbox.Text `
+                    -LastPort $EnumerationPortScanPortRangeLastTextbox.Text
+            }
+        }
+        elseif ($script:ComputerListPivotExecutionCheckbox.checked -eq $true) {
+            $InformationTabControl.SelectedTab = $Section3MonitorJobsTab
+
+            if ($script:EnumerationPortScanSpecificComputerNodeCheckbox.checked -eq $true) {
+                $InvokeCommandSplat = @{
+                    ScriptBlock = {
+                        Param($ConductPortScan,$ComputerList,$EnumerationPortScanPortQuickPickComboBoxSelectedItem,$EnumerationPortScanTimeoutTextbox,$EnumerationPortScanTestICMPFirstCheckBox,$EnumerationPortScanSpecificPortsTextbox,$EnumerationPortScanPortRangeFirstTextbox,$EnumerationPortScanPortRangeLastTextbox)
+                        . ([ScriptBlock]::Create($ConductPortScan))
+                        Conduct-PortScan `
+                            -ComputerList $ComputerList `
+                            -EnumerationPortScanPortQuickPickComboBoxSelectedItem $EnumerationPortScanPortQuickPickComboBoxSelectedItem `
+                            -Timeout_ms $EnumerationPortScanTimeoutTextbox `
+                            -TestWithICMPFirst $EnumerationPortScanTestICMPFirstCheckBox `
+                            -EndpointList `
+                            -SpecificPortsToScan $EnumerationPortScanSpecificPortsTextbox `
+                            -FirstPort $EnumerationPortScanPortRangeFirstTextbox `
+                            -LastPort $EnumerationPortScanPortRangeLastTextbox
+                    }
+                    ArgumentList = @($ConductPortScan,$script:ComputerList,$EnumerationPortScanPortQuickPickComboBox.SelectedItem,$EnumerationPortScanTimeoutTextbox.text,$EnumerationPortScanTestICMPFirstCheckBox.checked,$EnumerationPortScanSpecificPortsTextbox.text,$EnumerationPortScanPortRangeFirstTextbox.text,$EnumerationPortScanPortRangeLastTextbox.text)
+                    AsJob        = $True
+                    JobName      = "PoSh-EasyWin: $($CollectionName) -- $($script:ComputerListPivotExecutionTextBox.text)"
+                    ComputerName = $script:ComputerListPivotExecutionTextBox.text
+                }
+    
+                if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
+                    if (!$script:Credential) { Create-NewCredentials }
+                    $InvokeCommandSplat += @{Credential = $script:Credential}
+                }
+                
+                Invoke-Command @InvokeCommandSplat | Select-Object PSComputerName, *
+
+                Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript ${function:Conduct-PortScan} -ArgumentList @($ConductPortScan,$script:ComputerList,$EnumerationPortScanPortQuickPickComboBox.SelectedItem,$EnumerationPortScanTimeoutTextbox.text,$EnumerationPortScanTestICMPFirstCheckBox.checked,$EnumerationPortScanSpecificPortsTextbox.text,$EnumerationPortScanPortRangeFirstTextbox.text,$EnumerationPortScanPortRangeLastTextbox.text) -InputValues $InputValues -DisableReRun -JobsExportFiles 'true'
+            }
+            elseif ($script:EnumerationPortScanSpecificComputerNodeCheckbox.checked -eq $false) {
+
+                $InvokeCommandSplat = @{
+                    ScriptBlock = {
+                        Param($ConductPortScan,$EnumerationPortScanPortQuickPickComboBoxSelectedItem,$EnumerationPortScanTimeoutTextboxText,$EnumerationPortScanTestICMPFirstCheckBoxChecked,$EnumerationPortScanSpecificIPTextboxText,$EnumerationPortScanSpecificPortsTextboxText,$EnumerationPortScanIPRangeNetworkTextboxText,$EnumerationPortScanIPRangeFirstTextboxText,$EnumerationPortScanIPRangeLastTextboxText,$EnumerationPortScanPortRangeFirstTextboxText,$EnumerationPortScanPortRangeLastTextboxText)
+                        . ([ScriptBlock]::Create($ConductPortScan))
+                        Conduct-PortScan `
+                            -EnumerationPortScanPortQuickPickComboBoxSelectedItem $EnumerationPortScanPortQuickPickComboBoxSelectedItem `
+                            -Timeout_ms $EnumerationPortScanTimeoutTextboxText `
+                            -TestWithICMPFirst $EnumerationPortScanTestICMPFirstCheckBoxChecked `
+                            -SpecificIPsToScan $EnumerationPortScanSpecificIPTextboxText `
+                            -SpecificPortsToScan $EnumerationPortScanSpecificPortsTextboxText `
+                            -Network $EnumerationPortScanIPRangeNetworkTextboxText `
+                            -FirstIP $EnumerationPortScanIPRangeFirstTextboxText `
+                            -LastIP $EnumerationPortScanIPRangeLastTextboxText `
+                            -FirstPort $EnumerationPortScanPortRangeFirstTextboxText `
+                            -LastPort $EnumerationPortScanPortRangeLastTextboxText
+                    }
+                    ArgumentList = @($ConductPortScan,$EnumerationPortScanPortQuickPickComboBox.SelectedItem,$EnumerationPortScanTimeoutTextbox.Text,$EnumerationPortScanTestICMPFirstCheckBox.Checked,$EnumerationPortScanSpecificIPTextbox.Text,$EnumerationPortScanSpecificPortsTextbox.Text,$EnumerationPortScanIPRangeNetworkTextbox.Text,$EnumerationPortScanIPRangeFirstTextbox.Text,$EnumerationPortScanIPRangeLastTextbox.Text,$EnumerationPortScanPortRangeFirstTextbox.Text,$EnumerationPortScanPortRangeLastTextbox.Text)
+                    AsJob        = $True
+                    JobName      = "PoSh-EasyWin: $($CollectionName) -- $($script:ComputerListPivotExecutionTextBox.text)"
+                    ComputerName = $script:ComputerListPivotExecutionTextBox.text
+                }
+    
+                if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
+                    if (!$script:Credential) { Create-NewCredentials }
+                    $InvokeCommandSplat += @{Credential = $script:Credential}
+                }
+                
+                Invoke-Command @InvokeCommandSplat | Select-Object PSComputerName, *
+
+                Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript ${function:Conduct-PortScan} -ArgumentList @($ConductPortScan,$EnumerationPortScanPortQuickPickComboBox.SelectedItem,$EnumerationPortScanTimeoutTextbox.Text,$EnumerationPortScanTestICMPFirstCheckBox.Checked,$EnumerationPortScanSpecificIPTextbox.Text,$EnumerationPortScanSpecificPortsTextbox.Text,$EnumerationPortScanIPRangeNetworkTextbox.Text,$EnumerationPortScanIPRangeFirstTextbox.Text,$EnumerationPortScanIPRangeLastTextbox.Text,$EnumerationPortScanPortRangeFirstTextbox.Text,$EnumerationPortScanPortRangeLastTextbox.Text) -InputValues $InputValues -DisableReRun -JobsExportFiles 'true'
+            }
+        }
+    }
+    else {
+        [system.media.systemsounds]::Exclamation.play()
+        $StatusListBox.Items.Clear()
+        $StatusListBox.Items.Add("Port Scan:  Cancelled")
+    }
+
+    $script:ComputerTreeView.Nodes.Clear()
+    Initialize-TreeViewData -Endpoint
+    Normalize-TreeViewData -Endpoint
+    Save-TreeViewData -Endpoint
+
+    $ComputerAndAccountTreeViewTabControl.SelectedTab = $ComputerTreeviewTab
+    $script:ComputerTreeNodeComboBox.SelectedItem = 'CanonicalName'
+    
+    Foreach($Computer in $script:ComputerTreeViewData) {
+        Add-TreeViewData -Endpoint -RootNode $script:TreeNodeComputerList -Category $Computer.OperatingSystem -Entry $Computer.Name -ToolTip $ComputerData.IPv4Address -IPv4Address $Computer.IPv4Address -Metadata $Computer
+    }
+    Update-TreeViewState -Endpoint
+}
+
+####################################################################################################
+# WinForms
+####################################################################################################
 
 $EnumerationRightPosition     = 3
 $EnumerationLabelWidth        = 450
@@ -320,8 +635,6 @@ $EnumerationPortScanGroupBox = New-Object System.Windows.Forms.GroupBox -Propert
             $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanSpecificPortsTextbox)
 
 
-            Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ComboBox\EnumerationPortScanPortQuickPickComboBox.ps1"
-            . "$Dependencies\Code\System.Windows.Forms\ComboBox\EnumerationPortScanPortQuickPickComboBox.ps1"
             $EnumerationPortScanPortQuickPickComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
                 Text   = "Quick-Pick Port Selection"
                 Left   = $EnumerationPortScanSpecificPortsTextbox.Left
@@ -337,15 +650,20 @@ $EnumerationPortScanGroupBox = New-Object System.Windows.Forms.GroupBox -Propert
             $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanPortQuickPickComboBox)
 
 
-            Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\EnumerationPortScanPortsSelectionButton.ps1"
-            . "$Dependencies\Code\System.Windows.Forms\Button\EnumerationPortScanPortsSelectionButton.ps1"
             $EnumerationPortScanPortsSelectionButton = New-Object System.Windows.Forms.Button -Property @{
                 Text   = "Select Ports"
                 Left   = $EnumerationPortScanPortQuickPickComboBox.Left + $EnumerationPortScanPortQuickPickComboBox.Width + $($FormScale * 4)
                 Top    = $EnumerationPortScanPortQuickPickComboBox.Top
                 Width  = $FormScale * 100
                 Height = $FormScale * 20
-                Add_Click = $EnumerationPortScanPortsSelectionButtonAdd_Click
+                Add_Click = {
+                    Import-Csv "$Dependencies\Ports, Protocols, and Services.csv" | Out-GridView -Title 'PoSh-EasyWin: Port Selection' -OutputMode Multiple | Set-Variable -Name PortManualEntrySelectionContents
+                    $PortsColumn = $PortManualEntrySelectionContents | Select-Object -ExpandProperty "Port"
+                    $PortsToBeScan = ""
+                    Foreach ($Port in $PortsColumn) { $PortsToBeScan += "$Port," }
+                    $EnumerationPortScanSpecificPortsTextbox.Text += $("," + $PortsToBeScan)
+                    $EnumerationPortScanSpecificPortsTextbox.Text = $EnumerationPortScanSpecificPortsTextbox.Text.Trim(",")
+                }                
                 Add_MouseEnter = {Check-IfScanExecutionReady}
             }
             $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanPortsSelectionButton)
@@ -469,8 +787,6 @@ $EnumerationPortScanGroupBox = New-Object System.Windows.Forms.GroupBox -Propert
             $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanTimeoutTextbox)
 
 
-            Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\EnumerationPortScanExecutionButton.ps1"
-            . "$Dependencies\Code\System.Windows.Forms\Button\EnumerationPortScanExecutionButton.ps1"
             $EnumerationPortScanExecutionButton = New-Object System.Windows.Forms.Button -Property @{
                 Text   = "Execute Scan"
                 Left   = $FormScale * 190
@@ -525,8 +841,6 @@ $EnumerationPingSweepGroupBox = New-Object System.Windows.Forms.GroupBox -Proper
             $EnumerationPingSweepGroupBox.Controls.Add($EnumerationPingSweepNote1Label)
 
 
-            Update-FormProgress "$Dependencies\Code\System.Windows.Forms\TextBox\EnumerationPingSweepIPNetworkCIDRTextbox.ps1"
-            . "$Dependencies\Code\System.Windows.Forms\TextBox\EnumerationPingSweepIPNetworkCIDRTextbox.ps1"
             $EnumerationPingSweepIPNetworkCIDRTextbox = New-Object System.Windows.Forms.TextBox -Property @{
                 Text   = ""
                 Left   = $FormScale * 190
@@ -539,28 +853,37 @@ $EnumerationPingSweepGroupBox = New-Object System.Windows.Forms.GroupBox -Proper
                 AcceptsReturn = $false
                 Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 10),0,0,0)
                 ForeColor     = "Black"
-                Add_KeyDown   = $EnumerationPingSweepIPNetworkCIDRTextboxAdd_KeyDown
+                Add_KeyDown   = { if ($_.KeyCode -eq "Enter") { Conduct-PingSweep } }
             }
+            
             $EnumerationPingSweepGroupBox.Controls.Add($EnumerationPingSweepIPNetworkCIDRTextbox)
 
 
-            Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\EnumerationPingSweepExecutionButton.ps1"
-            . "$Dependencies\Code\System.Windows.Forms\Button\EnumerationPingSweepExecutionButton.ps1"
             $EnumerationPingSweepExecutionButton = New-Object System.Windows.Forms.Button -Property @{
                 Text   = "Execute Sweep"
                 Left   = $EnumerationPingSweepIPNetworkCIDRTextbox.Left
                 Top    = $EnumerationPingSweepIPNetworkCIDRTextbox.Top + $EnumerationPingSweepIPNetworkCIDRTextbox.Height + ($FormScale * 8)
                 Width  = $FormScale * 100
                 Height = $FormScale * 22
-                Add_Click = $EnumerationPingSweepExecutionButtonAdd_Click
+                Add_Click = {
+                    if (Verify-Action -Title "Verification: Ping Sweep" -Question "Conduct a Ping Sweep of the following?" -Computer $(
+                        $EnumerationPingSweepIPNetworkCIDRTextbox.Text
+                    )) {
+                        $ResultsListBox.Items.Clear()
+                        Conduct-PingSweep
+                    }
+                    else {
+                        [system.media.systemsounds]::Exclamation.play()
+                        $StatusListBox.Items.Clear()
+                        $StatusListBox.Items.Add("Ping Sweep:  Cancelled")
+                    }
+                }
             }
             $EnumerationPingSweepGroupBox.Controls.Add($EnumerationPingSweepExecutionButton)
             Apply-CommonButtonSettings -Button $EnumerationPingSweepExecutionButton
 $Section1EnumerationTab.Controls.Add($EnumerationPingSweepGroupBox)
 
 
-Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\EnumerationResolveDNSNameButton.ps1"
-. "$Dependencies\Code\System.Windows.Forms\Button\EnumerationResolveDNSNameButton.ps1"
 $EnumerationResolveDNSNameButton = New-Object System.Windows.Forms.Button -Property @{
     Text   = "DNS Resolution"
     Left   = $EnumerationPortScanGroupBox.Left + $EnumerationPortScanGroupBox.Width + ($FormScale + 15)
@@ -585,46 +908,13 @@ $EnumerationComputerListBox.Items.Add("127.0.0.1")
 $Section1EnumerationTab.Controls.Add($EnumerationComputerListBox)
 
 
-Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\EnumerationComputerListBoxAddToListButton.ps1"
-. "$Dependencies\Code\System.Windows.Forms\Button\EnumerationComputerListBoxAddToListButton.ps1"
 $EnumerationComputerListBoxAddToListButton = New-Object System.Windows.Forms.Button -Property @{
     Text   = "Add To Computer List"
     Left   = $EnumerationResolveDNSNameButton.Left
     Top    = $EnumerationComputerListBox.Top + $EnumerationComputerListBox.Height + ($FormScale + 5)
     Width  = $EnumerationResolveDNSNameButton.Width
     Height = $FormScale * 22
-    Add_Click = {
-        $InformationTabControl.SelectedTab = $Section3ResultsTab
-
-        $StatusListBox.Items.Clear()
-        $StatusListBox.Items.Add("Enumeration:  Added $($EnumerationComputerListBox.SelectedItems.Count) IPs")
-        #Removed For Testing#
-        $ResultsListBox.Items.Clear()
-        foreach ($Selected in $EnumerationComputerListBox.SelectedItems) {
-            if ($script:ComputerTreeViewData.Name -contains $Selected) {
-                Message-NodeAlreadyExists -Endpoint -Message "Port Scan Import:  Warning" -Computer $Selected
-            }
-            else {
-                $ComputerAndAccountTreeViewTabControl.SelectedTab = $ComputerTreeviewTab
-                $script:ComputerTreeNodeComboBox.SelectedItem = 'CanonicalName'
-
-                $CanonicalName = $($($Computer.CanonicalName) -replace $Computer.Name,"" -replace $Computer.CanonicalName.split('/')[0],"").TrimEnd("/")
-                AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:TreeNodeComputerList -Category '/Unknown' -Entry $Selected -ToolTip 'Enumeration Scan' -IPv4Address $Computer.IPv4Address
-                $ResultsListBox.Items.Add("$($Selected) has been added to /Unknown category")
-
-                $ComputerTreeNodeAddHostnameIP = New-Object PSObject -Property @{
-                    Name            = $Selected
-                    OperatingSystem = 'Unknown'
-                    CanonicalName   = '/Unknown'
-                    IPv4Address     = $Selected
-                }
-                $script:ComputerTreeViewData += $ComputerTreeNodeAddHostnameIP
-            }
-        }
-        $script:ComputerTreeView.ExpandAll()
-        Normalize-TreeViewData -Endpoint
-        Save-TreeViewData -Endpoint
-    }
+    Add_Click = $EnumerationComputerListBoxAddToListButtonAdd_Click
 }
 $Section1EnumerationTab.Controls.Add($EnumerationComputerListBoxAddToListButton)
 Apply-CommonButtonSettings -Button $EnumerationComputerListBoxAddToListButton
@@ -644,15 +934,13 @@ $Section1EnumerationTab.Controls.Add($EnumerationComputerListBoxSelectAllButton)
 Apply-CommonButtonSettings -Button $EnumerationComputerListBoxSelectAllButton
 
 
-Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\EnumerationComputerListBoxClearButton.ps1"
-. "$Dependencies\Code\System.Windows.Forms\Button\EnumerationComputerListBoxClearButton.ps1"
 $EnumerationComputerListBoxClearButton = New-Object System.Windows.Forms.Button -Property @{
     Left   = $EnumerationComputerListBoxSelectAllButton.Left
     Top    = $EnumerationComputerListBoxSelectAllButton.Top + $EnumerationComputerListBoxSelectAllButton.Height + ($FormScale + 10)
     Width  = $EnumerationResolveDNSNameButton.Width
     Height = $FormScale * 22
     Text   = 'Clear List'
-    Add_Click = $EnumerationComputerListBoxClearButtonAdd_Click
+    Add_Click = { $EnumerationComputerListBox.Items.Clear() }
 }
 $Section1EnumerationTab.Controls.Add($EnumerationComputerListBoxClearButton)
 Apply-CommonButtonSettings -Button $EnumerationComputerListBoxClearButton

@@ -95,7 +95,9 @@ function AutoChartOpenDataInShell {
 
         script:Open-XmlResultsInShell -ViewImportResults $ViewImportResults -FileName $FileName -SavePath $SavePath
     }
-    else { [System.Windows.MessageBox]::Show("Error: Cannot Import Data!`nThe associated .xml file was not located.","PoSh-EasyWin") }
+    else { 
+        Show-MessageBox -Message "Error: Cannot Import Data!`nThe associated .xml file was not located." -Title "PoSh-EasyWin" -Options "Ok" -Type "Error" -Sound
+    }
 }
 
 

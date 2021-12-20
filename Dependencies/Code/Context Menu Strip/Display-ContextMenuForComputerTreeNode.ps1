@@ -1,3 +1,661 @@
+####################################################################################################
+# ScriptBlocks
+####################################################################################################
+
+$EventViewerConnectionButtonAdd_Click = {
+    $InformationTabControl.SelectedTab = $Section3ResultsTab
+    #Create-TreeViewCheckBoxArray -Endpoint
+    Generate-ComputerList
+
+    if ($script:ComputerListProvideCredentialsCheckBox.Checked) { $Username = $script:Credential.UserName}
+    else {$Username = $PoShEasyWinAccountLaunch }
+
+    if ($script:ComputerListEndpointNameToolStripLabel.text) {
+        $VerifyAction = Verify-Action -Title "Verification: Event Viewer" -Question "Connecting Account:  $Username`n`nAttempt to launch the Event Viewer on the following?" -Computer $($script:ComputerListEndpointNameToolStripLabel.text)
+        if ($script:ComputerListUseDNSCheckbox.checked) { 
+            $script:ComputerTreeViewSelected = $script:ComputerListEndpointNameToolStripLabel.text 
+        }
+        else {
+            [System.Windows.Forms.TreeNodeCollection]$AllTreeViewNodes = $script:ComputerTreeView.Nodes
+            foreach ($root in $AllTreeViewNodes) {
+                foreach ($Category in $root.Nodes) {
+                    foreach ($Entry in $Category.nodes) {
+                        if ($Entry.Text -eq $script:ComputerListEndpointNameToolStripLabel.text) {
+                            foreach ($Metadata in $Entry.nodes) {
+                                if ($Metadata.Name -eq 'IPv4Address') {
+                                    $script:ComputerTreeViewSelected = $Metadata.text
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    elseif (-not $script:ComputerListEndpointNameToolStripLabel.text) {
+        [System.Windows.Forms.Messagebox]::Show('Left click an endpoint node to select it, then right click to access the context menu and select Event Viewer.','Event Viewer')
+    }
+
+    if ($VerifyAction) {
+        $InformationTabControl.SelectedTab = $Section3ResultsTab
+
+        $StatusListBox.Items.Clear()
+        $StatusListBox.Items.Add("Event Viewer:  $($script:ComputerTreeViewSelected)")
+
+        if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
+            if (!$script:Credential) { Create-NewCredentials }
+
+            $ResultsListBox.Items.Add("start-process powershell.exe -ArgumentList '-WindowStyle Hidden -Command Show-EventLog -ComputerName $script:ComputerTreeViewSelected' -Credential <Credential> -WindowStyle Hidden")
+            #start-process -FilePath 'C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe' -ArgumentList "-WindowStyle Hidden -Command Show-eventLog -ComputerName $script:ComputerTreeViewSelected" -Credential $script:Credential -WindowStyle Hidden
+            [System.Windows.Forms.MessageBox]::Show("If the Event Viewer doesn't display, try re-launching PoSh-EasyWin itself with domain credentials and wihtout checking 'Specify Credentials'. This method would require the localhost to be on the domain.",'Show-EventLog')
+            start-process powershell.exe -ArgumentList "-WindowStyle Hidden -Command Show-EventLog -ComputerName $script:ComputerTreeViewSelected" -Credential $script:Credential -WindowStyle Hidden
+        }
+        else {
+            $ResultsListBox.Items.Add("start-process powershell.exe -ArgumentList '-WindowStyle Hidden -Command Show-EventLog -ComputerName $script:ComputerTreeViewSelected' -WindowStyle Hidden")
+            [System.Windows.Forms.MessageBox]::Show("If the Event Viewer doesn't display, try re-launching PoSh-EasyWin itself with domain credentials and wihtout checking 'Specify Credentials'. This method would require the localhost to be on the domain.",'Show-EventLog')
+            start-process powershell.exe -ArgumentList "-WindowStyle Hidden -Command Show-EventLog -ComputerName $script:ComputerTreeViewSelected" -WindowStyle Hidden
+        }
+        Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "start-process powershell.exe -ArgumentList '-WindowStyle Hidden -Command Show-EventLog -ComputerName $script:ComputerTreeViewSelected' -WindowStyle Hidden"
+
+        if ($script:RollCredentialsState -and $script:ComputerListProvideCredentialsCheckBox.checked) {
+            Start-Sleep -Seconds 3
+            Generate-NewRollingPassword
+        }
+    }
+    else {
+        [system.media.systemsounds]::Exclamation.play()
+        $StatusListBox.Items.Clear()
+        $StatusListBox.Items.Add("Event Viewer:  Cancelled")
+    }
+}
+
+
+$EventViewerCollectionButtonAdd_Click = {
+    $InformationTabControl.SelectedTab = $Section3ResultsTab
+    #Create-TreeViewCheckBoxArray -Endpoint
+    Generate-ComputerList
+
+    if ($script:ComputerListProvideCredentialsCheckBox.Checked) { $Username = $script:Credential.UserName}
+    else {$Username = $PoShEasyWinAccountLaunch }
+
+    if ($script:ComputerListEndpointNameToolStripLabel.text) {
+        $VerifyAction = Verify-Action -Title "Verification: Event Viewer" -Question "Connecting Account:  $Username`n`nAttempt to collect the Event Viewer data on the following?" -Computer $($script:ComputerListEndpointNameToolStripLabel.text)
+        if ($script:ComputerListUseDNSCheckbox.checked) { 
+            $script:ComputerTreeViewSelected = $script:ComputerListEndpointNameToolStripLabel.text 
+        }
+        else {
+            [System.Windows.Forms.TreeNodeCollection]$AllTreeViewNodes = $script:ComputerTreeView.Nodes
+            foreach ($root in $AllTreeViewNodes) {
+                foreach ($Category in $root.Nodes) {
+                    foreach ($Entry in $Category.nodes) {
+                        if ($Entry.Text -eq $script:ComputerListEndpointNameToolStripLabel.text) {
+                            foreach ($Metadata in $Entry.nodes) {
+                                if ($Metadata.Name -eq 'IPv4Address') {
+                                    $script:ComputerTreeViewSelected = $Metadata.text
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    elseif (-not $script:ComputerListEndpointNameToolStripLabel.text) {
+        [System.Windows.Forms.Messagebox]::Show('Left click an endpoint node to select it, then right click to access the context menu and select Event Viewer.','Event Viewer')
+    }
+
+    if ($VerifyAction) {
+        $InformationTabControl.SelectedTab = $Section3ResultsTab
+
+        $StatusListBox.Items.Clear()
+        $StatusListBox.Items.Add("Event Viewer:  $($script:ComputerTreeViewSelected)")
+
+        if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
+            if (!$script:Credential) { Create-NewCredentials }
+
+            $Session = New-PSSession -ComputerName $script:ComputerTreeViewSelected -Credential $script:Credential
+            Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "New-PSSession -ComputerName $script:ComputerTreeViewSelected -Credential $script:Credential"
+        }
+        else {
+            $Session = New-PSSession -ComputerName $script:ComputerTreeViewSelected
+            Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "New-PSSession -ComputerName $script:ComputerTreeViewSelected"
+        }
+            
+        $EventLogSelectionLogFileName = $null
+
+        if ($script:OptionEventViewerCollectVerboseCheckBox.checked -eq $false) {
+            $EventLogSelectionLogFileName = Invoke-Command -ScriptBlock { 
+                # Method 1: Didn't list all event logs, like sysmon
+                # Get-WmiObject -Class Win32_NTEventlogFile 
+    
+                # Method 2 - Faster, but no added metadata
+                wevtutil enum-logs
+            } `
+            -Session $Session `
+            | Out-GridView -Title 'Event Log Selection' -OutputMode 'Single'    
+        }
+        elseif ($script:OptionEventViewerCollectVerboseCheckBox.checked -eq $true) {
+            $EventLogSelectionLogFileName = (Invoke-Command -ScriptBlock {     
+                # Method 3 - Slower, but adds metadata. Lists all available logs, the script queries for addtional log information
+                $AllEventLogNames = wevtutil enum-logs
+                $EventLogDetails = @()
+                Foreach ($LogName in $AllEventLogNames) {
+                    $EventLogMetadata = wevtutil get-log $LogName
+                
+                    $EventLogObject = [pscustomobject]@{}
+                
+                    ForEach ($line in $EventLogMetadata){
+                        $Name  = $line.split(':').trim()[0]
+                        $Value = $line.split(':').trim()[1]
+                        if ($Value) {
+                            $EventLogObject | Add-Member -MemberType NoteProperty -Name $Name -Value $Value
+                        }
+                    }
+                    $EventLogDetails += $EventLogObject
+                }
+                $EventLogDetails `
+                | Select-Object -Property @{n='Name';e={$_.Name}}, @{n='Enabled';e={$_.Enabled}}, @{n='Type';e={$_.Type}}, @{n='OwningPublisher';e={$_.OwningPublisher}}, @{n='Isolation';e={$_.Isolation}}, @{n='LogFileName';e={$_.LogFileName}}, @{n='MaxSize';e={$_.MaxSize}}, @{n='FileMax';e={$_.FileMax}}, @{n='Retention';e={$_.Retention}}, @{n='AutoBackup';e={$_.AutoBackup}} `
+                | Sort-Object -Property @{e="Enabled";Descending=$True}, @{e="Name";Descending=$False}
+                
+            } `
+            -Session $Session `
+            | Out-GridView -Title 'Event Log Selection' -OutputMode 'Single').Name
+        }
+
+        if ($EventLogSelectionLogFileName) {
+            $EventLogSelectionLogFileSaveName = $EventLogSelectionLogFileName.replace('/','-')
+
+            # Clears localhost previously saved results... these results appear automatically when viewing saved .evtx logs
+            Get-ChildItem -Path "$env:ProgramData\Microsoft\Event Viewer\ExternalLogs" | Remove-Item -Force
+
+            $EventLogPullDateTime = (Get-Date).ToString('yyyy-MM-dd HH.mm.ss')
+            New-Item -Type Directory -Path $script:CollectionSavedDirectoryTextBox.Text -ErrorAction SilentlyContinue
+            $EventLogSaveName = "$($script:CollectionSavedDirectoryTextBox.Text)\$($script:ComputerTreeViewSelected) ($($EventLogPullDateTime)) $($EventLogSelectionLogFileSaveName).evtx"
+
+            Invoke-Command -ScriptBlock { 
+                param(
+                    $EventLogSelectionLogFileName,
+                    $EventLogSelectionLogFileSaveName,
+                    $EventLogPullDateTime
+                )
+                # Method 1: Didn't list all event logs, like sysmon
+                #(Get-WmiObject -Class Win32_NTEventlogFile | Where-Object { $_.LogFileName -eq $EventLogSelectionLogFileName }).BackupEventlog("c:\Windows\Temp\$EventLogSelectionLogFileSaveName ($EventLogPullDateTime).evtx")
+
+                # Method 2 - Lists all available logs
+                wevtutil export-log $EventLogSelectionLogFileName "c:\Windows\Temp\$EventLogSelectionLogFileSaveName ($EventLogPullDateTime).evtx"
+
+            } `
+            -ArgumentList @($EventLogSelectionLogFileName, $EventLogSelectionLogFileSaveName, $EventLogPullDateTime) `
+            -Session $Session
+
+            Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock { (Get-WmiObject -Class Win32_NTEventlogFile | Where-Object { `$_.LogFileName -eq $EventLogSelectionLogFileName }).BackupEventlog('c:\Windows\Temp\$EventLogSelectionLogFileSaveName ($EventLogPullDateTime).evtx') } -FromSession `$Session"
+
+            Copy-Item -Path "c:\Windows\Temp\$EventLogSelectionLogFileSaveName ($EventLogPullDateTime).evtx" -Destination "$EventLogSaveName" -FromSession $Session
+            Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Copy-Item -Path 'c:\Windows\Temp\$EventLogSelectionLogFileSaveName ($EventLogPullDateTime).evtx' -Destination "$EventLogSaveName" -FromSession `$Session"
+
+            Invoke-Command -ScriptBlock { 
+                param(
+                    $EventLogSelectionLogFileName,
+                    $EventLogSelectionLogFileSaveName,
+                    $EventLogPullDateTime
+                )
+                Remove-Item "c:\Windows\Temp\$EventLogSelectionLogFileSaveName ($EventLogPullDateTime).evtx" -Force
+            } `
+            -ArgumentList @($EventLogSelectionLogFileName, $EventLogSelectionLogFileSaveName, $EventLogPullDateTime) `
+            -Session $Session
+
+            Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock { Remove-Item 'c:\Windows\Temp\$EventLogSelectionLogFileSaveName ($EventLogPullDateTime).evtx' -Force } -FromSession `$Session"
+
+            # Opens results with Windows Event Viewer
+            if (Verify-Action -Title 'Windows Event Viewer' -Question "View the following Event Logs with Windows Event Viewer?`n`n$EventLogSelectionLogFileName") {
+                eventvwr -l:"$EventLogSaveName"
+                Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "eventvwr -l:'$EventLogSaveName'"
+            }
+
+            # Prompts to open .evtx files with chainsaw.exe by F-Secure Countercept
+            if (Verify-Action -Title 'Event Logs Post-Processing' -Question "Process the collected event logs with ChainSaw by F-Secure Countercept?") {
+                $SaveLocation = $script:CollectionSavedDirectoryTextBox.Text
+                $command = @"
+Start-Process 'PowerShell' -ArgumentList '-NoProfile',
+'-ExecutionPolicy ByPass',
+{ New-Item -Type Directory '$SaveLocation' -Force | Out-Null; },
+{ Set-Location '$SaveLocation' | Out-Null; },
+{ "& '$Dependencies\Executables\chainsaw\chainsaw.exe' hunt '$EventLogSaveName' --rules '$Dependencies\Executables\chainsaw\sigma_rules\' --mapping '$Dependencies\Executables\chainsaw\mapping_files\sigma-mapping.yml' --full --lateral-all --csv"; },
+{ Foreach ( `$EvtxFile in `$(Get-ChildItem '$SaveLocation\chainsaw_*' -Recurse | Where-Object {`$_.Name -like '*.csv'}) ) { `$FullName = iex '`$EvtxFile.FullName'; `$BaseName = iex '`$EvtxFile.BaseName'; `$BaseName = 'ChainSaw by F-Secure Countercept:  ' + '"'+ `$BaseName + '"'; Import-Csv "`$FullName" | Out-GridView -Title `$BaseName -Wait }; }
+"@
+#'-NoExit',
+#{ `$ErrorActionPreference = 'SilentlyContinue'; },
+# { Write-Host "Passing information from PoSh-EasyWin to ChainSaw"; },
+# { Write-Host ".\chainsaw.exe' hunt '$EventLogSaveName' --rules '.\sigma_rules\' --mapping '.\mapping_files\sigma-mapping.yml' --full --lateral-all --csv"; },
+# { Write-Host ""; },
+
+                Invoke-Expression $command
+            }
+       }
+        $Session | Remove-PSSession
+
+        if ($script:RollCredentialsState -and $script:ComputerListProvideCredentialsCheckBox.checked) {
+            Start-Sleep -Seconds 3
+            Generate-NewRollingPassword
+        }
+    }
+    else {
+        [system.media.systemsounds]::Exclamation.play()
+        $StatusListBox.Items.Clear()
+        $StatusListBox.Items.Add("Event Viewer:  Cancelled")
+    }
+}
+
+$ComputerListSSHButtonAdd_Click = {
+    $InformationTabControl.SelectedTab = $Section3ResultsTab
+    Create-TreeViewCheckBoxArray -Endpoint
+    Generate-ComputerList
+
+    if ($script:ComputerListProvideCredentialsCheckBox.Checked) { $Username = $script:Credential.UserName}
+    else {$Username = $PoShEasyWinAccountLaunch }
+
+    if ($script:ComputerListEndpointNameToolStripLabel.text) {
+        $VerifyAction = Verify-Action -Title "Verification: SSH" -Question "Connecting Account:  $Username`n`nEnter a SSH session to the following?" -Computer $($script:ComputerListEndpointNameToolStripLabel.text)
+        if ($script:ComputerListUseDNSCheckbox.checked) { 
+            $script:ComputerTreeViewSelected = $script:ComputerListEndpointNameToolStripLabel.text 
+        }
+        else {
+            [System.Windows.Forms.TreeNodeCollection]$AllTreeViewNodes = $script:ComputerTreeView.Nodes
+            foreach ($root in $AllTreeViewNodes) {
+                foreach ($Category in $root.Nodes) {
+                    foreach ($Entry in $Category.nodes) {
+                        if ($Entry.Text -eq $script:ComputerListEndpointNameToolStripLabel.text) {
+                            foreach ($Metadata in $Entry.nodes) {
+                                if ($Metadata.Name -eq 'IPv4Address') {
+                                    $script:ComputerTreeViewSelected = $Metadata.text
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    elseif (-not $script:ComputerListEndpointNameToolStripLabel.text) {
+        [System.Windows.Forms.Messagebox]::Show('Left click an endpoint node to select it, then right click to access the context menu and select SSH.','SSH')
+    }
+
+    if ($VerifyAction) {
+        # This brings specific tabs to the forefront/front view
+        $InformationTabControl.SelectedTab = $Section3ResultsTab
+
+        $StatusListBox.Items.Clear()
+        $StatusListBox.Items.Add("SSH:  $($script:ComputerTreeViewSelected)")
+        #Removed For Testing#$ResultsListBox.Items.Clear()
+        if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
+            if (!$script:Credential) { Create-NewCredentials }
+            Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Credentials Used: $($script:Credential.UserName)"
+            $Username = $script:Credential.UserName
+            $Password = $script:Credential.GetNetworkCredential().Password
+
+            if ($Username -like '*@*'){
+                $User     = $Username.split('@')[0]
+                $Domain   = $Username.split('@')[1]
+                $Username = "$($Domain)\$($User)"
+            }
+
+            $ResultsListBox.Items.Add("kitty-0.74.4.7.exe -ssh '$script:ComputerTreeViewSelected' -l '$Username' -pw 'password'")
+            start-process $kitty_ssh_client -ArgumentList @("-ssh",$script:ComputerTreeViewSelected,"-l",$Username,"-pw",$Password)
+            Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "start-process $kitty_ssh_client -ArgumentList @(`"-ssh`",$script:ComputerTreeViewSelected,`"-l`",$User,`"-pw`",`"Password`")"
+        }
+        else {
+            $ResultsListBox.Items.Add("kitty-0.74.4.7.exe -ssh '$script:ComputerTreeViewSelected' -l '$Username'")
+            start-process $kitty_ssh_client -ArgumentList @("-ssh",$script:ComputerTreeViewSelected,"-l",$Username)
+            Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "start-process $kitty_ssh_client -ArgumentList @(`"-ssh`",$script:ComputerTreeViewSelected,`"-l`",$User)"
+        }
+
+        if ($script:RollCredentialsState -and $script:ComputerListProvideCredentialsCheckBox.checked) {
+            Start-Sleep -Seconds 3
+            Generate-NewRollingPassword
+        }
+    }
+    else {
+        [system.media.systemsounds]::Exclamation.play()
+        $StatusListBox.Items.Clear()
+        $StatusListBox.Items.Add("SSH:  Cancelled")
+    }
+}
+
+
+$ComputerListRDPButtonAdd_Click = {
+    $InformationTabControl.SelectedTab = $Section3ResultsTab
+    Create-TreeViewCheckBoxArray -Endpoint
+    Generate-ComputerList
+
+    if ($script:ComputerListProvideCredentialsCheckBox.Checked) { $Username = $script:Credential.UserName}
+    else {$Username = $PoShEasyWinAccountLaunch }
+
+    if ($script:ComputerListEndpointNameToolStripLabel.text) {
+        $VerifyAction = Verify-Action -Title "Verification: Remote Desktop" -Question "Connecting Account:  $Username`n`nOpen a Remote Desktop session to the following?" -Computer $($script:ComputerListEndpointNameToolStripLabel.text)
+        if ($script:ComputerListUseDNSCheckbox.checked) { 
+            $script:ComputerTreeViewSelected = $script:ComputerListEndpointNameToolStripLabel.text
+        }
+        else {
+            [System.Windows.Forms.TreeNodeCollection]$AllTreeViewNodes = $script:ComputerTreeView.Nodes
+            foreach ($root in $AllTreeViewNodes) {
+                foreach ($Category in $root.Nodes) {
+                    foreach ($Entry in $Category.nodes) {
+                        if ($Entry.Text -eq $script:ComputerListEndpointNameToolStripLabel.text) {
+                            foreach ($Metadata in $Entry.nodes) {
+                                if ($Metadata.Name -eq 'IPv4Address') {
+                                    $script:ComputerTreeViewSelected = $Metadata.text
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    elseif (-not $script:ComputerListEndpointNameToolStripLabel.text) {
+        [System.Windows.Forms.Messagebox]::Show('Left click an endpoint node to select it, then right click to access the context menu and select Remote Desktop.','Remote Desktop')
+    }
+
+    if ($VerifyAction) {
+        # This brings specific tabs to the forefront/front view
+        $InformationTabControl.SelectedTab = $Section3ResultsTab
+        if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
+            if (!$script:Credential) { Create-NewCredentials }
+
+            Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Credentials Used: $($script:Credential.UserName)"
+
+            $Username = $null
+            $Password = $null
+            $Username = $script:Credential.UserName
+            $Password = $script:Credential.GetNetworkCredential().Password
+            #doesn't store in base64# $Password = [System.Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($Password))
+
+            # The cmdkey utility helps you manage username and passwords; it allows you to create, delete, and display credentials for the current user
+                # cmdkey /list                <-- lists all credentials
+                # cmdkey /list:targetname     <-- lists the credentials for a speicific target
+                # cmdkey /add:targetname      <-- creates domain credential
+                # cmdkey /generic:targetname  <-- creates a generic credential
+                # cmdkey /delete:targetname   <-- deletes target credential
+            #cmdkey /generic:TERMSRV/$script:ComputerTreeViewSelected /user:$Username /pass:$Password
+            cmdkey /delete:"$script:ComputerTreeViewSelected"
+            cmdkey /delete /ras
+
+            #doesn't store in base64# cmdkey /generic:$script:ComputerTreeViewSelected /user:"$Username" /pass:"$([System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String(`"$Password`")))"
+
+            cmdkey /generic:$script:ComputerTreeViewSelected /user:"$Username" /pass:"$Password"
+            mstsc /v:$($script:ComputerTreeViewSelected):3389 /admin /noConsentPrompt /f
+
+            # There seems to be a delay between the credential passing before credentials can be removed locally from cmdkey and them still being needed
+            Start-Sleep -Seconds 5
+            cmdkey /delete /ras
+            cmdkey /delete:"$script:ComputerTreeViewSelected"
+
+            if ($script:RollCredentialsState -and $script:ComputerListProvideCredentialsCheckBox.checked) {
+                Start-Sleep -Seconds 3
+                Generate-NewRollingPassword
+            }
+        }
+        else {
+            #ensures no credentials are stored for use
+            cmdkey /delete /ras
+            cmdkey /delete:"$script:ComputerTreeViewSelected"
+
+            mstsc /v:$($script:ComputerTreeViewSelected):3389 /admin /noConsentPrompt /f
+        }
+
+        $StatusListBox.Items.Clear()
+        $StatusListBox.Items.Add("Remote Desktop:  $($script:ComputerTreeViewSelected)")
+        #Removed For Testing#$ResultsListBox.Items.Clear()
+        $ResultsListBox.Items.Add("mstsc /v:$($script:ComputerTreeViewSelected):3389 /NoConsentPrompt")
+        Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Remote Desktop (RDP): $($script:ComputerTreeViewSelected)"
+    }
+    else {
+        [system.media.systemsounds]::Exclamation.play()
+        $StatusListBox.Items.Clear()
+        $StatusListBox.Items.Add("Remote Desktop:  Cancelled")
+    }
+}
+
+
+$ComputerListPSSessionPivotButtonAdd_Click = {
+
+    $InformationTabControl.SelectedTab = $Section3ResultsTab
+    Create-TreeViewCheckBoxArray -Endpoint
+    Generate-ComputerList
+    
+    if ($script:ComputerListProvideCredentialsCheckBox.Checked) { $Username = $script:Credential.UserName}
+    else {$Username = $PoShEasyWinAccountLaunch }
+
+    if ($script:ComputerListEndpointNameToolStripLabel.text) {
+        $VerifyAction = Verify-Action -Title "Verification: PowerShell Session" -Question "Connecting Account:  $Username`n`nEnter a PowerShell BROKEN Session to the following?" -Computer $($script:ComputerListEndpointNameToolStripLabel.text)
+        if ($script:ComputerListUseDNSCheckbox.checked) { 
+            $script:ComputerTreeViewSelected = $script:ComputerListEndpointNameToolStripLabel.text 
+        }
+        else {
+            [System.Windows.Forms.TreeNodeCollection]$AllTreeViewNodes = $script:ComputerTreeView.Nodes
+            foreach ($root in $AllTreeViewNodes) {
+                foreach ($Category in $root.Nodes) {
+                    foreach ($Entry in $Category.nodes) {
+                        if ($Entry.Text -eq $script:ComputerListEndpointNameToolStripLabel.text) {
+                            foreach ($Metadata in $Entry.nodes) {
+                                if ($Metadata.Name -eq 'IPv4Address') {
+                                    $script:ComputerTreeViewSelected = $Metadata.text
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    elseif (-not $script:ComputerListEndpointNameToolStripLabel.text) {
+        [System.Windows.Forms.Messagebox]::Show('Left click an endpoint node to select it, then right click to access the context menu and select PSSession.','PowerShell Session')
+    }
+
+    if ($VerifyAction) {
+        # This brings specific tabs to the forefront/front view
+        $InformationTabControl.SelectedTab = $Section3ResultsTab
+
+        $StatusListBox.Items.Clear()
+        $StatusListBox.Items.Add("Pivot-PSSession:  $($script:ComputerTreeViewSelected)")
+        #Removed For Testing#$ResultsListBox.Items.Clear()
+        if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
+            if (-not $script:Credential) { Create-NewCredentials }
+            Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Credentials Used: $($script:Credential.UserName)"
+            #$Username = $script:Credential.UserName
+            #$Password = $script:Credential.GetNetworkCredential().Password
+            #$password = [System.Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($Password))
+
+            $ResultsListBox.Items.Add("Pivot-PSSession -PivotHost $($script:ComputerListPivotExecutionTextBox.text) -TargetComputer $($script:ComputerTreeViewSelected) -Credential $script:Credential")
+            #start-process -FilePath 'C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe' -ArgumentList "-noexit -Command Enter-PSSession -ComputerName $($script:ComputerListPivotExecutionTextBox.text) -Credential `$(New-Object PSCredential('$Username'`,`$([System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String('$Password')) | ConvertTo-SecureString -AsPlainText -Force))); function Pivot-PSSession(`$Id) { while ( `$Command -ne 'Exit' ) {`$Session = Get-PSSession -Id `$id; `$ComputerName = `$Session.ComputerName; Write-Host -NoNewline `"[$($script:ComputerListPivotExecutionTextBox.text) --> `$ComputerName]: Pivot> `"; `$Command = Read-Host; Invoke-Command -Session `$Session -ScriptBlock {param(`$Command) invoke-command {iex `$Command}} -ArgumentList `$Command; }; ; }; Pivot-PSSession -Id (New-PSSession -ComputerName $script:ComputerTreeViewSelected -Credential `$(New-Object PSCredential('$Username'`,`$([System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String('$Password')) | ConvertTo-SecureString -AsPlainText -Force)))).Id"
+
+            start-process -FilePath 'C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe' -ArgumentList "-NoExit -NoProfile -Command & '$Dependencies\Code\Main Body\Pivot-PSSession.ps1' -PivotHost '$($script:ComputerListPivotExecutionTextBox.text)' -TargetComputer '$($script:ComputerTreeViewSelected)' -CredentialXML '$script:SelectedCredentialPath'"
+
+            Start-Sleep -Seconds 3
+        }
+        else {
+            $ResultsListBox.Items.Add("Pivot-PSSession -PivotHost $($script:ComputerListPivotExecutionTextBox.text) -TargetComputer $($script:ComputerTreeViewSelected)")
+            start-process -FilePath 'C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe' -ArgumentList "-NoExit -NoProfile -Command & '$Dependencies\Code\Main Body\Pivot-PSSession.ps1' -PivotHost '$($script:ComputerListPivotExecutionTextBox.text)' -TargetComputer '$($script:ComputerTreeViewSelected)'"
+            Start-Sleep -Seconds 3
+        }
+        Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Pivot-PSSession -ComputerName $($script:ComputerTreeViewSelected)"
+
+        if ($script:RollCredentialsState -and $script:ComputerListProvideCredentialsCheckBox.checked) {
+            Start-Sleep -Seconds 3
+            Generate-NewRollingPassword
+        }
+    }
+    else {
+        [system.media.systemsounds]::Exclamation.play()
+        $StatusListBox.Items.Clear()
+        $StatusListBox.Items.Add("Pivot-PSSession:  Cancelled")
+    }
+}
+
+
+$ComputerListPSSessionButtonAdd_Click = {
+    
+    $InformationTabControl.SelectedTab = $Section3ResultsTab
+    Create-TreeViewCheckBoxArray -Endpoint
+    Generate-ComputerList
+
+    if ($script:ComputerListProvideCredentialsCheckBox.Checked) { $Username = $script:Credential.UserName}
+    else {$Username = $PoShEasyWinAccountLaunch }
+
+    if ($script:ComputerListEndpointNameToolStripLabel.text) {
+        $VerifyAction = Verify-Action -Title "Verification: PowerShell Session" -Question "Connecting Account:  $Username`n`nEnter a PowerShell Session to the following?" -Computer $($script:ComputerListEndpointNameToolStripLabel.text)
+        if ($script:ComputerListUseDNSCheckbox.checked) { 
+            $script:ComputerTreeViewSelected = $script:ComputerListEndpointNameToolStripLabel.text 
+        }
+        else {
+            [System.Windows.Forms.TreeNodeCollection]$AllTreeViewNodes = $script:ComputerTreeView.Nodes
+            foreach ($root in $AllTreeViewNodes) {
+                foreach ($Category in $root.Nodes) {
+                    foreach ($Entry in $Category.nodes) {
+                        if ($Entry.Text -eq $script:ComputerListEndpointNameToolStripLabel.text) {
+                            foreach ($Metadata in $Entry.nodes) {
+                                if ($Metadata.Name -eq 'IPv4Address') {
+                                    $script:ComputerTreeViewSelected = $Metadata.text
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    elseif (-not $script:ComputerListEndpointNameToolStripLabel.text) {
+        [System.Windows.Forms.Messagebox]::Show('Left click an endpoint node to select it, then right click to access the context menu and select PSSession.','PowerShell Session')
+    }
+
+    if ($VerifyAction) {
+        # This brings specific tabs to the forefront/front view
+        $InformationTabControl.SelectedTab = $Section3ResultsTab
+
+        $StatusListBox.Items.Clear()
+        $StatusListBox.Items.Add("Enter-PSSession:  $($script:ComputerTreeViewSelected)")
+        #Removed For Testing#$ResultsListBox.Items.Clear()
+        if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
+            if (-not $script:Credential) { Create-NewCredentials }
+            Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Credentials Used: $($script:Credential.UserName)"
+            $Username = $script:Credential.UserName
+            $Password = $script:Credential.GetNetworkCredential().Password
+
+            $password = [System.Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($Password))
+            #if ($UserName -like '*\*') {
+            #    $Name     = $UserName.split('\')[1]
+            #    $Domain   = $UserName.split('\')[0]
+            #    $UserName = "$Name@$Domain"
+            #}
+
+            $ResultsListBox.Items.Add("Enter-PSSession -ComputerName $script:ComputerTreeViewSelected -Credential $script:Credential")
+            #start-process -FilePath 'C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe' -ArgumentList "-noexit -Command Enter-PSSession -ComputerName $script:ComputerTreeViewSelected -Credential `$(New-Object PSCredential('$Username'`,`$('$Password' | ConvertTo-SecureString -AsPlainText -Force)))"
+            start-process -FilePath 'C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe' -ArgumentList "-noexit -Command Enter-PSSession -ComputerName $script:ComputerTreeViewSelected -Credential `$(New-Object PSCredential('$Username'`,`$([System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String('$Password')) | ConvertTo-SecureString -AsPlainText -Force)))"
+
+            Start-Sleep -Seconds 3
+        }
+        else {
+            $ResultsListBox.Items.Add("Enter-PSSession -ComputerName $script:ComputerTreeViewSelected")
+            Start-Process PowerShell -ArgumentList "-noexit Enter-PSSession -ComputerName $script:ComputerTreeViewSelected"
+            Start-Sleep -Seconds 3
+        }
+        Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Enter-PSSession -ComputerName $($script:ComputerTreeViewSelected)"
+
+        if ($script:RollCredentialsState -and $script:ComputerListProvideCredentialsCheckBox.checked) {
+            Start-Sleep -Seconds 3
+            Generate-NewRollingPassword
+        }
+    }
+    else {
+        [system.media.systemsounds]::Exclamation.play()
+        $StatusListBox.Items.Clear()
+        $StatusListBox.Items.Add("PowerShell Session:  Cancelled")
+    }
+}
+
+$ComputerListPsExecButtonAdd_Click = {
+    $InformationTabControl.SelectedTab = $Section3ResultsTab
+    Create-TreeViewCheckBoxArray -Endpoint
+    Generate-ComputerList
+
+    if ($script:ComputerListProvideCredentialsCheckBox.Checked) { $Username = $script:Credential.UserName}
+    else {$Username = $PoShEasyWinAccountLaunch }
+
+    if ($script:ComputerListEndpointNameToolStripLabel.text) {
+        $VerifyAction = Verify-Action -Title "Verification: PSExec" -Question "Connecting Account:  $Username`n`nEnter a PSEexec session to the following?" -Computer $($script:ComputerListEndpointNameToolStripLabel.text)
+        if ($script:ComputerListUseDNSCheckbox.checked) { 
+            $script:ComputerTreeViewSelected = $script:ComputerListEndpointNameToolStripLabel.text
+        }
+        else {
+            [System.Windows.Forms.TreeNodeCollection]$AllTreeViewNodes = $script:ComputerTreeView.Nodes
+            foreach ($root in $AllTreeViewNodes) {
+                foreach ($Category in $root.Nodes) {
+                    foreach ($Entry in $Category.nodes) {
+                        if ($Entry.Text -eq $script:ComputerListEndpointNameToolStripLabel.text) {
+                            foreach ($Metadata in $Entry.nodes) {
+                                if ($Metadata.Name -eq 'IPv4Address') {
+                                    $script:ComputerTreeViewSelected = $Metadata.text
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    elseif (-not $script:ComputerListEndpointNameToolStripLabel.text) {
+        [System.Windows.Forms.Messagebox]::Show('Left click an endpoint node to select it, then right click to access the context menu and select PSExec.','PSExec (Sysinternals)')
+    }
+
+    if ($VerifyAction) {
+        # This brings specific tabs to the forefront/front view
+        $InformationTabControl.SelectedTab = $Section3ResultsTab
+
+        $StatusListBox.Items.Clear()
+        $StatusListBox.Items.Add("PsExec:  $($script:ComputerTreeViewSelected)")
+        #Removed For Testing#$ResultsListBox.Items.Clear()
+        if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
+            if (!$script:Credential) { Create-NewCredentials }
+            Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Credentials Used: $($script:Credential.UserName)"
+            $Username = $script:Credential.UserName
+            $Password = $script:Credential.GetNetworkCredential().Password
+
+            if ($Username -like '*@*'){
+                $User     = $Username.split('@')[0]
+                $Domain   = $Username.split('@')[1]
+                $Username = "$($Domain)\$($User)"
+            }
+            $Password = "'$Password'"
+
+            $ResultsListBox.Items.Add("./PsExec.exe -AcceptEULA -NoBanner \\$script:ComputerTreeViewSelected '<domain\username>' -p '<password>' cmd")
+            #opens in black terminal# Start-Process PowerShell -WindowStyle Hidden -ArgumentList "Start-Process '$PsExecPath' -ArgumentList '-AcceptEULA -NoBanner \\$script:ComputerTreeViewSelected -u '$Username' -p '$Password' cmd'"
+            start-process powershell "-noexit -command $PsExecPath -accepteula -nobanner \\$script:ComputerTreeViewSelected -u $Username -p $Password cmd"
+        }
+        else {
+            $ResultsListBox.Items.Add("./PsExec.exe -AcceptEULA -NoBanner \\$script:ComputerTreeViewSelected cmd")
+            #$ResultsListBox.Items.Add("$PsExecPath -AcceptEULA -NoBanner \\$script:ComputerTreeViewSelected cmd")
+            #opens in black terminal# Start-Process PowerShell -WindowStyle Hidden -ArgumentList "Start-Process '$PsExecPath' -ArgumentList '-AcceptEULA -NoBanner \\$script:ComputerTreeViewSelected cmd'"
+            start-process powershell "-noexit -command $PsExecPath -accepteula -nobanner \\$script:ComputerTreeViewSelected cmd"
+        }
+        Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "PsExec: $($script:ComputerTreeViewSelected)"
+
+        if ($script:RollCredentialsState -and $script:ComputerListProvideCredentialsCheckBox.checked) {
+            Start-Sleep -Seconds 3
+            Generate-NewRollingPassword
+        }
+    }
+    else {
+        [system.media.systemsounds]::Exclamation.play()
+        $StatusListBox.Items.Clear()
+        $StatusListBox.Items.Add("PSExec Session:  Cancelled")
+    }
+}
+
+
+####################################################################################################
+# WinForms
+####################################################################################################
+
 function Display-ContextMenuForComputerTreeNode {
     param(
         [switch]$ClickedOnNode,
@@ -341,7 +999,7 @@ Command:
                 $InformationTabControl.SelectedTab = $Section3HostDataTab
 
                 if ($script:EntrySelected) {
-                    Show-TagForm -Endpoint
+                    Show-TreeViewTagForm -Endpoint
                     if ($script:ComputerListMassTagValue) {
                         $script:Section3HostDataNameTextBox.Text  = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $script:EntrySelected.Text}).Name
                         $Section3HostDataOSTextBox.Text    = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $script:EntrySelected.Text}).OperatingSystem
@@ -381,7 +1039,7 @@ Command:
                     Height = $FormScale * 25
                     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
                 }
-                $ComputerTreeNodePopupAddTextBox.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { AddHost-ComputerTreeNode } })
+                $ComputerTreeNodePopupAddTextBox.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { Add-TreeViewComputer } })
                 $ComputerTreeNodePopup.Controls.Add($ComputerTreeNodePopupAddTextBox)
             
             
@@ -416,7 +1074,7 @@ Command:
                 $ComputerTreeNodeOUCategoryList = $script:ComputerTreeViewData | Select-Object -ExpandProperty CanonicalName -Unique
                 # Dynamically creates the OU Category combobox list used for OU Selection
                 ForEach ($OU in $ComputerTreeNodeOUCategoryList) { $ComputerTreeNodePopupOUComboBox.Items.Add($OU) }
-                $ComputerTreeNodePopupOUComboBox.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { AddHost-ComputerTreeNode } })
+                $ComputerTreeNodePopupOUComboBox.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { Add-TreeViewComputer } })
                 $ComputerTreeNodePopup.Controls.Add($ComputerTreeNodePopupOUComboBox)
             
                 $ComputerAndAccountTreeViewTabControl.SelectedTab = $ComputerTreeviewTab
@@ -433,14 +1091,14 @@ Command:
                     Top    = $ComputerTreeNodePopupOUComboBox.Top + $ComputerTreeNodePopupOUComboBox.Height + $($FormScale * 10)
                     Width  = $FormScale * 100
                     Height = $FormScale * 25
-                    Add_Click = { AddHost-ComputerTreeNode }
-                    Add_KeyDown = { if ($_.KeyCode -eq "Enter") { AddHost-ComputerTreeNode } }    
+                    Add_Click = { Add-TreeViewComputer }
+                    Add_KeyDown = { if ($_.KeyCode -eq "Enter") { Add-TreeViewComputer } }    
                 }
                 Apply-CommonButtonSettings -Button $ComputerTreeNodePopupAddHostButton
                 $ComputerTreeNodePopup.Controls.Add($ComputerTreeNodePopupAddHostButton)
             
                 # $script:ComputerTreeView.ExpandAll()
-                # Remove-EmptyCategory -Endpoint
+                # Remove-TreeViewEmptyCategory -Endpoint
                 # Normalize-TreeViewData -Endpoint
                 # Save-TreeViewData -Endpoint
                 $ComputerTreeNodePopup.ShowDialog()
@@ -475,11 +1133,11 @@ Command:
                     }
 
                     # Renames the computer treenode to the specified name
-                    . "$Dependencies\Code\Tree View\Computer\Rename-ComputerTreeNodeSelected.ps1"
+                    . "$Dependencies\Code\Tree View\Computer\Rename-TreeViewComputer.ps1"
 
                     # Moves the hostname/IPs to the new Category
                     $script:ComputerTreeNodeRenamePopupTextBox.Add_KeyDown({
-                        if ($_.KeyCode -eq "Enter") { Rename-ComputerTreeNodeSelected }
+                        if ($_.KeyCode -eq "Enter") { Rename-TreeViewComputer }
                     })
                     $ComputerTreeNodeRenamePopup.Controls.Add($script:ComputerTreeNodeRenamePopupTextBox)
 
@@ -492,7 +1150,7 @@ Command:
                         Height = $FormScale * 22
                     }
                     Apply-CommonButtonSettings -Button $ComputerTreeNodeRenamePopupButton
-                    $ComputerTreeNodeRenamePopupButton.Add_Click({ Rename-ComputerTreeNodeSelected })
+                    $ComputerTreeNodeRenamePopupButton.Add_Click({ Rename-TreeViewComputer })
                     $ComputerTreeNodeRenamePopup.Controls.Add($ComputerTreeNodeRenamePopupButton)
 
                     $ComputerTreeNodeRenamePopup.ShowDialog()
@@ -501,10 +1159,14 @@ Command:
                     $StatusListBox.Items.Clear()
                     $StatusListBox.Items.Add($script:EntrySelected.text)
                 }
-                #elseif ($script:ComputerTreeViewSelected.count -lt 1) { ComputerNodeSelectedLessThanOne -Message 'Rename Selection' }
-                #elseif ($script:ComputerTreeViewSelected.count -gt 1) { ComputerNodeSelectedMoreThanOne -Message 'Rename Selection' }
+                # elseif ($script:ComputerTreeViewSelected.count -lt 1) {
+                #     Show-MessageBox -Message "No hostname/IP selected`r`nMake sure to checkbox only one hostname/IP`r`nSelecting a Category will not allow you to connect to multiple hosts" -Title "Rename Selection:  Error" 
+                # }
+                # elseif ($script:ComputerTreeViewSelected.count -gt 1) {
+                #     Show-MessageBox -Message "Too many hostname/IPs selected`r`nMake sure to checkbox only one hostname/IP`r`nSelecting a Category will not allow you to connect to multiple hosts" -Title "Rename Selection:  Error"
+                # }
 
-                Remove-EmptyCategory -Endpoint
+                Remove-TreeViewEmptyCategory -Endpoint
                 Save-TreeViewData -Endpoint
             }
             if ($This.selectedItem -eq " - Move Node To New OU/CN")  { 
@@ -514,7 +1176,7 @@ Command:
 
                 Create-TreeViewCheckBoxArray -Endpoint
                 if ($script:EntrySelected) {
-                    Show-MoveForm -Endpoint -Title "Move: $($script:EntrySelected.Text)" -SelectedEndpoint
+                    Show-TreeViewMoveForm -Endpoint -Title "Move: $($script:EntrySelected.Text)" -SelectedEndpoint
             
                     $script:ComputerTreeView.Nodes.Clear()
                     Initialize-TreeViewData -Endpoint
@@ -523,12 +1185,12 @@ Command:
                     $script:ComputerTreeNodeComboBox.SelectedItem = 'CanonicalName'
             
                     Foreach($Computer in $script:ComputerTreeViewData) {
-                        AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:TreeNodeComputerList -Category $Computer.CanonicalName -Entry $Computer.Name -ToolTip $ComputerData.IPv4Address -IPv4Address $Computer.IPv4Address -Metadata $Computer
+                        Add-TreeViewData -Endpoint -RootNode $script:TreeNodeComputerList -Category $Computer.CanonicalName -Entry $Computer.Name -ToolTip $ComputerData.IPv4Address -IPv4Address $Computer.IPv4Address -Metadata $Computer
                     }
             
-                    Remove-EmptyCategory -Endpoint
+                    Remove-TreeViewEmptyCategory -Endpoint
                     Save-TreeViewData -Endpoint
-                    UpdateState-TreeViewData -Endpoint -NoMessage
+                    Update-TreeViewState -Endpoint -NoMessage
             
                     $StatusListBox.Items.Clear()
                     $StatusListBox.Items.Add("Moved:  $($script:EntrySelected.text)")
@@ -542,7 +1204,7 @@ Command:
                 Create-TreeViewCheckBoxArray -Endpoint
                 if ($script:EntrySelected) {
 
-                    $MessageBox = [System.Windows.MessageBox]::Show("Confirm Deletion of Endpoint Node: $($script:EntrySelected.text)`r`n`r`nAll Endpoint metadata and notes will be lost.`r`n`r`nAny previously collected data will still remain.",'Delete Endpoint','YesNo')
+                    $MessageBox = Show-MessageBox -Message "Confirm Deletion of Endpoint Node: $($script:EntrySelected.text)`r`n`r`nAll Endpoint metadata and notes will be lost.`r`n`r`nAny previously collected data will still remain." -Title "PoSh-EasyWin - Delete Endpoint" -Options "YesNo" -Type "Error" -Sound
 
                     Switch ( $MessageBox ) {
                         'Yes' {
@@ -569,7 +1231,7 @@ Command:
                             #This is a bit of a workaround, but it prevents the host data message from appearing after a computer node is deleted...
                             $script:FirstCheck = $false
 
-                            Remove-EmptyCategory -Endpoint
+                            Remove-TreeViewEmptyCategory -Endpoint
                             Save-TreeViewData -Endpoint
                         }
                         'No' {
@@ -873,7 +1535,7 @@ function:MultiEndpoint-PSSession -ComputerName <endpoints(s)> -Credential <`$cre
                 Create-TreeViewCheckBoxArray -Endpoint
 
                 if ($script:ComputerTreeViewSelected.count -eq 0){
-                    [System.Windows.MessageBox]::Show('Error: You need to check at least one endpoint.','Ping')
+                    Show-MessageBox -Message 'Error: You need to check at least one endpoint.' -Title "PoSh-EasyWin - Ping" -Options "Ok" -Type "Error" -Sound
                 }
                 else {
                     if (Verify-Action -Title "Verification: Ping Test" -Question "Conduct a Ping test to the following?" -Computer $($script:ComputerTreeViewSelected -join ', ')) {
@@ -895,7 +1557,7 @@ function:MultiEndpoint-PSSession -ComputerName <endpoints(s)> -Credential <`$cre
                 else {$Username = $PoShEasyWinAccountLaunch }
             
                 if ($script:ComputerTreeViewSelected.count -eq 0){
-                    [System.Windows.MessageBox]::Show('Error: You need to check at least one endpoint.','RPC Port Check')
+                    Show-MessageBox -Message 'Error: You need to check at least one endpoint.' -Title "PoSh-EasyWin - RPC Port Check" -Options "Ok" -Type "Error" -Sound
                 }
                 else {
                     if (Verify-Action -Title "Verification: RPC Port Check" -Question "Connecting Account:  $Username`n`nConduct a RPC Port Check to the following?" -Computer $($script:ComputerTreeViewSelected -join ', ')) {
@@ -917,7 +1579,7 @@ function:MultiEndpoint-PSSession -ComputerName <endpoints(s)> -Credential <`$cre
                 else {$Username = $PoShEasyWinAccountLaunch }
             
                 if ($script:ComputerTreeViewSelected.count -eq 0){
-                    [System.Windows.MessageBox]::Show('Error: You need to check at least one endpoint.','SMB Port Check')
+                    Show-MessageBox -Message 'Error: You need to check at least one endpoint.' -Title "PoSh-EasyWin - SMB Port Check" -Options "Ok" -Type "Error" -Sound
                 }
                 else {
                     if (Verify-Action -Title "Verification: SMB Port Check" -Question "Connecting Account:  $Username`n`nConduct a SMB Port Check to the following?" -Computer $($script:ComputerTreeViewSelected -join ', ')) {
@@ -939,7 +1601,7 @@ function:MultiEndpoint-PSSession -ComputerName <endpoints(s)> -Credential <`$cre
                 else {$Username = $PoShEasyWinAccountLaunch }
             
                 if ($script:ComputerTreeViewSelected.count -lt 1){
-                    [System.Windows.MessageBox]::Show('Error: You need to check at least one endpoint.','WinRM Check')
+                    Show-MessageBox -Message 'Error: You need to check at least one endpoint.' -Title "PoSh-EasyWin - WinRM Check" -Options "Ok" -Type "Error" -Sound
                 }
                 else {
                     if (Verify-Action -Title "Verification: WinRM Check" -Question "Connecting Account:  $Username`n`nConduct a WinRM Check to the following?" -Computer $($script:ComputerTreeViewSelected -join ', ')) {
@@ -983,7 +1645,7 @@ function:MultiEndpoint-PSSession -ComputerName <endpoints(s)> -Credential <`$cre
                 $script:ComputerListContextMenuStrip.Close()
 
                 if ($script:ComputerTreeViewSelected.count -eq 0){
-                    [System.Windows.MessageBox]::Show('Error: You need to check at least one endpoint.','NSLookup')
+                    Show-MessageBox -Message 'Error: You need to check at least one endpoint.' -Title "PoSh-EasyWin - NSLookup" -Options "Ok" -Type "Error" -Sound
                 }
                 else {
                     $InformationTabControl.SelectedTab = $Section3HostDataTab
@@ -1049,7 +1711,7 @@ function:MultiEndpoint-PSSession -ComputerName <endpoints(s)> -Credential <`$cre
 
                 Create-TreeViewCheckBoxArray -Endpoint
                 if ($script:ComputerTreeViewSelected.count -eq 0){
-                    [System.Windows.MessageBox]::Show('Error: You need to check at least one endpoint.','Tag All')
+                    Show-MessageBox -Message 'Error: You need to check at least one endpoint.' -Title "PoSh-EasyWin - Tag All" -Options "Ok" -Type "Error" -Sound
                 }
                 else {
                     $InformationTabControl.SelectedTab = $Section3HostDataTab
@@ -1059,7 +1721,7 @@ function:MultiEndpoint-PSSession -ComputerName <endpoints(s)> -Credential <`$cre
             
                     Create-TreeViewCheckBoxArray -Endpoint
                     if ($script:ComputerTreeViewSelected.count -ge 0) {
-                        Show-TagForm -Endpoint
+                        Show-TreeViewTagForm -Endpoint
             
                         $script:ProgressBarEndpointsProgressBar.Maximum  = $script:ComputerTreeViewSelected.count
                         [System.Windows.Forms.TreeNodeCollection]$AllTreeViewNodes = $script:ComputerTreeView.Nodes
@@ -1092,13 +1754,13 @@ function:MultiEndpoint-PSSession -ComputerName <endpoints(s)> -Credential <`$cre
                 Create-TreeViewCheckBoxArray -Endpoint
 
                 if ($script:ComputerTreeViewSelected.count -eq 0){
-                    [System.Windows.MessageBox]::Show('Error: You need to check at least one endpoint.','Move All')
+                    Show-MessageBox -Message 'Error: You need to check at least one endpoint.' -Title "PoSh-EasyWin - Move All" -Options "Ok" -Type "Error" -Sound
                 }
                 else {
                     $InformationTabControl.SelectedTab = $Section3ResultsTab
             
                     if ($script:ComputerTreeViewSelected.count -ge 0) {
-                        Show-MoveForm -Endpoint -Title "Moving $($script:ComputerTreeViewSelected.count) Endpoints"
+                        Show-TreeViewMoveForm -Endpoint -Title "Moving $($script:ComputerTreeViewSelected.count) Endpoints"
             
                         $script:ComputerTreeView.Nodes.Clear()
                         Initialize-TreeViewData -Endpoint
@@ -1107,19 +1769,21 @@ function:MultiEndpoint-PSSession -ComputerName <endpoints(s)> -Credential <`$cre
                         $script:ComputerTreeNodeComboBox.SelectedItem = 'CanonicalName'
             
                         Foreach($Computer in $script:ComputerTreeViewData) {
-                            AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:TreeNodeComputerList -Category $Computer.CanonicalName -Entry $Computer.Name -ToolTip $ComputerData.IPv4Address -IPv4Address $Computer.IPv4Address -Metadata $Computer
+                            Add-TreeViewData -Endpoint -RootNode $script:TreeNodeComputerList -Category $Computer.CanonicalName -Entry $Computer.Name -ToolTip $ComputerData.IPv4Address -IPv4Address $Computer.IPv4Address -Metadata $Computer
                         }
             
-                        Remove-EmptyCategory -Endpoint
+                        Remove-TreeViewEmptyCategory -Endpoint
                         Save-TreeViewData -Endpoint
-                        UpdateState-TreeViewData -Endpoint -NoMessage
+                        Update-TreeViewState -Endpoint -NoMessage
             
                         $StatusListBox.Items.Clear()
                         $StatusListBox.Items.Add("Moved $($script:ComputerTreeNodeToMove.Count) Endpoints")
                         $ResultsListBox.Items.Clear()
                         $ResultsListBox.Items.Add("The following hostnames/IPs have been moved to $($ComputerTreeNodePopupMoveComboBox.SelectedItem):")
                     }
-                    else { ComputerNodeSelectedLessThanOne -Message 'Move Selection' }
+                    else { 
+                        Show-MessageBox -Message "No hostname/IP selected`r`nMake sure to checkbox only one hostname/IP`r`nSelecting a Category will not allow you to connect to multiple hosts" -Title "Move Selection:  Error"
+                    }
                 }      
             }
             if ($This.selectedItem -eq ' - Delete Checked Nodes')  { 
@@ -1128,17 +1792,17 @@ function:MultiEndpoint-PSSession -ComputerName <endpoints(s)> -Credential <`$cre
                 Create-TreeViewCheckBoxArray -Endpoint
 
                 if ($script:ComputerTreeViewSelected.count -eq 0){
-                    [System.Windows.MessageBox]::Show('Error: You need to check at least one endpoint.','Delete All')
+                    Show-MessageBox -Message 'Error: You need to check at least one endpoint.' -Title "PoSh-EasyWin - Delete All" -Options "Ok" -Type "Error" -Sound
                 }
                 else {
                     
                     $InformationTabControl.SelectedTab = $Section3ResultsTab
             
                     if ($script:ComputerTreeViewSelected.count -eq 1) {
-                        $MessageBox = [System.Windows.MessageBox]::Show("Confirm Deletion of $($script:ComputerTreeViewSelected.count) Endpoint Node.`r`n`r`nAll Endpoint metadata and notes will be lost.`r`nAny previously collected data will still remain.",'Delete Endpoint','YesNo')
+                        $MessageBox = Show-MessageBox -Message "Confirm Deletion of $($script:ComputerTreeViewSelected.count) Endpoint Node.`r`n`r`nAll Endpoint metadata and notes will be lost.`r`nAny previously collected data will still remain." -Title "PoSh-EasyWin - Delete Endpoint" -Options "YesNo" -Type "Question" -Sound
                     }
                     elseif ($script:ComputerTreeViewSelected.count -gt 1) {
-                        $MessageBox = [System.Windows.MessageBox]::Show("Confirm Deletion of $($script:ComputerTreeViewSelected.count) Endpoint Nodes.`r`n`r`nAll Endpoint metadata and notes will be lost.`r`nAny previously collected data will still remain.",'Delete Endpoints','YesNo')
+                        $MessageBox = Show-MessageBox -Message "Confirm Deletion of $($script:ComputerTreeViewSelected.count) Endpoint Nodes.`r`n`r`nAll Endpoint metadata and notes will be lost.`r`nAny previously collected data will still remain." -Title "PoSh-EasyWin - Delete Endpoints" -Options "YesNo" -Type "Question" -Sound
                     }
             
                     Switch ( $MessageBox ) {
@@ -1193,10 +1857,12 @@ function:MultiEndpoint-PSSession -ComputerName <endpoints(s)> -Credential <`$cre
                                 $ComputerAndAccountTreeViewTabControl.SelectedTab = $ComputerTreeviewTab
                                 $script:ComputerTreeNodeComboBox.SelectedItem = 'CanonicalName'
                 
-                                Remove-EmptyCategory -Endpoint
+                                Remove-TreeViewEmptyCategory -Endpoint
                                 Save-TreeViewData -Endpoint
                             }
-                            else { ComputerNodeSelectedLessThanOne -Message 'Delete Selection' }
+                            else { 
+                                Show-MessageBox -Message "No hostname/IP selected`r`nMake sure to checkbox only one hostname/IP`r`nSelecting a Category will not allow you to connect to multiple hosts" -Title "Delete Selection:  Error"
+                            }
                         }
                         'No' {
                             $StatusListBox.Items.Clear()

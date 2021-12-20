@@ -7,7 +7,6 @@ To Do List:
 TODO:
 [ ] Small bug, when you click on a node headed in the commands treeview, the commands are counted twice when notifiying you - but they're only executed once.
 [ ] Some users show up with 1 group when they have none
-[ ] Reintegrate other dashboards like . "$Dependencies\Code\System.Windows.Forms\ComboBox\AutoChartSelectChartComboBoxSelectedItem_Services.ps1"
 [ ] Add Get-Help (comment based help) support for each script so they populate a description
 [ ] Cosolidate code... Create-TreeViewCheckBoxArray -Endpoint --vs-- Generate-Computerlist
 [ ] Checking custom group box makes user add commands turn blue... wierd? Check inside Update-Treeivew function
@@ -33,7 +32,32 @@ TODO:
 [ ] Fix bug will reading log files and it's count
 [ ] add code to specify posh chat port number 
 
-!!!!!!!!!!!!!!!!! ADD THIS FEATURE!!!!!!!!!!!1New-PSDrive -Name test -PSProvider FileSystem -Root \\dc01\c$ -Credential $creds
+[ ] Attempt to deprecate session based execution mode, then re-write it better!
+[ ] Modify pktmon to launch in a separate process, detached from the main PEW PID
+[ ] Modify property charts explorer to launch in a separate process, detached from the main PEW PID
+[ ] Troubleshoot viewing of past results when selecing endpoint node
+[ ] Search for all the XXXXXXXXXX that needs to be removed, like in the tooltips
+[ ] when you checkbox "sysmon (64-bit)", and no config is selected, it opens the wrong default directory
+[ ] when you checkbox sysmon, promon or user specified sciprts, they don't turn red
+[ ] re-write user specified scripts to be monitor jobs compatible
+
+==================================================
+v6.7.4 - 
+==================================================
+
+Code management - moved code from various system.windows.forms locations to their respective locations
+	- Individual directories where $script.ps1 files were moved from
+		- Buttons
+		- Checkboxes
+		- CheckedListBox
+		- ComboBox
+		- DataTimePicker
+		- Label
+		- listboxesOpenFileDialog
+		- RadioButton
+		- TextBox
+		- TreeView
+	- This was done in effort to reduce the overall size of the code base... signing each script added a lot of overhead, sometimes 10x more than the individual scripts themselves 
 
 ==================================================
 v6.8.4 - 16 DEC 2021
@@ -469,21 +493,21 @@ Populating Accounts Treeview with data
 	Created "$Dependencies\Code\System.Windows.Forms\RadioButton\AccountsTreeNodeOUHostnameRadioButton.ps1"
 	Moved "$Dependencies\Code\Tree View\Computer\Search-ComputerTreeNode.ps1" to "$Dependencies\Code\Tree View\Search-TreeNode.ps1"
 		- Added code and parameters for Accounts and Endpoint
-	Moved "$Dependencies\Code\Tree View\Computer\Remove-EmptyCategory.ps1" to "$Dependencies\Code\Tree View\Remove-EmptyCategory.ps1"
+	Moved "$Dependencies\Code\Tree View\Computer\Remove-TreeViewEmptyCategory.ps1" to "$Dependencies\Code\Tree View\Remove-TreeViewEmptyCategory.ps1"
 		- Added code and parameters for Accounts and Endpoint
     Moved "$Dependencies\Code\Tree View\Computer\Message-HostAlreadyExists.ps1" to "$Dependencies\Code\Tree View\Message-HostAlreadyExists.ps1"
 		- Added code and parameters for Accounts and Endpoint
-	Moved "$Dependencies\Code\Tree View\Computer\Move-ComputerTreeNode.ps1" to "$Dependencies\Code\Tree View\Computer\MoveNode-TreeViewData.ps1"
+	Moved "$Dependencies\Code\Tree View\Computer\Move-ComputerTreeNode.ps1" to "$Dependencies\Code\Tree View\Computer\Move-TreeViewData.ps1"
 		- Added code and parameters for Accounts and Endpoint
 
 Updated TreeView function names and locations for standarization
-	AddTreeNodeTo-TreeViewData
+	Add-TreeViewData
 	Initialize-TreeViewData
 	Normalize-TreeViewData
 	Save-TreeViewData
 	Search-TreeViewData
 	Update-TreeViewData
-	UpdateState-TreeViewData
+	Update-TreeViewState
 	Update-TreeViewData
 	Acknowledgement-TreeViewData
 
@@ -1121,7 +1145,7 @@ Enumerations Tab
 		- Not needed as you can just import from AD with the Actions Tab
 
 Renamed functions for easier finding
-	- Add-CommandTreeNode  --> Add-NodeCommand
+	- Add-CommandTreeNode  --> Add-TreeViewCommand
 	- Add-ComputerTreeNode --> Add-NodeComputer
 
 Change the following fonts to DarkRed in the computer treeview contextmenu

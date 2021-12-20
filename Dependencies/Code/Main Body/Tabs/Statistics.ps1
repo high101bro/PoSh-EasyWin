@@ -1,3 +1,27 @@
+####################################################################################################
+# ScriptBlocks
+####################################################################################################
+
+$StatisticsViewLogButtonAdd_MouseHover = {
+    Show-ToolTip -Title "View Activity Log File" -Icon "Info" -Message @"
++  Opens the PoSh-EasyWin activity log file.
++  All activities are logged, to inlcude:
+    The launch of PoSh-EasyWin and the assosciated account/privileges.
+    Each queries executed against each host.
+    Network enumeration scannning for hosts: IPs and Ports.
+    Connectivity checks: Ping, WinRM, & RPC.
+    Remote access to hosts, but not commands executed within.
+"@
+}
+
+$StatisticsRefreshButtonAdd_Click = {
+    $StatisticsResults = Get-PoShEasyWinStatistics
+    $PoshEasyWinStatistics.text = $StatisticsResults
+}
+
+####################################################################################################
+# WinForms
+####################################################################################################
 
 $Section2StatisticsTab = New-Object System.Windows.Forms.TabPage -Property @{
     Text = "Statistics  "
@@ -14,8 +38,6 @@ Load-Code "$Dependencies\Code\Execution\Get-PoShEasyWinStatistics.ps1"
 $StatisticsResults = Get-PoShEasyWinStatistics
 
 
-Load-Code "$Dependencies\Code\System.Windows.Forms\Button\StatisticsRefreshButton.ps1"
-. "$Dependencies\Code\System.Windows.Forms\Button\StatisticsRefreshButton.ps1"
 $StatisticsRefreshButton = New-Object System.Windows.Forms.Button -Property @{
     Text     = "Refresh"
     Location = @{ X = $FormScale * 2
@@ -28,15 +50,13 @@ $Section2StatisticsTab.Controls.Add($StatisticsRefreshButton)
 Apply-CommonButtonSettings -Button $StatisticsRefreshButton
 
 
-Load-Code "$Dependencies\Code\System.Windows.Forms\Button\StatisticsViewLogButton.ps1"
-. "$Dependencies\Code\System.Windows.Forms\Button\StatisticsViewLogButton.ps1"
 $StatisticsViewLogButton = New-Object System.Windows.Forms.Button -Property @{
     Text   = "View Log"
     Left   = $StatisticsRefreshButton.Left + $StatisticsRefreshButton.Width + ($FormScale * 5)
     Top    = $FormScale * 5
     Width  = $FormScale * 100
     Height = $FormScale * 22
-    Add_Click      = $StatisticsViewLogButtonAdd_Click
+    Add_Click      = { write.exe $LogFile }
     Add_MouseHover = $StatisticsViewLogButtonAdd_MouseHover
 }
 $Section2StatisticsTab.Controls.Add($StatisticsViewLogButton)
