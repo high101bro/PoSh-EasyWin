@@ -1,4 +1,6 @@
 .gitignore
+inetpub
+inetpub/**
 Collected**Data
 Autosaved**Charts
 Credential**Management
