@@ -61,7 +61,7 @@ function Query-EventLog {
             }
 
             if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
-                if (!$script:Credential) { Create-NewCredentials }
+                if (!$script:Credential) { Set-NewCredential }
                 $InvokeCommandSplat += @{ 
                     Credential = $script:Credential
                 }

@@ -536,7 +536,7 @@ if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 
         else {$StatusListBox.Items.Add("Establishing PS Sessions with $($script:ComputerList.count) Endpoints")}
     
         if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
-            if (!$script:Credential) { Create-NewCredentials }
+            if (!$script:Credential) { Set-NewCredential }
             $PSSession = New-PSSession -ComputerName $script:ComputerList -Credential $script:Credential
             Create-LogEntry -LogFile $LogFile -Message "New-PSSession -ComputerName $script:ComputerList -Credential $script:Credential"
         }
@@ -601,7 +601,7 @@ if ($script:PSWriteHTMLFormOkay -eq $true -and $PSWriteHTMLCheckedListBox.Checke
     if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
         foreach ($TargetComputer in $script:ComputerList) {
             if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
-                if (!$script:Credential) { Create-NewCredentials }
+                if (!$script:Credential) { Set-NewCredential }
 
                 Invoke-Command -ScriptBlock $EndpointDataSystemSnapshotScriptBlock `
                 -ComputerName $TargetComputer `
@@ -649,7 +649,7 @@ if ($script:PSWriteHTMLFormOkay -eq $true -and $PSWriteHTMLCheckedListBox.Checke
     if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
         foreach ($TargetComputer in $script:ComputerList) {
             if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
-                if (!$script:Credential) { Create-NewCredentials }
+                if (!$script:Credential) { Set-NewCredential }
 
                 Invoke-Command -ScriptBlock $ProcessesScriptblock `
                 -ComputerName $TargetComputer `
@@ -681,7 +681,7 @@ if ($script:PSWriteHTMLFormOkay -eq $true -and $PSWriteHTMLCheckedListBox.Checke
     # }
 
     # if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
-    #     if (!$script:Credential) { Create-NewCredentials }
+    #     if (!$script:Credential) { Set-NewCredential }
     #     $InvokeCommandSplat += @{Credential = $script:Credential}
     # }
 
@@ -718,7 +718,7 @@ if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 
     if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
         foreach ($TargetComputer in $script:ComputerList) {
             if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
-                if (!$script:Credential) { Create-NewCredentials }
+                if (!$script:Credential) { Set-NewCredential }
 
                 Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock `
                 -ComputerName $TargetComputer `
@@ -766,7 +766,7 @@ if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 
     if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
         foreach ($TargetComputer in $script:ComputerList) {
             if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
-                if (!$script:Credential) { Create-NewCredentials }
+                if (!$script:Credential) { Set-NewCredential }
 
                 Invoke-Command -ScriptBlock $ConsoleLogonsScriptBlock `
                 -ComputerName $TargetComputer `
@@ -814,7 +814,7 @@ if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 
     if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
         foreach ($TargetComputer in $script:ComputerList) {
             if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
-                if (!$script:Credential) { Create-NewCredentials }
+                if (!$script:Credential) { Set-NewCredential }
 
                 Invoke-Command -ScriptBlock $PowerShellSessionsScriptBlock `
                 -ComputerName $TargetComputer `
@@ -861,7 +861,7 @@ if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 
     if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
         foreach ($TargetComputer in $script:ComputerList) {
             if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
-                if (!$script:Credential) { Create-NewCredentials }
+                if (!$script:Credential) { Set-NewCredential }
 
                 Invoke-Command -ScriptBlock $LogonActivityScriptblock `
                 -ComputerName $TargetComputer `
@@ -932,7 +932,7 @@ if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 
         $StatusListBox.Items.Add("Establishing a PS Session with $script:ComputerList")
 
         if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
-            if (!$script:Credential) { Create-NewCredentials }
+            if (!$script:Credential) { Set-NewCredential }
             $PSSession = New-PSSession -ComputerName $script:ComputerList -Credential $script:Credential
             Create-LogEntry -LogFile $LogFile -Message "New-PSSession -ComputerName $script:ComputerList -Credential $script:Credential"
         }
@@ -1099,7 +1099,7 @@ if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 
     if ($script:PSWriteHTMLFormOkay -eq $true -and $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
         foreach ($TargetComputer in $script:ComputerList) {
             if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
-                if (!$script:Credential) { Create-NewCredentials }
+                if (!$script:Credential) { Set-NewCredential }
 
                 $script:PSWriteHTMLForest = Invoke-Command -ScriptBlock { Get-ADForest } `
                 -ComputerName $TargetComputer `
@@ -1320,7 +1320,7 @@ if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 
     
         foreach ($TargetComputer in $script:ComputerList) {
             if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
-                if (!$script:Credential) { Create-NewCredentials }
+                if (!$script:Credential) { Set-NewCredential }
 
                 $script:PSWriteHTMLForest = Invoke-Command -ScriptBlock { Get-ADForest } `
                 -ComputerName $TargetComputer `
@@ -1497,7 +1497,7 @@ if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 
 
 if ($script:RollCredentialsState -and $script:ComputerListProvideCredentialsCheckBox.checked) {
     Start-Sleep -Seconds 3
-    Generate-NewRollingPassword
+    Set-NewRollingPassword
 }
 
 

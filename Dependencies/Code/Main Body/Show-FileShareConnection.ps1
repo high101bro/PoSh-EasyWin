@@ -1,4 +1,4 @@
-Function Launch-FileShareConnection {
+Function Show-FileShareConnection {
 
     Add-Type -AssemblyName System.Windows.Forms
     Add-Type -AssemblyName System.Windows.Drawing
@@ -216,7 +216,7 @@ Function Launch-FileShareConnection {
             $AccountRights = $SmbFileShareServerAccessRightsTextbox.Text
 
             if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
-                if (-not $script:Credential) { Create-NewCredentials }
+                if (-not $script:Credential) { Set-NewCredential }
             }
 
             $InvokeCommandSplat = @{
@@ -286,7 +286,7 @@ Function Launch-FileShareConnection {
             }
 
             if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
-                if (!$script:Credential) { Create-NewCredentials }
+                if (!$script:Credential) { Set-NewCredential }
                 $InvokeCommandSplat += @{ Credential = $script:Credential }
             }
     
@@ -338,7 +338,7 @@ Function Launch-FileShareConnection {
     $SmbFileShareServerForm.ShowDialog()
 }
 
-Launch-FileShareConnection
+Show-FileShareConnection
 
 
 

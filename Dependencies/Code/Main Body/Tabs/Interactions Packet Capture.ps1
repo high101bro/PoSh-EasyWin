@@ -370,8 +370,8 @@ $Section1PacketCaptureTab.Controls.Add($NetworkEndpointPacketCaptureNetshTraceGr
 
 
 # Provides messages when hovering over various areas in the GUI
-Update-FormProgress "$Dependencies\Code\Main Body\Launch-PktMon.ps1"
-. "$Dependencies\Code\Main Body\Launch-PktMon.ps1"
+Update-FormProgress "$Dependencies\Code\Main Body\Show-PktMon.ps1"
+. "$Dependencies\Code\Main Body\Show-PktMon.ps1"
 
 $NetworkEndpointPacketCaptureGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
     Text   = "Packet Capture using PktMon.exe (WinRM)"
@@ -393,7 +393,7 @@ $NetworkEndpointPacketCaptureGroupBox = New-Object System.Windows.Forms.GroupBox
                 ForeColor = 'Black'
                 Add_Click = {
                     if ($script:ComputerList.Count -gt 0) {
-                        Launch-PktMon
+                        Show-PktMon
                     }
                     else {
                         [System.Windows.Forms.MessageBox]::Show("You need to select one or more endpoints first.","PoSh-EasyWin",'Ok',"Info")

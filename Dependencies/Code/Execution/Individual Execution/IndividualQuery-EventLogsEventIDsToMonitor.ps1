@@ -95,7 +95,7 @@
 
 #         if ($EventLogWinRMRadioButton.Checked) {
 #             if ( $script:ComputerListProvideCredentialsCheckBox.Checked ) {
-#                 if (!$script:Credential) { Create-NewCredentials }
+#                 if (!$script:Credential) { Set-NewCredential }
 
 #                 Invoke-Command -ScriptBlock ${function:Query-EventLogLogsEventIDsIndividualSelectionSessionBased} `
 #                 -ArgumentList @($EventLogsEventIDsToMonitorCheckListBoxCheckedItems,$EventLogsMaximumCollectionTextBoxText,$EventLogsStartTimePickerChecked,$EventLogsStopTimePickerChecked,$EventLogsStartTimePickerValue,$EventLogsStopTimePickerValue) `
@@ -112,7 +112,7 @@
 #         }
 #         else {
 #             if ( $script:ComputerListProvideCredentialsCheckBox.Checked ) {
-#                 if (!$script:Credential) { Create-NewCredentials }
+#                 if (!$script:Credential) { Set-NewCredential }
 
 #                 Start-Job -ScriptBlock {
 #                     param(

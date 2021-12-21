@@ -62,7 +62,7 @@ function Logout-AccountsOnMultipleComputers {
                         }
                     }
                 }
-                if (!$script:Credential) { Create-NewCredentials }
+                if (!$script:Credential) { Set-NewCredential }
                 Invoke-Command -ScriptBlock $ScriptBlock -ComputerName $script:ComputerList -Credential $script:Credential `
                 | Select-Object -ExcludeProperty RunspaceID `
                 | Out-GridView -Title 'Select Accounts To Logout' -PassThru -OutVariable AccountsToLogout
@@ -123,7 +123,7 @@ function Logout-AccountsOnMultipleComputers {
 
     if ($script:RollCredentialsState -and $script:ComputerListProvideCredentialsCheckBox.checked) {
         Start-Sleep -Seconds 3
-        Generate-NewRollingPassword
+        Set-NewRollingPassword
     }
 }
 

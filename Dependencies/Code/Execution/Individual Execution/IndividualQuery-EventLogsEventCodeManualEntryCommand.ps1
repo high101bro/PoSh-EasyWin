@@ -124,7 +124,7 @@ function MonitorJobScriptBlock {
             }
 
             if ( $script:ComputerListProvideCredentialsCheckBox.Checked ) {
-                if (!$script:Credential) { Create-NewCredentials }
+                if (!$script:Credential) { Set-NewCredential }
                 $InvokeCommandSplat += @{Credential = $script:Credential}
             }
 
@@ -132,7 +132,7 @@ function MonitorJobScriptBlock {
         }
         else {
             if ( $script:ComputerListProvideCredentialsCheckBox.Checked ) {
-                if (!$script:Credential) { Create-NewCredentials }
+                if (!$script:Credential) { Set-NewCredential }
 
                 Start-Job -ScriptBlock {
                     param(

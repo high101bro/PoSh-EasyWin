@@ -28,7 +28,7 @@ function Stop-ServicesOnMultipleComputers {
         }
         else {
             if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
-                if (!$script:Credential) { Create-NewCredentials }
+                if (!$script:Credential) { Set-NewCredential }
                 Invoke-Command -ScriptBlock {
                     Get-Service #| Select-Object -Property @{n='PSComputerName';e={$(hostname)}}, *
                 } -ComputerName $script:ComputerList -Credential $script:Credential `
@@ -94,7 +94,7 @@ function Stop-ServicesOnMultipleComputers {
 
     if ($script:RollCredentialsState -and $script:ComputerListProvideCredentialsCheckBox.checked) {
         Start-Sleep -Seconds 3
-        Generate-NewRollingPassword
+        Set-NewRollingPassword
     }
 }
 

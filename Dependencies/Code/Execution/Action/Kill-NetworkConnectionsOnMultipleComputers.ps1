@@ -30,7 +30,7 @@ function Kill-NetworkConnectionsOnMultipleComputers {
         }
         else {
             if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
-                if (!$script:Credential) { Create-NewCredentials }
+                if (!$script:Credential) { Set-NewCredential }
                 $GetNetworkConnectionsTCPEnriched = {
                     if ([bool]((Get-Command Get-NetTCPConnection).ParameterSets | Select-Object -ExpandProperty Parameters | Where-Object Name -match OwningProcess)) {
                         $Processes           = Get-WmiObject -Class Win32_Process
@@ -104,7 +104,7 @@ function Kill-NetworkConnectionsOnMultipleComputers {
                     }
                     $Connections | Select-Object -Property PSComputerName, Protocol,LocalAddress,LocalPort,RemoteAddress,RemotePort,State,ProcessName,ProcessId,ParentProcessId,CreationTime,Duration,CommandLine,ExecutablePath,MD5Hash,OwningProcess,ScriptNote -ErrorAction SilentlyContinue
                 }
-                if (!$script:Credential) { Create-NewCredentials }
+                if (!$script:Credential) { Set-NewCredential }
 
                 Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message 'Invoke-Command -ScriptBlock $GetNetworkConnectionsTCPEnriched -ComputerName $script:ComputerList -Credential $script:Credential'
                 $ResultsListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  Obtaining Network Connections (TCP) with Enriched Data from $($script:ComputerList.count) Endpoints")
@@ -135,7 +135,7 @@ function Kill-NetworkConnectionsOnMultipleComputers {
 
         try {
             if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
-                if (!$script:Credential) { Create-NewCredentials }
+                if (!$script:Credential) { Set-NewCredential }
                 $Session = New-PSSession -ComputerName $Computer -Credential $script:Credential
 
                 $StatusListBox.Items.Clear()
@@ -186,7 +186,7 @@ function Kill-NetworkConnectionsOnMultipleComputers {
 
     if ($script:RollCredentialsState -and $script:ComputerListProvideCredentialsCheckBox.checked) {
         Start-Sleep -Seconds 3
-        Generate-NewRollingPassword
+        Set-NewRollingPassword
     }
 }
 

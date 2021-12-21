@@ -17,7 +17,7 @@ $ExeScriptSelectScript = Get-Content $ExeScriptSelectScriptPath -Raw
 
 foreach ($TargetComputer in $script:ComputerList) {
     if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
-        if (!$script:Credential) { Create-NewCredentials }
+        if (!$script:Credential) { Set-NewCredential }
 
         Start-Job -ScriptBlock {
             param($ExeScriptSelectScript,$ExeScriptScriptOnlyCheckbox,$ExeScriptSelectDirRadioButton,$ExeScriptSelectFileRadioButton,$ExeScriptSelectDirOrFilePath,$TargetComputer,$AdminShare,$TargetFolder,$script:Credential)
@@ -146,7 +146,7 @@ elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'In
 <# DEPRECATED
 foreach ($TargetComputer in $script:ComputerList) {
     if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
-        if (!$script:Credential) { Create-NewCredentials }
+        if (!$script:Credential) { Set-NewCredential }
         $Session = New-PSSession -ComputerName $TargetComputer -Name $TargetComputer -Credential $script:Credential
         Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "[+] New-PSSession -ComputerName $TargetComputer -Credential `$script:Credential"
         $ResultsListBox.Items.Insert(2,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  [!] Creating Session with $TargetComputer")

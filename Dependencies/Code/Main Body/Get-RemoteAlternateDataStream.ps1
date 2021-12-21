@@ -110,7 +110,7 @@ function Get-RemoteAlternateDataStream {
 
 
                 if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
-                    if (!$script:Credential) { Create-NewCredentials }
+                    if (!$script:Credential) { Set-NewCredential }
                     $session = New-PSSession -ComputerName $ExtractStreamDataCurrentComputer -Name "PoSh-EasyWin Extract Stream Data $ExtractStreamDataCurrentComputer" -Credential $script:Credential
                     Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "- New-PSSession -ComputerName $ExtractStreamDataCurrentComputer -Credential $script:Credential"
                 }
@@ -168,7 +168,7 @@ function Get-RemoteAlternateDataStream {
 
         if ($script:RollCredentialsState -and $script:ComputerListProvideCredentialsCheckBox.checked) {
             Start-Sleep -Seconds 3
-            Generate-NewRollingPassword
+            Set-NewRollingPassword
         }
 
         if ($SelectedFilesToExtractStreamData) { Start-Sleep -Seconds 1;  Invoke-Item -Path $RetrieveFilesSaveDirectory }

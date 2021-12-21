@@ -3,7 +3,7 @@ $Section3HostDataTab = New-Object System.Windows.Forms.TabPage -Property @{
     Name = "Host Data Tab"
     Font = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     UseVisualStyleBackColor = $True
-    Add_click = { script:Minimize-MonitorJobsTab }
+    Add_click = { Resize-MonitorJobsTab -Minimize }
     ImageIndex = 3
 }
 $InformationTabControl.Controls.Add($Section3HostDataTab)
@@ -1056,7 +1056,7 @@ $Section3EndpointDataUpdateDataButton = New-Object System.Windows.Forms.Button -
         switch ($Verify) {
             'Yes'{
                 if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
-                    if (!$script:Credential) { Create-NewCredentials }
+                    if (!$script:Credential) { Set-NewCredential }
                     Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Credentials Used: $($script:Credential.UserName)"
                     $Username = $script:Credential.UserName
                     $Password = '"PASSWORD HIDDEN"'
@@ -1107,7 +1107,7 @@ $Section3EndpointDataUpdateDataButton = New-Object System.Windows.Forms.Button -
                     Update-TreeViewData -Endpoint -TreeView $script:ComputerTreeView.Nodes
                     if ($script:RollCredentialsState -and $script:ComputerListProvideCredentialsCheckBox.checked) {
                         Start-Sleep -Seconds 3
-                        Generate-NewRollingPassword
+                        Set-NewRollingPassword
                     }               
         
                     Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock { Get-ADComputer -Filter {Name -eq $ADEndpoint} -Properties Name, CanonicalName, OperatingSystem, OperatingSystemHotfix, OperatingSystemServicePack, Enabled, LockedOut, LogonCount, Created, Modified, LastLogonDate, IPv4Address, MACAddress, MemberOf, isCriticalSystemObject, HomedirRequired, Location, ProtectedFromAccidentalDeletion, TrustedForDelegation, SID } -ComputerName $($ImportFromADWinRMManuallEntryTextBox.Text) -Credential [ $UserName | $Password ]"
@@ -1158,7 +1158,7 @@ $Section3EndpointDataUpdateDataButton = New-Object System.Windows.Forms.Button -
                     Update-TreeViewData -Endpoint -TreeView $script:ComputerTreeView.Nodes
                     if ($script:RollCredentialsState -and $script:ComputerListProvideCredentialsCheckBox.checked) {
                         Start-Sleep -Seconds 3
-                        Generate-NewRollingPassword
+                        Set-NewRollingPassword
                     }               
         
                     Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock { Get-ADComputer -Filter {Name -eq $ADEndpoint} -Properties Name, CanonicalName, OperatingSystem, OperatingSystemHotfix, OperatingSystemServicePack, Enabled, LockedOut, LogonCount, Created, Modified, LastLogonDate, IPv4Address, MACAddress, MemberOf, isCriticalSystemObject, HomedirRequired, Location, ProtectedFromAccidentalDeletion, TrustedForDelegation, SID } -ComputerName $($ImportFromADWinRMManuallEntryTextBox.Text)"

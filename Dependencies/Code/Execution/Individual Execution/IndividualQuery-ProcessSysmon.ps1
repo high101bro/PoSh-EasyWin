@@ -139,7 +139,7 @@ function IndividualQuery-ProcessSysmon {
             
 
             if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
-                if (!$script:Credential) { Create-NewCredentials }
+                if (!$script:Credential) { Set-NewCredential }
                 $InvokeCommandSplat += @{Credential = $script:Credential}
             }
             Invoke-Command @InvokeCommandSplat | Select-Object PSComputerName, *

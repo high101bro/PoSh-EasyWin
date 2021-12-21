@@ -43,8 +43,8 @@ $script:Section3MonitorJobsResizeButton = New-Object System.Windows.Forms.Button
     Font      = New-Object System.Drawing.Font($Font,$($FormScale * 11),1,2,1)
     ForeColor = 'Blue'
     Add_Click = {
-        if ($this.text -eq     "^ Maximize Tab") { script:Maximize-MonitorJobsTab }
-        elseif ($this.text -eq "v Minimize Tab") { script:Minimize-MonitorJobsTab }
+        if ($this.text -eq     "^ Maximize Tab") { Resize-MonitorJobsTab -Maximize }
+        elseif ($this.text -eq "v Minimize Tab") { Resize-MonitorJobsTab -Minimize }
     }
 }
 $script:Section3MonitorJobsGroupBox.Controls.Add($script:Section3MonitorJobsResizeButton)
@@ -115,7 +115,7 @@ $script:Section3MonitorJobRemoveButton = New-Object System.Windows.Forms.Button 
             $RemoveAllJobsVerify = [System.Windows.Forms.MessageBox]::Show("Do you want to stop and remove all jobs?`n`nThis method stops running jobs and removes them from view, to include those jobs 'Monitor' checked. It will not delete the files regardless if their 'keep data' box is not checked.",'PoSh-EasyWin','YesNo','Warning')
             switch ($RemoveAllJobsVerify) {
                 'Yes'{
-                    script:Minimize-MonitorJobsTab
+                    Resize-MonitorJobsTab -Minimize
 
                     Get-Variable | Where-Object {$_.Name -match 'Section3MonitorJobPanel'} | Foreach-Object {
                         Invoke-Expression "`$script:Section3MonitorJobsTab.Controls.Remove(`$script:$($_.Name))"

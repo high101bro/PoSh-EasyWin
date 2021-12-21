@@ -641,7 +641,7 @@ function Update-TreeViewData {
         Apply-CommonButtonSettings -Button $ActionsTabQuarantineEndpointsButton
     }
 
-    script:Minimize-MonitorJobsTab
+    Resize-MonitorJobsTab -Minimize
     Check-IfScanExecutionReady
 }
 

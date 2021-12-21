@@ -62,7 +62,7 @@ $OptionViewReadMeButton = New-Object System.Windows.Forms.Button -Property @{
     Width  = $FormScale * 100
     Height = $FormScale * 22
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    Add_Click = { Launch-ReadMe -ReadMe }
+    Add_Click = { Show-ReadMe -ReadMe }
 }
 $Section2OptionsTab.Controls.Add($OptionViewReadMeButton)
 Apply-CommonButtonSettings -Button $OptionViewReadMeButton

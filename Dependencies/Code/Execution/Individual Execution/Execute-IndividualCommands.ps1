@@ -52,7 +52,7 @@
 #     if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
 #         foreach ($TargetComputer in $script:ComputerList) {
 #             if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
-#                 if (!$script:Credential) { Create-NewCredentials }
+#                 if (!$script:Credential) { Set-NewCredential }
 
 #                 Invoke-Command -ScriptBlock {param($CommandsToExecuteScriptBlock); Invoke-Expression {$CommandsToExecuteScriptBlock} } `
 #                 -ArgumentList $CommandsToExecuteScriptBlock
@@ -179,7 +179,7 @@
                 # Checks for the type of command selected and assembles the command to be executed
                 $OutputFileFileType = ""
                 if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
-                    if (!$script:Credential) { Create-NewCredentials }
+                    if (!$script:Credential) { Set-NewCredential }
                     Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Credentials Used: $($script:Credential.UserName)"
 
 

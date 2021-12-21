@@ -73,7 +73,7 @@ $CommandTreeViewQueryMethodSelectionComboBoxAdd_SelectedIndexChanged = {
 
 $ProvideCredentialsButtonAdd_Click = {
     $InformationTabControl.SelectedTab = $Section3ResultsTab
-    Launch-CredentialManagementForm
+    Show-CredentialManagementForm
 }
 
 $ProvideCredentialsButtonAdd_MouseHover = {
@@ -173,7 +173,7 @@ $ComputerListProvideCredentialsCheckBoxAdd_Click = {
     elseif ($script:ComputerListProvideCredentialsCheckBox.Checked -and -not (Test-Path "$script:CredentialManagementPath\Specified Credentials.txt")) {
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add("Credentials:  There are no credentials stored")
-        Launch-CredentialManagementForm
+        Show-CredentialManagementForm
     }
     else {
         $StatusListBox.Items.Clear()
@@ -206,13 +206,6 @@ $ComputerListProvideCredentialsCheckBoxAdd_MouseHover = {
 Update-FormProgress "$Dependencies\Code\Tree View\Create-TreeViewCheckBoxArray.ps1"
 . "$Dependencies\Code\Tree View\Create-TreeViewCheckBoxArray.ps1"
 
-Update-FormProgress "$Dependencies\Code\Tree View\Computer\Show-MessageBox.ps1"
-. "$Dependencies\Code\Tree View\Computer\Show-MessageBox.ps1"
-
-Update-FormProgress "$Dependencies\Code\Main Body\Execution\Verify-Action.ps1"
-. "$Dependencies\Code\Main Body\Execution\Verify-Action.ps1"
-
-
 $Section3ActionTab = New-Object System.Windows.Forms.TabPage -Property @{
     Text   = "Action  "
     Left   = $FormScale * 3
@@ -227,12 +220,12 @@ $MainRightTabControl.Controls.Add($Section3ActionTab)
 
 
 # Rolls the credenaisl: 250 characters of random: abcdefghiklmnoprstuvwxyzABCDEFGHKLMNOPRSTUVWXYZ1234567890
-Update-FormProgress "$Dependencies\Code\Credential Management\Generate-NewRollingPassword.ps1"
-. "$Dependencies\Code\Credential Management\Generate-NewRollingPassword.ps1"
+Update-FormProgress "$Dependencies\Code\Credential Management\Set-NewRollingPassword.ps1"
+. "$Dependencies\Code\Credential Management\Set-NewRollingPassword.ps1"
 
 # Used to create new credentials (Get-Credential), create a log entry, and save an encypted local copy
-Update-FormProgress "$Dependencies\Code\Credential Management\Create-NewCredentials.ps1"
-. "$Dependencies\Code\Credential Management\Create-NewCredentials.ps1"
+Update-FormProgress "$Dependencies\Code\Credential Management\Set-NewCredential.ps1"
+. "$Dependencies\Code\Credential Management\Set-NewCredential.ps1"
 # Encrypt an exported credential object
 # The Export-Clixml cmdlet encrypts credential objects by using the Windows Data Protection API.
 # The encryption ensures that only your user account on only that computer can decrypt the contents of the
@@ -241,8 +234,8 @@ Update-FormProgress "$Dependencies\Code\Credential Management\Create-NewCredenti
 # Code to launch the Credential Management Form
 # Provides the abiltiy to select create, select, and save credentials
 # Provides the option to enable password auto rolling
-Update-FormProgress "$Dependencies\Code\Credential Management\Launch-CredentialManagementForm.ps1"
-. "$Dependencies\Code\Credential Management\Launch-CredentialManagementForm.ps1"
+Update-FormProgress "$Dependencies\Code\Credential Management\Show-CredentialManagementForm.ps1"
+. "$Dependencies\Code\Credential Management\Show-CredentialManagementForm.ps1"
 
 
 $ManageCredentialsGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
@@ -288,15 +281,15 @@ $PivotExecutionGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
     Height = $FormScale * 73
 }
 
-    Update-FormProgress "$Dependencies\Code\Main Body\Launch-ManagePortProxy.ps1"
-    . "$Dependencies\Code\Main Body\Launch-ManagePortProxy.ps1"
+    Update-FormProgress "$Dependencies\Code\Main Body\Show-PortProxy.ps1"
+    . "$Dependencies\Code\Main Body\Show-PortProxy.ps1"
     $ManageWindowsPortProxyButton = New-Object System.Windows.Forms.Button -Property @{
         Text   = "Manage Port Proxy"
         Left   = $FormScale * 3
         Top    = $FormScale * 10
         Width  = $FormScale * 122
         Height = $FormScale * 22
-        Add_Click      = $ManageWindowsPortProxyButtonAdd_Click
+        Add_Click = { Show-PortProxy }
         #Add_MouseHover = $ManageWindowsPortProxyButtonAdd_MouseHover
     }
     $PivotExecutionGroupBox.Controls.Add($ManageWindowsPortProxyButton)

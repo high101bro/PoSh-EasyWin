@@ -80,7 +80,7 @@ function Check-Connection {
                 # Test-NetConnection -CommonTCPPort WINRM -ComputerName <Target>
 
                 #if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
-                #    if (!$script:Credential) { Create-NewCredentials }
+                #    if (!$script:Credential) { Set-NewCredential }
                 #    $CheckCommand = Test-WSman -ComputerName $target #-Credential $script:Credential
                 #}
 

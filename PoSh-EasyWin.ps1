@@ -328,9 +328,9 @@ else {
 
 
 # Scales the PoSh-EasyWin GUI as desired by the user
-. "$Dependencies\Code\Main Body\script:Launch-FormScaleGUI.ps1"
+. "$Dependencies\Code\Main Body\Show-FormScaleFrom.ps1"
 if (-not (Test-Path "$PoShSettings\Form Scaling Modifier.txt")){
-    script:Launch-FormScaleGUI -Extended
+    Show-FormScaleFrom -Extended
     if ($script:ResolutionSetOkay) {$null}
     else {exit}
     $FormScale = $script:ResolutionCheckScalingTrackBar.Value / 10
@@ -341,8 +341,8 @@ else {
 
 
 # Displays essential info about the tool, best practies, etc - opens immedately during first time launch, and can be found within the readme tab
-. "$Dependencies\Code\Main Body\Launch-ReadMe.ps1"
-if (-not (Test-Path "$PoShHome\Settings\User Notice And Acknowledgement.txt")) { Launch-ReadMe }
+. "$Dependencies\Code\Main Body\Show-ReadMe.ps1"
+if (-not (Test-Path "$PoShHome\Settings\User Notice And Acknowledgement.txt")) { Show-ReadMe }
 
 
 # Check for, and prompt to install the PSWriteHTML module
@@ -375,7 +375,7 @@ if (Test-Path -Path "$Dependencies\Modules\PSWriteHTML"){
 }
 
 # Progress Bar Load Screen Code
-. "$Dependencies\Code\Main Body\Launch-ProgressBarForm.ps1"
+. "$Dependencies\Code\Main Body\Show-ProgressBar.ps1"
 
 
 #============================================================================================================================================================
@@ -390,7 +390,12 @@ if (Test-Path -Path "$Dependencies\Modules\PSWriteHTML"){
 #Start Progress bar form loading
 $global:ScriptBlockForGuiLoadAndProgressBar = {
     
+Update-FormProgress "$Dependencies\Code\Main Body\Execution\Verify-Action.ps1"
+. "$Dependencies\Code\Main Body\Execution\Verify-Action.ps1"
 
+Update-FormProgress "$Dependencies\Code\Main Body\Show-MessageBox.ps1"
+. "$Dependencies\Code\Tree View\Computer\Show-MessageBox.ps1"
+    
 function Update-FormProgress {
     param(
         [string]$ScriptPath = '...'
@@ -423,27 +428,32 @@ function Set-CheckState {
 }
 
 
-function script:Maximize-MonitorJobsTab {
-    $script:Section3MonitorJobsResizeButton.text = "v Minimize Tab"
-    $InformationPanel.Top    = $ComputerAndAccountTreeNodeViewPanel.Top
-    $InformationPanel.Height = $MainCenterPanel.Height + $InformationPanel.Height
-    $InformationPanel.bringtofront()
-    $InformationTabControl.Height = $ComputerAndAccountTreeNodeViewPanel.Height
-}            
-function script:Minimize-MonitorJobsTab {
-    $script:Section3MonitorJobsResizeButton.text = "^ Maximize Tab"
-    $InformationPanel.Top    = $MainCenterPanel.Top + $MainCenterPanel.Height
-    $InformationPanel.Height = $FormScale * 357
-    $InformationPanel.bringtofront()
-    $InformationTabControl.Height = $InformationPanel.Height
+function Resize-MonitorJobsTab {
+    param(
+        [switch]$Minimize,
+        [switch]$Maximize
+    )
+    if ($Minimize) {
+        $script:Section3MonitorJobsResizeButton.text = "^ Maximize Tab"
+        $InformationPanel.Top  = $MainCenterPanel.Top + $MainCenterPanel.Height
+        $InformationPanel.Height = $FormScale * 357
+        $InformationPanel.bringtofront()
+        $InformationTabControl.Height = $InformationPanel.Height    
+    }
+    if ($Maximize) {
+        $script:Section3MonitorJobsResizeButton.text = "v Minimize Tab"
+        $InformationPanel.Top = $ComputerAndAccountTreeNodeViewPanel.Top
+        $InformationPanel.Height = $MainCenterPanel.Height + $InformationPanel.Height
+        $InformationPanel.bringtofront()
+        $InformationTabControl.Height = $ComputerAndAccountTreeNodeViewPanel.Height    
+    }
 }
-
 
 # Launches the accompanying Notifications Icon helper in the  System Tray
 Update-FormProgress "$Dependencies\Code\Main Body\Launch-SystemTrayNotifyIcon.ps1"
 . "$Dependencies\Code\Main Body\Launch-SystemTrayNotifyIcon.ps1"
 
-# The Launch-ProgressBarForm.ps1 is topmost upon loading to ensure it's displayed intially, but is then able to be move unpon
+# The Show-ProgressBar.ps1 is topmost upon loading to ensure it's displayed intially, but is then able to be move unpon
 $ResolutionCheckForm.topmost = $false
 
 $PoShEasyWinAccountLaunch = [System.Security.Principal.WindowsIdentity]::GetCurrent().Name
@@ -1702,7 +1712,7 @@ $InformationPanel = New-Object System.Windows.Forms.Panel -Property @{
         Dock         = 'Fill'
         Font         = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,2,1)
         ShowToolTips = $True
-        Add_Click = { script:Minimize-MonitorJobsTab }
+        Add_Click = { Resize-MonitorJobsTab -Minimize }
         Add_MouseHover = { $this.bringtofront() }
         ImageList = $InformationPanelImageList
     }
@@ -2124,8 +2134,8 @@ $ExecuteScriptHandler = {
                 #if ($ExeScriptUserSpecifiedExecutableAndScriptCheckbox.checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualPush-ExecutableAndScript.ps1" }
 
                 Start-Sleep -Seconds 1
-                if ($script:Section3MonitorJobsResizeCheckbox.checked){
-                    script:Maximize-MonitorJobsTab
+                if ($script:Section3MonitorJobsResizeCheckbox.checked) {
+                    Resize-MonitorJobsTab -Maximize
                 }
                 $PoShEasyWin.Refresh()
                 Completed-QueryExecution
@@ -2162,7 +2172,7 @@ $ExecuteScriptHandler = {
 
             if (Verify-Action -Title "Execution Verification" -Question "Connecting Account:  $Username`n`nNumber of Queries:  $($QueryCount)`n`nEndpoints:  $($script:ComputerList.count)" -Computer $($script:ComputerList -join ', ')) {
                 if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
-                    if (!$script:Credential) { Create-NewCredentials }
+                    if (!$script:Credential) { Set-NewCredential }
                     $PSSession = New-PSSession -ComputerName $script:ComputerList -Credential $script:Credential | Sort-Object ComputerName
                 }
                 else {
@@ -2344,7 +2354,7 @@ $ScriptBlockProgressBarInput = {
 }
 
 if ((Test-Path "$PoShHome\Settings\User Notice And Acknowledgement.txt")) {
-    Launch-ProgressBarForm -FormTitle "PoSh-EasyWin  [$InitialScriptLoadTime]" -ShowImage -ScriptBlockProgressBarInput $ScriptBlockProgressBarInput
+    Show-ProgressBar -FormTitle "PoSh-EasyWin  [$InitialScriptLoadTime]" -ShowImage -ScriptBlockProgressBarInput $ScriptBlockProgressBarInput
     $script:ProgressBarSelectionForm.Topmost = $false
 }
 

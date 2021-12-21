@@ -43,7 +43,7 @@ $EventViewerConnectionButtonAdd_Click = {
         $StatusListBox.Items.Add("Event Viewer:  $($script:ComputerTreeViewSelected)")
 
         if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
-            if (!$script:Credential) { Create-NewCredentials }
+            if (!$script:Credential) { Set-NewCredential }
 
             $ResultsListBox.Items.Add("start-process powershell.exe -ArgumentList '-WindowStyle Hidden -Command Show-EventLog -ComputerName $script:ComputerTreeViewSelected' -Credential <Credential> -WindowStyle Hidden")
             #start-process -FilePath 'C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe' -ArgumentList "-WindowStyle Hidden -Command Show-eventLog -ComputerName $script:ComputerTreeViewSelected" -Credential $script:Credential -WindowStyle Hidden
@@ -59,7 +59,7 @@ $EventViewerConnectionButtonAdd_Click = {
 
         if ($script:RollCredentialsState -and $script:ComputerListProvideCredentialsCheckBox.checked) {
             Start-Sleep -Seconds 3
-            Generate-NewRollingPassword
+            Set-NewRollingPassword
         }
     }
     else {
@@ -111,7 +111,7 @@ $EventViewerCollectionButtonAdd_Click = {
         $StatusListBox.Items.Add("Event Viewer:  $($script:ComputerTreeViewSelected)")
 
         if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
-            if (!$script:Credential) { Create-NewCredentials }
+            if (!$script:Credential) { Set-NewCredential }
 
             $Session = New-PSSession -ComputerName $script:ComputerTreeViewSelected -Credential $script:Credential
             Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "New-PSSession -ComputerName $script:ComputerTreeViewSelected -Credential $script:Credential"
@@ -236,7 +236,7 @@ Start-Process 'PowerShell' -ArgumentList '-NoProfile',
 
         if ($script:RollCredentialsState -and $script:ComputerListProvideCredentialsCheckBox.checked) {
             Start-Sleep -Seconds 3
-            Generate-NewRollingPassword
+            Set-NewRollingPassword
         }
     }
     else {
@@ -288,7 +288,7 @@ $ComputerListSSHButtonAdd_Click = {
         $StatusListBox.Items.Add("SSH:  $($script:ComputerTreeViewSelected)")
         #Removed For Testing#$ResultsListBox.Items.Clear()
         if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
-            if (!$script:Credential) { Create-NewCredentials }
+            if (!$script:Credential) { Set-NewCredential }
             Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Credentials Used: $($script:Credential.UserName)"
             $Username = $script:Credential.UserName
             $Password = $script:Credential.GetNetworkCredential().Password
@@ -311,7 +311,7 @@ $ComputerListSSHButtonAdd_Click = {
 
         if ($script:RollCredentialsState -and $script:ComputerListProvideCredentialsCheckBox.checked) {
             Start-Sleep -Seconds 3
-            Generate-NewRollingPassword
+            Set-NewRollingPassword
         }
     }
     else {
@@ -360,7 +360,7 @@ $ComputerListRDPButtonAdd_Click = {
         # This brings specific tabs to the forefront/front view
         $InformationTabControl.SelectedTab = $Section3ResultsTab
         if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
-            if (!$script:Credential) { Create-NewCredentials }
+            if (!$script:Credential) { Set-NewCredential }
 
             Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Credentials Used: $($script:Credential.UserName)"
 
@@ -392,7 +392,7 @@ $ComputerListRDPButtonAdd_Click = {
 
             if ($script:RollCredentialsState -and $script:ComputerListProvideCredentialsCheckBox.checked) {
                 Start-Sleep -Seconds 3
-                Generate-NewRollingPassword
+                Set-NewRollingPassword
             }
         }
         else {
@@ -460,7 +460,7 @@ $ComputerListPSSessionPivotButtonAdd_Click = {
         $StatusListBox.Items.Add("Pivot-PSSession:  $($script:ComputerTreeViewSelected)")
         #Removed For Testing#$ResultsListBox.Items.Clear()
         if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
-            if (-not $script:Credential) { Create-NewCredentials }
+            if (-not $script:Credential) { Set-NewCredential }
             Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Credentials Used: $($script:Credential.UserName)"
             #$Username = $script:Credential.UserName
             #$Password = $script:Credential.GetNetworkCredential().Password
@@ -482,7 +482,7 @@ $ComputerListPSSessionPivotButtonAdd_Click = {
 
         if ($script:RollCredentialsState -and $script:ComputerListProvideCredentialsCheckBox.checked) {
             Start-Sleep -Seconds 3
-            Generate-NewRollingPassword
+            Set-NewRollingPassword
         }
     }
     else {
@@ -536,7 +536,7 @@ $ComputerListPSSessionButtonAdd_Click = {
         $StatusListBox.Items.Add("Enter-PSSession:  $($script:ComputerTreeViewSelected)")
         #Removed For Testing#$ResultsListBox.Items.Clear()
         if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
-            if (-not $script:Credential) { Create-NewCredentials }
+            if (-not $script:Credential) { Set-NewCredential }
             Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Credentials Used: $($script:Credential.UserName)"
             $Username = $script:Credential.UserName
             $Password = $script:Credential.GetNetworkCredential().Password
@@ -563,7 +563,7 @@ $ComputerListPSSessionButtonAdd_Click = {
 
         if ($script:RollCredentialsState -and $script:ComputerListProvideCredentialsCheckBox.checked) {
             Start-Sleep -Seconds 3
-            Generate-NewRollingPassword
+            Set-NewRollingPassword
         }
     }
     else {
@@ -615,7 +615,7 @@ $ComputerListPsExecButtonAdd_Click = {
         $StatusListBox.Items.Add("PsExec:  $($script:ComputerTreeViewSelected)")
         #Removed For Testing#$ResultsListBox.Items.Clear()
         if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
-            if (!$script:Credential) { Create-NewCredentials }
+            if (!$script:Credential) { Set-NewCredential }
             Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Credentials Used: $($script:Credential.UserName)"
             $Username = $script:Credential.UserName
             $Password = $script:Credential.GetNetworkCredential().Password
@@ -641,7 +641,7 @@ $ComputerListPsExecButtonAdd_Click = {
 
         if ($script:RollCredentialsState -and $script:ComputerListProvideCredentialsCheckBox.checked) {
             Start-Sleep -Seconds 3
-            Generate-NewRollingPassword
+            Set-NewRollingPassword
         }
     }
     else {
@@ -854,7 +854,7 @@ Command:
                         Root       = "\\$($script:ComputerListEndpointNameToolStripLabel.text)\c$"
                     } 
                     if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
-                        if (!$script:Credential) { Create-NewCredentials }
+                        if (!$script:Credential) { Set-NewCredential }
                         $NewPSDriveSplat += @{Credential = $script:Credential}
                     }
                     New-PSDrive @NewPSDriveSplat
@@ -864,7 +864,7 @@ Command:
 
                     if ($script:RollCredentialsState -and $script:ComputerListProvideCredentialsCheckBox.checked) {
                         Start-Sleep -Seconds 3
-                        Generate-NewRollingPassword
+                        Set-NewRollingPassword
                     }            
                 }
                 ToolTipText = "
@@ -1329,7 +1329,7 @@ Command:
                         $PoShEasyWinNewPSSessions = $null
 
                         if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
-                            if (-not $script:Credential) { Create-NewCredentials }
+                            if (-not $script:Credential) { Set-NewCredential }
                             $PoShEasyWinNewPSSessions = New-PSSession -ComputerName $script:SessionsDontExistList -Credential $script:Credential
                             Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "New-PSSession -ComputerName $($script:SessionsDontExistList) -Credential $script:Credential"
                         }
@@ -1347,7 +1347,7 @@ Command:
             
                     if ($script:RollCredentialsState -and $script:ComputerListProvideCredentialsCheckBox.checked) {
                         Start-Sleep -Seconds 3
-                        Generate-NewRollingPassword
+                        Set-NewRollingPassword
                     }
                 }
                 else {
@@ -1455,7 +1455,7 @@ Command:
                     $StatusListBox.Items.Add("MultiEndpoint-PSSession:  $($script:ComputerTreeViewSelected)")
                     #Removed For Testing#$ResultsListBox.Items.Clear()
                     if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
-                        if (-not $script:Credential) { Create-NewCredentials }
+                        if (-not $script:Credential) { Set-NewCredential }
                         
                         Invoke-Expression @"
 Start-Process 'PowerShell' -ArgumentList '-NoExit', '-NoProfile', '-ExecutionPolicy Bypass',
@@ -1475,7 +1475,7 @@ Start-Process 'PowerShell' -ArgumentList '-NoExit', '-NoProfile', '-ExecutionPol
             
                     if ($script:RollCredentialsState -and $script:ComputerListProvideCredentialsCheckBox.checked) {
                         Start-Sleep -Seconds 3
-                        Generate-NewRollingPassword
+                        Set-NewRollingPassword
                     }
                 }
                 else {

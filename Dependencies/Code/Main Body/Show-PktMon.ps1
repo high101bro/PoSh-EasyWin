@@ -1,4 +1,4 @@
-Function Launch-PktMon {
+Function Show-PktMon {
 
 #https://docs.microsoft.com/en-us/windows-server/networking/technologies/pktmon/pktmon-syntax
 Add-Type -AssemblyName System.Windows.Forms
@@ -54,7 +54,7 @@ Open Sessions: $($session | Where-Object {$_.State -match 'Open'})
             $script:ProgressBarSelectionForm.Hide()            
         }
 
-        Launch-ProgressBarForm -FormTitle "PoSh-EasyWin - Establishing Connection" -ScriptBlockProgressBarInput $ScriptBlock -Height $($FormScale * 155)
+        Show-ProgressBar -FormTitle "PoSh-EasyWin - Establishing Connection" -ScriptBlockProgressBarInput $ScriptBlock -Height $($FormScale * 155)
 
         $script:SupportsType = $null
         $script:SupportsType = Invoke-Command -ScriptBlock {PktMon start help | Select-String -Pattern '--type'} -Session $script:PSSessionPktMon

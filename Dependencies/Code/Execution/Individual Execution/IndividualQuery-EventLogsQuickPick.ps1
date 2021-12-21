@@ -130,7 +130,7 @@ if ($EventLogWinRMRadioButton.Checked) {
                     }
         
                     if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
-                        if (!$script:Credential) { Create-NewCredentials }
+                        if (!$script:Credential) { Set-NewCredential }
                         $InvokeCommandSplat += @{Credential = $script:Credential}
                     }
                     
@@ -160,7 +160,7 @@ if ($EventLogWinRMRadioButton.Checked) {
 }
 else {
     if ( $script:ComputerListProvideCredentialsCheckBox.Checked ) {
-        if (!$script:Credential) { Create-NewCredentials }
+        if (!$script:Credential) { Set-NewCredential }
 
         foreach ($Query in $script:EventLogQueries) {
             if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match $Query.Name) {

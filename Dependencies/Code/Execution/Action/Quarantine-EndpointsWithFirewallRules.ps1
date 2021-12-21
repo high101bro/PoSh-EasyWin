@@ -68,7 +68,7 @@ CAUTION! If you make a bad entry, you may cause the endpoints to become inaccess
             foreach ($computer in $script:ComputerList) {
                 try {
                     if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
-                        if (!$script:Credential) { Create-NewCredentials }
+                        if (!$script:Credential) { Set-NewCredential }
                         $session = New-PSSession -ComputerName $Computer -Credential $script:Credential
                         Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message 'New-PSSession -ComputerName $Computer -Credential $script:Credential'
                         $StatusListBox.Items.Clear()
@@ -270,7 +270,7 @@ CAUTION! If you make a bad entry, you may cause the endpoints to become inaccess
 
     if ($script:RollCredentialsState -and $script:ComputerListProvideCredentialsCheckBox.checked) {
         Start-Sleep -Seconds 3
-        Generate-NewRollingPassword
+        Set-NewRollingPassword
     }
 }
 

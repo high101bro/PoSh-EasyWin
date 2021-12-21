@@ -997,7 +997,7 @@ if ($MonitorMode) {
 
                     if (`$script:RollCredentialsState -and `$script:ComputerListProvideCredentialsCheckBox.checked) {
                         Start-Sleep -Seconds 3
-                        Generate-NewRollingPassword
+                        Set-NewRollingPassword
                     }
                 }
             }
@@ -1027,7 +1027,7 @@ if ($MonitorMode) {
 
                     if (`$script:RollCredentialsState -and `$script:ComputerListProvideCredentialsCheckBox.checked) {
                         Start-Sleep -Seconds 3
-                        Generate-NewRollingPassword
+                        Set-NewRollingPassword
                     }
                 }
             }
@@ -1446,7 +1446,7 @@ Start-Process 'PowerShell' -ArgumentList '-NoProfile',
 
                     if (`$script:RollCredentialsState -and `$script:ComputerListProvideCredentialsCheckBox.checked) {
                         Start-Sleep -Seconds 3
-                        Generate-NewRollingPassword
+                        Set-NewRollingPassword
                     }
                 }
             }
@@ -1486,7 +1486,7 @@ Start-Process 'PowerShell' -ArgumentList '-NoProfile',
 
                     if (`$script:RollCredentialsState -and `$script:ComputerListProvideCredentialsCheckBox.checked) {
                         Start-Sleep -Seconds 3
-                        Generate-NewRollingPassword
+                        Set-NewRollingPassword
                     }
                 }
             }
@@ -1840,7 +1840,7 @@ Start-Process 'PowerShell' -ArgumentList '-NoProfile',
                                                 `$ChartGenerationOptionsForm.Hide()
 
                                                 # Generates Column Charts
-                                                Launch-ProgressBarForm -FormTitle "Generating Charts [Column] Unique Values Found" -ProgressBarImage "$Dependencies\Images\PowerShell_Charts.png" -ShowImage -ScriptBlockProgressBarInput `$ScriptBlockProgressBar1Input$JobId
+                                                Show-ProgressBar -FormTitle "Generating Charts [Column] Unique Values Found" -ProgressBarImage "$Dependencies\Images\PowerShell_Charts.png" -ShowImage -ScriptBlockProgressBarInput `$ScriptBlockProgressBar1Input$JobId
 
                                                 `$script:AutoChartsForm.ShowDialog()
                                             }
@@ -1849,7 +1849,7 @@ Start-Process 'PowerShell' -ArgumentList '-NoProfile',
                                             `$ChartGenerationOptionsForm.Hide()
 
                                             # Generates Column Charts
-                                            Launch-ProgressBarForm -FormTitle "Generating Charts [Column] Unique Values Found" -ProgressBarImage "$Dependencies\Images\PowerShell_Charts.png" -ShowImage -ScriptBlockProgressBarInput `$ScriptBlockProgressBar1Input$JobId
+                                            Show-ProgressBar -FormTitle "Generating Charts [Column] Unique Values Found" -ProgressBarImage "$Dependencies\Images\PowerShell_Charts.png" -ShowImage -ScriptBlockProgressBarInput `$ScriptBlockProgressBar1Input$JobId
 
                                             `$script:AutoChartsForm.ShowDialog()
                                         }

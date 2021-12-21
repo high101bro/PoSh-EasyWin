@@ -151,7 +151,7 @@ Function Import-DataFromActiveDirectory {
                                 $InformationTabControl.SelectedTab = $Section3ResultsTab
                                 $ImportFromADWinRMManuallEntryTextBoxTarget = $ImportFromADWinRMManuallEntryTextBox.Text
                                 if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
-                                    if (!$script:Credential) { Create-NewCredentials }
+                                    if (!$script:Credential) { Set-NewCredential }
                                     Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Credentials Used: $($script:Credential.UserName)"
                                     $Username = $script:Credential.UserName
                                     $Password = '"PASSWORD HIDDEN"'
@@ -179,7 +179,7 @@ Function Import-DataFromActiveDirectory {
                                 $StatusListBox.Items.Add("Importing Hosts From Active Directory")
         
                                 if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
-                                    if (!$script:Credential) { Create-NewCredentials }
+                                    if (!$script:Credential) { Set-NewCredential }
                                     Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Credentials Used: $($script:Credential.UserName)"
                                     $Username = $script:Credential.UserName
                                     $Password = '"PASSWORD HIDDEN"'
@@ -283,7 +283,7 @@ Function Import-DataFromActiveDirectory {
                     Height    = $FormScale * 20
                     Add_Click = {
                         if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
-                            if (!$script:Credential) { Create-NewCredentials }
+                            if (!$script:Credential) { Set-NewCredential }
                             Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Credentials Used: $($script:Credential.UserName)"
                             $Username = $script:Credential.UserName
                             $Password = '"PASSWORD HIDDEN"'
@@ -527,7 +527,7 @@ Function Import-DataFromActiveDirectory {
                                 $InformationTabControl.SelectedTab = $Section3ResultsTab
                                 $ImportFromADWinRMManuallEntryTextBoxTarget = $ImportFromADWinRMManuallEntryTextBox.Text
                                 if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
-                                    if (!$script:Credential) { Create-NewCredentials }
+                                    if (!$script:Credential) { Set-NewCredential }
                                     Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Credentials Used: $($script:Credential.UserName)"
                                     $Username = $script:Credential.UserName
                                     $Password = '"PASSWORD HIDDEN"'
@@ -571,7 +571,7 @@ Function Import-DataFromActiveDirectory {
                                 $StatusListBox.Items.Add("Importing Hosts From Active Directory")
         
                                 if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
-                                    if (!$script:Credential) { Create-NewCredentials }
+                                    if (!$script:Credential) { Set-NewCredential }
                                     Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Credentials Used: $($script:Credential.UserName)"
                                     $Username = $script:Credential.UserName
                                     $Password = '"PASSWORD HIDDEN"'
@@ -685,7 +685,7 @@ Function Import-DataFromActiveDirectory {
                     Height    = $FormScale * 20
                     Add_Click = {
                         if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
-                            if (!$script:Credential) { Create-NewCredentials }
+                            if (!$script:Credential) { Set-NewCredential }
                             Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Credentials Used: $($script:Credential.UserName)"
                             $Username = $script:Credential.UserName
                             $Password = '"PASSWORD HIDDEN"'

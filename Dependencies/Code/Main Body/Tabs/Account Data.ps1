@@ -3,7 +3,7 @@ $Section3AccountDataTab = New-Object System.Windows.Forms.TabPage -Property @{
     Name = "Account Data Tab"
     Font = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     UseVisualStyleBackColor = $True
-    Add_click = { script:Minimize-MonitorJobsTab }
+    Add_click = { Resize-MonitorJobsTab -Minimize }
     ImageIndex = 4
 }
 $InformationTabControl.Controls.Add($Section3AccountDataTab)
@@ -897,7 +897,7 @@ $Section3AccountDataUpdateDataButton = New-Object System.Windows.Forms.Button -P
         switch ($Verify) {
             'Yes'{
                 if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
-                    if (!$script:Credential) { Create-NewCredentials }
+                    if (!$script:Credential) { Set-NewCredential }
                     Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Credentials Used: $($script:Credential.UserName)"
                     $Username = $script:Credential.UserName
                     $Password = '"PASSWORD HIDDEN"'
@@ -944,7 +944,7 @@ $Section3AccountDataUpdateDataButton = New-Object System.Windows.Forms.Button -P
 
                     if ($script:RollCredentialsState -and $script:ComputerListProvideCredentialsCheckBox.checked) {
                         Start-Sleep -Seconds 3
-                        Generate-NewRollingPassword
+                        Set-NewRollingPassword
                     }               
         
                     #$script:UpdatedADAccountInfo | Export-Csv $script:AccountsTreeNodeFileSave -NoTypeInformation
@@ -993,7 +993,7 @@ $Section3AccountDataUpdateDataButton = New-Object System.Windows.Forms.Button -P
 
                     if ($script:RollCredentialsState -and $script:ComputerListProvideCredentialsCheckBox.checked) {
                         Start-Sleep -Seconds 3
-                        Generate-NewRollingPassword
+                        Set-NewRollingPassword
                     }               
         
                     #$script:UpdatedADAccountInfo | Export-Csv $script:AccountsTreeNodeFileSave -NoTypeInformation

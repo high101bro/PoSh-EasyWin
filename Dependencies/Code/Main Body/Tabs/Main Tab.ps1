@@ -346,7 +346,7 @@ $SendFilesButtonAdd_Click = {
 
             foreach ($TargetComputer in $script:ComputerList) {
                 if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
-                    if (!$script:Credential) { Create-NewCredentials }
+                    if (!$script:Credential) { Set-NewCredential }
                     
                     Start-Job -ScriptBlock {
                         param(
@@ -1161,7 +1161,7 @@ $SaveResultsToFileShareCheckbox = New-Object System.Windows.Forms.Checkbox -Prop
     Height = $FormScale * 22
     Checked = $false
     add_click = {
-        if ($This.Checked) { . "$Dependencies\Code\Main Body\Launch-FileShareConnection.ps1" }
+        if ($This.Checked) { . "$Dependencies\Code\Main Body\Show-FileShareConnection.ps1" }
         else { $script:CollectionSavedDirectoryTextBox.Text = $SaveLocation }
     }
 }
