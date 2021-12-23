@@ -79,7 +79,8 @@ New-PSDrive -Name 'P' -Root ""\\dc01\PoSh-EasyWin"" -PSProvider 'FileSystem' -Pe
 11/30/2021 17:50:01 -- Executed Command: Network Connections TCP
 ","4"
 "WIN81-09A","Windows 8.1 Pro","/US Branch/Employee",,,"True","False","0","2/1/2020 6:00:04 PM","6/28/2020 11:12:39 PM","5/24/2020 9:08:15 PM","10.10.10.111","No MAC Available",,"False","No Home Dir Required","No Location","False","False","S-1-5-21-3036625279-3127291219-2495432101-1118",,,"10"
-"Win81-07","Windows 8.1 Pro","/US Branch/Employee",,,"True","False","0","2/1/2020 6:00:24 PM","2/9/2021 12:45:53 AM","2/9/2021 12:45:53 AM","10.10.10.109","No MAC Available",,"False","No Home Dir Required","No Location","False","False","S-1-5-21-3036625279-3127291219-2495432101-1120",,"12/23/2021 09:35:52 [Executed] Network Connection (Sysmon) Source Port
+"Win81-07","Windows 8.1 Pro","/US Branch/Employee",,,"True","False","0","2/1/2020 6:00:24 PM","2/9/2021 12:45:53 AM","2/9/2021 12:45:53 AM","10.10.10.109","No MAC Available",,"False","No Home Dir Required","No Location","False","False","S-1-5-21-3036625279-3127291219-2495432101-1120",,"12/23/2021 10:00:13 [Executed] Processes
+12/23/2021 09:35:52 [Executed] Network Connection (Sysmon) Source Port
 12/23/2021 09:20:54 [Executed] Network Connection (Sysmon) Executable Path
 12/23/2021 09:20:54 [Executed] Network Connection (Sysmon) Account-User Started
 12/23/2021 09:20:54 [Executed] Network Connection (Sysmon) Destination Port
@@ -126,7 +127,8 @@ New-PSDrive -Name 'P' -Root ""\\dc01\PoSh-EasyWin"" -PSProvider 'FileSystem' -Pe
 12/23/2021 09:08:56 [Executed] Process (Sysmon) Command Line
 12/23/2021 09:08:55 [Executed] Process (Sysmon) File Path
 ","10"
-"Win81-08","Windows 8.1 Pro","/US Branch/Employee",,,"True","False","0","2/1/2020 6:00:13 PM","6/28/2020 11:12:39 PM","6/25/2020 11:26:34 PM","10.10.10.110","No MAC Available",,"False","No Home Dir Required","No Location","False","False","S-1-5-21-3036625279-3127291219-2495432101-1119",,"12/23/2021 09:35:52 [Executed] Network Connection (Sysmon) Source Port
+"Win81-08","Windows 8.1 Pro","/US Branch/Employee",,,"True","False","0","2/1/2020 6:00:13 PM","6/28/2020 11:12:39 PM","6/25/2020 11:26:34 PM","10.10.10.110","No MAC Available",,"False","No Home Dir Required","No Location","False","False","S-1-5-21-3036625279-3127291219-2495432101-1119",,"12/23/2021 10:00:13 [Executed] Processes
+12/23/2021 09:35:52 [Executed] Network Connection (Sysmon) Source Port
 12/23/2021 09:20:54 [Executed] Network Connection (Sysmon) Executable Path
 12/23/2021 09:20:54 [Executed] Network Connection (Sysmon) Account-User Started
 12/23/2021 09:20:54 [Executed] Network Connection (Sysmon) Destination Port
@@ -176,7 +178,8 @@ New-PSDrive -Name 'P' -Root ""\\dc01\PoSh-EasyWin"" -PSProvider 'FileSystem' -Pe
 "WIN81-06A","Windows 8.1 Pro","/US Branch/Employee",,,"True","False","0","2/1/2020 6:00:33 PM","6/28/2020 11:12:39 PM","5/24/2020 9:08:12 PM","10.10.10.108","No MAC Available",,"False","No Home Dir Required","No Location","False","False","S-1-5-21-3036625279-3127291219-2495432101-1121",,,"10"
 "WIN81-05A","Windows 8.1 Pro","/US Branch/Employee",,,"False","False","0","2/1/2020 6:00:43 PM","6/28/2020 11:12:39 PM","6/15/2020 9:28:18 PM","No IP Available","No MAC Available",,"False","No Home Dir Required","No Location","False","False","S-1-5-21-3036625279-3127291219-2495432101-1122",,,"10"
 "WIN81-10","Windows 8.1 Pro","/US Branch/Employee",,,"True","False","0","2/4/2020 12:36:58 AM","6/28/2020 11:12:39 PM","6/25/2020 9:35:42 PM","10.10.10.116","No MAC Available",,"False","No Home Dir Required","No Location","False","False","S-1-5-21-3036625279-3127291219-2495432101-1123",,,"10"
-"WIN10-01","Windows 10 Pro","/Employee",,,"True","False","1210","2/23/2020 1:17:03 AM","11/29/2021 2:07:49 AM","12/26/2022 4:48:55 AM","10.10.10.101","No MAC Available",,"False","No Home Dir Required","No Location","False","False","S-1-5-21-3036625279-3127291219-2495432101-1126",,"12/23/2021 09:35:52 [Executed] Network Connection (Sysmon) Source Port
+"WIN10-01","Windows 10 Pro","/Employee",,,"True","False","1210","2/23/2020 1:17:03 AM","11/29/2021 2:07:49 AM","12/26/2022 4:48:55 AM","10.10.10.101","No MAC Available",,"False","No Home Dir Required","No Location","False","False","S-1-5-21-3036625279-3127291219-2495432101-1126",,"12/23/2021 10:00:13 [Executed] Processes
+12/23/2021 09:35:52 [Executed] Network Connection (Sysmon) Source Port
 12/23/2021 09:20:54 [Executed] Network Connection (Sysmon) Executable Path
 12/23/2021 09:20:54 [Executed] Network Connection (Sysmon) Account-User Started
 12/23/2021 09:20:54 [Executed] Network Connection (Sysmon) Destination Port
