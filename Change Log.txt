@@ -40,6 +40,7 @@ TODO:
 [ ] when you checkbox "sysmon (64-bit)", and no config is selected, it opens the wrong default directory
 [ ] when you checkbox sysmon, promon or user specified sciprts, they don't turn red
 [ ] re-write user specified scripts to be monitor jobs compatible
+[ ] Fix new montior jobs gapping issue when executing more commands...
 
 ==================================================
 v6.7.4 - 

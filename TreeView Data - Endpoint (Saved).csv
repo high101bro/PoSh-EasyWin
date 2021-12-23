@@ -79,12 +79,150 @@ New-PSDrive -Name 'P' -Root ""\\dc01\PoSh-EasyWin"" -PSProvider 'FileSystem' -Pe
 11/30/2021 17:50:01 -- Executed Command: Network Connections TCP
 ","4"
 "WIN81-09A","Windows 8.1 Pro","/US Branch/Employee",,,"True","False","0","2/1/2020 6:00:04 PM","6/28/2020 11:12:39 PM","5/24/2020 9:08:15 PM","10.10.10.111","No MAC Available",,"False","No Home Dir Required","No Location","False","False","S-1-5-21-3036625279-3127291219-2495432101-1118",,,"10"
-"Win81-07","Windows 8.1 Pro","/US Branch/Employee",,,"True","False","0","2/1/2020 6:00:24 PM","2/9/2021 12:45:53 AM","2/9/2021 12:45:53 AM","10.10.10.109","No MAC Available",,"False","No Home Dir Required","No Location","False","False","S-1-5-21-3036625279-3127291219-2495432101-1120",,,"10"
-"Win81-08","Windows 8.1 Pro","/US Branch/Employee",,,"True","False","0","2/1/2020 6:00:13 PM","6/28/2020 11:12:39 PM","6/25/2020 11:26:34 PM","10.10.10.110","No MAC Available",,"False","No Home Dir Required","No Location","False","False","S-1-5-21-3036625279-3127291219-2495432101-1119",,,"10"
+"Win81-07","Windows 8.1 Pro","/US Branch/Employee",,,"True","False","0","2/1/2020 6:00:24 PM","2/9/2021 12:45:53 AM","2/9/2021 12:45:53 AM","10.10.10.109","No MAC Available",,"False","No Home Dir Required","No Location","False","False","S-1-5-21-3036625279-3127291219-2495432101-1120",,"12/23/2021 09:35:52 [Executed] Network Connection (Sysmon) Source Port
+12/23/2021 09:20:54 [Executed] Network Connection (Sysmon) Executable Path
+12/23/2021 09:20:54 [Executed] Network Connection (Sysmon) Account-User Started
+12/23/2021 09:20:54 [Executed] Network Connection (Sysmon) Destination Port
+12/23/2021 09:20:53 [Executed] Network Connection (Sysmon) Destination IP
+12/23/2021 09:20:53 [Executed] Network Connection (Sysmon) Source Port
+12/23/2021 09:20:52 [Executed] Network Connection (Sysmon) Source IP
+12/23/2021 09:20:51 [Executed] Process (Sysmon) Company Product
+12/23/2021 09:20:51 [Executed] Process (Sysmon) Hash
+12/23/2021 09:20:50 [Executed] Process (Sysmon) User Account, Id
+12/23/2021 09:20:50 [Executed] Process (Sysmon) Rule Name
+12/23/2021 09:20:50 [Executed] Process (Sysmon) Parent Command Line
+12/23/2021 09:20:49 [Executed] Process (Sysmon) Parent File Path
+12/23/2021 09:20:49 [Executed] Process (Sysmon) Command Line
+12/23/2021 09:20:48 [Executed] Process (Sysmon) File Path
+12/23/2021 09:19:11 [Executed] Network Connection (Sysmon) Account-User Started
+12/23/2021 09:18:44 [Executed] Process (Sysmon) Parent File Path
+12/23/2021 09:18:35 [Executed] Network Connection (Sysmon) Executable Path
+12/23/2021 09:18:35 [Executed] Process (Sysmon) File Path
+12/23/2021 09:17:17 [Executed] Network Connection (Sysmon) Executable Path
+12/23/2021 09:17:16 [Executed] Network Connection (Sysmon) Account-User Started
+12/23/2021 09:17:16 [Executed] Network Connection (Sysmon) Destination Port
+12/23/2021 09:17:15 [Executed] Network Connection (Sysmon) Source Port
+12/23/2021 09:17:15 [Executed] Network Connection (Sysmon) Source IP
+12/23/2021 09:17:15 [Executed] Process (Sysmon) Company Product
+12/23/2021 09:17:14 [Executed] Process (Sysmon) Hash
+12/23/2021 09:17:14 [Executed] Process (Sysmon) User Account, Id
+12/23/2021 09:17:13 [Executed] Process (Sysmon) Rule Name
+12/23/2021 09:17:13 [Executed] Process (Sysmon) Parent Command Line
+12/23/2021 09:17:12 [Executed] Process (Sysmon) Parent File Path
+12/23/2021 09:17:12 [Executed] Process (Sysmon) Command Line
+12/23/2021 09:17:12 [Executed] Process (Sysmon) File Path
+12/23/2021 09:09:00 [Executed] Network Connection (Sysmon) Executable Path
+12/23/2021 09:09:00 [Executed] Network Connection (Sysmon) Account-User Started
+12/23/2021 09:09:00 [Executed] Network Connection (Sysmon) Destination Port
+12/23/2021 09:08:59 [Executed] Network Connection (Sysmon) Destination IP
+12/23/2021 09:08:59 [Executed] Network Connection (Sysmon) Source Port
+12/23/2021 09:08:58 [Executed] Network Connection (Sysmon) Source IP
+12/23/2021 09:08:58 [Executed] Process (Sysmon) Company Product
+12/23/2021 09:08:57 [Executed] Process (Sysmon) Hash
+12/23/2021 09:08:57 [Executed] Process (Sysmon) User Account, Id
+12/23/2021 09:08:57 [Executed] Process (Sysmon) Rule Name
+12/23/2021 09:08:56 [Executed] Process (Sysmon) Parent Command Line
+12/23/2021 09:08:56 [Executed] Process (Sysmon) Parent File Path
+12/23/2021 09:08:56 [Executed] Process (Sysmon) Command Line
+12/23/2021 09:08:55 [Executed] Process (Sysmon) File Path
+","10"
+"Win81-08","Windows 8.1 Pro","/US Branch/Employee",,,"True","False","0","2/1/2020 6:00:13 PM","6/28/2020 11:12:39 PM","6/25/2020 11:26:34 PM","10.10.10.110","No MAC Available",,"False","No Home Dir Required","No Location","False","False","S-1-5-21-3036625279-3127291219-2495432101-1119",,"12/23/2021 09:35:52 [Executed] Network Connection (Sysmon) Source Port
+12/23/2021 09:20:54 [Executed] Network Connection (Sysmon) Executable Path
+12/23/2021 09:20:54 [Executed] Network Connection (Sysmon) Account-User Started
+12/23/2021 09:20:54 [Executed] Network Connection (Sysmon) Destination Port
+12/23/2021 09:20:53 [Executed] Network Connection (Sysmon) Destination IP
+12/23/2021 09:20:53 [Executed] Network Connection (Sysmon) Source Port
+12/23/2021 09:20:52 [Executed] Network Connection (Sysmon) Source IP
+12/23/2021 09:20:51 [Executed] Process (Sysmon) Company Product
+12/23/2021 09:20:51 [Executed] Process (Sysmon) Hash
+12/23/2021 09:20:50 [Executed] Process (Sysmon) User Account, Id
+12/23/2021 09:20:50 [Executed] Process (Sysmon) Rule Name
+12/23/2021 09:20:50 [Executed] Process (Sysmon) Parent Command Line
+12/23/2021 09:20:49 [Executed] Process (Sysmon) Parent File Path
+12/23/2021 09:20:49 [Executed] Process (Sysmon) Command Line
+12/23/2021 09:20:48 [Executed] Process (Sysmon) File Path
+12/23/2021 09:19:11 [Executed] Network Connection (Sysmon) Account-User Started
+12/23/2021 09:18:44 [Executed] Process (Sysmon) Parent File Path
+12/23/2021 09:18:35 [Executed] Network Connection (Sysmon) Executable Path
+12/23/2021 09:18:35 [Executed] Process (Sysmon) File Path
+12/23/2021 09:17:17 [Executed] Network Connection (Sysmon) Executable Path
+12/23/2021 09:17:16 [Executed] Network Connection (Sysmon) Account-User Started
+12/23/2021 09:17:16 [Executed] Network Connection (Sysmon) Destination Port
+12/23/2021 09:17:15 [Executed] Network Connection (Sysmon) Source Port
+12/23/2021 09:17:15 [Executed] Network Connection (Sysmon) Source IP
+12/23/2021 09:17:15 [Executed] Process (Sysmon) Company Product
+12/23/2021 09:17:14 [Executed] Process (Sysmon) Hash
+12/23/2021 09:17:14 [Executed] Process (Sysmon) User Account, Id
+12/23/2021 09:17:13 [Executed] Process (Sysmon) Rule Name
+12/23/2021 09:17:13 [Executed] Process (Sysmon) Parent Command Line
+12/23/2021 09:17:12 [Executed] Process (Sysmon) Parent File Path
+12/23/2021 09:17:12 [Executed] Process (Sysmon) Command Line
+12/23/2021 09:17:12 [Executed] Process (Sysmon) File Path
+12/23/2021 09:09:00 [Executed] Network Connection (Sysmon) Executable Path
+12/23/2021 09:09:00 [Executed] Network Connection (Sysmon) Account-User Started
+12/23/2021 09:09:00 [Executed] Network Connection (Sysmon) Destination Port
+12/23/2021 09:08:59 [Executed] Network Connection (Sysmon) Destination IP
+12/23/2021 09:08:59 [Executed] Network Connection (Sysmon) Source Port
+12/23/2021 09:08:58 [Executed] Network Connection (Sysmon) Source IP
+12/23/2021 09:08:58 [Executed] Process (Sysmon) Company Product
+12/23/2021 09:08:57 [Executed] Process (Sysmon) Hash
+12/23/2021 09:08:57 [Executed] Process (Sysmon) User Account, Id
+12/23/2021 09:08:57 [Executed] Process (Sysmon) Rule Name
+12/23/2021 09:08:56 [Executed] Process (Sysmon) Parent Command Line
+12/23/2021 09:08:56 [Executed] Process (Sysmon) Parent File Path
+12/23/2021 09:08:56 [Executed] Process (Sysmon) Command Line
+12/23/2021 09:08:55 [Executed] Process (Sysmon) File Path
+","10"
 "WIN81-06A","Windows 8.1 Pro","/US Branch/Employee",,,"True","False","0","2/1/2020 6:00:33 PM","6/28/2020 11:12:39 PM","5/24/2020 9:08:12 PM","10.10.10.108","No MAC Available",,"False","No Home Dir Required","No Location","False","False","S-1-5-21-3036625279-3127291219-2495432101-1121",,,"10"
 "WIN81-05A","Windows 8.1 Pro","/US Branch/Employee",,,"False","False","0","2/1/2020 6:00:43 PM","6/28/2020 11:12:39 PM","6/15/2020 9:28:18 PM","No IP Available","No MAC Available",,"False","No Home Dir Required","No Location","False","False","S-1-5-21-3036625279-3127291219-2495432101-1122",,,"10"
 "WIN81-10","Windows 8.1 Pro","/US Branch/Employee",,,"True","False","0","2/4/2020 12:36:58 AM","6/28/2020 11:12:39 PM","6/25/2020 9:35:42 PM","10.10.10.116","No MAC Available",,"False","No Home Dir Required","No Location","False","False","S-1-5-21-3036625279-3127291219-2495432101-1123",,,"10"
-"WIN10-01","Windows 10 Pro","/Employee",,,"True","False","1210","2/23/2020 1:17:03 AM","11/29/2021 2:07:49 AM","12/26/2022 4:48:55 AM","10.10.10.101","No MAC Available",,"False","No Home Dir Required","No Location","False","False","S-1-5-21-3036625279-3127291219-2495432101-1126",,"12/20/2021 23:16:59 [Executed] Accounts Currently Logged In via PowerShell Session
+"WIN10-01","Windows 10 Pro","/Employee",,,"True","False","1210","2/23/2020 1:17:03 AM","11/29/2021 2:07:49 AM","12/26/2022 4:48:55 AM","10.10.10.101","No MAC Available",,"False","No Home Dir Required","No Location","False","False","S-1-5-21-3036625279-3127291219-2495432101-1126",,"12/23/2021 09:35:52 [Executed] Network Connection (Sysmon) Source Port
+12/23/2021 09:20:54 [Executed] Network Connection (Sysmon) Executable Path
+12/23/2021 09:20:54 [Executed] Network Connection (Sysmon) Account-User Started
+12/23/2021 09:20:54 [Executed] Network Connection (Sysmon) Destination Port
+12/23/2021 09:20:53 [Executed] Network Connection (Sysmon) Destination IP
+12/23/2021 09:20:53 [Executed] Network Connection (Sysmon) Source Port
+12/23/2021 09:20:52 [Executed] Network Connection (Sysmon) Source IP
+12/23/2021 09:20:51 [Executed] Process (Sysmon) Company Product
+12/23/2021 09:20:51 [Executed] Process (Sysmon) Hash
+12/23/2021 09:20:50 [Executed] Process (Sysmon) User Account, Id
+12/23/2021 09:20:50 [Executed] Process (Sysmon) Rule Name
+12/23/2021 09:20:50 [Executed] Process (Sysmon) Parent Command Line
+12/23/2021 09:20:49 [Executed] Process (Sysmon) Parent File Path
+12/23/2021 09:20:49 [Executed] Process (Sysmon) Command Line
+12/23/2021 09:20:48 [Executed] Process (Sysmon) File Path
+12/23/2021 09:19:11 [Executed] Network Connection (Sysmon) Account-User Started
+12/23/2021 09:18:44 [Executed] Process (Sysmon) Parent File Path
+12/23/2021 09:18:35 [Executed] Network Connection (Sysmon) Executable Path
+12/23/2021 09:18:35 [Executed] Process (Sysmon) File Path
+12/23/2021 09:17:17 [Executed] Network Connection (Sysmon) Executable Path
+12/23/2021 09:17:16 [Executed] Network Connection (Sysmon) Account-User Started
+12/23/2021 09:17:16 [Executed] Network Connection (Sysmon) Destination Port
+12/23/2021 09:17:15 [Executed] Network Connection (Sysmon) Source Port
+12/23/2021 09:17:15 [Executed] Network Connection (Sysmon) Source IP
+12/23/2021 09:17:15 [Executed] Process (Sysmon) Company Product
+12/23/2021 09:17:14 [Executed] Process (Sysmon) Hash
+12/23/2021 09:17:14 [Executed] Process (Sysmon) User Account, Id
+12/23/2021 09:17:13 [Executed] Process (Sysmon) Rule Name
+12/23/2021 09:17:13 [Executed] Process (Sysmon) Parent Command Line
+12/23/2021 09:17:12 [Executed] Process (Sysmon) Parent File Path
+12/23/2021 09:17:12 [Executed] Process (Sysmon) Command Line
+12/23/2021 09:17:12 [Executed] Process (Sysmon) File Path
+12/23/2021 09:09:00 [Executed] Network Connection (Sysmon) Executable Path
+12/23/2021 09:09:00 [Executed] Network Connection (Sysmon) Account-User Started
+12/23/2021 09:09:00 [Executed] Network Connection (Sysmon) Destination Port
+12/23/2021 09:08:59 [Executed] Network Connection (Sysmon) Destination IP
+12/23/2021 09:08:59 [Executed] Network Connection (Sysmon) Source Port
+12/23/2021 09:08:58 [Executed] Network Connection (Sysmon) Source IP
+12/23/2021 09:08:58 [Executed] Process (Sysmon) Company Product
+12/23/2021 09:08:57 [Executed] Process (Sysmon) Hash
+12/23/2021 09:08:57 [Executed] Process (Sysmon) User Account, Id
+12/23/2021 09:08:57 [Executed] Process (Sysmon) Rule Name
+12/23/2021 09:08:56 [Executed] Process (Sysmon) Parent Command Line
+12/23/2021 09:08:56 [Executed] Process (Sysmon) Parent File Path
+12/23/2021 09:08:56 [Executed] Process (Sysmon) Command Line
+12/23/2021 09:08:55 [Executed] Process (Sysmon) File Path
+12/20/2021 23:16:59 [Executed] Accounts Currently Logged In via PowerShell Session
 12/20/2021 23:16:58 [Executed] Accounts Currently Logged In via Console
 12/20/2021 23:16:58 [Executed] Processes
 12/20/2021 20:24:19 [Executed] Prefetch Files
