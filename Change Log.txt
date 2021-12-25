@@ -27,7 +27,7 @@ TODO:
 	- WHen using the "Retrieve Files" button, you must select any pre-exiting results from a "Directory Listing" or "File Search".
 
  [ ] Add more log creations to all of this --Invoke-Command @InvokeCommandSplat
-	Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock {foreach (`$Path in `$RegistrySearchDirectory) { foreach (`$Item in `$SearchRegistryKeyItemPropertyName) { Get-ItemProperty -Path `$Path `$Item } }} -ArgumentList `$SearchRgistryItemProperty  -ComputerName $TargetComputer -AsJob -JobName 'PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)' -Credential `$script:Credential"
+	Create-LogEntry -LogFile $PewLogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock {foreach (`$Path in `$RegistrySearchDirectory) { foreach (`$Item in `$SearchRegistryKeyItemPropertyName) { Get-ItemProperty -Path `$Path `$Item } }} -ArgumentList `$SearchRgistryItemProperty  -ComputerName $TargetComputer -AsJob -JobName 'PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)' -Credential `$script:Credential"
 	$ResultsListBox.Items.Add("$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  $CollectionName -- $TargetComputer")
 [ ] Fix bug will reading log files and it's count
 [ ] add code to specify posh chat port number 
@@ -41,10 +41,26 @@ TODO:
 [ ] when you checkbox sysmon, promon or user specified sciprts, they don't turn red
 [ ] re-write user specified scripts to be monitor jobs compatible
 [ ] Fix new montior jobs gapping issue when executing more commands...
+[ ] Fix not being able to delete nodes
+[ ] add selected to opnotes
+
 
 ==================================================
 v6.7.4 - 
 ==================================================
+
+Grouped functions into fewer scripts
+
+Made "Executable and Scripts" compatible with Monitor Mode
+	- Added feature to check and remove files on endpoints
+
+Code Management
+	- Re-organized file structure
+	- Created Demo Data folder in Examples directory
+	- Created User Data folder
+		- New data created by users over rides the demo path
+	- Moved Collected Data into User Data folder
+	- A lot of code clean up in general
 
 Code management - moved code from various system.windows.forms locations to their respective locations
 	- Individual directories where $script.ps1 files were moved from
