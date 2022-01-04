@@ -437,15 +437,15 @@ Function Import-DataFromActiveDirectory {
                                 $ImportFromADWinRMManuallEntryTextBoxTarget = $ImportFromADWinRMManuallEntryTextBox.Text
                                 if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
                                     if (!$script:Credential) { Set-NewCredential }
-                                    Create-LogEntry -LogFile $PewLogFile -NoTargetComputer -Message "Credentials Used: $($script:Credential.UserName)"
+                                    Write-LogEntry -LogFile $PewLogFile -NoTargetComputer -Message "Credentials Used: $($script:Credential.UserName)"
                                     $Username = $script:Credential.UserName
                                     $Password = '"PASSWORD HIDDEN"'
                                     [array]$ImportedActiveDirectoryHosts = Invoke-Command -ScriptBlock { Get-ADComputer -Filter * -Properties Name, CanonicalName, OperatingSystem, OperatingSystemHotfix, OperatingSystemServicePack, Enabled, LockedOut, LogonCount, Created, Modified, LastLogonDate, IPv4Address, MACAddress, MemberOf, isCriticalSystemObject, HomedirRequired, Location, ProtectedFromAccidentalDeletion, TrustedForDelegation, SID } -ComputerName $ImportFromADWinRMManuallEntryTextBoxTarget -Credential $script:Credential
-                                    Create-LogEntry -LogFile $PewLogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock { Get-ADComputer -Filter * -Properties Name, CanonicalName, OperatingSystem, OperatingSystemHotfix, OperatingSystemServicePack, Enabled, LockedOut, LogonCount, Created, Modified, LastLogonDate, IPv4Address, MACAddress, MemberOf, isCriticalSystemObject, HomedirRequired, Location, ProtectedFromAccidentalDeletion, TrustedForDelegation, SID } -ComputerName $($ImportFromADWinRMManuallEntryTextBox.Text) -Credential [ $UserName | $Password ]"
+                                    Write-LogEntry -LogFile $PewLogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock { Get-ADComputer -Filter * -Properties Name, CanonicalName, OperatingSystem, OperatingSystemHotfix, OperatingSystemServicePack, Enabled, LockedOut, LogonCount, Created, Modified, LastLogonDate, IPv4Address, MACAddress, MemberOf, isCriticalSystemObject, HomedirRequired, Location, ProtectedFromAccidentalDeletion, TrustedForDelegation, SID } -ComputerName $($ImportFromADWinRMManuallEntryTextBox.Text) -Credential [ $UserName | $Password ]"
                                 }
                                 else {
                                     [array]$ImportedActiveDirectoryHosts = Invoke-Command -ScriptBlock { Get-ADComputer -Filter * -Properties Name, CanonicalName, OperatingSystem, OperatingSystemHotfix, OperatingSystemServicePack, Enabled, LockedOut, LogonCount, Created, Modified, LastLogonDate, IPv4Address, MACAddress, MemberOf, isCriticalSystemObject, HomedirRequired, Location, ProtectedFromAccidentalDeletion, TrustedForDelegation, SID } -ComputerName $ImportFromADWinRMManuallEntryTextBoxTarget
-                                    Create-LogEntry -LogFile $PewLogFile -NoTargetComputer -Message  "Invoke-Command -ScriptBlock { Get-ADComputer -Filter * -Properties Name, CanonicalName, OperatingSystem, OperatingSystemHotfix, OperatingSystemServicePack, Enabled, LockedOut, LogonCount, Created, Modified, LastLogonDate, IPv4Address, MACAddress, MemberOf, isCriticalSystemObject, HomedirRequired, Location, ProtectedFromAccidentalDeletion, TrustedForDelegation, SID } -ComputerName $($ImportFromADWinRMManuallEntryTextBox.Text)"
+                                    Write-LogEntry -LogFile $PewLogFile -NoTargetComputer -Message  "Invoke-Command -ScriptBlock { Get-ADComputer -Filter * -Properties Name, CanonicalName, OperatingSystem, OperatingSystemHotfix, OperatingSystemServicePack, Enabled, LockedOut, LogonCount, Created, Modified, LastLogonDate, IPv4Address, MACAddress, MemberOf, isCriticalSystemObject, HomedirRequired, Location, ProtectedFromAccidentalDeletion, TrustedForDelegation, SID } -ComputerName $($ImportFromADWinRMManuallEntryTextBox.Text)"
                                 }
                             }
                             else {
@@ -465,16 +465,16 @@ Function Import-DataFromActiveDirectory {
 
                                 if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
                                     if (!$script:Credential) { Set-NewCredential }
-                                    Create-LogEntry -LogFile $PewLogFile -NoTargetComputer -Message "Credentials Used: $($script:Credential.UserName)"
+                                    Write-LogEntry -LogFile $PewLogFile -NoTargetComputer -Message "Credentials Used: $($script:Credential.UserName)"
                                     $Username = $script:Credential.UserName
                                     $Password = '"PASSWORD HIDDEN"'
 
                                     [array]$ImportedActiveDirectoryHosts = Invoke-Command -ScriptBlock { Get-ADComputer -Filter * -Properties Name, CanonicalName, OperatingSystem, OperatingSystemHotfix, OperatingSystemServicePack, Enabled, LockedOut, LogonCount, Created, Modified, LastLogonDate, IPv4Address, MACAddress, MemberOf, isCriticalSystemObject, HomedirRequired, Location, ProtectedFromAccidentalDeletion, TrustedForDelegation, SID } -ComputerName $script:ComputerTreeViewSelected -Credential $script:Credential
-                                    Create-LogEntry -LogFile $PewLogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock { Get-ADComputer -Filter * -Properties Name, CanonicalName, OperatingSystem, OperatingSystemHotfix, OperatingSystemServicePack, Enabled, LockedOut, LogonCount, Created, Modified, LastLogonDate, IPv4Address, MACAddress, MemberOf, isCriticalSystemObject, HomedirRequired, Location, ProtectedFromAccidentalDeletion, TrustedForDelegation, SID } -ComputerName $script:ComputerTreeViewSelected -Credential [ $UserName | $Password ]"
+                                    Write-LogEntry -LogFile $PewLogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock { Get-ADComputer -Filter * -Properties Name, CanonicalName, OperatingSystem, OperatingSystemHotfix, OperatingSystemServicePack, Enabled, LockedOut, LogonCount, Created, Modified, LastLogonDate, IPv4Address, MACAddress, MemberOf, isCriticalSystemObject, HomedirRequired, Location, ProtectedFromAccidentalDeletion, TrustedForDelegation, SID } -ComputerName $script:ComputerTreeViewSelected -Credential [ $UserName | $Password ]"
                                 }
                                 else {
                                     [array]$ImportedActiveDirectoryHosts = Invoke-Command -ScriptBlock { Get-ADComputer -Filter * -Properties Name, CanonicalName, OperatingSystem, OperatingSystemHotfix, OperatingSystemServicePack, Enabled, LockedOut, LogonCount, Created, Modified, LastLogonDate, IPv4Address, MACAddress, MemberOf, isCriticalSystemObject, HomedirRequired, Location, ProtectedFromAccidentalDeletion, TrustedForDelegation, SID } -ComputerName $script:ComputerTreeViewSelected
-                                    Create-LogEntry -LogFile $PewLogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock { Get-ADComputer -Filter * -Properties Name, CanonicalName, OperatingSystem, OperatingSystemHotfix, OperatingSystemServicePack, Enabled, LockedOut, LogonCount, Created, Modified, LastLogonDate, IPv4Address, MACAddress, MemberOf, isCriticalSystemObject, HomedirRequired, Location, ProtectedFromAccidentalDeletion, TrustedForDelegation, SID } -ComputerName $script:ComputerTreeViewSelected"
+                                    Write-LogEntry -LogFile $PewLogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock { Get-ADComputer -Filter * -Properties Name, CanonicalName, OperatingSystem, OperatingSystemHotfix, OperatingSystemServicePack, Enabled, LockedOut, LogonCount, Created, Modified, LastLogonDate, IPv4Address, MACAddress, MemberOf, isCriticalSystemObject, HomedirRequired, Location, ProtectedFromAccidentalDeletion, TrustedForDelegation, SID } -ComputerName $script:ComputerTreeViewSelected"
                                 }
                             }
                             else {
@@ -496,7 +496,7 @@ Function Import-DataFromActiveDirectory {
                     }
                 }
                 $ImportFromADWinRMGroupBox.Controls.Add($ImportFromADWinRMImportButton)
-                Apply-CommonButtonSettings -Button $ImportFromADWinRMImportButton
+                Add-CommonButtonSettings -Button $ImportFromADWinRMImportButton
             $ImportFromADFrom.Controls.Add($ImportFromADWinRMGroupBox)
 
 
@@ -561,15 +561,15 @@ Function Import-DataFromActiveDirectory {
                     Add_Click = {
                         if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
                             if (!$script:Credential) { Set-NewCredential }
-                            Create-LogEntry -LogFile $PewLogFile -NoTargetComputer -Message "Credentials Used: $($script:Credential.UserName)"
+                            Write-LogEntry -LogFile $PewLogFile -NoTargetComputer -Message "Credentials Used: $($script:Credential.UserName)"
                             $Username = $script:Credential.UserName
                             $Password = '"PASSWORD HIDDEN"'
                             [array]$ImportedActiveDirectoryHosts = Invoke-Command -ScriptBlock { Get-ADComputer -Filter * -Properties Name, CanonicalName, OperatingSystem, OperatingSystemHotfix, OperatingSystemServicePack, Enabled, LockedOut, LogonCount, Created, Modified, LastLogonDate, IPv4Address, MACAddress, MemberOf, isCriticalSystemObject, HomedirRequired, Location, ProtectedFromAccidentalDeletion, TrustedForDelegation, SID } -Credential $script:Credential
-                            Create-LogEntry -LogFile $PewLogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock { Get-ADComputer -Filter * -Properties Name, CanonicalName, OperatingSystem, OperatingSystemHotfix, OperatingSystemServicePack, Enabled, LockedOut, LogonCount, Created, Modified, LastLogonDate, IPv4Address, MACAddress, MemberOf, isCriticalSystemObject, HomedirRequired, Location, ProtectedFromAccidentalDeletion, TrustedForDelegation, SID } -Credential [ $UserName | $Password ]"
+                            Write-LogEntry -LogFile $PewLogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock { Get-ADComputer -Filter * -Properties Name, CanonicalName, OperatingSystem, OperatingSystemHotfix, OperatingSystemServicePack, Enabled, LockedOut, LogonCount, Created, Modified, LastLogonDate, IPv4Address, MACAddress, MemberOf, isCriticalSystemObject, HomedirRequired, Location, ProtectedFromAccidentalDeletion, TrustedForDelegation, SID } -Credential [ $UserName | $Password ]"
                         }
                         else {
                             [array]$ImportedActiveDirectoryHosts = Invoke-Command -ScriptBlock { Get-ADComputer -Filter * -Properties Name, CanonicalName, OperatingSystem, OperatingSystemHotfix, OperatingSystemServicePack, Enabled, LockedOut, LogonCount, Created, Modified, LastLogonDate, IPv4Address, MACAddress, MemberOf, isCriticalSystemObject, HomedirRequired, Location, ProtectedFromAccidentalDeletion, TrustedForDelegation, SID }
-                            Create-LogEntry -LogFile $PewLogFile -NoTargetComputer -Message  "Invoke-Command -ScriptBlock { Get-ADComputer -Filter * -Properties Name, CanonicalName, OperatingSystem, OperatingSystemHotfix, OperatingSystemServicePack, Enabled, LockedOut, LogonCount, Created, Modified, LastLogonDate, IPv4Address, MACAddress, MemberOf, isCriticalSystemObject, HomedirRequired, Location, ProtectedFromAccidentalDeletion, TrustedForDelegation, SID }"
+                            Write-LogEntry -LogFile $PewLogFile -NoTargetComputer -Message  "Invoke-Command -ScriptBlock { Get-ADComputer -Filter * -Properties Name, CanonicalName, OperatingSystem, OperatingSystemHotfix, OperatingSystemServicePack, Enabled, LockedOut, LogonCount, Created, Modified, LastLogonDate, IPv4Address, MACAddress, MemberOf, isCriticalSystemObject, HomedirRequired, Location, ProtectedFromAccidentalDeletion, TrustedForDelegation, SID }"
                         }
                         Import-EndpointsFromDomain -ADComputer $ImportedActiveDirectoryHosts
                         Update-TreeViewState -Endpoint
@@ -578,7 +578,7 @@ Function Import-DataFromActiveDirectory {
                     }
                 }
                 $ImportFromADLocalhostGroupBox.Controls.Add($ImportFromADLocalhostImportButton)
-                Apply-CommonButtonSettings -Button $ImportFromADLocalhostImportButton
+                Add-CommonButtonSettings -Button $ImportFromADLocalhostImportButton
             $ImportFromADFrom.Controls.Add($ImportFromADLocalhostGroupBox)
 
 
@@ -694,7 +694,7 @@ Function Import-DataFromActiveDirectory {
                 }
             }
             $ImportFromADAutoPullGroupBox.Controls.Add($ImportFromADImportButton)
-            Apply-CommonButtonSettings -Button $ImportFromADImportButton
+            Add-CommonButtonSettings -Button $ImportFromADImportButton
             $ImportFromADFrom.Controls.Add($ImportFromADAutoPullGroupBox)
 
             [System.GC]::Collect()
@@ -797,7 +797,7 @@ Function Import-DataFromActiveDirectory {
                                 $ImportFromADWinRMManuallEntryTextBoxTarget = $ImportFromADWinRMManuallEntryTextBox.Text
                                 if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
                                     if (!$script:Credential) { Set-NewCredential }
-                                    Create-LogEntry -LogFile $PewLogFile -NoTargetComputer -Message "Credentials Used: $($script:Credential.UserName)"
+                                    Write-LogEntry -LogFile $PewLogFile -NoTargetComputer -Message "Credentials Used: $($script:Credential.UserName)"
                                     $Username = $script:Credential.UserName
                                     $Password = '"PASSWORD HIDDEN"'
                                     $script:AccountsTreeViewData = Invoke-Command -ScriptBlock {
@@ -805,7 +805,7 @@ Function Import-DataFromActiveDirectory {
                                         | Select-Object Name, SID, Enabled, LockedOut, Created, Modified, LastLogonDate, LastBadPasswordAttempt, BadLogonCount, PasswordLastSet, PasswordExpired, PasswordNeverExpires, PasswordNotRequired, CanonicalName, MemberOf, SmartCardLogonRequired, ScriptPath, HomeDrive
                                     } -ComputerName $ImportFromADWinRMManuallEntryTextBoxTarget -Credential $script:Credential
                                     $script:AccountsTreeViewData | Export-Csv $AccountsTreeNodeFileSave -NoTypeInformation
-                                    Create-LogEntry -LogFile $PewLogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock { Get-ADUser -Filter * -Properties * | Select-Object Name, SID, Enabled, LockedOut, Created, Modified, LastLogonDate, LastBadPasswordAttempt, BadLogonCount, PasswordLastSet, PasswordExpired, PasswordNeverExpires, PasswordNotRequired, CanonicalName, MemberOf, SmartCardLogonRequired, ScriptPath, HomeDrive } -ComputerName $($ImportFromADWinRMManuallEntryTextBox.Text) -Credential [ $UserName | $Password ]"
+                                    Write-LogEntry -LogFile $PewLogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock { Get-ADUser -Filter * -Properties * | Select-Object Name, SID, Enabled, LockedOut, Created, Modified, LastLogonDate, LastBadPasswordAttempt, BadLogonCount, PasswordLastSet, PasswordExpired, PasswordNeverExpires, PasswordNotRequired, CanonicalName, MemberOf, SmartCardLogonRequired, ScriptPath, HomeDrive } -ComputerName $($ImportFromADWinRMManuallEntryTextBox.Text) -Credential [ $UserName | $Password ]"
                                 }
                                 else {
                                     $script:AccountsTreeViewData = Invoke-Command -ScriptBlock {
@@ -813,7 +813,7 @@ Function Import-DataFromActiveDirectory {
                                         | Select-Object Name, SID, Enabled, LockedOut, Created, Modified, LastLogonDate, LastBadPasswordAttempt, BadLogonCount, PasswordLastSet, PasswordExpired, PasswordNeverExpires, PasswordNotRequired, CanonicalName, MemberOf, SmartCardLogonRequired, ScriptPath, HomeDrive
                                     } -ComputerName $ImportFromADWinRMManuallEntryTextBoxTarget
                                     $script:AccountsTreeViewData | Export-Csv $AccountsTreeNodeFileSave -NoTypeInformation
-                                    Create-LogEntry -LogFile $PewLogFile -NoTargetComputer -Message  "Invoke-Command -ScriptBlock { Get-ADUser -Filter * -Properties * | Select-Object Name, SID, Enabled, LockedOut, Created, Modified, LastLogonDate, LastBadPasswordAttempt, BadLogonCount, PasswordLastSet, PasswordExpired, PasswordNeverExpires, PasswordNotRequired, CanonicalName, MemberOf, SmartCardLogonRequired, ScriptPath, HomeDrive } -ComputerName $($ImportFromADWinRMManuallEntryTextBox.Text)"
+                                    Write-LogEntry -LogFile $PewLogFile -NoTargetComputer -Message  "Invoke-Command -ScriptBlock { Get-ADUser -Filter * -Properties * | Select-Object Name, SID, Enabled, LockedOut, Created, Modified, LastLogonDate, LastBadPasswordAttempt, BadLogonCount, PasswordLastSet, PasswordExpired, PasswordNeverExpires, PasswordNotRequired, CanonicalName, MemberOf, SmartCardLogonRequired, ScriptPath, HomeDrive } -ComputerName $($ImportFromADWinRMManuallEntryTextBox.Text)"
                                 }
                                 #Initialize-TreeViewData -Accounts
                                 Normalize-TreeViewData -Accounts
@@ -841,7 +841,7 @@ Function Import-DataFromActiveDirectory {
 
                                 if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
                                     if (!$script:Credential) { Set-NewCredential }
-                                    Create-LogEntry -LogFile $PewLogFile -NoTargetComputer -Message "Credentials Used: $($script:Credential.UserName)"
+                                    Write-LogEntry -LogFile $PewLogFile -NoTargetComputer -Message "Credentials Used: $($script:Credential.UserName)"
                                     $Username = $script:Credential.UserName
                                     $Password = '"PASSWORD HIDDEN"'
 
@@ -851,7 +851,7 @@ Function Import-DataFromActiveDirectory {
                                     } -ComputerName $script:ComputerTreeViewSelected -Credential $script:Credential
                                     $script:AccountsTreeViewData | Export-Csv $AccountsTreeNodeFileSave -NoTypeInformation
 
-                                    Create-LogEntry -LogFile $PewLogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock { Get-ADUser -Filter * -Properties * | Select-Object Name, SID, Enabled, LockedOut, Created, Modified, LastLogonDate, LastBadPasswordAttempt, BadLogonCount, PasswordLastSet, PasswordExpired, PasswordNeverExpires, PasswordNotRequired, CanonicalName, MemberOf, SmartCardLogonRequired, ScriptPath, HomeDrive } -ComputerName $script:ComputerTreeViewSelected -Credential [ $UserName | $Password ]"
+                                    Write-LogEntry -LogFile $PewLogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock { Get-ADUser -Filter * -Properties * | Select-Object Name, SID, Enabled, LockedOut, Created, Modified, LastLogonDate, LastBadPasswordAttempt, BadLogonCount, PasswordLastSet, PasswordExpired, PasswordNeverExpires, PasswordNotRequired, CanonicalName, MemberOf, SmartCardLogonRequired, ScriptPath, HomeDrive } -ComputerName $script:ComputerTreeViewSelected -Credential [ $UserName | $Password ]"
                                 }
                                 else {
                                     $script:AccountsTreeViewData = Invoke-Command -ScriptBlock {
@@ -859,7 +859,7 @@ Function Import-DataFromActiveDirectory {
                                         | Select-Object Name, SID, Enabled, LockedOut, Created, Modified, LastLogonDate, LastBadPasswordAttempt, BadLogonCount, PasswordLastSet, PasswordExpired, PasswordNeverExpires, PasswordNotRequired, CanonicalName, MemberOf, SmartCardLogonRequired, ScriptPath, HomeDrive
                                     } -ComputerName $script:ComputerTreeViewSelected
                                     $script:AccountsTreeViewData | Export-Csv $AccountsTreeNodeFileSave -NoTypeInformation
-                                    Create-LogEntry -LogFile $PewLogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock { Get-ADUser -Filter * -Properties * | Select-Object Name, SID, Enabled, LockedOut, Created, Modified, LastLogonDate, LastBadPasswordAttempt, BadLogonCount, PasswordLastSet, PasswordExpired, PasswordNeverExpires, PasswordNotRequired, CanonicalName, MemberOf, SmartCardLogonRequired, ScriptPath, HomeDrive } -ComputerName $script:ComputerTreeViewSelected"
+                                    Write-LogEntry -LogFile $PewLogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock { Get-ADUser -Filter * -Properties * | Select-Object Name, SID, Enabled, LockedOut, Created, Modified, LastLogonDate, LastBadPasswordAttempt, BadLogonCount, PasswordLastSet, PasswordExpired, PasswordNeverExpires, PasswordNotRequired, CanonicalName, MemberOf, SmartCardLogonRequired, ScriptPath, HomeDrive } -ComputerName $script:ComputerTreeViewSelected"
                                 }
                                 #Initialize-TreeViewData -Accounts
                                 Normalize-TreeViewData -Accounts
@@ -890,7 +890,7 @@ Function Import-DataFromActiveDirectory {
                     }
                 }
                 $ImportFromADWinRMGroupBox.Controls.Add($ImportFromADWinRMImportButton)
-                Apply-CommonButtonSettings -Button $ImportFromADWinRMImportButton
+                Add-CommonButtonSettings -Button $ImportFromADWinRMImportButton
             $ImportFromADFrom.Controls.Add($ImportFromADWinRMGroupBox)
 
 
@@ -955,7 +955,7 @@ Function Import-DataFromActiveDirectory {
                     Add_Click = {
                         if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
                             if (!$script:Credential) { Set-NewCredential }
-                            Create-LogEntry -LogFile $PewLogFile -NoTargetComputer -Message "Credentials Used: $($script:Credential.UserName)"
+                            Write-LogEntry -LogFile $PewLogFile -NoTargetComputer -Message "Credentials Used: $($script:Credential.UserName)"
                             $Username = $script:Credential.UserName
                             $Password = '"PASSWORD HIDDEN"'
                             Invoke-Command -ScriptBlock {
@@ -963,7 +963,7 @@ Function Import-DataFromActiveDirectory {
                                 | Select-Object Name, SID, Enabled, LockedOut, Created, Modified, LastLogonDate, LastBadPasswordAttempt, BadLogonCount, PasswordLastSet, PasswordExpired, PasswordNeverExpires, PasswordNotRequired, CanonicalName, MemberOf, SmartCardLogonRequired, ScriptPath, HomeDrive
                             } -Credential $script:Credential `
                             | Export-Csv $AccountsTreeNodeFileSave -NoTypeInformation
-                            Create-LogEntry -LogFile $PewLogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock { Get-ADUser -Filter * -Properties * | Select-Object Name, SID, Enabled, LockedOut, Created, Modified, LastLogonDate, LastBadPasswordAttempt, BadLogonCount, PasswordLastSet, PasswordExpired, PasswordNeverExpires, PasswordNotRequired, CanonicalName, MemberOf, SmartCardLogonRequired, ScriptPath, HomeDrive } -Credential [ $UserName | $Password ]"
+                            Write-LogEntry -LogFile $PewLogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock { Get-ADUser -Filter * -Properties * | Select-Object Name, SID, Enabled, LockedOut, Created, Modified, LastLogonDate, LastBadPasswordAttempt, BadLogonCount, PasswordLastSet, PasswordExpired, PasswordNeverExpires, PasswordNotRequired, CanonicalName, MemberOf, SmartCardLogonRequired, ScriptPath, HomeDrive } -Credential [ $UserName | $Password ]"
                         }
                         else {
                             Invoke-Command -ScriptBlock {
@@ -971,7 +971,7 @@ Function Import-DataFromActiveDirectory {
                                 | Select-Object Name, SID, Enabled, LockedOut, Created, Modified, LastLogonDate, LastBadPasswordAttempt, BadLogonCount, PasswordLastSet, PasswordExpired, PasswordNeverExpires, PasswordNotRequired, CanonicalName, MemberOf, SmartCardLogonRequired, ScriptPath, HomeDrive
                             } `
                             | Export-Csv $AccountsTreeNodeFileSave -NoTypeInformation
-                            Create-LogEntry -LogFile $PewLogFile -NoTargetComputer -Message  "Invoke-Command -ScriptBlock { Get-ADUser -Filter * -Properties * | Select-Object Name, SID, Enabled, LockedOut, Created, Modified, LastLogonDate, LastBadPasswordAttempt, BadLogonCount, PasswordLastSet, PasswordExpired, PasswordNeverExpires, PasswordNotRequired, CanonicalName, MemberOf, SmartCardLogonRequired, ScriptPath, HomeDrive }"
+                            Write-LogEntry -LogFile $PewLogFile -NoTargetComputer -Message  "Invoke-Command -ScriptBlock { Get-ADUser -Filter * -Properties * | Select-Object Name, SID, Enabled, LockedOut, Created, Modified, LastLogonDate, LastBadPasswordAttempt, BadLogonCount, PasswordLastSet, PasswordExpired, PasswordNeverExpires, PasswordNotRequired, CanonicalName, MemberOf, SmartCardLogonRequired, ScriptPath, HomeDrive }"
                         }
                         Save-TreeViewData -Accounts
 
@@ -980,7 +980,7 @@ Function Import-DataFromActiveDirectory {
                     }
                 }
                 $ImportFromADLocalhostGroupBox.Controls.Add($ImportFromADLocalhostImportButton)
-                Apply-CommonButtonSettings -Button $ImportFromADLocalhostImportButton
+                Add-CommonButtonSettings -Button $ImportFromADLocalhostImportButton
                 $ImportFromADFrom.Controls.Add($ImportFromADLocalhostGroupBox)
 
             [System.GC]::Collect()
@@ -1001,6 +1001,7 @@ Function Import-EndpointScripts {
     #>
     Foreach ($script in (Get-ChildItem -Path "$CommandsAndScripts\Scripts-Host" | Where-Object {$_.Extension -eq '.ps1'})) {
         $CollectionName = $script.basename
+        Update-FormProgress $CollectionName
 
         if ($CollectionName -match 'DeepBlue') {
             $script:AllEndpointCommands += [PSCustomObject]@{
@@ -1040,6 +1041,36 @@ $("$(Get-Help $($script.FullName) | Select-Object -ExpandProperty DESCRIPTION)".
         }
     }
 }
+
+
+
+Update-FormProgress "Import-ActiveDirectoryScripts"
+Function Import-ActiveDirectoryScripts {
+    Foreach ($script in (Get-ChildItem -Path "$CommandsAndScripts\Scripts-AD" | Where-Object {$_.Extension -eq '.ps1'})) {
+        $CollectionName = $script.basename
+        Update-FormProgress $CollectionName
+
+        $script:AllActiveDirectoryCommands += [PSCustomObject]@{
+            Name                 = $CollectionName
+            Type                 = "script"
+            Command_WinRM_Script = "Invoke-Command -FilePath '$($script.FullName)'"
+            #Properties_PoSh      = 'PSComputerName, *'
+            #Properties_WMI       = 'PSComputerName, *'
+            Description          = "$(Get-Help $($script.FullName) | Select-Object -ExpandProperty Description)".TrimStart('@{Text=').TrimEnd('}')
+            ScriptPath           = "$($script.FullName)"
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
 
 
 

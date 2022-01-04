@@ -3,10 +3,20 @@ param(
 )
 $length = $string.length
 $pad = 32-$length
-if (($length -lt 8) -or ($length -gt 32)) {Throw "String must be between 16 and 32 characters"}
+if (($length -lt 16) -or ($length -gt 32)) {Throw "String must be between 16 and 32 characters"}
 $encoding = New-Object System.Text.ASCIIEncoding
 $bytes = $encoding.GetBytes($string + "0" * $pad)
 return $bytes
+
+
+
+
+
+
+
+
+
+
 # SIG # Begin signature block
 # MIIFuAYJKoZIhvcNAQcCoIIFqTCCBaUCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR

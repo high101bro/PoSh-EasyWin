@@ -1,7 +1,6 @@
 .gitignore
 inetpub
 inetpub/**
-Collected**Data
 Autosaved**Charts
 Credential**Management
 Reports
@@ -15,3 +14,4 @@ Temp/**
 Show-Directory**
 Future**Dependency**Check**
 TreeView**Data**
+User**Data

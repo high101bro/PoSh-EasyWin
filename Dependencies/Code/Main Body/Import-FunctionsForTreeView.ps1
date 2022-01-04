@@ -592,31 +592,33 @@ function Update-TreeViewData {
                     }
                     if ($Category.Text -match '[\[(]rpc[)\]]' ) {
                         $script:RpcCommandCount++
-                        if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
-                            [system.media.systemsounds]::Exclamation.play()
-                            $StatusListBox.Items.Clear()
-                            $StatusListBox.Items.Add("Collection Mode Changed to: Individual Execution")
-                            #Removed For Testing#$ResultsListBox.Items.Clear()
-                            $ResultsListBox.Items.Add("The collection mode '$($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem)' does not support the RPC and SMB protocols and has been changed to")
-                            $ResultsListBox.Items.Add("'Monitor Jobs' which supports RPC, SMB, and WinRM - but may be slower and noisier on the network.")
-                            $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedIndex = 0 #'Monitor Jobs'
-                            $EventLogRPCRadioButton.checked         = $true
-                            $ExternalProgramsRPCRadioButton.checked = $true
-                        }
+                        #deprecated
+                        # if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
+                        #     [system.media.systemsounds]::Exclamation.play()
+                        #     $StatusListBox.Items.Clear()
+                        #     $StatusListBox.Items.Add("Collection Mode Changed to: Individual Execution")
+                        #     #Removed For Testing#$ResultsListBox.Items.Clear()
+                        #     $ResultsListBox.Items.Add("The collection mode '$($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem)' does not support the RPC and SMB protocols and has been changed to")
+                        #     $ResultsListBox.Items.Add("'Monitor Jobs' which supports RPC, SMB, and WinRM - but may be slower and noisier on the network.")
+                        #     $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedIndex = 0 #'Monitor Jobs'
+                        #     $EventLogRPCRadioButton.checked         = $true
+                        #     $ExternalProgramsRPCRadioButton.checked = $true
+                        # }
                     }
                     if ($Category.Text -match '[\[(]smb[)\]]' ) {
                         $script:SmbCommandCount++
-                        if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
-                            # This brings specific tabs to the forefront/front view
+                        #deprecated
+                        # if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
+                        #     # This brings specific tabs to the forefront/front view
 
-                            [system.media.systemsounds]::Exclamation.play()
-                            $StatusListBox.Items.Clear()
-                            $StatusListBox.Items.Add("Collection Mode Changed to: Individual Execution")
-                            #Removed For Testing#$ResultsListBox.Items.Clear()
-                            $ResultsListBox.Items.Add("The collection mode '$($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem)' does not support the RPC and SMB protocols and has been changed to")
-                            $ResultsListBox.Items.Add("'Monitor Jobs' which supports RPC, SMB, and WinRM - but may be slower and noisier on the network.")
-                            $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedIndex = 0 #'Monitor Jobs'
-                        }
+                        #     [system.media.systemsounds]::Exclamation.play()
+                        #     $StatusListBox.Items.Clear()
+                        #     $StatusListBox.Items.Add("Collection Mode Changed to: Individual Execution")
+                        #     #Removed For Testing#$ResultsListBox.Items.Clear()
+                        #     $ResultsListBox.Items.Add("The collection mode '$($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem)' does not support the RPC and SMB protocols and has been changed to")
+                        #     $ResultsListBox.Items.Add("'Monitor Jobs' which supports RPC, SMB, and WinRM - but may be slower and noisier on the network.")
+                        #     $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedIndex = 0 #'Monitor Jobs'
+                        # }
                     }
 
                     $Category.NodeFont  = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,1,1)
@@ -634,29 +636,31 @@ function Update-TreeViewData {
                         }
                         if ($Entry.Text -match '[\[(]rpc[)\]]') {
                             $script:RpcCommandCount++
-                            if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
-                                [system.media.systemsounds]::Exclamation.play()
-                                $StatusListBox.Items.Clear()
-                                $StatusListBox.Items.Add("Collection Mode Changed to: Individual Execution")
-                                #Removed For Testing#$ResultsListBox.Items.Clear()
-                                $ResultsListBox.Items.Add("The collection mode '$($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem)' does not support the RPC and SMB protocols and has been changed to")
-                                $ResultsListBox.Items.Add("'Monitor Jobs' which supports RPC, SMB, and WinRM - but may be slower and noisier on the network.")
-                                $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedIndex = 0 #'Monitor Jobs'
-                                $EventLogRPCRadioButton.checked         = $true
-                                $ExternalProgramsRPCRadioButton.checked = $true
-                            }
+                            #deprecated
+                            # if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
+                            #     [system.media.systemsounds]::Exclamation.play()
+                            #     $StatusListBox.Items.Clear()
+                            #     $StatusListBox.Items.Add("Collection Mode Changed to: Individual Execution")
+                            #     #Removed For Testing#$ResultsListBox.Items.Clear()
+                            #     $ResultsListBox.Items.Add("The collection mode '$($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem)' does not support the RPC and SMB protocols and has been changed to")
+                            #     $ResultsListBox.Items.Add("'Monitor Jobs' which supports RPC, SMB, and WinRM - but may be slower and noisier on the network.")
+                            #     $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedIndex = 0 #'Monitor Jobs'
+                            #     $EventLogRPCRadioButton.checked         = $true
+                            #     $ExternalProgramsRPCRadioButton.checked = $true
+                            # }
                         }
                         if ($Entry.Text -match '[\[(]smb[)\]]') {
                             $script:SmbCommandCount++
-                            if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
-                                [system.media.systemsounds]::Exclamation.play()
-                                $StatusListBox.Items.Clear()
-                                $StatusListBox.Items.Add("Collection Mode Changed to: Individual Execution")
-                                #Removed For Testing#$ResultsListBox.Items.Clear()
-                                $ResultsListBox.Items.Add("The collection mode '$($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem)' does not support the RPC and SMB protocols and has been changed to")
-                                $ResultsListBox.Items.Add("'Monitor Jobs' which supports RPC, SMB, and WinRM - but may be slower and noisier on the network.")
-                                $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedIndex = 0 #'Monitor Jobs'
-                            }
+                            #deprecated
+                            # if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
+                            #     [system.media.systemsounds]::Exclamation.play()
+                            #     $StatusListBox.Items.Clear()
+                            #     $StatusListBox.Items.Add("Collection Mode Changed to: Individual Execution")
+                            #     #Removed For Testing#$ResultsListBox.Items.Clear()
+                            #     $ResultsListBox.Items.Add("The collection mode '$($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem)' does not support the RPC and SMB protocols and has been changed to")
+                            #     $ResultsListBox.Items.Add("'Monitor Jobs' which supports RPC, SMB, and WinRM - but may be slower and noisier on the network.")
+                            #     $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedIndex = 0 #'Monitor Jobs'
+                            # }
                         }
 
                         $EntryNodeCheckedCountforCategory++
@@ -682,29 +686,31 @@ function Update-TreeViewData {
                             }
                             if ($Entry.Text -match '[\[(]rpc[)\]]') {
                                 $script:RpcCommandCount++
-                                if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
-                                    [system.media.systemsounds]::Exclamation.play()
-                                    $StatusListBox.Items.Clear()
-                                    $StatusListBox.Items.Add("Collection Mode Changed to: Individual Execution")
-                                    #Removed For Testing#$ResultsListBox.Items.Clear()
-                                    $ResultsListBox.Items.Add("The collection mode '$($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem)' does not support the RPC and SMB protocols and has been changed to")
-                                    $ResultsListBox.Items.Add("'Monitor Jobs' which supports RPC, SMB, and WinRM - but may be slower and noisier on the network.")
-                                    $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedIndex = 0 #'Monitor Jobs'
-                                    $EventLogRPCRadioButton.checked         = $true
-                                    $ExternalProgramsRPCRadioButton.checked = $true
-                                }
+                                #deprecated
+                                # if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
+                                #     [system.media.systemsounds]::Exclamation.play()
+                                #     $StatusListBox.Items.Clear()
+                                #     $StatusListBox.Items.Add("Collection Mode Changed to: Individual Execution")
+                                #     #Removed For Testing#$ResultsListBox.Items.Clear()
+                                #     $ResultsListBox.Items.Add("The collection mode '$($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem)' does not support the RPC and SMB protocols and has been changed to")
+                                #     $ResultsListBox.Items.Add("'Monitor Jobs' which supports RPC, SMB, and WinRM - but may be slower and noisier on the network.")
+                                #     $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedIndex = 0 #'Monitor Jobs'
+                                #     $EventLogRPCRadioButton.checked         = $true
+                                #     $ExternalProgramsRPCRadioButton.checked = $true
+                                # }
                             }
                             if ($Entry.Text -match '[\[(]smb[)\]]') {
                                 $script:SmbCommandCount++
-                                if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
-                                    [system.media.systemsounds]::Exclamation.play()
-                                    $StatusListBox.Items.Clear()
-                                    $StatusListBox.Items.Add("Collection Mode Changed to: Individual Execution")
-                                    #Removed For Testing#$ResultsListBox.Items.Clear()
-                                    $ResultsListBox.Items.Add("The collection mode '$($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem)' does not support the RPC and SMB protocols and has been changed to")
-                                    $ResultsListBox.Items.Add("'Monitor Jobs' which supports RPC, SMB, and WinRM - but may be slower and noisier on the network.")
-                                    $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedIndex = 0 #'Monitor Jobs'
-                                }
+                                #deprecated
+                                # if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
+                                #     [system.media.systemsounds]::Exclamation.play()
+                                #     $StatusListBox.Items.Clear()
+                                #     $StatusListBox.Items.Add("Collection Mode Changed to: Individual Execution")
+                                #     #Removed For Testing#$ResultsListBox.Items.Clear()
+                                #     $ResultsListBox.Items.Add("The collection mode '$($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem)' does not support the RPC and SMB protocols and has been changed to")
+                                #     $ResultsListBox.Items.Add("'Monitor Jobs' which supports RPC, SMB, and WinRM - but may be slower and noisier on the network.")
+                                #     $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedIndex = 0 #'Monitor Jobs'
+                                # }
                             }
 
                             # if ($Commands) { $script:TreeeViewCommandsCount++ }
@@ -1118,7 +1124,7 @@ function Update-TreeViewData {
     }
     else {
         $script:ComputerListExecuteButton.Enabled   = $false
-        Apply-CommonButtonSettings -Button $script:ComputerListExecuteButton
+        Add-CommonButtonSettings -Button $script:ComputerListExecuteButton
     }
     $StatisticsRefreshButton.PerformClick()
 
@@ -1140,11 +1146,11 @@ function Update-TreeViewData {
         $ActionsTabQuarantineEndpointsButton.backcolor = 'lightgreen'
     }
     else {
-        Apply-CommonButtonSettings -Button $ActionsTabProcessKillerButton
-        Apply-CommonButtonSettings -Button $ActionsTabServiceKillerButton
-        Apply-CommonButtonSettings -Button $ActionsTabAccountLogoutButton
-        Apply-CommonButtonSettings -Button $ActionsTabSelectNetworkConnectionsToKillButton
-        Apply-CommonButtonSettings -Button $ActionsTabQuarantineEndpointsButton
+        Add-CommonButtonSettings -Button $ActionsTabProcessKillerButton
+        Add-CommonButtonSettings -Button $ActionsTabServiceKillerButton
+        Add-CommonButtonSettings -Button $ActionsTabAccountLogoutButton
+        Add-CommonButtonSettings -Button $ActionsTabSelectNetworkConnectionsToKillButton
+        Add-CommonButtonSettings -Button $ActionsTabQuarantineEndpointsButton
     }
 
     Resize-MonitorJobsTab -Minimize
@@ -1361,42 +1367,42 @@ function Add-TreeViewData {
         }
 
         #batman #TODO work on this
-        # $MetadataOperatingSystem = New-Object System.Windows.Forms.TreeNode -Property @{
-        #     Name = "OperatingSystem"
-        #     Text = $($Metadata.OperatingSystem)
-        #     Tag  = $($Metadata.OperatingSystem)
-        #     ToolTipText = ""
-        #     NodeFont    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),1,2,1)
-        #     ForeColor   = [System.Drawing.Color]::FromArgb(0,0,0,0)
-        # }
-        # $newNode.Nodes.Add($MetadataOperatingSystem)
+        $MetadataOperatingSystem = New-Object System.Windows.Forms.TreeNode -Property @{
+            Name = "OperatingSystem"
+            Text = $($Metadata.OperatingSystem)
+            Tag  = $($Metadata.OperatingSystem)
+            ToolTipText = ""
+            NodeFont    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),1,2,1)
+            ForeColor   = [System.Drawing.Color]::FromArgb(0,0,0,0)
+        }
+        $newNode.Nodes.Add($MetadataOperatingSystem)
 
         if (-not $DoNotPopulateMetadata) {
             # TAG: sub nodes, sub-nodes, child nodes, dropdown nodes
-            # $MetadataIPv4Address = New-Object System.Windows.Forms.TreeNode -Property @{
-            #     Name = "IPv4Address"
-            #     Text = $Metadata.IPv4Address
-            # }
-            # $MetadataIPv4Address.Bounds.Height = 0
-            # $MetadataIPv4Address.Bounds.Width = 0
-            # $newNode.Nodes.Add($MetadataIPv4Address)
+            $MetadataIPv4Address = New-Object System.Windows.Forms.TreeNode -Property @{
+                Name = "IPv4Address"
+                Text = $Metadata.IPv4Address
+            }
+            $MetadataIPv4Address.Bounds.Height = 0
+            $MetadataIPv4Address.Bounds.Width = 0
+            $newNode.Nodes.Add($MetadataIPv4Address)
 
-            # $MetadataIPv4Ports = New-Object System.Windows.Forms.TreeNode -Property @{
-            #     Name = 'Port Scan'
-            #     Text = 'Port Scan'
-            # }
-            # $newNode.Nodes.Add($MetadataIPv4Ports)
+            $MetadataIPv4Ports = New-Object System.Windows.Forms.TreeNode -Property @{
+                Name = 'Port Scan'
+                Text = 'Port Scan'
+            }
+            $newNode.Nodes.Add($MetadataIPv4Ports)
 
-            # $MetadataIPv4Ports.Nodes.Add("[ Count: $(if ($Metadata.PortScan -ne $null) {$Metadata.PortScan.split(',').Count} else{0}) ]")
-            # foreach ($PortScan in ($Metadata.PortScan.split(','))) {
-            #     if ($Metadata.PortScan -ne $null){
-            #         $MetadataIPv4EachPort = New-Object System.Windows.Forms.TreeNode -Property @{
-            #             Name = $PortScan
-            #             Text = $PortScan
-            #         }
-            #         $MetadataIPv4Ports.Nodes.Add($MetadataIPv4EachPort)
-            #     }
-            # }
+            $MetadataIPv4Ports.Nodes.Add("[ Count: $(if ($Metadata.PortScan -ne $null) {$Metadata.PortScan.split(',').Count} else{0}) ]")
+            foreach ($PortScan in ($Metadata.PortScan.split(','))) {
+                if ($Metadata.PortScan -ne $null){
+                    $MetadataIPv4EachPort = New-Object System.Windows.Forms.TreeNode -Property @{
+                        Name = $PortScan
+                        Text = $PortScan
+                    }
+                    $MetadataIPv4Ports.Nodes.Add($MetadataIPv4EachPort)
+                }
+            }
         }
 
         if ($ToolTip) {
@@ -1997,7 +2003,7 @@ function Show-TreeViewMoveForm {
                 $AccountsTreeNodePopup.close()
             }
         }
-        Apply-CommonButtonSettings -Button $AccountsTreeNodePopupExecuteButton
+        Add-CommonButtonSettings -Button $AccountsTreeNodePopupExecuteButton
         $AccountsTreeNodePopup.Controls.Add($AccountsTreeNodePopupExecuteButton)
         $AccountsTreeNodePopup.ShowDialog()
     }
@@ -2053,7 +2059,7 @@ function Show-TreeViewMoveForm {
                 $ComputerTreeNodePopup.close()
             }
         }
-        Apply-CommonButtonSettings -Button $ComputerTreeNodePopupExecuteButton
+        Add-CommonButtonSettings -Button $ComputerTreeNodePopupExecuteButton
         $ComputerTreeNodePopup.Controls.Add($ComputerTreeNodePopupExecuteButton)
         $ComputerTreeNodePopup.ShowDialog()
     }
@@ -2123,7 +2129,7 @@ function Show-TreeViewTagForm {
                 }
             }
         }
-        Apply-CommonButtonSettings -Button $ComputerListMassTagNewTagNameButton
+        Add-CommonButtonSettings -Button $ComputerListMassTagNewTagNameButton
 
 
         $ComputerListMassTagForm.Controls.AddRange(@($ComputerListMassTagNewTagNameLabel,$ComputerListMassTagNewTagNameComboBox,$ComputerListMassTagNewTagNameButton))
@@ -2183,7 +2189,7 @@ function Show-TreeViewTagForm {
                 }
             }
         }
-        Apply-CommonButtonSettings -Button $AccountsListMassTagNewTagNameButton
+        Add-CommonButtonSettings -Button $AccountsListMassTagNewTagNameButton
 
 
         $AccountsListMassTagForm.Controls.AddRange(@($AccountsListMassTagNewTagNameLabel,$AccountsListMassTagNewTagNameComboBox,$AccountsListMassTagNewTagNameButton))
@@ -2716,6 +2722,16 @@ function Compile-TreeViewCommand {
         }
     }
 }
+
+
+
+
+
+
+
+
+
+
 
 # SIG # Begin signature block
 # MIIFuAYJKoZIhvcNAQcCoIIFqTCCBaUCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB

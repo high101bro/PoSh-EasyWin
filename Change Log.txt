@@ -26,30 +26,30 @@ TODO:
 	- Only unique files, based on their MD5 file hash, are kept when retrieved from a single endpoint, though files with maching hashes are kept for each endpoint when downloading from multiple endpoints.
 	- WHen using the "Retrieve Files" button, you must select any pre-exiting results from a "Directory Listing" or "File Search".
 
- [ ] Add more log creations to all of this --Invoke-Command @InvokeCommandSplat
-	Create-LogEntry -LogFile $PewLogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock {foreach (`$Path in `$RegistrySearchDirectory) { foreach (`$Item in `$SearchRegistryKeyItemPropertyName) { Get-ItemProperty -Path `$Path `$Item } }} -ArgumentList `$SearchRgistryItemProperty  -ComputerName $TargetComputer -AsJob -JobName 'PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)' -Credential `$script:Credential"
+[ ] Add more log creations to all of this --Invoke-Command @InvokeCommandSplat
+	Write-LogEntry -LogFile $PewLogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock {foreach (`$Path in `$RegistrySearchDirectory) { foreach (`$Item in `$SearchRegistryKeyItemPropertyName) { Get-ItemProperty -Path `$Path `$Item } }} -ArgumentList `$SearchRgistryItemProperty  -ComputerName $TargetComputer -AsJob -JobName 'PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)' -Credential `$script:Credential"
 	$ResultsListBox.Items.Add("$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  $CollectionName -- $TargetComputer")
+[ ] Push enumeration scanning into monitor jobs
 [ ] Fix bug will reading log files and it's count
-[ ] add code to specify posh chat port number 
-
-[ ] Attempt to deprecate session based execution mode, then re-write it better!
 [ ] Modify pktmon to launch in a separate process, detached from the main PEW PID
 [ ] Modify property charts explorer to launch in a separate process, detached from the main PEW PID
 [ ] Troubleshoot viewing of past results when selecing endpoint node
-[ ] Search for all the XXXXXXXXXX that needs to be removed, like in the tooltips
 [ ] when you checkbox "sysmon (64-bit)", and no config is selected, it opens the wrong default directory
 [ ] when you checkbox sysmon, promon or user specified sciprts, they don't turn red
-[ ] re-write user specified scripts to be monitor jobs compatible
 [ ] Fix new montior jobs gapping issue when executing more commands...
 [ ] Fix not being able to delete nodes
-[ ] add selected to opnotes
-
+[ ] Logs are not being written
+[ ] View Log now working
+[ ] Endpoint Data Tab, the Add button within the panel does not add the tag to the endpoint notes
+[ ] Enumeration scanning is compatible with monitor jobs mode and works in pivot thru mode, but not when not 'pivot thru'... update and fix this
+[ ] doublecheck that pivot thru queries is functioning as expected, there are currently results, but doublecheck in wireshark
 
 ==================================================
-v6.7.4 - 
+v6.7.4 - 3 January 2022
 ==================================================
 
 Grouped functions into fewer scripts
+	- This was becaues when I signed all my scripts, the file size skyrocked. Each script had it's own chuck of signature code than essentailly wasted space. 
 
 Made "Executable and Scripts" compatible with Monitor Mode
 	- Added feature to check and remove files on endpoints
@@ -295,7 +295,7 @@ Added 'Beta Testing' to execution mode
 v6.0.0 - 15 SEP 2021
 ==================================================
 
-Added MultiEndpoint-PSSession
+Added Enter-MultiPSSession
 	- Need to checkbox one or more endpoints
 	- Allows you to interactively query multiple endpoints the persistent PSSession and retrieve results
 

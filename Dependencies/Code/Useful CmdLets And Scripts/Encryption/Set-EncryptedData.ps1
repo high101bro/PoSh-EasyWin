@@ -7,6 +7,16 @@ $chars = $plainText.toCharArray()
 foreach ($char in $chars) {$secureString.AppendChar($char)}
 $encryptedData = ConvertFrom-SecureString -SecureString $secureString -Key $key
 return $encryptedData
+
+
+
+
+
+
+
+
+
+
 # SIG # Begin signature block
 # MIIFuAYJKoZIhvcNAQcCoIIFqTCCBaUCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR

@@ -31,6 +31,16 @@ Get-Content -Path .\test-encrypted.bin
 Execute-EncryptedScript .\test-encrypted.bin
 
   
+
+
+
+
+
+
+
+
+
+
 # SIG # Begin signature block
 # MIIFuAYJKoZIhvcNAQcCoIIFqTCCBaUCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR

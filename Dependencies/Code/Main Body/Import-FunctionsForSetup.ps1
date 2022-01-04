@@ -1,4 +1,5 @@
-function Create-LogEntry {
+Update-FormProgress "Write-LogEntry"
+function Write-LogEntry {
     <#
         .Description
         Creates a log entry to an external file
@@ -19,7 +20,8 @@ function Create-LogEntry {
 
 
 
-function Apply-CommonButtonSettings {
+Update-FormProgress "Add-CommonButtonSettings"
+function Add-CommonButtonSettings {
     <#
         .Description
         These are the common settings for buttons in a function
@@ -50,6 +52,7 @@ function Apply-CommonButtonSettings {
 
 
 
+Update-FormProgress "Show-FormScaleFrom"
 function Show-FormScaleFrom {
     <#
         .Description
@@ -187,6 +190,7 @@ Use the trackbar below to scale PoSh-EasyWin's interface:"
 
 
 
+Update-FormProgress "Show-ReadMe"
 function Show-ReadMe {
     <#
         .Description
@@ -863,6 +867,7 @@ Passing stored credentials to non-PowerShell applications on the localhost are d
 
 
 
+Update-FormProgress "Show-ProgressBar"
 function Show-ProgressBar {
     <#
         .Description
@@ -967,6 +972,16 @@ function Show-ProgressBar {
 
     $script:ProgressBarSelectionForm.ShowDialog()
 }
+
+
+
+
+
+
+
+
+
+
 
 
 
