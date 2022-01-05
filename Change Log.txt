@@ -45,6 +45,18 @@ TODO:
 [ ] doublecheck that pivot thru queries is functioning as expected, there are currently results, but doublecheck in wireshark
 
 ==================================================
+v6.8.4 - 4 January 2022
+==================================================
+
+Added action under the Interaction Tabs // Multi-Endpoint Actions Tab
+	- Windows Timeline
+		- Windows 10 (v1803+) [April 2018] introduces an ActivitiesCache.db SQLite database file that tracks past files users interacted with, allowing quick access to previous files - a forensic treasure trove.
+		- This pulls back all ActivitiesCache.db from each endpoint selected, and you're able to select one/many/all to pull back to the localhost for Analysis
+		- The ActivitiesCache.db files pulled back are processed with WxTCmd.exe into CSV files
+	- WxTCmd.exe has been added to the Exeuctables directory
+		- Downloaded from: https://github.com/EricZimmerman/WxTCmd
+
+==================================================
 v6.7.4 - 3 January 2022
 ==================================================
 

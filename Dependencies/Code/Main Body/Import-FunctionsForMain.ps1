@@ -3160,7 +3160,6 @@ function Get-RemoteAlternateDataStream {
     Add-CommonButtonSettings -Button $FileSearchAlternateDataStreamDirectoryExtractStreamDataButton
 
     Add-CommonButtonSettings -Button $RetrieveFilesButton
-
     Add-CommonButtonSettings -Button $OpenXmlResultsButton
     Add-CommonButtonSettings -Button $OpenCsvResultsButton
 }

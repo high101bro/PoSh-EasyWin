@@ -19,7 +19,7 @@
 |                |                     - Limited testing                           |
 |                |               v2.0  - Not supported, requires splatting         |
 |  Optional      |  PsExec.exe, Procmon.exe, Sysmon.exe,                           |
-|                |  etl2pcapng.exe, kitty.exe, plink.exe, chainsaw.exe             |
+|                |  etl2pcapng.exe, kitty.exe, plink.exe, chainsaw.exe, WxTCmd.exe |
 |                |                                                                 |
 
 ***

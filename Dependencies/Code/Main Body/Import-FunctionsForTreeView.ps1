@@ -1142,6 +1142,9 @@ function Update-TreeViewData {
         $ActionsTabSelectNetworkConnectionsToKillButton.forecolor = 'Black'
         $ActionsTabSelectNetworkConnectionsToKillButton.backcolor = 'lightgreen'
 
+        $WindowsTimelineButton.forecolor = 'Black'
+        $WindowsTimelineButton.backcolor = 'lightgreen'
+
         $ActionsTabQuarantineEndpointsButton.forecolor = 'Black'
         $ActionsTabQuarantineEndpointsButton.backcolor = 'lightgreen'
     }
@@ -1150,6 +1153,7 @@ function Update-TreeViewData {
         Add-CommonButtonSettings -Button $ActionsTabServiceKillerButton
         Add-CommonButtonSettings -Button $ActionsTabAccountLogoutButton
         Add-CommonButtonSettings -Button $ActionsTabSelectNetworkConnectionsToKillButton
+        Add-CommonButtonSettings -Button $WindowsTimelineButton
         Add-CommonButtonSettings -Button $ActionsTabQuarantineEndpointsButton
     }
 
