@@ -2266,7 +2266,7 @@ function Update-EndpointNotes {
                     Foreach ($Computer in $script:ComputerTreeViewData) {
                         if ($entry.checked -and $entry.text -eq $Computer.Name) {
                             $script:ComputerTreeViewSelected += $Entry.Text
-                            $UpdatedNotes = "$(Get-Date) [Executed] $CollectionName`n$($Computer.Notes)"
+                            $UpdatedNotes = "$(Get-Date) -- Executed: $CollectionName`n$($Computer.Notes)"
                             $Computer | Add-Member -MemberType NoteProperty -Name Notes -Value $UpdatedNotes -Force
                         }
                     }

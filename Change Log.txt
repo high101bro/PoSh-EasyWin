@@ -5,27 +5,13 @@ v{Major}.{Minor}.{HotFix} - {Day} {Month} {Year}
 To Do List:
 ==================================================
 TODO:
-[ ] Small bug, when you click on a node headed in the commands treeview, the commands are counted twice when notifiying you - but they're only executed once.
-[ ] Some users show up with 1 group when they have none
-[ ] Add Get-Help (comment based help) support for each script so they populate a description
-[ ] Cosolidate code... Create-TreeViewCheckBoxArray -Endpoint --vs-- Generate-Computerlist
-[ ] Checking custom group box makes user add commands turn blue... wierd? Check inside Update-Treeivew function
-[ ] Add to add_closing ... This.dispose() gc-clearnup
-[ ] Streamline the updaing of data picture box associate with endpoint/account nodes, remove requirement of needing to click on node over and over...
-[ ] Looking the Network Connection execution path search... not sure if its working
-[ ] Add re-run feature, or at least make eveverything compatible with the monitor/rerun
-	[ ] follow up with the event id sections
-[ ] Processes tab.. the one that broke down each process
-[ ] need to fix bugs with tagging... it's not saving correctly, previous notes are being overwriten to make all data the same
-	Search "tag node" and "tag nodes"
-[ ] Active endpoint note saving... should I add an option to toggle if there's performance issues?
-
 [ ] Writing Daily Tips...
 	- The "Directory Listing (WinRM)" query within the "File Search" tab provides you with a "Get File" button that allows you to easily download multiple files from multiple hosts.
 	- Retrieved files from endpoints have additional data collected from them like Signer Certificates and File Hashes, then are zipped before being downloaded to the localhost.
 	- Only unique files, based on their MD5 file hash, are kept when retrieved from a single endpoint, though files with maching hashes are kept for each endpoint when downloading from multiple endpoints.
 	- WHen using the "Retrieve Files" button, you must select any pre-exiting results from a "Directory Listing" or "File Search".
-
+[ ] Add re-run feature, or at least make eveverything compatible with the monitor/rerun
+	[ ] follow up with the event id sections
 [ ] Add more log creations to all of this --Invoke-Command @InvokeCommandSplat
 	Write-LogEntry -LogFile $PewLogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock {foreach (`$Path in `$RegistrySearchDirectory) { foreach (`$Item in `$SearchRegistryKeyItemPropertyName) { Get-ItemProperty -Path `$Path `$Item } }} -ArgumentList `$SearchRgistryItemProperty  -ComputerName $TargetComputer -AsJob -JobName 'PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)' -Credential `$script:Credential"
 	$ResultsListBox.Items.Add("$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  $CollectionName -- $TargetComputer")
@@ -34,15 +20,13 @@ TODO:
 [ ] Modify pktmon to launch in a separate process, detached from the main PEW PID
 [ ] Modify property charts explorer to launch in a separate process, detached from the main PEW PID
 [ ] Troubleshoot viewing of past results when selecing endpoint node
-[ ] when you checkbox "sysmon (64-bit)", and no config is selected, it opens the wrong default directory
 [ ] when you checkbox sysmon, promon or user specified sciprts, they don't turn red
-[ ] Fix new montior jobs gapping issue when executing more commands...
-[ ] Fix not being able to delete nodes
+[ ] figure out intermitten issue with montior jobs gapping when executing more commands...
 [ ] Logs are not being written
 [ ] View Log now working
-[ ] Endpoint Data Tab, the Add button within the panel does not add the tag to the endpoint notes
 [ ] Enumeration scanning is compatible with monitor jobs mode and works in pivot thru mode, but not when not 'pivot thru'... update and fix this
 [ ] doublecheck that pivot thru queries is functioning as expected, there are currently results, but doublecheck in wireshark
+
 
 ==================================================
 v6.8.4 - 4 January 2022
