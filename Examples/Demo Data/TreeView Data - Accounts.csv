@@ -1,0 +1,21 @@
+"Name","Enabled","CanonicalName","LockedOut","SmartCardLogonRequired","Created","Modified","LastLogonDate","LastBadPasswordAttempt","BadLogonCount","PasswordExpired","PasswordNeverExpires","PasswordNotRequired","MemberOf","SID","ScriptPath","HomeDrive","Notes","ImageIndex"
+"Guest","False","/Users","False","False","01/28/2020 19:53:25","06/28/2020 23:12:29","No TimeStamp","No TimeStamp","0","False","True","True","CN=Administrators,CN=Builtin,DC=MobileLab,DC=home
+CN=Message Capture Users,CN=Users,DC=MobileLab,DC=home
+CN=Performance Log Users,CN=Builtin,DC=MobileLab,DC=home","S-1-5-21-3036625279-3127291219-2495432101-501","No Script Path","No Home Drive","","19"
+"krbtgt","False","/Users","False","False","1/28/2020 7:55:07 PM","6/28/2020 11:12:29 PM","No TimeStamp","No TimeStamp","0","True","False","False","CN=Denied RODC Password Replication Group,CN=Users,DC=MobileLab,DC=home","S-1-5-21-3036625279-3127291219-2495432101-502","No Script Path","No Home Drive",,"2"
+"Administrator","True","/Users","False","False","01/28/2020 19:53:25","02/11/2022 12:01:20","02/11/2022 12:01:20","12/16/2021 00:21:59","0","False","True","False","CN=Guests,CN=Builtin,DC=MobileLab,DC=home","S-1-5-21-3036625279-3127291219-2495432101-500","No Script Path","No Home Drive","","20"
+"admin","True","/East Coast Employees","False","False","04/15/2020 17:10:02","05/17/2021 00:37:12","03/23/2021 00:17:19","No TimeStamp","0","False","True","False","CN=Administrators,CN=Builtin,DC=MobileLab,DC=home
+CN=Domain Admins,CN=Users,DC=MobileLab,DC=home
+CN=Remote Desktop Users,CN=Builtin,DC=MobileLab,DC=home
+CN=Users,CN=Builtin,DC=MobileLab,DC=home","S-1-5-21-3036625279-3127291219-2495432101-1135","No Script Path","No Home Drive","","20"
+"user","True","/West Coast Employees","False","False","04/15/2020 17:01:43","05/17/2021 00:36:51","05/07/2021 00:23:03","No TimeStamp","0","False","True","False","","S-1-5-21-3036625279-3127291219-2495432101-1134","No Script Path","No Home Drive","","42"
+"Dan","True","/East Coast Employees","False","False","01/29/2020 19:54:03","02/11/2022 13:49:18","02/11/2022 13:49:18","12/18/2021 01:23:22","0","False","True","False","CN=Domain Admins,CN=Users,DC=MobileLab,DC=home","S-1-5-21-3036625279-3127291219-2495432101-1117","No Script Path","No Home Drive","01/13/2022 01:48:07 -- Dan is the man!
+","32"
+"test002","False","/West Coast Employees","False","False","6/6/2020 7:44:49 PM","5/17/2021 12:36:51 AM","No TimeStamp","No TimeStamp","0","True","False","False","","S-1-5-21-3036625279-3127291219-2495432101-1393","No Script Path","No Home Drive",,"2"
+"test001","False","/West Coast Employees","False","False","6/6/2020 7:44:46 PM","5/17/2021 12:36:51 AM","No TimeStamp","No TimeStamp","0","True","False","False","","S-1-5-21-3036625279-3127291219-2495432101-1392","No Script Path","No Home Drive",,"2"
+"SmartCardAccount","True","/West Coast Employees","False","True","2/22/2021 2:34:11 AM","5/17/2021 12:36:51 AM","No TimeStamp","No TimeStamp","0","False","False","False","","S-1-5-21-3036625279-3127291219-2495432101-2613","No Script Path","No Home Drive",,"2"
+"BadLoginAccount","True","/East Coast Employees","False","False","02/22/2021 02:36:16","05/17/2021 00:37:12","02/22/2021 02:38:00","02/22/2021 02:37:57","0","False","True","False","","S-1-5-21-3036625279-3127291219-2495432101-2614","No Script Path","No Home Drive","","21"
+"LockedOne","False","/East Coast Employees","False","False","2/22/2021 2:38:43 AM","5/17/2021 12:37:12 AM","No TimeStamp","No TimeStamp","0","True","False","False","","S-1-5-21-3036625279-3127291219-2495432101-2615","No Script Path","No Home Drive",,"2"
+"LockedTwo","False","/West Coast Employees","False","False","2/22/2021 2:39:18 AM","5/17/2021 12:36:51 AM","No TimeStamp","No TimeStamp","0","True","False","False","","S-1-5-21-3036625279-3127291219-2495432101-2616","No Script Path","No Home Drive",,"2"
+"danny","True","/East Coast Employees","False","False","03/23/2021 00:15:43","05/17/2021 00:37:12","04/04/2021 00:55:13","No TimeStamp","0","False","True","False","System.Windows.Forms.ComboBox+ObjectCollection","S-1-5-21-3036625279-3127291219-2495432101-2617","No Script Path","No Home Drive","01/13/2022 01:48:18 -- Sometimes I go by
+","2"
