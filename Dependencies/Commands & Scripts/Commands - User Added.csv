@@ -1,3 +1,0 @@
-"ExportFileName","Properties_PoSh","Command_WinRM_PoSh","Name","Type"
-"Get-Process (User Added Command)","*","Invoke-Command -ScriptBlock { Get-Process -Name sysmon }","Get-Process -Name sysmon","(WinRM) PoSh"
-"Get-Service (User Added Command)","*","Invoke-Command -ScriptBlock { Get-Service -Name wuauserv }","Get-Service -Name wuauserv","(WinRM) PoSh"

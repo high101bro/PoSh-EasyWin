@@ -15,7 +15,7 @@ Logon/Logoff,Logon,4625,"Windows Vista, Windows Server 2008",An account failed t
 Logon/Logoff,Logon,4626,"Windows 8, Windows Server 2012",User/Device claims information.
 Logon/Logoff,Group Membership,4627,Windows 10,Group membership information. 
 Logon/Logoff,Logoff,4634,"Windows Vista, Windows Server 2008",An account was logged off.
-Logon/Logoff,IPsec Main Mode,4646,"Windows Vista, Windows Server 2008",1%
+Logon/Logoff,IPsec Main Mode,4646,"Windows Vista, Windows Server 2008",IKE DoS-Prevention Mode Started
 Logon/Logoff,Logoff,4647,"Windows Vista, Windows Server 2008",User initiated logoff.
 Logon/Logoff,Logon,4648,"Windows Vista, Windows Server 2008",A logon was attempted using explicit credentials.
 Logon/Logoff,Other Logon/Logoff Events,4649,"Windows Vista, Windows Server 2008",A replay attack was detected.
@@ -410,6 +410,32 @@ System,Plug and Play Events,6421,Windows 10 [Version 1511],A request was made to
 System,Plug and Play Events,6422,Windows 10 [Version 1511],A device was enabled.
 System,Plug and Play Events,6423,Windows 10 [Version 1511],The installation of this device is forbidden by system policy
 System,Plug and Play Events,6424,Windows 10 [Version 1511],"The installation of this device was allowed, after having previously been forbidden by policy."
-Windows PowerShell,PowerShell Pipeline,800,Windows 10,"Pipeline execution details for command line"
-Microsoft-Windows-PowerShell/Operational,Executing Pipeline,4103,Windows 10,"Pipeline execution details for command line"
-Microsoft-Windows-PowerShell/Operational,Execute a Remote Command,4104,Windows 10,"Pipeline execution details for command line"
+Windows PowerShell,PowerShell Pipeline,800,Windows 10,Pipeline execution details for command line
+Microsoft-Windows-PowerShell/Operational,Executing Pipeline,4103,Windows 10,Pipeline execution details for command line
+Microsoft-Windows-PowerShell/Operational,Execute a Remote Command,4104,Windows 10,Pipeline execution details for command line
+Sysmon,ProcessCreate,1,"Windows 7, Windows Server 2008 R2",Process Create : A detailed information about the process created
+Sysmon,FileCreateTime,2,"Windows 7, Windows Server 2008 R2",File creation time  Used to check integrity of file creationtime
+Sysmon,NetworkConnect,3,"Windows 7, Windows Server 2008 R2",Network connection detected : Event logs TCP/UDP connections on the machine
+Sysmon,Sysmon service state changed,4,"Windows 7, Windows Server 2008 R2",Sysmon service state change : The service state change event reports the state of the Sysmon service (started or stopped).
+Sysmon,ProcessTerminate,5,"Windows 7, Windows Server 2008 R2",Process terminated : A detailed information about the process termination
+Sysmon,DriverLoad,6,"Windows 7, Windows Server 2008 R2",Driver Loaded : A detailed information about the drive installed in addition with HASH value
+Sysmon,ImageLoad,7,"Windows 7, Windows Server 2008 R2",Image loaded : The image loaded event logs when a module is loaded in a specific process
+Sysmon,CreateRemoteThread,8,"Windows 7, Windows Server 2008 R2",CreateRemoteThread detected : Event detects when a process creates a thread in another process. This technique is used by malware to inject code and hide in other processes
+Sysmon,RawAccessRead,9,"Windows 7, Windows Server 2008 R2",RawAccessRead detected : The RawAccessRead event detects when a process conducts reading operations from the drive using the \\.\ denotation.
+Sysmon,ProcessAccess,10,"Windows 7, Windows Server 2008 R2",Process accessed : The event reports when a process opens another process
+Sysmon,FileCreate,11,"Windows 7, Windows Server 2008 R2",File created : File create operations are logged when a file is created or overwritte
+Sysmon,RegistryEvent,12,"Windows 7, Windows Server 2008 R2","Registry object added or deleted : Registry key and value create and delete operations map to this event type, "
+Sysmon,RegistryEvent,13,"Windows 7, Windows Server 2008 R2",Registry value set : This Registry event type identifies Registry value modifications.
+Sysmon,RegistryEvent,14,"Windows 7, Windows Server 2008 R2",Registry object renamed : This Registry event type identifies Registry value renamed
+Sysmon,FileCreateStreamHash,15,"Windows 7, Windows Server 2008 R2","File stream created : This event logs when a named file stream is created, and it generates events that log the hash of the contents of the file to which the stream is assigned (the unnamed stream), as well as the contents of the named stream."
+Sysmon,ServiceConfigurationChange,16,"Windows 7, Windows Server 2008 R2",Sysmon configuration change : Event triggered when Sysmon configuration change 
+Sysmon,PipeEvent,17,"Windows 7, Windows Server 2008 R2",Named pipe created : This event generates when a named pipe is created.
+Sysmon,PipeEvent,18,"Windows 7, Windows Server 2008 R2",Named pipe connected : This event logs when a named pipe connection is made between a client and a server.
+Sysmon,WmiEvent,19,"Windows 7, Windows Server 2008 R2",WMI filter : When a WMI event filter is registered
+Sysmon,WmiEvent,20,"Windows 7, Windows Server 2008 R2",WMI consumer : This event logs the registration of WMI consumers
+Sysmon,WmiEvent,21,"Windows 7, Windows Server 2008 R2","WMI consumer filter : When a consumer binds to a filter, this event logs the consumer name and filter path."
+Sysmon,DNSQuery,22,"Windows 7, Windows Server 2008 R2",DNS query : This event is generated when a process executes a DNS query
+Sysmon,FileDelete,23,"Windows 7, Windows Server 2008 R2","File Delete archived : A file was deleted. Additionally to logging the event, the deleted file is also saved in the ArchiveDirectory"
+Sysmon,ClipboardChange,24,"Windows 7, Windows Server 2008 R2",New content in the clipboard : This event is generated when the system clipboard contents change.
+Sysmon,ProcessTampering,25,"Windows 7, Windows Server 2008 R2",Process image change : This event is generated when process hiding techniques such as “hollow” or “herpaderp” are being detected.
+Sysmon,FileDeleteDetected,26,"Windows 7, Windows Server 2008 R2",File Delete logged : A file was deleted.

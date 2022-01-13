@@ -1,8 +1,6 @@
 PoSh-EasyWin: PowerShell - Endpoint Analysis Solution Your Windows Intranet Needs!
 
      File Name      : PoSh-EasyWin.ps1
-     Version        : v6.2.1 
-     Updated        : 17 Sep 2021
      Created        : 21 Aug 2018
 
      Author         : Daniel Komnick (high101bro)
@@ -26,7 +24,7 @@ The underlying code writen in PowerShell and uses the .NET Framework and various
                     : DCOM / RPC       - TCP/135 and dynamic ports, typically:
                                          TCP 49152-65535 (Windows Vista, Server 2008 and above)
                                          TCP 1024 -65535 (Windows NT4, Windows 2000, Windows 2003)
-     Optional       : PsExec.exe, Procmon.exe, Autoruns.exe, Sysmon.exe,
-                      etl2pcapng.exe, kitty.exe, plink.exe, chainsaw.exe
+     Optional       : PsExec.exe, Procmon.exe, Sysmon.exe,
+                      etl2pcapng.exe, kitty.exe, plink.exe, chainsaw.exe, WxTCmd.exe
 
  

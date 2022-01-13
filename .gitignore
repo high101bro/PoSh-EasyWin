@@ -1,5 +1,6 @@
 .gitignore
-Collected**Data
+inetpub
+inetpub/**
 Autosaved**Charts
 Credential**Management
 Reports
@@ -12,3 +13,5 @@ OpNotes**
 Temp/**
 Show-Directory**
 Future**Dependency**Check**
+TreeView**Data**
+User**Data

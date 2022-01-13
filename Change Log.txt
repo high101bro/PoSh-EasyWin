@@ -5,13 +5,247 @@ v{Major}.{Minor}.{HotFix} - {Day} {Month} {Year}
 To Do List:
 ==================================================
 TODO:
-[ ] Some users show up with 1 group when they have none
-[ ] Reintegrate other dashboards like . "$Dependencies\Code\System.Windows.Forms\ComboBox\AutoChartSelectChartComboBoxSelectedItem_Services.ps1"
-[ ] Add Get-Help (comment based help) support for each script so they populate a description
-[ ] Cosolidate code... Create-TreeViewCheckBoxArray -Endpoint --vs-- Generate-Computerlist
-[ ] Checking custom group box makes user add commands turn blue... wierd? Check inside Update-Treeivew function
-[ ] Add to add_closing ... This.dispose() gc-clearnup
-[ ] Streamline the updaing of data picture box associate with endpoint/account nodes, remove requirement of needing to click on node over and over...
+[ ] Writing Daily Tips...
+	- The "Directory Listing (WinRM)" query within the "File Search" tab provides you with a "Get File" button that allows you to easily download multiple files from multiple hosts.
+	- Retrieved files from endpoints have additional data collected from them like Signer Certificates and File Hashes, then are zipped before being downloaded to the localhost.
+	- Only unique files, based on their MD5 file hash, are kept when retrieved from a single endpoint, though files with maching hashes are kept for each endpoint when downloading from multiple endpoints.
+	- WHen using the "Retrieve Files" button, you must select any pre-exiting results from a "Directory Listing" or "File Search".
+[ ] Add re-run feature, or at least make eveverything compatible with the monitor/rerun
+	[ ] follow up with the event id sections
+[ ] Add more log creations to all of this --Invoke-Command @InvokeCommandSplat
+	Write-LogEntry -LogFile $PewLogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock {foreach (`$Path in `$RegistrySearchDirectory) { foreach (`$Item in `$SearchRegistryKeyItemPropertyName) { Get-ItemProperty -Path `$Path `$Item } }} -ArgumentList `$SearchRgistryItemProperty  -ComputerName $TargetComputer -AsJob -JobName 'PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)' -Credential `$script:Credential"
+	$ResultsListBox.Items.Add("$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  $CollectionName -- $TargetComputer")
+[ ] Push enumeration scanning into monitor jobs
+[ ] Fix bug will reading log files and it's count
+[ ] Modify pktmon to launch in a separate process, detached from the main PEW PID
+[ ] Modify property charts explorer to launch in a separate process, detached from the main PEW PID
+[ ] Troubleshoot viewing of past results when selecing endpoint node
+[ ] when you checkbox sysmon, promon or user specified sciprts, they don't turn red
+[ ] figure out intermitten issue with montior jobs gapping when executing more commands...
+[ ] Logs are not being written
+[ ] View Log now working
+[ ] Enumeration scanning is compatible with monitor jobs mode and works in pivot thru mode, but not when not 'pivot thru'... update and fix this
+[ ] doublecheck that pivot thru queries is functioning as expected, there are currently results, but doublecheck in wireshark
+
+
+==================================================
+v6.8.4 - 4 January 2022
+==================================================
+
+Added action under the Interaction Tabs // Multi-Endpoint Actions Tab
+	- Windows Timeline
+		- Windows 10 (v1803+) [April 2018] introduces an ActivitiesCache.db SQLite database file that tracks past files users interacted with, allowing quick access to previous files - a forensic treasure trove.
+		- This pulls back all ActivitiesCache.db from each endpoint selected, and you're able to select one/many/all to pull back to the localhost for Analysis
+		- The ActivitiesCache.db files pulled back are processed with WxTCmd.exe into CSV files
+	- WxTCmd.exe has been added to the Exeuctables directory
+		- Downloaded from: https://github.com/EricZimmerman/WxTCmd
+
+==================================================
+v6.7.4 - 3 January 2022
+==================================================
+
+Grouped functions into fewer scripts
+	- This was becaues when I signed all my scripts, the file size skyrocked. Each script had it's own chuck of signature code than essentailly wasted space. 
+
+Made "Executable and Scripts" compatible with Monitor Mode
+	- Added feature to check and remove files on endpoints
+
+Code Management
+	- Re-organized file structure
+	- Created Demo Data folder in Examples directory
+	- Created User Data folder
+		- New data created by users over rides the demo path
+	- Moved Collected Data into User Data folder
+	- A lot of code clean up in general
+
+Code management - moved code from various system.windows.forms locations to their respective locations
+	- Individual directories where $script.ps1 files were moved from
+		- Buttons
+		- Checkboxes
+		- CheckedListBox
+		- ComboBox
+		- DataTimePicker
+		- Label
+		- listboxesOpenFileDialog
+		- RadioButton
+		- TextBox
+		- TreeView
+	- This was done in effort to reduce the overall size of the code base... signing each script added a lot of overhead, sometimes 10x more than the individual scripts themselves 
+
+==================================================
+v6.8.4 - 16 DEC 2021
+==================================================
+
+Fixed issue with PSWriteHTML not saving data correctly due to SMB File Share update
+
+Added warning message and verify-action to the charts feature 
+	- Triggers if more than 6 Properties are selected
+	- Too many charts can cause the GUI to hang or the tool to crash
+	
+Added Browse File System (SMB Share) to computer treeview
+	- Allows you to connect to endpoint and view files in Windows GUI
+	- Creates a temporary PSDrive connection using the newest SMB protocol version
+	- it's benates the SSH connection
+
+Added abilty to store longs to smb file Share
+	- Added checkbox to main tab named 'Use File Share'
+	- The option creates the share on the specified hosts, provided you have the credentials/permission to do do
+	- automatically saves results to the mapped share drive
+	- Note: To view the SMB File Share in Windwos Explorer, you need to manually map the network drive
+
+Integrated PoShChat feature into PoSh-EasyWin
+	- Updated code, chat messages, message font/colors
+	- The chat server currently listens on TCP port 15600
+	- Added button to main tab to launch PoSh Chat Client
+	- Added button to main tab to launch PoSh Chat Server
+	- Added license
+
+==================================================
+v6.7.4 - 12 DEC 2021
+==================================================
+Added Processes Tab
+	- Able to search live processes
+	- Able to search sysmon process logs
+
+Tweaked GUI
+	- added panel borders/outlines
+	- modified margins in many areas
+	- Changed section tabs to the button variation
+	- Added hottrack property to .tabcontrol
+		- When tabs are scolled over now, they have a dynamic highlight color
+
+Fixed bug with Monitoring of queries aka Agentless SMITH
+
+Identify issue where sysmon event id 15 is not being returned
+	TROUBLESHOOTING:
+	Unable to query for Sysmon (Microsoft-Windows-Sysmon%4Operational) events
+	Returns 'standard' logs as expected
+	Get-WmiObject -Class win32_ntlogevent
+	- Is the base command used to query for events
+	- This older command was chosen because of:
+		- supports WMI queries using RPC protocol if WinRM is not available
+		- backwards compatability with older systems
+		- able to use time filters to narrow down timeframe and reduce logs collected
+		- the process of filtering is done on the endpoint side
+	- Does not return sysmon logs
+		Get-WmiObject -Class win32_ntlogevent -Filter "NOT (logfile='system') AND NOT (logfile='application') AND (EventCode='1') "
+	Get-WmiObject -Class win32_nteventlogfile
+	- Reveals:
+		FileSize LogfileName            Name                                                        NumberOfRecords
+		-------- -----------            ----                                                        ---------------
+		20975616 Application            C:\Windows\System32\Winevt\Logs\Application.evtx                      21639
+		69632 HardwareEvents            C:\Windows\System32\Winevt\Logs\HardwareEvents.evtx                       0
+		69632 Internet Explorer         C:\Windows\System32\Winevt\Logs\Internet Explorer.evtx                    0
+		69632 Key Management Service    C:\Windows\System32\Winevt\Logs\Key Management Service.evtx               0
+		69632 Parameters                C:\Windows\System32\Winevt\Logs\Parameters.evtx                           0
+		20975616 Security               C:\Windows\System32\Winevt\Logs\Security.evtx                         35107
+		69632 State                     C:\Windows\System32\Winevt\Logs\State.evtx                                0
+		10555392 System                 C:\Windows\System32\Winevt\Logs\System.evtx                           19758
+		15732736 Windows PowerShell     C:\Windows\System32\Winevt\Logs\Windows PowerShell.evtx               15052
+	RESOLUTION:
+	- Unable to find a method to add other event logs to the those listed within win32_nteventlogfile
+	- Current solution is to have the tool check if it's using WinRM, and if so, to command issued will use Get-WinEvent
+		- At the time of intial coding, I opted for standardized for that support multiple protocols
+		- ...keep moving forward...
+
+Signed each .ps1 script within PoSh-EasyWin
+	- Updated ReadMe.md to include information about how to run PoSh-EasyWin.ps1
+
+Fixed computer treeview population when importing new hosts
+	- nodes now appear with the correct icons
+
+Fixed default account icons upon importing new accounts
+
+Endpoints notes now populate with entries when commands are executed
+	- includes a timestamp and short command description
+	- Added option to enable/disable this feature
+		- Is enabled by default
+		- Note: The primary main log always logs everything regardless if the is enabled/disabled
+
+Issues with tagging accounts and endpoints with metadata
+	- disable for now by commenting out dropdown
+
+Removed Set-GuiLayout feature
+	- No longer able to toggle between Extended and Compact View
+	- Determined that it was too much of a pain to maintain
+
+==================================================
+v6.6.4 - 15 OCT 2021
+==================================================
+
+Updated Event Logs Tab
+	- Added Note: This section pulls back event logs as evtx files, rather than csv or xml
+	- Enabled the following
+		- Select Event IDS to Filter button
+		- clear button
+		- Event ID Filter In entry textbox
+	- tested and verified filter
+		- Able to filter-in one or more event ids
+
+==================================================
+v6.5.4 - 11 OCT 2021
+==================================================
+
+Updated Readme.txt file
+
+Re-wrote Monitor-Jobs
+	- Made it easier to make it update for unique queries/commands
+
+Updated Sysmon and Prcmon integration
+	- They are now compatiable with Monitor Jobs
+	- Much, much faster...
+
+Updated File Search
+	- The buttons in Monitor Jobs now have the options to Get File or Get ADS
+
+Removed autoruns, couldn't get it to execute remotely and pull back data reliably... it hangs no matter what method I trying
+
+Updated the following to support -UseCompupter and -UseSession
+	- IndividualQuery-QueryBuild
+
+Fixed bug Custom [WinRM] Query
+	- When you check the disable syntax button, it how enables the [WinRM] Query checkbox
+
+==================================================
+v6.4.3 - 27 SEP 2021
+==================================================
+
+Added Icons to Computer and Accounts Treeview
+
+Renamed many of the icons
+	- Easier to find them when listed
+
+Enumeration Scanning
+	- Added more events that check if conditions are met to execute scans
+
+Fixed a bug with displaying options own how to display the accounts treeview
+
+==================================================
+v6.3.2 - 21 SEP 2021
+==================================================
+
+Registry query feature
+	- Added a new search pane for the ItemProperty list
+	- Able to search for and collect the itemproperty of keys, example:
+		- The following path had malicious code... using the query pulls back data found 
+		- Get-ItemProperty HKCU:\Software\Microsoft\Windows\CurrentVersion run
+
+New Session Based data collection method
+    - Alpha testing and building of new feature
+	[ ] previous collected data no longer maintains relationship with the saved file, when the next collection starts, the previous button to open the previous csv file is broken even thought the file still exists
+	[ ] The computername property in the collected results is appearing empty, but the pscomputername is not...
+
+Added button to recieve jobs
+	- able to view status / current data collected`
+	- data is kept in memory unless removed
+
+==================================================
+v6.2.2 - 20 SEP 2021
+==================================================
+
+Registry query feature doesn't show property info
+	- Added ItemProtery (Get-ItemProperty for the keyname searched)
+	- Update: Attempted 'patch' didn't gather the data the analyst reported they wanted... investigating further
 
 ==================================================
 v6.2.1 - 16 SEP 2021
@@ -57,7 +291,7 @@ Added 'Beta Testing' to execution mode
 v6.0.0 - 15 SEP 2021
 ==================================================
 
-Added MultiEndpoint-PSSession
+Added Enter-MultiPSSession
 	- Need to checkbox one or more endpoints
 	- Allows you to interactively query multiple endpoints the persistent PSSession and retrieve results
 
@@ -272,21 +506,21 @@ Populating Accounts Treeview with data
 	Created "$Dependencies\Code\System.Windows.Forms\RadioButton\AccountsTreeNodeOUHostnameRadioButton.ps1"
 	Moved "$Dependencies\Code\Tree View\Computer\Search-ComputerTreeNode.ps1" to "$Dependencies\Code\Tree View\Search-TreeNode.ps1"
 		- Added code and parameters for Accounts and Endpoint
-	Moved "$Dependencies\Code\Tree View\Computer\Remove-EmptyCategory.ps1" to "$Dependencies\Code\Tree View\Remove-EmptyCategory.ps1"
+	Moved "$Dependencies\Code\Tree View\Computer\Remove-TreeViewEmptyCategory.ps1" to "$Dependencies\Code\Tree View\Remove-TreeViewEmptyCategory.ps1"
 		- Added code and parameters for Accounts and Endpoint
     Moved "$Dependencies\Code\Tree View\Computer\Message-HostAlreadyExists.ps1" to "$Dependencies\Code\Tree View\Message-HostAlreadyExists.ps1"
 		- Added code and parameters for Accounts and Endpoint
-	Moved "$Dependencies\Code\Tree View\Computer\Move-ComputerTreeNode.ps1" to "$Dependencies\Code\Tree View\Computer\MoveNode-TreeViewData.ps1"
+	Moved "$Dependencies\Code\Tree View\Computer\Move-ComputerTreeNode.ps1" to "$Dependencies\Code\Tree View\Computer\Move-TreeViewData.ps1"
 		- Added code and parameters for Accounts and Endpoint
 
 Updated TreeView function names and locations for standarization
-	AddTreeNodeTo-TreeViewData
+	Add-TreeViewData
 	Initialize-TreeViewData
 	Normalize-TreeViewData
 	Save-TreeViewData
 	Search-TreeViewData
 	Update-TreeViewData
-	UpdateState-TreeViewData
+	Update-TreeViewState
 	Update-TreeViewData
 	Acknowledgement-TreeViewData
 
@@ -924,7 +1158,7 @@ Enumerations Tab
 		- Not needed as you can just import from AD with the Actions Tab
 
 Renamed functions for easier finding
-	- Add-CommandTreeNode  --> Add-NodeCommand
+	- Add-CommandTreeNode  --> Add-TreeViewCommand
 	- Add-ComputerTreeNode --> Add-NodeComputer
 
 Change the following fonts to DarkRed in the computer treeview contextmenu
