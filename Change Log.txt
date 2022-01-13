@@ -23,7 +23,7 @@ TODO:
 [ ] when you checkbox sysmon, promon or user specified sciprts, they don't turn red
 [ ] figure out intermitten issue with montior jobs gapping when executing more commands...
 [ ] Logs are not being written
-[ ] View Log now working
+[ ] View Log... need to address bugs
 [ ] Enumeration scanning is compatible with monitor jobs mode and works in pivot thru mode, but not when not 'pivot thru'... update and fix this
 [ ] doublecheck that pivot thru queries is functioning as expected, there are currently results, but doublecheck in wireshark
 
