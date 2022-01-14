@@ -29,8 +29,17 @@ TODO:
 
 
 ==================================================
+v7.0.0 - 13 January 2022
+==================================================
+Pushed feature branch to master
+
+==================================================
 v6.8.4 - 4 January 2022
 ==================================================
+
+Fixed OpNotes bugs
+	- issues stemmed from varaiables not updating because of VSCode and .gitinore issue
+	- also restored accidentally deleted function that writes the notes to file/listbox
 
 Added action under the Interaction Tabs // Multi-Endpoint Actions Tab
 	- Windows Timeline
