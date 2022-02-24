@@ -29,6 +29,17 @@ TODO:
 
 
 ==================================================
+v7.2.0 - 24 February 2022
+==================================================
+Linux/ssh commands new feature from 23Feb
+	- Fixed bugs
+		- Fixed Removal of SSH commands
+		- Fixed saving of SSH commands
+		- Fixed loading of SSH commands
+	- Tweaked GUI for better flow
+	- Updated Button: Added Linux 'Reference', similar to PowerShell 'Search + Build'
+
+==================================================
 v7.1.0 - 23 February 2022
 ==================================================
 Added ability to add custom Linux/ssh commands from within the tool
