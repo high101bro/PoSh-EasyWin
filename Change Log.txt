@@ -29,6 +29,12 @@ TODO:
 
 
 ==================================================
+v7.1.0 - 23 February 2022
+==================================================
+Added ability to add custom Linux/ssh commands from within the tool
+	- Contributed by ColeVan
+
+==================================================
 v7.0.0 - 13 January 2022
 ==================================================
 Pushed feature branch to master
