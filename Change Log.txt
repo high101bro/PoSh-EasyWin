@@ -28,17 +28,25 @@ TODO:
 [ ] doublecheck that pivot thru queries is functioning as expected, there are currently results, but doublecheck in wireshark
 
 
+
+
 ==================================================
 v7.2.0 - 24 February 2022
 ==================================================
 Linux/ssh commands new feature from 23Feb
 	- Fixed bugs
 		- Fixed Removal of SSH commands
-		- Fixed saving of SSH commands
+		- Fixed saving  of SSH commands
 		- Fixed loading of SSH commands
+	- Added 'Add Custom Command:' label before the radio buttons
 	- Tweaked GUI for better flow
 	- Updated Button: Added Linux 'Reference', similar to PowerShell 'Search + Build'
 
+Added PoSh-PopQuiz button below the PowerShell button on the main GUI
+	- Added $FromScale to allow older code to resize along with PoSh-EasyWIn
+
+Added Copyright info to load screen
+	- © 2018 Daniel Komnick
 ==================================================
 v7.1.0 - 23 February 2022
 ==================================================

@@ -407,14 +407,15 @@ $PoShPopQuiz = New-Object System.Windows.Forms.Form -Property @{
                        Height = $FormScale * 625 }
     AutoScroll    = $True
     FormBorderStyle =  'Sizable' #  Fixed3D, FixedDialog, FixedSingle, FixedToolWindow, None, Sizable, SizableToolWindow
+    Font = New-Object System.Drawing.Font("Arial",$($FormScale * 11),0,0,0)
 }
 
 
 
 $PowerShellModulesGroupBox = New-Object -TypeName System.Windows.Forms.GroupBox -Property @{
     Text = "PowerShell Modules"
-    Location = @{ X = 10
-                  Y = 10 }
+    Location = @{ X = $FormScale * 10
+                  Y = $FormScale * 10 }
     Size     = @{ Width  = $FormScale * 250
                   Height = $FormScale * 440 }
     ForeColor = 'Blue'
@@ -425,8 +426,8 @@ $PoShPopQuiz.Controls.Add($PowerShellModulesGroupBox)
 
 
 $ModuleCheckListBox = New-Object -TypeName System.Windows.Forms.CheckedListBox -Property @{
-    Location = @{ X = 10
-                  Y = 20 }
+    Location = @{ X = $FormScale * 10
+                  Y = $FormScale * 20 }
     Size     = @{ Width  = $FormScale * 230
                   Height = $FormScale * 410 }
     ScrollAlwaysVisible = $true
@@ -445,7 +446,7 @@ $ModuleCheckListBox = New-Object -TypeName System.Windows.Forms.CheckedListBox -
                 #$ModuleName
                 $ModulesChecked += $ModuleCheckLocation
             }
-            $ModuleCheckLocation += 1
+            $ModuleCheckLocation += $FormScale * 1
         }
         # Checks the modules that were added to the array
         foreach ($ModuleLocation in $ModulesChecked) { 
@@ -458,7 +459,7 @@ $PowerShellModulesGroupBox.Controls.Add($ModuleCheckListBox)
 $GenerateQuestionsControlGroupBox = New-Object -TypeName System.Windows.Forms.GroupBox -Property @{
     Text = "Generate Questions Controls"
     Location = @{ X = $PowerShellModulesGroupBox.Location.X
-                  Y = $PowerShellModulesGroupBox.Location.Y + $PowerShellModulesGroupBox.Size.Height + 3 }
+                  Y = $PowerShellModulesGroupBox.Location.Y + $PowerShellModulesGroupBox.Size.Height + $($FormScale * 3) }
     Size     = @{ Width  = $FormScale * 250
                   Height = $FormScale * 128 }
     ForeColor = 'Blue'
@@ -468,12 +469,12 @@ $PoShPopQuiz.Controls.Add($GenerateQuestionsControlGroupBox)
 
 $ModuleClearSelectionButton = New-Object -TypeName System.Windows.Forms.Button -Property @{
     Text     = "Clear Selection"
-    Location = @{ X = 10
-                  Y = 20 }
+    Location = @{ X = $FormScale * 10
+                  Y = $FormScale * 20 }
     Size     = @{ Width  = $FormScale * 110
                   Height = $FormScale * 22 }
     Add_Click = {
-        (0..($ModuleCheckListBox.Items.Count -1)) | Foreach { $ModuleCheckListBox.SetItemChecked($_,$false)}    
+        (0..($ModuleCheckListBox.Items.Count -1)) | ForEach-Object { $ModuleCheckListBox.SetItemChecked($_,$false)}    
     }
 }
 $GenerateQuestionsControlGroupBox.Controls.Add($ModuleClearSelectionButton)
@@ -483,12 +484,12 @@ CommonButtonSettings -Button $ModuleClearSelectionButton
 
 $ModuleSelectAllButton = New-Object -TypeName System.Windows.Forms.Button -Property @{
     Text     = "Select All"
-    Location = @{ X = $ModuleClearSelectionButton.Location.X + $ModuleClearSelectionButton.Size.Width + 9
+    Location = @{ X = $ModuleClearSelectionButton.Location.X + $ModuleClearSelectionButton.Size.Width + $($FormScale * 9)
                   Y = $ModuleClearSelectionButton.Location.Y }
     Size     = @{ Width  = $FormScale * 110
                   Height = $FormScale * 22 }
     Add_Click = {
-        (0..($ModuleCheckListBox.Items.Count -1)) | Foreach { $ModuleCheckListBox.SetItemChecked($_,$true)}    
+        (0..($ModuleCheckListBox.Items.Count -1)) | ForEach-Object { $ModuleCheckListBox.SetItemChecked($_,$true)}    
     }
 }
 $GenerateQuestionsControlGroupBox.Controls.Add($ModuleSelectAllButton)
@@ -499,7 +500,7 @@ CommonButtonSettings -Button $ModuleSelectAllButton
 $NumberOfQuestionsLabel = New-Object -TypeName System.Windows.Forms.Label -Property @{
     Text     = "Number of Questions:"
     Location = @{ X = $ModuleClearSelectionButton.Location.X 
-                  Y = $ModuleClearSelectionButton.Location.Y + $ModuleClearSelectionButton.Size.Height + 9 }
+                  Y = $ModuleClearSelectionButton.Location.Y + $ModuleClearSelectionButton.Size.Height + $($FormScale * 9) }
     Size     = @{ Width  = $FormScale * 115
                   Height = $FormScale * 22 }
 }
@@ -510,7 +511,7 @@ $GenerateQuestionsControlGroupBox.Controls.Add($NumberOfQuestionsLabel)
 $script:NumberOfQuestionsComboBox = New-Object -TypeName System.Windows.Forms.ComboBox -Property @{
     Text     = 50
     Location = @{ X = $ModuleSelectAllButton.Location.X 
-                  Y = $ModuleSelectAllButton.Location.Y + $ModuleSelectAllButton.Size.Height + 5 }
+                  Y = $ModuleSelectAllButton.Location.Y + $ModuleSelectAllButton.Size.Height + $($FormScale * 5) }
     Size     = @{ Width  = $FormScale * 112
                   Height = $FormScale * 22 }
 }
@@ -524,7 +525,7 @@ $script:NumberOfQuestionsComboBox.SelectedIndex = 0
 $script:NumberOfQuestionPoolSizeLabel = New-Object -TypeName System.Windows.Forms.Label -Property @{
     Text     = "Questions Available Within Modules:  0"
     Location = @{ X = $NumberOfQuestionsLabel.Location.X
-                  Y = $NumberOfQuestionsLabel.Location.Y + $NumberOfQuestionsLabel.Size.Height  }
+                  Y = $NumberOfQuestionsLabel.Location.Y + $NumberOfQuestionsLabel.Size.Height }
     Size     = @{ Width  = $FormScale * 230
                   Height = $FormScale * 22 }
 }
@@ -535,7 +536,7 @@ $GenerateQuestionsControlGroupBox.Controls.Add($script:NumberOfQuestionPoolSizeL
 $PopQuizGenerateButton = New-Object -TypeName System.Windows.Forms.Button -Property @{
     Text = "Generate Pop Quiz"
     Location = @{ X = $script:NumberOfQuestionPoolSizeLabel.Location.X
-                  Y = $script:NumberOfQuestionPoolSizeLabel.Location.Y + $script:NumberOfQuestionPoolSizeLabel.Size.Height  }
+                  Y = $script:NumberOfQuestionPoolSizeLabel.Location.Y + $script:NumberOfQuestionPoolSizeLabel.Size.Height }
     Size     = @{ Width  = $FormScale * 230
                   Height = $FormScale * 22 }
     Add_Click = {
@@ -565,7 +566,7 @@ $PopQuizGenerateButton.BackColor = 'LightGreen'
 
 $PopQuizQuestionGroupBox = New-Object -TypeName System.Windows.Forms.GroupBox -Property @{
     Text = "Question: #0"
-    Location = @{ X = $PowerShellModulesGroupBox.Location.X + $PowerShellModulesGroupBox.Size.Width + 5
+    Location = @{ X = $PowerShellModulesGroupBox.Location.X + $PowerShellModulesGroupBox.Size.Width + $($FormScale * 5)
                   Y = $PowerShellModulesGroupBox.Location.Y }
     Size     = @{ Width  = $FormScale * 700
                   Height = $FormScale * 300 }
@@ -576,8 +577,8 @@ $PoShPopQuiz.Controls.Add($PopQuizQuestionGroupBox)
 
 
 $PopQuizQuestionRichTextBox = New-Object -TypeName System.Windows.Forms.RichTextBox -Property @{
-    Location = @{ X = 10 
-                  Y = 20 }
+    Location = @{ X = $FormScale * 10 
+                  Y = $FormScale * 20 }
     Size     = @{ Width  = $FormScale * 680
                   Height = $FormScale * 270 }
     ReadOnly = $True
@@ -591,7 +592,7 @@ $PopQuizQuestionGroupBox.Controls.Add($PopQuizQuestionRichTextBox)
 
 $script:QuestionPointLabel = New-Object -TypeName System.Windows.Forms.Label -Property @{
     Text = "Value:"
-    Location = @{ X = $PopQuizQuestionGroupBox.Location.X + $PopQuizQuestionGroupBox.Size.Width - 80
+    Location = @{ X = $PopQuizQuestionGroupBox.Location.X + $PopQuizQuestionGroupBox.Size.Width - $($FormScale * 80)
                   Y = $PopQuizQuestionGroupBox.Location.Y  }
     Size     = @{ Width  = $FormScale * 40
                   Height = $FormScale * 20 }
@@ -655,8 +656,8 @@ function Submit-ManualEntryAnswer {
 
 
 $script:PopQuizAnswerTextBox = New-Object -TypeName System.Windows.Forms.TextBox -Property @{
-    Location = @{ X = 10
-                  Y = 20 }
+    Location = @{ X = $FormScale * 10
+                  Y = $FormScale * 20 }
     Size     = @{ Width  = $FormScale * 225
                   Height = $FormScale * 22 }
     BackColor = 'White'
@@ -673,8 +674,8 @@ $PopQuizAnswerGroupBox.Controls.Add($script:PopQuizAnswerTextBox)
 
 $PopQuizManualEntrySubmitButton = New-Object -TypeName System.Windows.Forms.Button -Property @{
     Text = "Submit"
-    Location = @{ X = $script:PopQuizAnswerTextBox.Location.X + $script:PopQuizAnswerTextBox.Size.Width + 5 
-                  Y = $script:PopQuizAnswerTextBox.Location.Y - 2 }
+    Location = @{ X = $script:PopQuizAnswerTextBox.Location.X + $script:PopQuizAnswerTextBox.Size.Width + $($FormScale * 5) 
+                  Y = $script:PopQuizAnswerTextBox.Location.Y - $($FormScale * 2) }
     Size     = @{ Width  = $FormScale * 100
                   Height = $FormScale * 22 }
     Enabled = $false
@@ -688,7 +689,7 @@ CommonButtonSettings -Button $PopQuizManualEntrySubmitButton
 
 $PopQuizControlsGroupBox = New-Object -TypeName System.Windows.Forms.GroupBox -Property @{
     Text = "Controls"
-    Location = @{ X = $PopQuizAnswerGroupBox.Location.X + $PopQuizAnswerGroupBox.Size.Width + 10
+    Location = @{ X = $PopQuizAnswerGroupBox.Location.X + $PopQuizAnswerGroupBox.Size.Width + $($FormScale * 10)
                   Y = $PopQuizAnswerGroupBox.Location.Y }
     Size     = @{ Width  = $FormScale * 340
                   Height = $FormScale * 50 }
@@ -700,8 +701,8 @@ $PoShPopQuiz.Controls.Add($PopQuizControlsGroupBox)
 
 $PreviousQuestionButton = New-Object -TypeName System.Windows.Forms.Button -Property @{
     Text = "<-- Previous Question"
-    Location = @{ X = 10
-                  Y = 18 }
+    Location = @{ X = $FormScale * 10
+                  Y = $FormScale * 18 }
     Size     = @{ Width  = $FormScale * 130
                   Height = $FormScale * 22 }
     Enabled = $false
@@ -714,7 +715,7 @@ CommonButtonSettings -Button $PreviousQuestionButton
 
 $PopQuizHelpButton = New-Object -TypeName System.Windows.Forms.Button -Property @{
     Text = "Hint"
-    Location = @{ X = $PreviousQuestionButton.Location.X + $PreviousQuestionButton.Size.Width + 5
+    Location = @{ X = $PreviousQuestionButton.Location.X + $PreviousQuestionButton.Size.Width + $($FormScale * 5)
                   Y = $PreviousQuestionButton.Location.Y }
     Size     = @{ Width  = $FormScale * 50
                   Height = $FormScale * 22 }
@@ -746,7 +747,7 @@ CommonButtonSettings -Button $PopQuizHelpButton
 
 $NextQuestionButton = New-Object -TypeName System.Windows.Forms.Button -Property @{
     Text = "Next Question -->"
-    Location = @{ X = $PopQuizHelpButton.Location.X + $PopQuizHelpButton.Size.Width + 5
+    Location = @{ X = $PopQuizHelpButton.Location.X + $PopQuizHelpButton.Size.Width + $($FormScale * 5)
                   Y = $PopQuizHelpButton.Location.Y }
     Size     = @{ Width  = $FormScale * 130
                   Height = $FormScale * 22 }
@@ -761,7 +762,7 @@ CommonButtonSettings -Button $NextQuestionButton
 $StatusGroupBox = New-Object -TypeName System.Windows.Forms.GroupBox -Property @{
     Text = "Question Status"
     Location = @{ X = $PopQuizControlsGroupBox.Location.X
-                  Y = $PopQuizControlsGroupBox.Location.Y + $PopQuizControlsGroupBox.Size.Height + 5 }
+                  Y = $PopQuizControlsGroupBox.Location.Y + $PopQuizControlsGroupBox.Size.Height + $($FormScale * 5) }
     Size     = @{ Width  = $FormScale * 340
                   Height = $FormScale * 160 }
     ForeColor = 'Blue'
@@ -774,7 +775,7 @@ $PoShPopQuiz.Controls.Add($StatusGroupBox)
 $PopQuizAnswerSubmittedGroupBox = New-Object -TypeName System.Windows.Forms.GroupBox -Property @{
     Text = "Submitted Answer:"
     Location = @{ X = $StatusGroupBox.Location.X 
-                  Y = $StatusGroupBox.Location.Y + $StatusGroupBox.Size.Height + 5}
+                  Y = $StatusGroupBox.Location.Y + $StatusGroupBox.Size.Height + $($FormScale * 5) }
     Size     = @{ Width  = $FormScale * 340
                   Height = $FormScale * 50 }
     ForeColor = 'Blue'
@@ -784,8 +785,8 @@ $PoShPopQuiz.Controls.Add($PopQuizAnswerSubmittedGroupBox)
 
 
 $script:PopQuizAnswerSubmittedTextBox = New-Object -TypeName System.Windows.Forms.TextBox -Property @{
-    Location = @{ X = 10
-                  Y = 20 }
+    Location = @{ X = $FormScale * 10
+                  Y = $FormScale * 20 }
     Size     = @{ Width  = $FormScale * 215
                   Height = $FormScale * 22 }
     BackColor = 'White'
@@ -797,8 +798,8 @@ $PopQuizAnswerSubmittedGroupBox.Controls.Add($script:PopQuizAnswerSubmittedTextB
 
 $PopQuizGradeButton = New-Object -TypeName System.Windows.Forms.Button -Property @{
     Text = "Grade Quiz"
-    Location = @{ X = $script:PopQuizAnswerSubmittedTextBox.Location.X + $script:PopQuizAnswerSubmittedTextBox.Size.Width + 5 
-                  Y = $script:PopQuizAnswerSubmittedTextBox.Location.Y - 2 }
+    Location = @{ X = $script:PopQuizAnswerSubmittedTextBox.Location.X + $script:PopQuizAnswerSubmittedTextBox.Size.Width + $($FormScale * 5) 
+                  Y = $script:PopQuizAnswerSubmittedTextBox.Location.Y - $($FormScale * 2) }
     Size     = @{ Width  = $FormScale * 100
                   Height = $FormScale * 22 }
     Enabled = $false
@@ -911,8 +912,8 @@ function Update-MultipleChoice {
 
 $script:PopQuizMultipleChoiceCheckBox = New-Object -TypeName System.Windows.Forms.CheckBox -Property @{
     Text = "Multiple Choice: #0"
-    Location = @{ X = $PopQuizAnswerGroupBox.Location.X + 10
-                  Y = $PopQuizAnswerGroupBox.Location.Y + $PopQuizAnswerGroupBox.Size.Height + 1 }
+    Location = @{ X = $PopQuizAnswerGroupBox.Location.X + $($FormScale * 10)
+                  Y = $PopQuizAnswerGroupBox.Location.Y + $PopQuizAnswerGroupBox.Size.Height + $($FormScale * 1) }
     Size     = @{ Width  = $FormScale * 130
                   Height = $FormScale * 22 }
     Enabled = $false
@@ -927,7 +928,7 @@ $PoShPopQuiz.Controls.Add($script:PopQuizMultipleChoiceCheckBox)
 
 $PopQuizMultipleChoiceStayCheckCheckBox = New-Object -TypeName System.Windows.Forms.CheckBox -Property @{
     Text = "Stay Checked"
-    Location = @{ X = $PopQuizMultipleChoiceCheckBox.Location.X + $PopQuizMultipleChoiceCheckBox.Size.Width + 100
+    Location = @{ X = $PopQuizMultipleChoiceCheckBox.Location.X + $PopQuizMultipleChoiceCheckBox.Size.Width + $FormScale * (100)
                   Y = $PopQuizMultipleChoiceCheckBox.Location.Y }
     Size     = @{ Width  = $FormScale * 95
                   Height = $FormScale * 22 }
@@ -943,7 +944,7 @@ $PoShPopQuiz.Controls.Add($PopQuizMultipleChoiceStayCheckCheckBox)
 
 $script:PopQuizMultipleChoiceGroupBox = New-Object -TypeName System.Windows.Forms.GroupBox -Property @{
     Location = @{ X = $PopQuizAnswerGroupBox.Location.X
-                  Y = $PopQuizAnswerGroupBox.Location.Y + $PopQuizAnswerGroupBox.Size.Height + 5 }
+                  Y = $PopQuizAnswerGroupBox.Location.Y + $PopQuizAnswerGroupBox.Size.Height + $($FormScale * 5) }
     Size     = @{ Width  = $FormScale * 350
                   Height = $FormScale * 215 }
 }
@@ -1023,8 +1024,8 @@ function Submit-MultipleChoiceAnswer {
 
 $script:PopQuizMultipleChoiceSubmitButton = New-Object -TypeName System.Windows.Forms.Button -Property @{
     Text = "Submit"
-    Location = @{ X = $script:PopQuizAnswerTextBox.Location.X + $script:PopQuizAnswerTextBox.Size.Width + 5 
-                  Y = 183 }
+    Location = @{ X = $script:PopQuizAnswerTextBox.Location.X + $script:PopQuizAnswerTextBox.Size.Width + $($FormScale * 5) 
+                  Y = $($FormScale * 183) }
     Size     = @{ Width  = $FormScale * 100
                   Height = $FormScale * 22 }
     Enabled = $false
@@ -1037,8 +1038,8 @@ CommonButtonSettings -Button $script:PopQuizMultipleChoiceSubmitButton
 
 $script:PopQuizMultipleChoice1RadioButton = New-Object -TypeName System.Windows.Forms.RadioButton -Property @{
     Text = "Question 1"
-    Location = @{ X = 29
-                  Y = 17 }
+    Location = @{ X = $FormScale * 29
+                  Y = $FormScale * 17 }
     Size     = @{ Width  = $FormScale * 311
                   Height = $FormScale * 24 }    
     Enabled = $false

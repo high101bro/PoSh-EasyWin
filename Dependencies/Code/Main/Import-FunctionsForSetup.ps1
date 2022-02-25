@@ -879,7 +879,7 @@ function Show-ProgressBar {
         $ScriptBlockProgressBarInput,
         [switch]$ShowImage,
         $Width = $FormScale * 350,
-        $Height = $FormScale * 180
+        $Height = $FormScale * 185
     )
     $script:ProgressBarSelectionForm = New-Object System.Windows.Forms.Form -Property @{
         Text   = $FormTitle
@@ -889,7 +889,7 @@ function Show-ProgressBar {
         Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
         Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         AutoScroll    = $True
-        #FormBorderStyle =  "fixed3d"
+        FormBorderStyle =  "fixed3d"
         #ControlBox    = $false
         MaximizeBox   = $false
         MinimizeBox   = $false
@@ -964,7 +964,7 @@ function Show-ProgressBar {
         Left   = $FormScale * 10
         Top    = $script:ProgressBarFormProgressBar.Top + $script:ProgressBarFormProgressBar.Height + ($FormScale * 5)
         Width  = $FormScale * 300
-        Height = $FormScale * 40
+        Height = $FormScale * 50
         Font   = New-Object System.Drawing.Font("Courier New",$($FormScale * 11),0,0,0)
     }
     $script:ProgressBarSelectionForm.Controls.Add($script:ProgressBarMessageLabel)
