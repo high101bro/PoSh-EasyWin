@@ -119,9 +119,8 @@ Use the trackbar below to scale PoSh-EasyWin's interface:"
         Value         = 10
     }
     $script:ResolutionCheckScalingTrackBar.add_ValueChanged({
-        $script:ResolutionCheckScalingTrackBarValue = $script:ResolutionCheckScalingTrackBar.Value / 10
-        $ResolutionCheckSelectLabel.Text = $script:ResolutionCheckScalingTrackBarValue
-        $FormScale = $script:ResolutionCheckScalingTrackBarValue
+        $ResolutionCheckSelectLabel.Text = $This.Value / 10
+        $FormScale = $This.Value / 10
         $ResolutionCheckForm.Width  = $FormScale * $FormOriginalWidth
         $ResolutionCheckForm.Height = $FormScale * $FormOriginalHeight
     })

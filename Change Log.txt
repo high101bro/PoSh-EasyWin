@@ -29,6 +29,13 @@ TODO:
 
 
 
+==================================================
+v7.2.1 - 1 March 2022
+==================================================
+Fixed bug with $FormScale during the initial setup process when selecting the GUI size. If you moved the Slidebar, the Window would just minimize... which is bad because you can't effectively/easily choose your window size.
+	- Added the following to the variable section
+		$FormOriginalWidth = 1435
+		$FormOriginalHeight = 685
 
 ==================================================
 v7.2.0 - 24 February 2022
@@ -47,6 +54,7 @@ Added PoSh-PopQuiz button below the PowerShell button on the main GUI
 
 Added Copyright info to load screen
 	- © 2018 Daniel Komnick
+	
 ==================================================
 v7.1.0 - 23 February 2022
 ==================================================
