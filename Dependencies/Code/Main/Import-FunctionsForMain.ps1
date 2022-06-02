@@ -5783,8 +5783,11 @@ Function Show-FileShareConnection {
                 }
                 ArgumentList = @($FilePath,$script:FileShareName,$AccountAccess,$AccountRights)
                 ComputerName = $script:SMBServer
-                Credential   = $script:Credential
             }
+            if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
+                $InvokeCommandSplat += @{Credential = $script:Credential}
+            }
+
             Invoke-Command @InvokeCommandSplat
 
             $NewSmbMappingSplat = @{
@@ -5795,7 +5798,7 @@ Function Show-FileShareConnection {
                 Password   = $script:Credential.GetNetworkCredential().Password
             }
             New-SmbMapping @NewSmbMappingSplat
-            net use P: \\hostname\PoSh-EasyWin /USER:user@domain.com 'password' /persistent:Yes
+            #net use P: \\hostname\PoSh-EasyWin /USER:user@domain.com 'password' /persistent:Yes
 
             if (Get-SmbMapping -LocalPath "$($script:SmbShareDriveLetter):") {
                 $script:FileTransferStatusBar.Text = "SMB File Share Mapping Exists for: [$($script:SmbShareDriveLetter):] $((Get-SmbMapping).RemotePath)"

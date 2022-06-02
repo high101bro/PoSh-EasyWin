@@ -28,6 +28,13 @@ TODO:
 [ ] doublecheck that pivot thru queries is functioning as expected, there are currently results, but doublecheck in wireshark
 
 
+==================================================
+v7.3.0 - 27 April 2022
+==================================================
+- Added mandiant capa capability
+	- Integrated the capa.exe binary 
+	- capa detects capabilities in executable files. 
+	- It is integrated into the tool. PoSh-EasyWin runs it against a PE, ELF, or shellcode file and it tells you what it thinks the program can do. For example, it might suggest that the file is a backdoor, is capable of installing services, or relies on HTTP to communicate.
 
 ==================================================
 v7.2.1 - 1 March 2022
@@ -36,6 +43,8 @@ Fixed bug with $FormScale during the initial setup process when selecting the GU
 	- Added the following to the variable section
 		$FormOriginalWidth = 1435
 		$FormOriginalHeight = 685
+!!!!!!!!!!!!!!!!!issue with tagging more than one node at a time... the contents of one node is propagated to the rest
+!!!!!!!!!!!!!moving nodes is not working
 
 ==================================================
 v7.2.0 - 24 February 2022
@@ -53,7 +62,7 @@ Added PoSh-PopQuiz button below the PowerShell button on the main GUI
 	- Added $FromScale to allow older code to resize along with PoSh-EasyWIn
 
 Added Copyright info to load screen
-	- © 2018 Daniel Komnick
+	- © 2018 Daniel S. Komnick (high101bro)
 	
 ==================================================
 v7.1.0 - 23 February 2022

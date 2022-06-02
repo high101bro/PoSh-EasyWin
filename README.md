@@ -5,7 +5,7 @@
 |  File Name     |  PoSh-EasyWin.ps1                                               |
 |  Created       |  21 Aug 2018                                                    |
 |                |                                                                 |
-|  Author        |  Daniel Komnick (high101bro)                                    |
+|  Author        |  Daniel S. Komnick (high101bro)                                 |
 |  Email         |  high101bro@gmail.com                                           |
 |  Website       |  https://github.com/high101bro/PoSh-EasyWin                     |
 |  Requirements  |    PowerShell v6.0+ - PowerShell Core is NOT supported          |

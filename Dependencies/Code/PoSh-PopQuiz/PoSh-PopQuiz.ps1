@@ -9,7 +9,7 @@ Add-Type -AssemblyName PresentationFramework
 [System.Windows.MessageBox]::Show(@"
 PoSh-PopQuis is a PowerShell Questions Generator that allows you to select modules to populate a question pool to test your knowledge by either answering questions manually or by multiple choice. This tool requires an updated Get-Help database to create its content which can be updated with the Update-Help cmdlet. You can install additional modules for added questions.
 
-Copyright (C) 2020  Daniel S Komnick 
+Copyright (C) 2020  Daniel S. Komnick (high101bro)
 https://www.github.com/high101bro/
 
 This program is free software: you can redistribute it and/or modify it under the  terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or any later version.
