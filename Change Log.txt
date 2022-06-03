@@ -1,5 +1,5 @@
 Change Log and Version Breakdown
-v{Major}.{Minor}.{HotFix} - {Day} {Month} {Year}
+v{Major}.{Minor} - {Day} {Month} {Year}
 
 ==================================================
 To Do List:
@@ -27,9 +27,32 @@ TODO:
 [ ] Enumeration scanning is compatible with monitor jobs mode and works in pivot thru mode, but not when not 'pivot thru'... update and fix this
 [ ] doublecheck that pivot thru queries is functioning as expected, there are currently results, but doublecheck in wireshark
 
+==================================================
+v7.1 - 27 April 2022
+==================================================
+- Expanded upon the ability to save results to mapped SMB Shares
+	- Overall enhanced the usability of this featuers
+	- Added more descriptive text and tips
+	- Buttons
+		- Removed the 'Create SMB Mappings' button that automated a lot of the process, but it didn't leave much space for troubleshooting
+		- Added "New-SmbShare" button
+			- Able to create shares on the localhost and remotes endpoints
+		- Added "Get-SmbShare" button
+			- Gets the SMB Shares on the entered endpoint
+		- Added "Remove-SmbShare" button
+			- Removes SMB Shares on the entered endpoint
+		- Added "New-SmbMapping" button
+			- This is mapped on the localhost to a desired endpoint
+		- Added "Get-SmbMapping" button
+			- The listing is obtained from the localhost
+		- Added "Remove-SmbMapping" button
+			- The mappings are removed from the localhost
+		- Added "Select Mapped SMB Share" button
+			- This selects the share to results are saved to
+	- Added more code checking for scenarios, and fixed bugs with credentials
 
 ==================================================
-v7.3.0 - 27 April 2022
+v7.0 - 27 April 2022
 ==================================================
 - Added mandiant capa capability
 	- Integrated the capa.exe binary 
@@ -37,7 +60,7 @@ v7.3.0 - 27 April 2022
 	- It is integrated into the tool. PoSh-EasyWin runs it against a PE, ELF, or shellcode file and it tells you what it thinks the program can do. For example, it might suggest that the file is a backdoor, is capable of installing services, or relies on HTTP to communicate.
 
 ==================================================
-v7.2.1 - 1 March 2022
+v7.0 - 1 March 2022
 ==================================================
 Fixed bug with $FormScale during the initial setup process when selecting the GUI size. If you moved the Slidebar, the Window would just minimize... which is bad because you can't effectively/easily choose your window size.
 	- Added the following to the variable section
@@ -47,7 +70,7 @@ Fixed bug with $FormScale during the initial setup process when selecting the GU
 !!!!!!!!!!!!!moving nodes is not working
 
 ==================================================
-v7.2.0 - 24 February 2022
+v7.0 - 24 February 2022
 ==================================================
 Linux/ssh commands new feature from 23Feb
 	- Fixed bugs
@@ -65,13 +88,13 @@ Added Copyright info to load screen
 	- © 2018 Daniel S. Komnick (high101bro)
 	
 ==================================================
-v7.1.0 - 23 February 2022
+v7.0 - 23 February 2022
 ==================================================
 Added ability to add custom Linux/ssh commands from within the tool
 	- Contributed by ColeVan
 
 ==================================================
-v7.0.0 - 13 January 2022
+v7.0 - 13 January 2022
 ==================================================
 Pushed feature branch to master
 

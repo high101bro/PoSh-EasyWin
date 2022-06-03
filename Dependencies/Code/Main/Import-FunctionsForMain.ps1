@@ -5558,7 +5558,7 @@ Function Show-FileShareConnection {
     $SmbFileShareServerForm = New-Object System.Windows.Forms.Form -Property @{
         Text   = "PoSh-EasyWin - File Share Connection"
         Width  = $FormScale * 540
-        Height = $FormScale * 415
+        Height = $FormScale * 445
         StartPosition = "CenterScreen"
         Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
         Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
@@ -5571,23 +5571,20 @@ Function Show-FileShareConnection {
         TopMost       = $false
         Add_Shown     = $null
         Add_load = {
+            $script:SmbMappingCheck = $false
             if (Test-Path "$PewSettings\SMB File Share Hostname IP.txt")    {$SmbFileShareServerHostnameIPTextbox.Text = Get-Content "$PewSettings\SMB File Share Hostname IP.txt"}
             if (Test-Path "$PewSettings\SMB File Share File Path.txt")      {$SmbFileShareServerFilePathTextbox.Text      = Get-Content "$PewSettings\SMB File Share File Path.txt"}
             if (Test-Path "$PewSettings\SMB File Share Server Name.txt")    {$SmbFileShareServerFileShareNameTextbox.Text = Get-Content "$PewSettings\SMB File Share Server Name.txt"}
-            if (Test-Path "$PewSettings\SMB File Share Drive Letter.txt")   {$SmbFileShareServerDriveLetterTextbox.Text   = Get-Content "$PewSettings\SMB File Share Drive Letter.txt"}
+            # if (Test-Path "$PewSettings\SMB File Share Drive Letter.txt")   {$SmbFileShareServerDriveLetterComboBox.Text   = Get-Content "$PewSettings\SMB File Share Drive Letter.txt"}
             if (Test-Path "$PewSettings\SMB File Share Account Access.txt") {$SmbFileShareServerAccountAccessTextbox.Text = Get-Content "$PewSettings\SMB File Share Account Access.txt"}
             if (Test-Path "$PewSettings\SMB File Share Access Rights.txt")  {$SmbFileShareServerAccessRightsTextbox.Text  = Get-Content "$PewSettings\SMB File Share Access Rights.txt"}
         }
         Add_Closing = {
-            if (Get-SmbMapping -LocalPath "$($script:SmbShareDriveLetter):") {
+            if ($script:SmbMappingCheck) {
                 $SaveResultsToFileShareCheckbox.Checked = $true
-                $script:CollectionSavedDirectoryTextBox.Text = "$($script:SmbShareDriveLetter):\$((Get-Date).ToString('yyyy-MM-dd HH.mm.ss'))"
-
-                if ($SaveResultsToFileShareCheckbox.checked) { $DirectoryListLabel.Text = "Results Folder on SMB File Share ($script:SMBServer):" }
             }
             else {
                 $SaveResultsToFileShareCheckbox.Checked = $false
-                if (-not $SaveResultsToFileShareCheckbox.checked) { $DirectoryListLabel.Text = "Results Folder on localhost ($env:COMPUTERNAME):" }
             }
             $This.dispose()
         }
@@ -5595,7 +5592,7 @@ Function Show-FileShareConnection {
 
 
     $SmbFileShareServerLabel = New-Object System.Windows.Forms.label -Property @{
-        Text   = "PoSh-EasyWin can store collected data to the localhost's filesystem or to a networked SMB file Share. Elevated permissions are required to create and connect to the SMB file share. This section allows you to specify a file path on a host that you have permissions to and create and/or connect to an SMB file share."
+        Text   = "PoSh-EasyWin can store collected data to the localhost's filesystem or to a networked SMB share. Elevated permissions are typically required to create and connect to an SMB share. The fields and options below allow you to specifiy exactly how to create an SMB share on a endpoint that you have permissions to and map to them. This feautres is particular helpful to store logs at a centralized location, and allows other users to access them."
         Left   = $FormScale * 10
         Top    = $FormScale * 10
         Width  = $FormScale * 510
@@ -5610,7 +5607,7 @@ Function Show-FileShareConnection {
         Left   = $SmbFileShareServerLabel.Left
         Top    = $SmbFileShareServerLabel.Top + $SmbFileShareServerLabel.Height + $($FormScale * 5)
         Width  = $FormScale * 510
-        Height = $FormScale * 275
+        Height = $FormScale * 305
         Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),1,2,1)
         ForeColor = 'Blue'
     }
@@ -5631,12 +5628,33 @@ Function Show-FileShareConnection {
                 Text   = "localhost"
                 Left   = $SmbFileShareServerHostnameIPLabel.Left + $SmbFileShareServerHostnameIPLabel.Width + $($FormScale * 5)
                 Top    = $SmbFileShareServerHostnameIPLabel.Top
-                Width  = $FormScale * 360
+                Width  = $FormScale * 120
                 Height = $FormScale * 22
                 Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
             }
             $SmbFileShareServerConfigurationGroupbox.Controls.Add($SmbFileShareServerHostnameIPTextbox)
 
+
+        $SmbFileShareServerFileShareNameLabel = New-Object System.Windows.Forms.Label -Property @{
+            Text   = "Remote Share Name:"
+            Left   = $SmbFileShareServerHostnameIPTextbox.Left + $SmbFileShareServerHostnameIPTextbox.Width + $($FormScale * 5)
+            Top    = $SmbFileShareServerHostnameIPTextbox.Top
+            Width  = $FormScale * 115
+            Height = $FormScale * 22
+            Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+        }
+        $SmbFileShareServerConfigurationGroupbox.Controls.Add($SmbFileShareServerFileShareNameLabel)
+
+            $SmbFileShareServerFileShareNameTextbox = New-Object System.Windows.Forms.Textbox -Property @{
+                Text   = 'PoSh-EasyWin'
+                Left   = $SmbFileShareServerFileShareNameLabel.Left + $SmbFileShareServerFileShareNameLabel.Width
+                Top    = $SmbFileShareServerFileShareNameLabel.Top
+                Width  = $FormScale * 120
+                Height = $FormScale * 22
+                Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+            }
+            $SmbFileShareServerConfigurationGroupbox.Controls.Add($SmbFileShareServerFileShareNameTextbox)
+    
 
         $SmbFileShareServerFilePathLabel = New-Object System.Windows.Forms.Label -Property @{
             Text   = "Remote File Path:"
@@ -5649,7 +5667,7 @@ Function Show-FileShareConnection {
         $SmbFileShareServerConfigurationGroupbox.Controls.Add($SmbFileShareServerFilePathLabel)
 
             $SmbFileShareServerFilePathTextbox = New-Object System.Windows.Forms.Textbox -Property @{
-                Text   = "C:\Windows\Temp\PoSh-EasyWin Collected Data\"
+                Text   = "C:\Windows\Temp\PoSh-EasyWin\"
                 Left   = $SmbFileShareServerFilePathLabel.Left + $SmbFileShareServerFilePathLabel.Width + $($FormScale * 5)
                 Top    = $SmbFileShareServerFilePathLabel.Top
                 Width  = $FormScale * 360
@@ -5659,52 +5677,10 @@ Function Show-FileShareConnection {
             $SmbFileShareServerConfigurationGroupbox.Controls.Add($SmbFileShareServerFilePathTextbox)
 
 
-        $SmbFileShareServerFileShareNameLabel = New-Object System.Windows.Forms.Label -Property @{
-            Text   = "Remote Share Name:"
-            Left   = $SmbFileShareServerFilePathLabel.Left
-            Top    = $SmbFileShareServerFilePathLabel.Top + $SmbFileShareServerFilePathLabel.Height + $($FormScale * 5)
-            Width  = $FormScale * 120
-            Height = $FormScale * 22
-            Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-        }
-        $SmbFileShareServerConfigurationGroupbox.Controls.Add($SmbFileShareServerFileShareNameLabel)
-
-            $SmbFileShareServerFileShareNameTextbox = New-Object System.Windows.Forms.Textbox -Property @{
-                Text   = 'PoSh-EasyWin'
-                Left   = $SmbFileShareServerFileShareNameLabel.Left + $SmbFileShareServerFileShareNameLabel.Width + $($FormScale * 5)
-                Top    = $SmbFileShareServerFileShareNameLabel.Top
-                Width  = $FormScale * 120
-                Height = $FormScale * 22
-                Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-            }
-            $SmbFileShareServerConfigurationGroupbox.Controls.Add($SmbFileShareServerFileShareNameTextbox)
-
-
-        $SmbFileShareServerDriveLetterLabel = New-Object System.Windows.Forms.Label -Property @{
-            Text   = "Local Drive Letter:"
-            Left   = $SmbFileShareServerFileShareNameTextbox.Left + $SmbFileShareServerFileShareNameTextbox.Width + $($FormScale * 5)
-            Top    = $SmbFileShareServerFileShareNameTextbox.Top
-            Width  = $FormScale * 115
-            Height = $FormScale * 22
-            Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-        }
-        $SmbFileShareServerConfigurationGroupbox.Controls.Add($SmbFileShareServerDriveLetterLabel)
-
-            $SmbFileShareServerDriveLetterTextbox = New-Object System.Windows.Forms.Textbox -Property @{
-                Text   = "P"
-                Left   = $SmbFileShareServerDriveLetterLabel.Left + $SmbFileShareServerDriveLetterLabel.Width
-                Top    = $SmbFileShareServerDriveLetterLabel.Top
-                Width  = $FormScale * 120
-                Height = $FormScale * 22
-                Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-            }
-            $SmbFileShareServerConfigurationGroupbox.Controls.Add($SmbFileShareServerDriveLetterTextbox)
-
-
         $SmbFileShareServerAccountAccessLabel = New-Object System.Windows.Forms.Label -Property @{
             Text   = "Account Access:"
-            Left   = $SmbFileShareServerFileShareNameLabel.Left
-            Top    = $SmbFileShareServerFileShareNameLabel.Top + $SmbFileShareServerFileShareNameLabel.Height + $($FormScale * 5)
+            Left   = $SmbFileShareServerFilePathLabel.Left
+            Top    = $SmbFileShareServerFilePathLabel.Top + $SmbFileShareServerFilePathLabel.Height + $($FormScale * 5)
             Width  = $FormScale * 120
             Height = $FormScale * 22
             Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
@@ -5746,7 +5722,7 @@ Function Show-FileShareConnection {
 
 
     $SmbFileShareServerSmbShareLabel = New-Object System.Windows.Forms.Label -Property @{
-        Text   = 'SMB Shares can be created on the localhost or a remote endpoint. If SMB Shares are not being created, verify the hostname/IP and the credentials selected.'
+        Text   = 'SMB Shares can be created on the localhost or a remote endpoint. If there are errors when creating an SMB Share, verify the hostname/IP and the credentials selected.'
         Width  = $FormScale * 490
         Height = $FormScale * 30
         Left   = $SmbFileShareServerAccountAccessLabel.Left
@@ -5769,43 +5745,59 @@ Function Show-FileShareConnection {
             $SmbFileShareServerHostnameIPTextbox.Text    | Set-Content "$PewSettings\SMB File Share Hostname IP.txt" -Force
             $SmbFileShareServerFilePathTextbox.Text      | Set-Content "$PewSettings\SMB File Share File Path.txt" -Force
             $SmbFileShareServerFileShareNameTextbox.Text | Set-Content "$PewSettings\SMB File Share Server Name.txt" -Force
-            $SmbFileShareServerDriveLetterTextbox.Text   | Set-Content "$PewSettings\SMB File Share Drive Letter.txt" -Force
+            #$SmbFileShareServerDriveLetterComboBox.Text  | Set-Content "$PewSettings\SMB File Share Drive Letter.txt" -Force
             $SmbFileShareServerAccountAccessTextbox.Text | Set-Content "$PewSettings\SMB File Share Account Access.txt" -Force
             $SmbFileShareServerAccessRightsTextbox.Text  | Set-Content "$PewSettings\SMB File Share Access Rights.txt" -Force
 
             $script:FileShareName = $SmbFileShareServerFileShareNameTextbox.Text
             $FilePath = $SmbFileShareServerFilePathTextbox.Text
             $script:SMBServer = $SmbFileShareServerHostnameIPTextbox.Text
-            $script:SmbShareDriveLetter = $SmbFileShareServerDriveLetterTextbox.Text
+            $script:SmbShareDriveLetter = $SmbFileShareServerDriveLetterComboBox.Text
             $AccountAccess = $SmbFileShareServerAccountAccessTextbox.Text
             $AccountRights = $SmbFileShareServerAccessRightsTextbox.Text
+            if ($script:ComputerListProvideCredentialsCheckBox.Checked) { $SMBCredentials = $script:Credential.UserName }
+            else { $SMBCredentials = 'Not Provided' }
 
-
-            $InvokeCommandSplat = @{
-                ScriptBlock = {
-                    param($FilePath,$script:FileShareName,$AccountAccess,$AccountRights)
-                    if (-not (Get-PSDrive -Name $script:FileShareName -ErrorAction SilentlyContinue)) {
-                        New-Item -Type Directory -Path $FilePath -ErrorAction SilentlyContinue
-                        New-SmbShare -Path $FilePath -Name $script:FileShareName
-                        Grant-SmbShareAccess -Name $script:FileShareName -AccountName $AccountAccess -AccessRight $AccountRights -Force
+            $SmbFileShareServerNewSmbShareVerify = [System.Windows.Forms.MessageBox]::Show("Do you want to create the new SMB Share:
+    Endpoint:`t$script:SMBServer
+    Share Name:`t$script:FileShareName
+    File Path:`t$FilePath
+    Account Access:`t$AccountAccess
+    Account Rights:`t$AccountRights
+    Credentials:`t$SMBCredentials
+    ",'PoSh-EasyWin - New SMB Share','YesNo','Warning')
+            switch ($SmbFileShareServerNewSmbShareVerify) {
+                'Yes'{
+                    $InvokeCommandSplat = @{
+                        ScriptBlock = {
+                            param($FilePath,$script:FileShareName,$AccountAccess,$AccountRights)
+                            if (-not (Get-PSDrive -Name $script:FileShareName -ErrorAction SilentlyContinue)) {
+                                New-Item -Type Directory -Path $FilePath -ErrorAction SilentlyContinue
+                                New-SmbShare -Path $FilePath -Name $script:FileShareName
+                                Grant-SmbShareAccess -Name $script:FileShareName -AccountName $AccountAccess -AccessRight $AccountRights -Force
+                            }
+                        }
+                        ArgumentList = @($FilePath,$script:FileShareName,$AccountAccess,$AccountRights)
+                    }
+                    if ($SmbFileShareServerHostnameIPTextbox.text -ne 'localhost') {
+                        $InvokeCommandSplat += @{ComputerName = $script:SMBServer}
+                    }
+                    if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
+                        if (-not $script:Credential) { Set-NewCredential }
+                        $InvokeCommandSplat += @{Credential = $script:Credential}
+                    }
+                    Invoke-Command @InvokeCommandSplat
+        
+                    if ($?) {
+                        Show-MessageBox -Message "SMB Share Created on: $($script:SMBServer)" -Title "PoSh-EasyWin" -Options "Ok" -Type "Information" -Sound
+                    }
+                    else {
+                        Show-MessageBox -Message "SMB Share Error:`n$($Error[0])" -Title "PoSh-EasyWin" -Options "Ok" -Type "Error" -Sound
                     }
                 }
-                ArgumentList = @($FilePath,$script:FileShareName,$AccountAccess,$AccountRights)
-            }
-            if ($SmbFileShareServerHostnameIPTextbox.text -ne 'localhost') {
-                $InvokeCommandSplat += @{ComputerName = $script:SMBServer}
-            }
-            if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
-                if (-not $script:Credential) { Set-NewCredential }
-                $InvokeCommandSplat += @{Credential = $script:Credential}
-            }
-            Invoke-Command @InvokeCommandSplat
-
-            if($?) {
-                Show-MessageBox -Message "SMB Share Created on: $($script:SMBServer)" -Title "PoSh-EasyWin" -Options "Ok" -Type "Information" -Sound
-            }
-            else {
-                Show-MessageBox -Message "SMB Share Error:`n$($Error[0])" -Title "PoSh-EasyWin" -Options "Ok" -Type "Error" -Sound
+                'No' {
+                    continue
+                }
             }
         }
     }
@@ -5815,7 +5807,7 @@ Function Show-FileShareConnection {
 
     $SmbFileShareServerGetSmbShareButton = New-Object System.Windows.Forms.Button -Property @{
         Text   = 'Get-SmbShare'
-        Left   = $SmbFileShareServerNewSmbShareButton.Left + $SmbFileShareServerNewSmbShareButton.Width + $($FormScale * 5)
+        Left   = $SmbFileShareServerNewSmbShareButton.Left + $SmbFileShareServerNewSmbShareButton.Width + $($FormScale * 10)
         Top    = $SmbFileShareServerNewSmbShareButton.Top
         Width  = $FormScale * 155
         Height = $FormScale * 22
@@ -5852,7 +5844,7 @@ Function Show-FileShareConnection {
 
     $SmbFileShareServerRemoveSmbShareButton = New-Object System.Windows.Forms.Button -Property @{
         Text   = 'Remove-SmbShare'
-        Left   = $SmbFileShareServerGetSmbShareButton.Left + $SmbFileShareServerGetSmbShareButton.Width + $($FormScale * 5)
+        Left   = $SmbFileShareServerGetSmbShareButton.Left + $SmbFileShareServerGetSmbShareButton.Width + $($FormScale * 10)
         Top    = $SmbFileShareServerGetSmbShareButton.Top
         Width  = $FormScale * 155
         Height = $FormScale * 22
@@ -5905,12 +5897,46 @@ Function Show-FileShareConnection {
     Add-CommonButtonSettings -Button $SmbFileShareServerRemoveSmbShareButton
 
 
-    $SmbFileShareServerSmbMappingLabel = New-Object System.Windows.Forms.Label -Property @{
-        Text   = "SMB Shares need to be mapped to for use. You can map to more than one, but data is only saved to SMB Share at a time. If an SMB Share is removed or deleted, the mapping still exists but won't be functional - remap as necessary."
-        Width  = $FormScale * 490
-        Height = $FormScale * 40
+    $SmbFileShareServerDriveLetterLabel = New-Object System.Windows.Forms.Label -Property @{
+        Text   = "Select an available Local Drive Letter that will be mapped for use within PowerShell."
         Left   = $SmbFileShareServerNewSmbShareButton.Left
         Top    = $SmbFileShareServerNewSmbShareButton.Top + $SmbFileShareServerNewSmbShareButton.Height + $($FormScale * 15)
+        Width  = $FormScale * (115 + 120 + 120 + 80)
+        Height = $FormScale * 22
+        Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    }
+    $SmbFileShareServerConfigurationGroupbox.Controls.Add($SmbFileShareServerDriveLetterLabel)
+        function Get-AvailableDriveLetters {
+            $DriveLetters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' -split '' | Where-Object {$_ -notin $(Get-PSDrive).name -and $_ -ne '' -and $_ -ne $null}
+            $SmbFileShareServerDriveLetterComboBox.Items.Clear()
+            Foreach ($Letter in $DriveLetters) {
+                $SmbFileShareServerDriveLetterComboBox.Items.Add($Letter)
+            }
+            if     ('P' -in $DriveLetters) { $SmbFileShareServerDriveLetterComboBox.Text = 'P' }
+            elseif ('E' -in $DriveLetters) { $SmbFileShareServerDriveLetterComboBox.Text = 'E' }
+            elseif ('W' -in $DriveLetters) { $SmbFileShareServerDriveLetterComboBox.Text = 'W' }
+            else { $SmbFileShareServerDriveLetterComboBox.Text = Get-Random -InputObject $DriveLetters }
+        }
+
+        $SmbFileShareServerDriveLetterComboBox = New-Object System.Windows.Forms.Combobox -Property @{
+            Left   = $SmbFileShareServerDriveLetterLabel.Left + $SmbFileShareServerDriveLetterLabel.Width
+            Top    = $SmbFileShareServerDriveLetterLabel.Top - $($FormSale * 2)
+            Width  = $FormScale * 50
+            Height = $FormScale * 22
+            Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+        }
+        $SmbFileShareServerConfigurationGroupbox.Controls.Add($SmbFileShareServerDriveLetterComboBox)
+        Get-AvailableDriveLetters
+        
+
+
+
+    $SmbFileShareServerSmbMappingLabel = New-Object System.Windows.Forms.Label -Property @{
+        Text   = "SMB Shares need to be mapped to for use. More than one can be mapped, but data is only saved to one at a time. If an SMB Share is removed/deleted, the mapping still exists but won't be functional - remap as necessary. Use 'Map Network Drive' option within Explorer to browser."
+        Width  = $FormScale * 490
+        Height = $FormScale * 40
+        Left   = $SmbFileShareServerDriveLetterLabel.Left
+        Top    = $SmbFileShareServerDriveLetterLabel.Top + $SmbFileShareServerDriveLetterLabel.Height + $($FormScale * 2)
         Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         ForeColor = 'Black'
     }
@@ -5929,46 +5955,70 @@ Function Show-FileShareConnection {
             $SmbFileShareServerHostnameIPTextbox.Text    | Set-Content "$PewSettings\SMB File Share Hostname IP.txt" -Force
             $SmbFileShareServerFilePathTextbox.Text      | Set-Content "$PewSettings\SMB File Share File Path.txt" -Force
             $SmbFileShareServerFileShareNameTextbox.Text | Set-Content "$PewSettings\SMB File Share Server Name.txt" -Force
-            $SmbFileShareServerDriveLetterTextbox.Text   | Set-Content "$PewSettings\SMB File Share Drive Letter.txt" -Force
+            # $SmbFileShareServerDriveLetterComboBox.Text   | Set-Content "$PewSettings\SMB File Share Drive Letter.txt" -Force
             $SmbFileShareServerAccountAccessTextbox.Text | Set-Content "$PewSettings\SMB File Share Account Access.txt" -Force
             $SmbFileShareServerAccessRightsTextbox.Text  | Set-Content "$PewSettings\SMB File Share Access Rights.txt" -Force
 
             $script:FileShareName = $SmbFileShareServerFileShareNameTextbox.Text
-            $FilePath = $SmbFileShareServerFilePathTextbox.Text
             $script:SMBServer = $SmbFileShareServerHostnameIPTextbox.Text
-            $script:SmbShareDriveLetter = $SmbFileShareServerDriveLetterTextbox.Text
+            $script:SmbShareDriveLetter = $SmbFileShareServerDriveLetterComboBox.Text
+            if ($script:ComputerListProvideCredentialsCheckBox.Checked) { $SMBCredentials = $script:Credential.UserName }
+            else { $SMBCredentials = 'Not Provided' }
 
-            $SmbMappingCheck = Get-SmbMapping -LocalPath "$($script:SmbShareDriveLetter):"
-            if ($SmbMappingCheck) {
-                $script:FileTransferStatusBar.Text = "SMB File Share Mapping Exists for: [$($SmbMappingCheck.LocalPath):] $($SmbMappingCheck.RemotePath)"
-                Start-Sleep -Seconds 1
-                $DirectoryListLabel.Text = "Results Folder on SMB File Share ($script:SMBServer):"
-                $SmbFileShareServerForm.Close()
+            $InvokeCommandSplat = @{
+                ScriptBlock = { Get-SmbShare }
             }
-            else {
-                $NewSmbMappingplat = @{
-                    LocalPath  = "$($script:SmbShareDriveLetter):"
-                    RemotePath = "\\$script:SMBServer\$script:FileShareName"
-                    Persistent = $true
-                }
-                if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
-                    $NewSmbMappingplat += @{
-                        UserName   = $script:Credential.UserName
-                        Password   = $script:Credential.GetNetworkCredential().Password
+            if ($SmbFileShareServerHostnameIPTextbox.text -ne 'localhost') {
+                $InvokeCommandSplat += @{ComputerName = $SmbFileShareServerHostnameIPTextbox.Text}
+            }
+            if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
+                if (-not $script:Credential) { Set-NewCredential }
+                $InvokeCommandSplat += @{Credential = $script:Credential}
+            }
+            $SmbShareToMap = $false
+            $SmbShareToMap = Invoke-Command @InvokeCommandSplat | Out-GridView -Title "SMB Shares on: $($SmbFileShareServerHostnameIPTextbox.text) -- Select to Share to Map" -PassThru
+            
+            if ($SmbShareToMap) {
+                $SmbFileShareServerNewSmbShareVerify = [System.Windows.Forms.MessageBox]::Show("Do you want to create the new SMB Mapping:
+    Endpoint:`tlocalhost
+    Local Path:`t$($script:SmbShareDriveLetter):
+    Remote Path:`t\\$script:SMBServer\$($SmbShareToMap.Name)
+    Credentials:`t$SMBCredentials
+    ",'PoSh-EasyWin - New SMB Mapping','YesNo','Warning')
+                switch ($SmbFileShareServerNewSmbShareVerify) {
+                    'Yes'{
+                        $script:SmbMappingCheck = Get-SmbMapping -LocalPath "$($script:SmbShareDriveLetter):"
+                        if ($script:SmbMappingCheck) {
+                            $script:FileTransferStatusBar.Text = "SMB File Share Mapping Exists for: [$($script:SmbMappingCheck.LocalPath):] $($script:SmbMappingCheck.RemotePath)"
+                            Start-Sleep -Seconds 1
+                        }
+                        else {
+                            $NewSmbMappingplat = @{
+                                LocalPath  = "$($script:SmbShareDriveLetter):"
+                                RemotePath = "\\$script:SMBServer\$script:FileShareName"
+                                Persistent = $true
+                            }
+                            if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
+                                $NewSmbMappingplat += @{
+                                    UserName   = $script:Credential.UserName
+                                    Password   = $script:Credential.GetNetworkCredential().Password
+                                }
+                            }
+                            New-SmbMapping @NewSmbMappingplat
+                            #net use P: \\hostname\PoSh-EasyWin /USER:user@domain.com 'password' /persistent:Yes
+            
+                            if ($?) {
+                                Get-AvailableDriveLetters
+                                Show-MessageBox -Message "SMB Share Mapped - $($script:SmbShareDriveLetter): to \\$script:SMBServer\$script:FileShareName" -Title "PoSh-EasyWin" -Options "Ok" -Type "Information" -Sound
+                            }
+                            else {
+                                Show-MessageBox -Message "SMB Mapping Error:`n$($Error[0])" -Title "PoSh-EasyWin" -Options "Ok" -Type "Error" -Sound
+                            }    
+                        }                    
                     }
-                }
-                New-SmbMapping @NewSmbMappingplat
-                #net use P: \\hostname\PoSh-EasyWin /USER:user@domain.com 'password' /persistent:Yes
-    
-                $SmbMappingCheck = Get-SmbMapping -LocalPath "$($script:SmbShareDriveLetter):"
-                if ($SmbMappingCheck) {
-                    $script:FileTransferStatusBar.Text = "New SMB File Share Mapping: [$($SmbMappingCheck.LocalPath):] $($SmbMappingCheck.RemotePath)"
-                    Start-Sleep -Seconds 1
-                    $DirectoryListLabel.Text = "Results Folder on SMB File Share ($script:SMBServer):"
-                    $SmbFileShareServerForm.Close()
-                }
-                else {
-                    $script:FileTransferStatusBar.Text = "SMB File Share Mapping to $script:SMBServer Failed..."
+                    'No'{
+                        continue
+                    }
                 }
             }
         }
@@ -5979,7 +6029,7 @@ Function Show-FileShareConnection {
 
     $SmbFileShareServerGetSmbMappingButton = New-Object System.Windows.Forms.Button -Property @{
         Text   = 'Get-SmbMapping'
-        Left   = $SmbFileShareServerNewSmbMappingButton.Left + $SmbFileShareServerNewSmbMappingButton.Width + $($FormScale * 5)
+        Left   = $SmbFileShareServerNewSmbMappingButton.Left + $SmbFileShareServerNewSmbMappingButton.Width + $($FormScale * 10)
         Top    = $SmbFileShareServerNewSmbMappingButton.Top
         Width  = $FormScale * 155
         Height = $FormScale * 22
@@ -5995,7 +6045,7 @@ Function Show-FileShareConnection {
 
     $SmbFileShareServerRemoveSmbMappingButton = New-Object System.Windows.Forms.Button -Property @{
         Text   = 'Remove-SmbMapping'
-        Left   = $SmbFileShareServerGetSmbMappingButton.Left + $SmbFileShareServerGetSmbMappingButton.Width + $($FormScale * 5)
+        Left   = $SmbFileShareServerGetSmbMappingButton.Left + $SmbFileShareServerGetSmbMappingButton.Width + $($FormScale * 10)
         Top    = $SmbFileShareServerGetSmbMappingButton.Top
         Width  = $FormScale * 155
         Height = $FormScale * 22
@@ -6007,6 +6057,40 @@ Function Show-FileShareConnection {
     }
     $SmbFileShareServerConfigurationGroupbox.Controls.Add($SmbFileShareServerRemoveSmbMappingButton)
     Add-CommonButtonSettings -Button $SmbFileShareServerRemoveSmbMappingButton    
+
+
+    $SmbFileShareServerSelectSmbMappingButton = New-Object System.Windows.Forms.Button -Property @{
+        Text   = 'Select Mapped SMB Share'
+        Left   = $SmbFileShareServerNewSmbMappingButton.Left
+        Top    = $SmbFileShareServerNewSmbMappingButton.Top + $SmbFileShareServerNewSmbMappingButton.Height + $($FormScale * 10)
+        Width  = $FormScale * 155
+        Height = $FormScale * 22
+        Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+        ForeColor = 'Black'
+        Add_Click = {
+            $script:SmbMappingCheck = Get-SmbMapping | Out-GridView -Title "Select a SMB Share Mapping to Save Results To" -PassThru
+
+            if ($script:SmbMappingCheck) {
+                $script:FileTransferStatusBar.Text = "New SMB File Share Mapping: [$($script:SmbMappingCheck.LocalPath):] $($script:SmbMappingCheck.RemotePath)"
+                Start-Sleep -Seconds 1
+
+                $SaveResultsToFileShareCheckbox.Checked = $true
+                $script:CollectionSavedDirectoryTextBox.Text = "$($script:SmbMappingCheck.LocalPath)\$((Get-Date).ToString('yyyy-MM-dd HH.mm.ss'))"
+
+                if ($SaveResultsToFileShareCheckbox.checked) { $DirectoryListLabel.Text = "Results Folder on SMB File Share ($($SmbFileShareServerHostnameIPTextbox.Text)):" }
+
+                $SmbFileShareServerForm.Close()
+            }
+            else {
+                $script:FileTransferStatusBar.Text = "SMB File Share Mapping to $($SmbFileShareServerHostnameIPTextbox.Text) Failed..."
+
+                $SaveResultsToFileShareCheckbox.Checked = $false
+                if (-not $SaveResultsToFileShareCheckbox.checked) { $DirectoryListLabel.Text = "Results Folder on localhost ($env:COMPUTERNAME):" }
+            }
+        }
+    }
+    $SmbFileShareServerConfigurationGroupbox.Controls.Add($SmbFileShareServerSelectSmbMappingButton)
+    Add-CommonButtonSettings -Button $SmbFileShareServerSelectSmbMappingButton
 
     $script:Timer = New-Object System.Windows.Forms.Timer -Property @{
         Enabled  = $true
