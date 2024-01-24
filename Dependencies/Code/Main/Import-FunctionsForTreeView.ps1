@@ -2507,7 +2507,8 @@ function Compile-TreeViewCommand {
     # Compiles all the commands treenodes into one object
     $script:AllCommands  = $script:AllEndpointCommands
     $script:AllCommands += $script:AllActiveDirectoryCommands
-    $script:AllCommands += $script:UserAddedCommands
+    $script:AllCommands += $script:UserAddedCommandsWinRM
+    $script:AllCommands += $script:UserAddedCommandsSSH
 
     foreach ($root in $AllTreeViewNodes) {
         foreach ($Category in $root.Nodes) {
@@ -2990,20 +2991,37 @@ function Initialize-TreeViewCommand {
         ForeColor = [System.Drawing.Color]::FromArgb(0,0,0,0)
     }
 
-    $script:UserAddedCommands = @()
-    if (Test-Path $CommandsUserAdded){
-        $script:UserAddedCommands += Import-Csv $CommandsUserAdded
-        foreach ($command in $script:UserAddedCommands) {
+    $script:UserAddedCommandsWinRM = @()
+    if (Test-Path $CommandsUserAddedWinRM){
+        $script:UserAddedCommandsWinRM += Import-Csv $CommandsUserAddedWinRM
+        foreach ($command in $script:UserAddedCommandsWinRM) {
             Add-TreeViewCommand -RootNode $script:TreeNodeUserAddedCommands -Category $("{0,-10}{1}" -f "[WinRM]", "PowerShell Cmdlets") -Entry "(WinRM) PoSh -- $($Command.Name)" -ToolTip "$($command.Command_WinRM_PoSh)"
         }
     }
-    elseif (Test-Path $CommandsUserAddedDemo){
-        $script:UserAddedCommands += Import-Csv $CommandsUserAddedDemo
-        foreach ($command in $script:UserAddedCommands) {
+    elseif (Test-Path $CommandsUserAddedWinRMDemo){
+        $script:UserAddedCommandsWinRM += Import-Csv $CommandsUserAddedWinRMDemo
+        foreach ($command in $script:UserAddedCommandsWinRM) {
             Add-TreeViewCommand -RootNode $script:TreeNodeUserAddedCommands -Category $("{0,-10}{1}" -f "[WinRM]", "PowerShell Cmdlets") -Entry "(WinRM) PoSh -- $($Command.Name)" -ToolTip "$($command.Command_WinRM_PoSh)"
         }
     }
-    else {$script:UserAddedCommands = $null}
+    else {$script:UserAddedCommandsWinRM = $null}
+
+
+    $script:UserAddedCommandsSSH = @()
+    if (Test-Path $CommandsUserAddedSSH){
+        $script:UserAddedCommandsSSH += Import-Csv $CommandsUserAddedSSH
+        foreach ($command in $script:UserAddedCommandsSSH) {
+            Add-TreeViewCommand -RootNode $script:TreeNodeUserAddedCommands -Category $("{0,-10}{1}" -f "[SSH]", "Linux Commands") -Entry "(SSH) Linux -- $($Command.Name)" -ToolTip "$($command.Command_Linux)"
+        }
+    }
+    elseif (Test-Path $CommandsUserAddedSSHDemo){
+        $script:UserAddedCommandsSSH += Import-Csv $CommandsUserAddedSSHDemo
+        foreach ($command in $script:UserAddedCommandsSSH) {
+            Add-TreeViewCommand -RootNode $script:TreeNodeUserAddedCommands -Category $("{0,-10}{1}" -f "[SSH]", "Linux Commands") -Entry "(SSH) Linux -- $($Command.Name)" -ToolTip "$($command.Command_Linux)"
+        }
+    }
+    else {$script:UserAddedCommandsSSH = $null}
+
 
     $script:TreeNodeCommandSearch.Expand()
     $script:TreeNodeEndpointCommands.Expand()
@@ -3381,8 +3399,8 @@ Function View-TreeViewCommandQuery {
 # SIG # Begin signature block
 # MIIFuAYJKoZIhvcNAQcCoIIFqTCCBaUCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQU9+Z9K7nD/kOYokg0NgW9aYXL
-# zd2gggM6MIIDNjCCAh6gAwIBAgIQeugH5LewQKBKT6dPXhQ7sDANBgkqhkiG9w0B
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUuCJ14eE5TV7XyDD+J/DxDZle
+# kACgggM6MIIDNjCCAh6gAwIBAgIQeugH5LewQKBKT6dPXhQ7sDANBgkqhkiG9w0B
 # AQUFADAzMTEwLwYDVQQDDChQb1NoLUVhc3lXaW4gQnkgRGFuIEtvbW5pY2sgKGhp
 # Z2gxMDFicm8pMB4XDTIxMTIxNDA1MDIwMFoXDTMxMTIxNDA1MTIwMFowMzExMC8G
 # A1UEAwwoUG9TaC1FYXN5V2luIEJ5IERhbiBLb21uaWNrIChoaWdoMTAxYnJvKTCC
@@ -3403,11 +3421,11 @@ Function View-TreeViewCommandQuery {
 # YXN5V2luIEJ5IERhbiBLb21uaWNrIChoaWdoMTAxYnJvKQIQeugH5LewQKBKT6dP
 # XhQ7sDAJBgUrDgMCGgUAoHgwGAYKKwYBBAGCNwIBDDEKMAigAoAAoQKAADAZBgkq
 # hkiG9w0BCQMxDAYKKwYBBAGCNwIBBDAcBgorBgEEAYI3AgELMQ4wDAYKKwYBBAGC
-# NwIBFTAjBgkqhkiG9w0BCQQxFgQUwsL5j9QjvV4E3JC165SMEyTdVk8wDQYJKoZI
-# hvcNAQEBBQAEggEAKF6CgfEgAgdMp/fGD72VWGxn3Nub7nkyQzaDC4AINNCFPZE4
-# vRdX6A/JJ32ufWEP24soHmgo/k8HKyQA4mjspL2+KEOnOThBVIvziuPN8JhMpc24
-# S/3St/JYXyy5RCKg3b/5Mj3Xtw4oXz0k6YKNQ/1Pdv0eVC0FT0PRdlCRanNtq9IF
-# tEPspqHQaf19EXXMUxb12PWQoUTZV2Yoxd/wUKQZd5TZq00l8iB36xhQSOj2+vDb
-# FsoI459jl5gxoPSlflToT7kFWgr6MkGzMCkJM2kB+mDZu4bQnhVb/Mv7MWATiRuQ
-# Fy6w7QhCFJS9Oo182INCfboNR8CtfhIT+/D9cA==
+# NwIBFTAjBgkqhkiG9w0BCQQxFgQUTO/1p/wjvdUSCtpEFg1RUa+K0QwwDQYJKoZI
+# hvcNAQEBBQAEggEAVgrgSJ0lL9MfzSmDacgchHkQ98xiu5kPcKpk+jC5yI2/x7fV
+# UpWgYkSrTfRcqWGEoFEzhebUfWHOfTYDSQa6xQnewmaWq0noQ2r//VDBfXU2ofzC
+# BaCIKjmxdMDaNT9yYNupnTY2Ej+nVC76nPykP3ZwzzPAtOq/kijhbpugFQ6i92nl
+# 6Y4isJSr1YJ+ocjRo8BUQJ1mgzKAN7WamP7Zo5lvifiaQcOaZayfKX+S878XWpl2
+# JAOZFYCs5ceuiAtGxiRr2k4joWUj810ZLrHoxWKlauqMJxcPFaPSxPJcVMVeJ2U3
+# g3OXrqimYNvWU9uQ/66ezJMWKw1Cay5h3rqRfw==
 # SIG # End signature block

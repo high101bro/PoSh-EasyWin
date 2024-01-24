@@ -2549,7 +2549,7 @@ function CustomQueryScriptBlock {
         $script:ShowCommandQueryBuild = Show-Command -PassThru
 
         if ($script:ShowCommandQueryBuild -eq $null) {
-            $script:CustomQueryScriptBlockTextbox.text = 'Enter a cmdlet'
+            $script:CustomQueryScriptBlockTextbox.text = 'Enter a command'
             $script:CustomQueryScriptBlockTextbox.forecolor = 'black'
             $CustomQueryScriptBlockCheckBox.checked = $false
             $CustomQueryScriptBlockCheckBox.enabled = $false
@@ -2583,8 +2583,8 @@ function CustomQueryScriptBlock {
     else {
         $CustomQueryCheck = $true
         if ($CustomQueryCheck -eq $true) {
-            if ($script:CustomQueryScriptBlockTextbox.text -eq 'Enter a cmdlet') {
-                [System.Windows.Forms.MessageBox]::Show("Error: Enter a cmdlet that is avaible within a module on this endpoint.","PoSh-EasyWin Query Builder",'Ok','Error')
+            if ($script:CustomQueryScriptBlockTextbox.text -eq 'Enter a command') {
+                [System.Windows.Forms.MessageBox]::Show("Error: Enter a command that is avaible within a module on this endpoint.","PoSh-EasyWin Query Builder",'Ok','Error')
                 $CustomQueryCheck = $false
                 $CustomQueryScriptBlockCheckBox.checked = $false
                 $CustomQueryScriptBlockCheckBox.enabled = $false
@@ -2608,7 +2608,7 @@ function CustomQueryScriptBlock {
             }
 
             if ($script:ShowCommandQueryBuild -eq $null) {
-                $script:CustomQueryScriptBlockTextbox.text = 'Enter a cmdlet'
+                $script:CustomQueryScriptBlockTextbox.text = 'Enter a command'
                 $script:CustomQueryScriptBlockTextbox.forecolor = 'black'
                 $CustomQueryScriptBlockCheckBox.checked = $false
                 $CustomQueryScriptBlockCheckBox.enabled = $false
@@ -5926,8 +5926,8 @@ function OpNoteTextBoxEntry {
 # SIG # Begin signature block
 # MIIFuAYJKoZIhvcNAQcCoIIFqTCCBaUCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUfmk0FzRK9nbWdCwGjnz8UASf
-# AC2gggM6MIIDNjCCAh6gAwIBAgIQeugH5LewQKBKT6dPXhQ7sDANBgkqhkiG9w0B
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQURxPxRuT1VG1bg15Y+eqU21h7
+# 7ZmgggM6MIIDNjCCAh6gAwIBAgIQeugH5LewQKBKT6dPXhQ7sDANBgkqhkiG9w0B
 # AQUFADAzMTEwLwYDVQQDDChQb1NoLUVhc3lXaW4gQnkgRGFuIEtvbW5pY2sgKGhp
 # Z2gxMDFicm8pMB4XDTIxMTIxNDA1MDIwMFoXDTMxMTIxNDA1MTIwMFowMzExMC8G
 # A1UEAwwoUG9TaC1FYXN5V2luIEJ5IERhbiBLb21uaWNrIChoaWdoMTAxYnJvKTCC
@@ -5948,11 +5948,11 @@ function OpNoteTextBoxEntry {
 # YXN5V2luIEJ5IERhbiBLb21uaWNrIChoaWdoMTAxYnJvKQIQeugH5LewQKBKT6dP
 # XhQ7sDAJBgUrDgMCGgUAoHgwGAYKKwYBBAGCNwIBDDEKMAigAoAAoQKAADAZBgkq
 # hkiG9w0BCQMxDAYKKwYBBAGCNwIBBDAcBgorBgEEAYI3AgELMQ4wDAYKKwYBBAGC
-# NwIBFTAjBgkqhkiG9w0BCQQxFgQU3yXfCg3zUWuhp/6rfJwComQTVBQwDQYJKoZI
-# hvcNAQEBBQAEggEAsrPhkJwGMzKmFa+ogzEeT4jB0j98gdT3iQ1YZD1PnrOjoDtR
-# 0FPsP4WCB2USVIitBeY1EEbo1iAD692UnhgSesmfcmuJO6OaHbqwiH8GqmX5D6QR
-# 5sNYIeVi0tq8xPB7iyB3a7PFj6/RZ6hevl/b2ES1hXERfJY+bBPTB0sTseVsXW6f
-# s+4NWSTj5FYEJ8XGu3Ka+AavlFYz0hGrQoqGdtYO9OUlb34rc5rVUVVO9ttD1MCV
-# +wkgtpzQwhR3og3692YJRWNZKvzlECzPS8TU/EbAeckzTZhSkkjM9eYi/A9TbmPc
-# q08cQ5nt4rdG3jOANhzZJ4xtnLaLqDBM9VTPow==
+# NwIBFTAjBgkqhkiG9w0BCQQxFgQUM1qtfQoSJ1WtgsNKIpznEV2kDN8wDQYJKoZI
+# hvcNAQEBBQAEggEABeMsXBX0vqGvbGmlMMopYM+6MjhD3ByPp8I+/vIU2gGUhDVL
+# xzaHPDf1YAdNgBnGqj1fPpMnEredbKaH47okgQGPb4Z5J9kmOwhU9fPjenDeLIyz
+# iSHqlf2fzbVhqwQEFsPKJJiKxu5XXuaS3Xnp/EhtMhpCbWCQdfe/HFZVgU1Ii30f
+# Ie977KLyHKe4PPcB0m5rdiqtE2UrqMazqLkcTCwOh1iQi6lB4kXDQXP/dwRgOJ9p
+# crt2sHKytYoLUMlJ1N6W4HwOM41HHrArWuZvC7JwFbaXr7qsEkylnXBmCa9p9lRb
+# auudkxiILEo1VTWIIm5WmLKbLJr5Jq22hP4yWA==
 # SIG # End signature block

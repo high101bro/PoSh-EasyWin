@@ -119,9 +119,8 @@ Use the trackbar below to scale PoSh-EasyWin's interface:"
         Value         = 10
     }
     $script:ResolutionCheckScalingTrackBar.add_ValueChanged({
-        $script:ResolutionCheckScalingTrackBarValue = $script:ResolutionCheckScalingTrackBar.Value / 10
-        $ResolutionCheckSelectLabel.Text = $script:ResolutionCheckScalingTrackBarValue
-        $FormScale = $script:ResolutionCheckScalingTrackBarValue
+        $ResolutionCheckSelectLabel.Text = $This.Value / 10
+        $FormScale = $This.Value / 10
         $ResolutionCheckForm.Width  = $FormScale * $FormOriginalWidth
         $ResolutionCheckForm.Height = $FormScale * $FormOriginalHeight
     })
@@ -879,7 +878,7 @@ function Show-ProgressBar {
         $ScriptBlockProgressBarInput,
         [switch]$ShowImage,
         $Width = $FormScale * 350,
-        $Height = $FormScale * 180
+        $Height = $FormScale * 185
     )
     $script:ProgressBarSelectionForm = New-Object System.Windows.Forms.Form -Property @{
         Text   = $FormTitle
@@ -889,7 +888,7 @@ function Show-ProgressBar {
         Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
         Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         AutoScroll    = $True
-        #FormBorderStyle =  "fixed3d"
+        FormBorderStyle =  "fixed3d"
         #ControlBox    = $false
         MaximizeBox   = $false
         MinimizeBox   = $false
@@ -964,7 +963,7 @@ function Show-ProgressBar {
         Left   = $FormScale * 10
         Top    = $script:ProgressBarFormProgressBar.Top + $script:ProgressBarFormProgressBar.Height + ($FormScale * 5)
         Width  = $FormScale * 300
-        Height = $FormScale * 40
+        Height = $FormScale * 50
         Font   = New-Object System.Drawing.Font("Courier New",$($FormScale * 11),0,0,0)
     }
     $script:ProgressBarSelectionForm.Controls.Add($script:ProgressBarMessageLabel)
@@ -988,8 +987,8 @@ function Show-ProgressBar {
 # SIG # Begin signature block
 # MIIFuAYJKoZIhvcNAQcCoIIFqTCCBaUCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUIta47niSOvolh4Uql4fBR5tk
-# rjCgggM6MIIDNjCCAh6gAwIBAgIQeugH5LewQKBKT6dPXhQ7sDANBgkqhkiG9w0B
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUdCdIf1WbfVTOInRO6lzLncOF
+# e1SgggM6MIIDNjCCAh6gAwIBAgIQeugH5LewQKBKT6dPXhQ7sDANBgkqhkiG9w0B
 # AQUFADAzMTEwLwYDVQQDDChQb1NoLUVhc3lXaW4gQnkgRGFuIEtvbW5pY2sgKGhp
 # Z2gxMDFicm8pMB4XDTIxMTIxNDA1MDIwMFoXDTMxMTIxNDA1MTIwMFowMzExMC8G
 # A1UEAwwoUG9TaC1FYXN5V2luIEJ5IERhbiBLb21uaWNrIChoaWdoMTAxYnJvKTCC
@@ -1010,11 +1009,11 @@ function Show-ProgressBar {
 # YXN5V2luIEJ5IERhbiBLb21uaWNrIChoaWdoMTAxYnJvKQIQeugH5LewQKBKT6dP
 # XhQ7sDAJBgUrDgMCGgUAoHgwGAYKKwYBBAGCNwIBDDEKMAigAoAAoQKAADAZBgkq
 # hkiG9w0BCQMxDAYKKwYBBAGCNwIBBDAcBgorBgEEAYI3AgELMQ4wDAYKKwYBBAGC
-# NwIBFTAjBgkqhkiG9w0BCQQxFgQUspNlQ3U6ljiyzTXK103vHPQGmZEwDQYJKoZI
-# hvcNAQEBBQAEggEAocDjUR6H3shqSEFErI7pwkof1hA9Cnfp6dwCDu7v47IWkip2
-# sPMQ6cxT+fiIfNQu1haC5hHviVfoa4IhUCHTrk7bGAXVhbLoKaGqSt4Hgys49nCF
-# ne3GnB78ppErpj1ykiA5rIruQrB/gL9p3P3zCgNciFKn5T5YTdwXdYECeD0yWSzT
-# vqIpzTWuWRtmtF+HWdNyQMD+QOmM5SLgEI2CcRrwhvNOkKd2N90u49GJQqacEa2K
-# CrFOMb/wR0VtnAVpVed7z4ap/6xa2MzBZs0+hKP1DkEv0ZIJByy8T5We+9R7CxqW
-# 8FAcMGOG+zPh0rzUVDQNtbD4Gdw9LYvecjonjQ==
+# NwIBFTAjBgkqhkiG9w0BCQQxFgQU3x5VsoufaJny8S+atXpga/V0O6AwDQYJKoZI
+# hvcNAQEBBQAEggEAPax6vQmHt0Cj3+o9wofAM5PCQEDfcppstmLo3mliqC+do8Xy
+# O2sHlEUMz+ym2OwxoS/IgIof7J7FMiTuCk29BFu2GkomjPUSMs2O614DrGflTVCi
+# /9YjPfXWbAwdcdg1Dm1ee6IqJk7ydqplOTorBaUA3Kj7Z7JzDdLdr1l97HtKAhI6
+# 2e9mmDubk8wyAITlpvvgeK+JWCAq6kxdZcutbCBDcLdOcSDfwFqRhtSrQkjhu2Ue
+# O87eNZvy4zlSnykC2TNHJRE96mkeR8h4DUOz2j72mkY0SyOb6PZFASsZpEgUpaqk
+# 7CmhKHCCsMObQopv/P0YzL6UH4U7zqDUzHI7YQ==
 # SIG # End signature block

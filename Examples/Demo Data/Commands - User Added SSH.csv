@@ -1,0 +1,3 @@
+"ExportFileName","Command_Linux","Name","Type"
+"cat (User Added Command)","cat /etc/passwd","cat /etc/passwd","(SSH) Linux"
+"cat (User Added Command)","cat /etc/shadow","cat /etc/shadow","(SSH) Linux"
