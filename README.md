@@ -9,8 +9,7 @@
 |  Email         |  high101bro@gmail.com                                           |
 |  LinkedIn      |  [https://www.linkedin.com/in/daniel-komnick](https://www.linkedin.com/in/daniel-komnick) |
 |  Website       |  [https://github.com/high101bro/PoSh-EasyWin](https://github.com/high101bro/PoSh-EasyWin) |
-|  Requirements  |    PowerShell v6.0+ - PowerShell Core on Linux is NOT supported |
-|                |                     - GUI requires Windows.System.Forms         |
+|  Requirements  |    PowerShell v6.0+ - PowerShell Core on Linux is NOT supported <br>                     - GUI requires Windows.System.Forms|
 |                |               v5.1  - PSWriteHTML Module support                |
 |                |                     - Fully tested                              |
 |                |               v4.0  - The use of Copy-Item -Session             |
@@ -21,7 +20,7 @@
 |                |               v2.0  - Not supported, requires splatting         |
 |  Optional      |  PsExec.exe, Procmon.exe, Sysmon.exe, <br>  etl2pcapng.exe, kitty.exe, plink.exe, chainsaw.exe, WxTCmd.exe |
 |                |                                                                 |
-|  Tutorials & Demos |  [https://www.youtube.com/results?search_query=PoSh-EASYWIN](https://www.youtube.com/results?search_query=PoSh-EASYWIN) <br>  Many thanks to Cole Van Landingham for creating these!|
+|  Tutorials & Demos |  [https://www.youtube.com/results?search_query=PoSh-EasyWin](https://www.youtube.com/results?search_query=PoSh-EasyWin) <br>  Many thanks to Cole Van Landingham for creating these!|
 |                |                                                                 |
 
 ***
