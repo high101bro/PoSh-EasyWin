@@ -7,7 +7,8 @@
 |                |                                                                 |
 |  Author        |  Daniel Komnick (high101bro)                                    |
 |  Email         |  high101bro@gmail.com                                           |
-|  Website       |  https://github.com/high101bro/PoSh-EasyWin                     |
+|  LinkedIn      |  [https://www.linkedin.com/in/daniel-komnick](https://www.linkedin.com/in/daniel-komnick) |
+|  Website       |  [https://github.com/high101bro/PoSh-EasyWin](https://github.com/high101bro/PoSh-EasyWin) |
 |  Requirements  |    PowerShell v6.0+ - PowerShell Core on Linux is NOT supported |
 |                |                     - GUI requires Windows.System.Forms         |
 |                |               v5.1  - PSWriteHTML Module support                |
@@ -20,6 +21,9 @@
 |                |               v2.0  - Not supported, requires splatting         |
 |  Optional      |  PsExec.exe, Procmon.exe, Sysmon.exe,                           |
 |                |  etl2pcapng.exe, kitty.exe, plink.exe, chainsaw.exe, WxTCmd.exe |
+|                |                                                                 |
+|  Tutorials     |  [https://www.youtube.com/results?search_query=PoSh-EASYWIN](https://www.youtube.com/results?search_query=PoSh-EASYWIN) |
+|  and Demos     |  Many thanks to Cole Van Landingham for creating these!         |
 |                |                                                                 |
 
 ***
@@ -39,7 +43,7 @@ PoSh-EasyWin is a Graphical User Interface (GUI) that uses PowerShell with the .
 6. A method to analyze data/results from numerous systems natively without external 3rd party applications.
 
 ### YouTube Tutorial and Demo Videos
-Many thanks to Cole VanLandingham for creating these videos: [https://www.youtube.com/results?search_query=PoSh-EASYWIN](https://www.youtube.com/results?search_query=PoSh-EASYWIN)
+Many thanks to Cole VanLandingham for creating these videos: 
 
 ***
 ***
