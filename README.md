@@ -35,7 +35,6 @@
     <tr>
       <td valign="top"><strong>PowerShell Requirements</strong></td>
       <td valign="top">
-        <ul>
           v6.0+
             <ul>
               <li>PowerShell Core on Linux is NOT supported</li>
@@ -48,12 +47,12 @@
             </ul>
           v4.0
             <ul>
-              <li>The use of Copy-Item -Session</li>
-              <li>Partially Tested</li>
+              <li>Implementation of Copy-Item -Session</li>
+              <li>Partially tested</li>
             </ul>
           v3.0
             <ul>
-              <li>Splatting Arguments</li>
+              <li>Splatting arguments</li>
               <li>PowerShell Charts support</li>
               <li>Limited testing</li>
             </ul>
@@ -61,7 +60,6 @@
             <ul>
               <li>Not supported, requires splatting</li>
             </ul>
-        </ul>
       </td>
     </tr>
     <tr>
