@@ -96,8 +96,8 @@ PoSh-EasyWin is a Graphical User Interface (GUI) that uses PowerShell with the .
 5. The ability to effortlessly connect to an endpoint via a Remote Desktop, PSSession, PSExec, or explore Event Logs. 
 6. A method to analyze data/results from numerous systems natively without external 3rd party applications.
 
-### YouTube Tutorial and Demo Videos
-Many thanks to Cole VanLandingham for creating these videos: 
+### Tutorial and demo videos available on YouTube at:
+[https://www.youtube.com/results?search_query=PoSh-EasyWin](https://www.youtube.com/results?search_query=PoSh-EasyWin)
 
 ***
 ***
