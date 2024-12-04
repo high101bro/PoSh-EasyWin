@@ -36,36 +36,31 @@
       <td valign="top"><strong>PowerShell Requirements</strong></td>
       <td valign="top">
         <ul>
-          <li>v6.0+
+          v6.0+
             <ul>
               <li>PowerShell Core on Linux is NOT supported</li>
               <li>GUI requires Windows.System.Forms</li>
             </ul>
-          </li>
-          <li>v5.1
+          v5.1
             <ul>
               <li>PSWriteHTML Module support</li>
               <li>Fully tested</li>
             </ul>
-          </li>
-          <li>v4.0
+          v4.0
             <ul>
               <li>The use of Copy-Item -Session</li>
               <li>Partially Tested</li>
             </ul>
-          </li>
-          <li>v3.0
+          v3.0
             <ul>
               <li>Splatting Arguments</li>
               <li>PowerShell Charts support</li>
               <li>Limited testing</li>
             </ul>
-          </li>
-          <li>v2.0
+          v2.0
             <ul>
               <li>Not supported, requires splatting</li>
             </ul>
-          </li>
         </ul>
       </td>
     </tr>
