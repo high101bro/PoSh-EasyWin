@@ -8,7 +8,7 @@
 |  Author        |  Daniel Komnick (high101bro)                                    |
 |  Email         |  high101bro@gmail.com                                           |
 |  Website       |  https://github.com/high101bro/PoSh-EasyWin                     |
-|  Requirements  |    PowerShell v6.0+ - PowerShell Core is NOT supported          |
+|  Requirements  |    PowerShell v6.0+ - PowerShell Core on Linux is NOT supported |
 |                |                     - GUI requires Windows.System.Forms         |
 |                |               v5.1  - PSWriteHTML Module support                |
 |                |                     - Fully tested                              |
