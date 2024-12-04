@@ -1,19 +1,92 @@
 # PoSh-EasyWin
 #### **P**ower**S**hell - **E**ndpoint **A**nalysis **S**olution **Y**our **W**indows **I**ntranet **N**eeds
-|                |                                                                 |
-|:---------------|:----------------------------------------------------------------|
-|  File Name     |  PoSh-EasyWin.ps1                                               |
-|  Created       |  21 Aug 2018                                                    |
-|                |                                                                 |
-|  Author        |  Daniel Komnick (high101bro)                                    |
-|  Email         |  high101bro@gmail.com                                           |
-|  LinkedIn      |  [https://www.linkedin.com/in/daniel-komnick](https://www.linkedin.com/in/daniel-komnick) |
-|  Website       |  [https://github.com/high101bro/PoSh-EasyWin](https://github.com/high101bro/PoSh-EasyWin) |
-|  PowerShell <br> Requirements  |    v6.0+ <br> - PowerShell Core on Linux is NOT supported <br> - GUI requires Windows.System.Forms <br> v5.1  <br> - PSWriteHTML Module support <br> - Fully tested <br> v4.0  <br> - The use of Copy-Item -Session <br> - Partially Tested <br> v3.0  <br> - Splatting Arguments <br> - PowerShell Charts support <br> - Limited testing <br> v2.0  <br> - Not supported, requires splatting |
-|  Optional      |  PsExec.exe, Procmon.exe, Sysmon.exe, <br>  etl2pcapng.exe, kitty.exe, plink.exe, chainsaw.exe, WxTCmd.exe |
-|                |                                                                 |
-|  Tutorials & Demos |  [https://www.youtube.com/results?search_query=PoSh-EasyWin](https://www.youtube.com/results?search_query=PoSh-EasyWin) <br>  Many thanks to Cole Van Landingham for creating these!|
-|                |                                                                 |
+<table>
+  <thead>
+    <tr>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td valign="top"><strong>File Name</strong></td>
+      <td valign="top">PoSh-EasyWin.ps1</td>
+    </tr>
+    <tr>
+      <td valign="top"><strong>Created</strong></td>
+      <td valign="top">21 Aug 2018</td>
+    </tr>
+    <tr>
+      <td valign="top"><strong>Author</strong></td>
+      <td valign="top">Daniel Komnick (high101bro)</td>
+    </tr>
+    <tr>
+      <td valign="top"><strong>Email</strong></td>
+      <td valign="top">high101bro@gmail.com</td>
+    </tr>
+    <tr>
+      <td valign="top"><strong>LinkedIn</strong></td>
+      <td valign="top"><a href="https://www.linkedin.com/in/daniel-komnick">https://www.linkedin.com/in/daniel-komnick</a></td>
+    </tr>
+    <tr>
+      <td valign="top"><strong>Website</strong></td>
+      <td valign="top"><a href="https://github.com/high101bro/PoSh-EasyWin">https://github.com/high101bro/PoSh-EasyWin</a></td>
+    </tr>
+    <tr>
+      <td valign="top"><strong>PowerShell Requirements</strong></td>
+      <td valign="top">
+        <ul>
+          <li>v6.0+
+            <ul>
+              <li>PowerShell Core on Linux is NOT supported</li>
+              <li>GUI requires Windows.System.Forms</li>
+            </ul>
+          </li>
+          <li>v5.1
+            <ul>
+              <li>PSWriteHTML Module support</li>
+              <li>Fully tested</li>
+            </ul>
+          </li>
+          <li>v4.0
+            <ul>
+              <li>The use of Copy-Item -Session</li>
+              <li>Partially Tested</li>
+            </ul>
+          </li>
+          <li>v3.0
+            <ul>
+              <li>Splatting Arguments</li>
+              <li>PowerShell Charts support</li>
+              <li>Limited testing</li>
+            </ul>
+          </li>
+          <li>v2.0
+            <ul>
+              <li>Not supported, requires splatting</li>
+            </ul>
+          </li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top"><strong>Optional</strong></td>
+      <td valign="top">
+        PsExec.exe, Procmon.exe, Sysmon.exe,<br>
+        etl2pcapng.exe, kitty.exe, plink.exe,<br>
+        chainsaw.exe, WxTCmd.exe
+      </td>
+    </tr>
+    <tr>
+      <td valign="top"><strong>Tutorials & Demos</strong></td>
+      <td valign="top">
+        <a href="https://www.youtube.com/results?search_query=PoSh-EasyWin">https://www.youtube.com/results?search_query=PoSh-EasyWin</a><br>
+        Many thanks to Cole Van Landingham for creating these!
+      </td>
+    </tr>
+  </tbody>
+</table>
+
 
 ***
 ***
