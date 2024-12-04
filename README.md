@@ -19,11 +19,9 @@
 |                |                     - PowerShell Charts support                 |
 |                |                     - Limited testing                           |
 |                |               v2.0  - Not supported, requires splatting         |
-|  Optional      |  PsExec.exe, Procmon.exe, Sysmon.exe,                           |
-|                |  etl2pcapng.exe, kitty.exe, plink.exe, chainsaw.exe, WxTCmd.exe |
+|  Optional      |  PsExec.exe, Procmon.exe, Sysmon.exe, <br>  etl2pcapng.exe, kitty.exe, plink.exe, chainsaw.exe, WxTCmd.exe |
 |                |                                                                 |
-|  Tutorials & Demos |  [https://www.youtube.com/results?search_query=PoSh-EASYWIN](https://www.youtube.com/results?search_query=PoSh-EASYWIN) |
-|                |  Many thanks to Cole Van Landingham for creating these!         |
+|  Tutorials & Demos |  [https://www.youtube.com/results?search_query=PoSh-EASYWIN](https://www.youtube.com/results?search_query=PoSh-EASYWIN) <br>  Many thanks to Cole Van Landingham for creating these!|
 |                |                                                                 |
 
 ***
