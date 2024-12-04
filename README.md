@@ -1,5 +1,5 @@
 # PoSh-EasyWin
-#### PowerShell - Endpoint Analysis Solution Your Windows Intranet Needs
+#### **P**ower**S**hell - **E**ndpoint **A**nalysis **S**olution **Y**our **W**indows **I**ntranet **N**eeds
 |                |                                                                 |
 |:---------------|:----------------------------------------------------------------|
 |  File Name     |  PoSh-EasyWin.ps1                                               |
@@ -38,6 +38,8 @@ PoSh-EasyWin is a Graphical User Interface (GUI) that uses PowerShell with the .
 5. The ability to effortlessly connect to an endpoint via a Remote Desktop, PSSession, PSExec, or explore Event Logs. 
 6. A method to analyze data/results from numerous systems natively without external 3rd party applications.
 
+### YouTube Tutorial and Demo Videos
+Many thanks to Cole VanLandingham for creating these videos: [https://www.youtube.com/results?search_query=PoSh-EASYWIN](https://www.youtube.com/results?search_query=PoSh-EASYWIN)
 
 ***
 ***
