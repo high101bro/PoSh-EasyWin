@@ -9,11 +9,7 @@
 |  Email         |  high101bro@gmail.com                                           |
 |  LinkedIn      |  [https://www.linkedin.com/in/daniel-komnick](https://www.linkedin.com/in/daniel-komnick) |
 |  Website       |  [https://github.com/high101bro/PoSh-EasyWin](https://github.com/high101bro/PoSh-EasyWin) |
-|  PowerShell <br> Requirements  |    v6.0+ <br> - PowerShell Core on Linux is NOT supported <br> - GUI requires Windows.System.Forms <br>
-                                      v5.1  <br> - PSWriteHTML Module support <br> - Fully tested <br>
-                                      v4.0  <br> - The use of Copy-Item -Session <br> - Partially Tested <br>
-                                      v3.0  <br> - Splatting Arguments <br> - PowerShell Charts support <br> - Limited testing <br>
-                                      v2.0  <br> - Not supported, requires splatting |
+|  PowerShell <br> Requirements  |    v6.0+ <br> - PowerShell Core on Linux is NOT supported <br> - GUI requires Windows.System.Forms <br> v5.1  <br> - PSWriteHTML Module support <br> - Fully tested <br> v4.0  <br> - The use of Copy-Item -Session <br> - Partially Tested <br> v3.0  <br> - Splatting Arguments <br> - PowerShell Charts support <br> - Limited testing <br> v2.0  <br> - Not supported, requires splatting |
 |  Optional      |  PsExec.exe, Procmon.exe, Sysmon.exe, <br>  etl2pcapng.exe, kitty.exe, plink.exe, chainsaw.exe, WxTCmd.exe |
 |                |                                                                 |
 |  Tutorials & Demos |  [https://www.youtube.com/results?search_query=PoSh-EasyWin](https://www.youtube.com/results?search_query=PoSh-EasyWin) <br>  Many thanks to Cole Van Landingham for creating these!|
