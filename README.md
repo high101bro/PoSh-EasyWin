@@ -65,9 +65,8 @@
     <tr>
       <td valign="top"><strong>Optional</strong></td>
       <td valign="top">
-        PsExec.exe, Procmon.exe, Sysmon.exe,<br>
-        etl2pcapng.exe, kitty.exe, plink.exe,<br>
-        chainsaw.exe, WxTCmd.exe
+        PsExec.exe, Procmon.exe, Sysmon.exe, etl2pcapng.exe,<br>
+        kitty.exe, plink.exe, chainsaw.exe, WxTCmd.exe
       </td>
     </tr>
     <tr>
