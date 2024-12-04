@@ -64,7 +64,6 @@ PS C:\PoSh-EasyWin> Set-ExecutionPolicy -ExecutionPolicy AllSigned
 PS C:\PoSh-EasyWin> .\PoSh-EasyWin.ps1
 ```
 ### Example Screenshot:
-#![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/6.3.2/Images/HowToRunPoSh-EasyWin.png)
 ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/HowToRunPoSh-EasyWin.png)
             
 
