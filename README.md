@@ -31,7 +31,7 @@
 PoSh-EasyWin is a Graphical User Interface (GUI) that uses PowerShell with the .Net Framework to primarily query for various information from remote computers. It obtains data that is on the system 'now' without the need to install agents on remote systems. It provides an interface to easily make any number of queries to any number of hosts, and maintains a local log to track when they were conducted and to which systems. Little to no PowerShell knowledge is needed, just click on the desired queries and endpoints, then start collecting data. Note: Queries to numerous endpoints equates to more processing power and time needed.
 
 ### The goals of PoSh-EasyWin are to provide:
-1. A user interface that is easy to use and intuitive.
+1. An graphical interface allowing users to easily interact with endpoints.
 2. Easily view collected data locally via charts, spreadsheats, and by terminal.
 3. An efficient method to obtain various data from remote endpoints over various protocols.
 4. Visiblity into many common commands for endpoints and active directory servers.
