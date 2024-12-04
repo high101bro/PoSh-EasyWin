@@ -28,15 +28,15 @@
 ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/PoSh-EasyWin_GUI.png)
 
 ### Scope
-PoSh-EasyWin is a Graphical User Interface (GUI) that uses PowerShell with the .Net Framework to primarily query for various information from remote computers. It obtains data that is on the system 'now' without the need to install agents on remote systems. It provides a method to easily make any number of queries to any number of hosts, and maintains a local log to track when they were conducted and  to which systems. Little to no PowerShell knowledge is needed, just click on the desired queries and endpoints, then start collecting data. 
+PoSh-EasyWin is a Graphical User Interface (GUI) that uses PowerShell with the .Net Framework to primarily query for various information from remote computers. It obtains data that is on the system 'now' without the need to install agents on remote systems. It provides an interface to easily make any number of queries to any number of hosts, and maintains a local log to track when they were conducted and to which systems. Little to no PowerShell knowledge is needed, just click on the desired queries and endpoints, then start collecting data. Note: Queries to numerous endpoints equates to more processing power and time needed.
 
 ### The goals of PoSh-EasyWin are to provide:
-1. a user interface that is easy to use and intuitive.
-2. easily view collected data locally via charts, spreadsheats, and by terminal.
-3. an efficient method to obtain various data from remote endpoints over various protocols.
-4. visiblity into many common commands for endpoints and active directory servers.
-5. the ability to effortlessly connect to an endpoint via a Remote Desktop, PSSession, PSExec, or explore Event Logs. 
-6. a method to analyze data/results from numerous systems natively without external 3rd party applications.
+1. A user interface that is easy to use and intuitive.
+2. Easily view collected data locally via charts, spreadsheats, and by terminal.
+3. An efficient method to obtain various data from remote endpoints over various protocols.
+4. Visiblity into many common commands for endpoints and active directory servers.
+5. The ability to effortlessly connect to an endpoint via a Remote Desktop, PSSession, PSExec, or explore Event Logs. 
+6. A method to analyze data/results from numerous systems natively without external 3rd party applications.
 
 
 ***
