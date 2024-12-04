@@ -33,7 +33,7 @@
       <td valign="top"><a href="https://github.com/high101bro/PoSh-EasyWin">https://github.com/high101bro/PoSh-EasyWin</a></td>
     </tr>
     <tr>
-      <td valign="top"><strong>PowerShell Requirements</strong></td>
+      <td valign="top"><strong>PowerShell<br>Requirements</strong></td>
       <td valign="top">
           v6.0+
             <ul>
@@ -70,7 +70,7 @@
       </td>
     </tr>
     <tr>
-      <td valign="top"><strong>Tutorials & Demos</strong></td>
+      <td valign="top"><strong>Tutorials<br>& Demos</strong></td>
       <td valign="top">
         <a href="https://www.youtube.com/results?search_query=PoSh-EasyWin">https://www.youtube.com/results?search_query=PoSh-EasyWin</a><br>
         Many thanks to Cole Van Landingham for creating these!
